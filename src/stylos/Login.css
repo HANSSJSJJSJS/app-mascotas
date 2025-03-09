@@ -1,0 +1,122 @@
+.main-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #c2d8ff;
+    }
+  
+  .login_container {
+    display: flex;
+    width: 800px;
+    background-color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 2em;
+    overflow: hidden;
+  }
+  
+  .form_area {
+    flex: 1;
+    padding: 40px;
+  }
+  
+  .title {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .form_group {
+    margin-bottom: 20px;
+    position: relative;
+    }
+  
+  .sub_title {
+    display: block;
+    margin-bottom: 8px;
+    color: #161515;
+    text-align: left;
+  }
+  
+  .form_style {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    transition: border-color 0.3s;
+  }
+  
+  .form_style:focus {
+    outline: none;
+    border-color: #675df1;
+    text-align: center;
+  }
+  
+  .form_style.error {
+    border-color: #ff5d5d;
+  }
+  
+  .error-message {
+    color: #dc3545;
+    font-size: 0.8rem;
+    margin-top: 5px;
+  }
+  
+  .password-input-container {
+    position: relative;
+  }
+  
+  .password-toggle {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #777;
+  }
+  
+  .forgot-password-link {
+    display: block;
+    text-align: right;
+    margin-top: 10px;
+    color: #675df1;
+    text-decoration: none;
+    font-size: 0.9rem;
+  }
+  
+  .btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #675df1;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .btn:hover {
+    background-color: #545bc2;
+  }
+  
+  .link {
+    color: #675df1;
+    text-decoration: none;
+  }
+  
+  .logo-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .logo-image {
+    max-width: 80%;
+    max-height: 300px;
+    object-fit: contain;
+  }

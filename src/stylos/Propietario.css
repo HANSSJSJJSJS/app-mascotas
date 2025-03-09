@@ -1,0 +1,215 @@
+body {
+    background-color: #c2d8ff;
+    font-family: "Poppins", sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Usar min-height en lugar de height para evitar problemas */
+}
+
+.container {
+    margin-top: 10vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Contenedor del formulario */
+.form-container {
+    margin-top: 90vh;
+    width: 50vh; /* Más responsivo */
+    background: #ffffff;
+    padding: 100px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin: 20px; /* Margen para evitar que toque los bordes */
+}
+
+.form-title {
+    text-align: center;
+    font-size: 24px;
+    color: #4c569d;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+.form-group {
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+#checklist {
+    --text: #414856;
+    --check: #4f29f0;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 10px 0;
+}
+
+#checklist label {
+    color: var(--text);
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: color 0.3s ease;
+}
+
+/* Estilo del radio button */
+#checklist input[type="radio"] {
+    appearance: none;
+    height: 18px;
+    width: 18px;
+    outline: none;
+    border: 2px solid var(--text);
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+#checklist input[type="radio"]:checked {
+    background-color: var(--check);
+    border-color: var(--check);
+    box-shadow: 0 0 4px var(--check);
+}
+
+#checklist input[type="radio"]::before {
+    content: "";
+    width: 10px;
+    height: 10px;
+    background-color: white;
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+}
+
+#checklist input[type="radio"]:checked::before {
+    opacity: 1;
+}
+
+label {
+    font-weight: 600;
+    color: #333;
+    display: block;
+    margin-bottom: 5px;
+}
+
+input,
+select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 60px;
+    font-size: 16px;
+    transition: all 0.3s ease-in-out;
+    box-sizing: border-box;
+}
+
+input:focus,
+select:focus {
+    border-color: #8c89f4;
+    outline: none;
+    box-shadow: 0 0 5px rgba(140, 137, 244, 0.5);
+}
+
+.error-message {
+    color: red;
+    font-size: 14px;
+    margin-top: 5px;
+    display: block;
+}
+
+.submit-button {
+    width: 100%;
+    background: linear-gradient(90deg, #6a11cb, #2575fc);
+    color: white;
+    border: none;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.3s ease-in-out;
+}
+
+.submit-button:hover {
+    background: linear-gradient(90deg, #2575fc, #6a11cb);
+}
+
+.password-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.password-container input {
+    width: 100%;
+    padding-right: 40px; /* Espacio para el ícono */
+}
+
+.password-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    position: absolute;
+    right: 10px;
+    font-size: 1.2em;
+    color: #4c569d; /* Color del ícono */
+}
+
+.password-toggle:focus {
+    outline: none;
+}
+
+.autorizacion-container {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Espacio entre el checkbox y el texto */
+    margin-top: 10px; /* Espacio adicional */
+}
+
+.autorizacion-container input[type="checkbox"] {
+    margin: 0;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.autorizacion-container label {
+    margin: 0;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+}
+
+.react-datepicker-wrapper {
+    width: 100%;
+}
+
+.react-datepicker {
+    font-family: "Poppins", sans-serif;
+    border-radius: 8px;
+    border: 1px solid #495a90;
+    background-color: #ffffff;
+}
+
+.react-datepicker__header {
+    background-color: #4c569d;
+    color: white;
+    border-bottom: 2px solid #1a2540;
+}
+
+
+.color1 {color: #000000;}
+.color2 {color: #1a2540;}
+.color3 {color: #495a90;}
+.color4 {color: #8196eb;}
+.color5 {color: #c2d8ff;}

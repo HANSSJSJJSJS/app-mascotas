@@ -1,0 +1,167 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Spicy+Rice&display=swap");
+
+:root {
+  --primary-color: #1c2951;
+  --secondary-color: #dcc0ff;
+  --accent-color: #8c89f4;
+  --border-color: #4c569d;
+  --dark-color: #000012;
+}
+
+/* Asegura que el footer abarque todo el ancho de la pantalla */
+.footer-container {
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
+  padding: 2rem;
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 2rem;
+  font-family: "Poppins", sans-serif;
+  width: 100vw; /* Asegura el ancho total */
+  max-width: 100%;
+  box-sizing: border-box; /* Evita que los paddings afecten el ancho */
+  position: relative;
+  bottom: 0;
+  left: 0;
+
+
+  /* Animación de entrada */
+  -webkit-animation: scale-up-ver-bottom 0.4s cubic-bezier(0.39, 0.575, 0.565, 1) both;
+  animation: scale-up-ver-bottom 0.4s cubic-bezier(0.39, 0.575, 0.565, 1) both;
+}
+
+/* Evitar márgenes y paddings en body/html */
+
+
+/* Asegurar que el contenedor del footer ocupe todo el espacio disponible */
+.footer-container > div {
+  flex: 1;
+  min-width: 250px;
+  padding: 1rem;
+}
+
+.footer-container h3 {
+  font-family: "Spicy Rice", cursive;
+  color: var(--accent-color);
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 1.8rem;
+  letter-spacing: 1px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 18, 0.3);
+}
+
+.footer-container p {
+  color: var(--secondary-color);
+  margin-bottom: 0.5rem;
+  line-height: 1.6;
+  font-weight: 300;
+  font-size: 0.95rem;
+  letter-spacing: 0.3px;
+}
+
+.social-icons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.social-icons img {
+  width: 30px;
+  height: 30px;
+  transition: all 0.3s ease;
+  filter: drop-shadow(0 0 4px var(--accent-color));
+}
+
+.social-icons img:hover {
+  transform: scale(1.1) rotate(5deg);
+  filter: drop-shadow(0 0 8px var(--accent-color));
+}
+
+/* Enlaces del footer */
+.footer-container a {
+  color: var(--secondary-color);
+  text-decoration: none;
+  transition: color 0.3s ease;
+  position: relative;
+}
+
+.footer-container a:hover {
+  color: var(--accent-color);
+}
+
+.footer-container a::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 1px;
+  bottom: -2px;
+  left: 0;
+  background-color: var(--accent-color);
+  transition: width 0.3s ease;
+}
+
+.footer-container a:hover::after {
+  width: 100%;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .footer-container {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .social-icons {
+    justify-content: center;
+  }
+
+  .footer-container h3 {
+    font-size: 1.5rem;
+  }
+
+  .footer-container p {
+    font-size: 0.9rem;
+  }
+}
+
+/* Animación */
+@-webkit-keyframes scale-up-ver-bottom {
+  0% {
+    -webkit-transform: scaleY(0.4);
+    transform: scaleY(0.4);
+    -webkit-transform-origin: 0% 100%;
+    transform-origin: 0% 100%;
+  }
+  100% {
+    -webkit-transform: scaleY(1);
+    transform: scaleY(1);
+    -webkit-transform-origin: 0% 100%;
+    transform-origin: 0% 100%;
+  }
+}
+
+@keyframes scale-up-ver-bottom {
+  0% {
+    -webkit-transform: scaleY(0.4);
+    transform: scaleY(0.4);
+    -webkit-transform-origin: 0% 100%;
+    transform-origin: 0% 100%;
+  }
+  100% {
+    -webkit-transform: scaleY(1);
+    transform: scaleY(1);
+    -webkit-transform-origin: 0% 100%;
+    transform-origin: 0% 100%;
+  }
+}
+
+/* Animación adicional para los elementos al hacer hover */
+.footer-container > div {
+  transition: transform 0.3s ease;
+}
+
+.footer-container > div:hover {
+  transform: translateY(-5px);
+}
