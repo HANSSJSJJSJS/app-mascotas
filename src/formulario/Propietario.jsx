@@ -52,12 +52,19 @@ function Propietario() {
 
                 <div className="form-group">
                     <label htmlFor="numeroId">Número de documento:</label>
-                    <input type="text" id="numeroId" {...register("numeroId", {
-                        required: "El número de documento es obligatorio",
-                        pattern: { value: /^[0-9]+$/, message: "Solo números" },
-                        maxLength: {value:10, message: "Maximo 10 digitos"},
-                        minLength: {value:6, message:"Minimo 6 digitos"}
-                    })} />
+                    <input 
+                        type="number" 
+                        id="numeroId" 
+                        inputMode="numeric" 
+                        style={{ appearance: "textfield", MozAppearance: "textfield" }} 
+                        onInput={(e) => e.target.value = e.target.value.replace(/[^0-9]/g, '')} 
+                        {...register("numeroId", {
+                            required: "El número de documento es obligatorio",
+                            min: { value: 1, message: "Solo números positivos" },
+                            maxLength: { value: 10, message: "Máximo 10 dígitos" },
+                            minLength: { value: 6, message: "Mínimo 6 dígitos" }
+                        })} 
+                    />
                     {errors.numeroId && <p className="error-message">{errors.numeroId.message}</p>}
                 </div>
 
