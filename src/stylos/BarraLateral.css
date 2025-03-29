@@ -1,0 +1,58 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    display: flex;
+    min-height: 80vh;
+}
+
+/* Barra lateral */
+aside {
+    width: 215px;
+    background-color: #3f3399;
+    color: white;
+    padding-top: 20px;
+    height: 40em;
+}
+
+aside h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 16px;
+}
+
+nav ul {
+    list-style: none;
+}
+
+nav li {
+    padding: 15px 20px;
+}
+
+nav li.active {
+    background-color: rgba(127, 180, 42, 0.1);
+    border-left: 4px solid white;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+
+}
+
+.icono-regalo {
+    width: 100%;
+    position: relative;
+    bottom: 30px;
+    font-size: 30px;
+    color: white;
+    left: 5rem;
+    top: 2em;
+}
+

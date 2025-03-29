@@ -1,0 +1,67 @@
+.encabezado {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: white;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  height: 50px;
+  position: relative;
+  bottom: 39rem;
+  width: 85.5%;
+  margin-left: 215px; /* Ancho del menú lateral */
+}
+
+.boton-menu {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #333;
+}
+
+.info-usuario {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  background-color: #f4f4f4;
+  padding: 5px 15px;
+  border-radius: 10px;
+  position: relative;
+  left: 75em;
+}
+
+.info-usuario span {
+  font-weight: 500;
+  color: #3f51b5;
+}
+
+.info-usuario small {
+  font-size: 12px;
+  color: #666;
+}
+
+.tarjeta-bienvenida{
+    font-family: 12px;
+    position: relative;
+    top: 4em;
+    background-color: #3f51b5;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    left: -11em;
+    height: 50px;
+    color: #f4f4f4;
+    border-radius: 5px;
+    max-width: none;
+    width: 70vw;
+}
+
+.tarjeta-bienvenida h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 500;
+  }
