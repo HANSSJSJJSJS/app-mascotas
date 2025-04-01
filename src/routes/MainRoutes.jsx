@@ -12,11 +12,11 @@ import NotFound from "../componentes/paginas/NotFound"; // Página para errores 
 const MainRoutes = () => {
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
+      <Route path="/Home" element={<Home />} />
       <Route path="/Login" element={<Login />} />
       <Route path="/servicios" element={<Servicios />} />
       <Route path="/adopcion" element={<Adopcion />} />
-      <Route path="/sobre-nosotros" element={<SobreNosotros />} />
+      <Route path="/SobreNosotros" element={<SobreNosotros />} />
       <Route path="/Propietario" element={<Propietario />} />
       <Route path="/OlvideContrasena" element={<OlvideContrasena />} />
       
