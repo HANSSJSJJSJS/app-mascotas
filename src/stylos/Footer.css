@@ -10,6 +10,7 @@
 
 /* Asegura que el footer abarque todo el ancho de la pantalla */
 .footer-container {
+  margin-top: 10%;
   background-color: var(--primary-color);
   color: var(--secondary-color);
   padding: 2rem;

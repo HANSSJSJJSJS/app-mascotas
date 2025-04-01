@@ -1,17 +1,17 @@
-import React from 'react';
-import './App.css';
-import Header from './index/Header';
-import Footer from './index/Footer';
-
+import { BrowserRouter as Router } from "react-router-dom";
+import Header from "./componentes/index/Header";
+import MainRoutes from "./routes/MainRoutes"; 
 
 function App() {
   return (
-    <div className="main-container">
+    <Router>
       <Header />
-      <Carrusel />
-      <Footer />
-    </div>
+      <div className="container">
+        <MainRoutes /> 
+      </div>
+    </Router>
   );
 }
 
 export default App;
+

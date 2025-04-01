@@ -1,0 +1,62 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+.sobre-nosotros-container {
+    margin-top: 50px;
+  text-align: center;
+  padding: 50px;
+  color: #c2d8ff;
+  background-color: #1a2540;
+  min-height: 100vh;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Título principal */
+.sobre-nosotros-title {
+  font-size: 2.8rem;
+  font-weight: 700;
+  color: #8196eb;
+  margin-bottom: 20px;
+}
+
+/* Contenido */
+.sobre-nosotros-content {
+  font-size: 1.2rem;
+  max-width: 900px;
+  margin: 0 auto;
+  line-height: 1.6;
+  color: #c2d8ff;
+}
+
+/* Tarjetas de información */
+.sobre-nosotros-card {
+  background-color: #495a90;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  margin-top: 20px;
+  transition: transform 0.3s ease-in-out;
+}
+
+.sobre-nosotros-card:hover {
+  transform: scale(1.05);
+}
+
+.sobre-nosotros-card h2 {
+  color: #c2d8ff;
+  font-size: 1.8rem;
+}
+
+.sobre-nosotros-card p {
+  font-size: 1.1rem;
+}
+
+/* Estilos Responsivos */
+@media (max-width: 768px) {
+  .sobre-nosotros-title {
+    font-size: 2.2rem;
+  }
+
+  .sobre-nosotros-card {
+    padding: 20px;
+  }
+}

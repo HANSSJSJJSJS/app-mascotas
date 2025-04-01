@@ -1,60 +1,72 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&family=Spicy+Rice&display=swap');
 
+:root {
+    --color1: #000000;
+    --color2: #1a2540;
+    --color3: #495a90;
+    --color4: #8196eb;
+    --color5: #c2d8ff;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
 .header-wrapper {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     z-index: 1000;
+    background-color: transparent;
 }
 
+/* 🔹 Barra superior con redes sociales */
 .top-container {
-    background-color: #495a90;
-    height: 13vh;
-    width: 100%;
-    position: relative;
+    background-color: var(--color3);
+    height: 10vh;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 20px;
 }
 
 .links {
-    position: absolute;
-    font-size: 3vh;
-    width: 45%;
-    right: 0;
-    height: 100%;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
+    gap: 15px;
 }
 
 .links a {
-    color: #c2d8ff;
+    color: var(--color5);
     text-decoration: none;
-    transition: color 0.3s;
+    font-size: 22px;
+    transition: color 0.3s ease-in-out, transform 0.2s;
 }
 
-.bi {
-    font-size: 24px;
+.links a:hover {
+    color: var(--color4);
+    transform: scale(1.1);
 }
 
-.bi:hover {
-    color: #8196eb;
-}
-
+/* 🔹 Barra de navegación principal */
 .navbarra {
-    background-color: #1a2540;
+    background-color: var(--color2);
     width: 80%;
     max-width: 1200px;
-    height: 85px;
+    height: 80px;
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    top: 8vh;
-    border-radius: 50px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    top: 7vh;
+    border-radius: 20px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
     display: flex;
     justify-content: center;
     align-items: center;
+    transition: all 0.3s ease-in-out;
 }
 
 .navtext {
@@ -64,40 +76,50 @@
     align-items: center;
 }
 
+/* 🔹 Alineación de enlaces */
 .left-nav, .right-nav {
     display: flex;
-    gap: 20px;
-    align-items: center;
+    gap: 40px;
 }
 
 .nav-item {
-    color: #c2d8ff;
+    color: var(--color5);
     text-decoration: none;
     font-weight: 500;
-    transition: color 0.3s;
+    font-size: 1rem;
+    transition: color 0.3s ease-in-out, transform 0.2s;
 }
 
 .nav-item:hover {
-    color: #8196eb;
+    color: var(--color4);
+    transform: scale(1.05);
 }
 
-.center-nav .nav-item {
-    text-decoration: none;
+/* 🔹 Logo central */
+.center-nav {
+    text-align: center;
 }
 
 .icono {
-    font-size: 3em;
+    font-size: 2.5em;
     font-weight: 700;
     margin: 0;
+    transition: transform 0.3s ease-in-out;
+    color: var(--color5);
+}
+
+.icono:hover {
+    transform: rotate(5deg);
 }
 
 .text-ico {
-    color: #8196eb;
+    color: var(--color4);
 }
 
+/* 🔹 Responsividad */
 @media (max-width: 1024px) {
     .navbarra {
-        width: 90%;
+        width: 85%;
     }
     
     .navtext {
@@ -109,12 +131,13 @@
     .navbarra {
         height: auto;
         padding: 15px;
-        top: 12vh;
+        top: 11vh;
+        width: 90%;
     }
 
     .navtext {
         flex-direction: column;
-        gap: 15px;
+        gap: 10px;
         text-align: center;
     }
 

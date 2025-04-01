@@ -1,0 +1,36 @@
+/* Estilos generales para todas las páginas */
+.page-container {
+    text-align: center;
+    padding: 50px;
+    color: #c2d8ff;
+    background-color: #1a2540;
+    min-height: 100vh;
+  }
+  
+  .page-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #8196eb;
+    margin-bottom: 20px;
+  }
+  
+  .page-content {
+    font-size: 1.2rem;
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.6;
+    color: #c2d8ff;
+  }
+  
+  .card {
+    background-color: #495a90;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    margin-top: 20px;
+  }
+  
+  .card h2 {
+    color: #c2d8ff;
+  }
+  

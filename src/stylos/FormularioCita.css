@@ -1,0 +1,133 @@
+body {
+    background-color: #c2d8ff;
+    font-family: "Poppins", sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 150vh;
+}
+
+.container {
+    margin-bottom: 100px;
+    margin-top: 30vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+    flex-direction: row;
+    gap: 30px;
+}
+
+form {
+    width: 100%;
+    max-width: 350px;
+    text-align: center;
+}
+
+h1 {
+    color: #495a90;
+    font-size: 24px;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+label {
+    display: block;
+    text-align: left;
+    font-size: 13px;
+    margin-bottom: 5px;
+    color: #495a90;
+    font-weight: 500;
+}
+
+input, select {
+    width: calc(100% - 16px);
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 2px solid transparent;
+    border-radius: 6px;
+    font-size: 14px;
+    background: #f0f0f0;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+input:hover, select:hover {
+    background: #e8e8e8;
+}
+
+input:focus, select:focus {
+    background: #e0e0e0;
+    border: 2px solid #8196eb;
+    box-shadow: 0 0 8px rgba(129, 150, 235, 0.5);
+}
+
+button {
+    background-color: #8196eb;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    width: 50%;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #5a78d1;
+    transform: scale(1.05);
+}
+
+p {
+    color: #ff7b7b;
+    font-size: 12px;
+    margin-top: -5px;
+    margin-bottom: 10px;
+}
+
+/* Logo */
+.logo-container img {
+    width: 300px;
+    height: auto;
+    max-width: 100%;
+    animation: bounce 2s infinite ease-in-out;
+    transition: transform 0.3s ease;
+}
+
+.logo-container img:hover {
+    transform: scale(1.08);
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-6px);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        gap: 15px;
+        padding: 20px;
+        margin-top: 20px;
+    }
+
+    .logo-container img {
+        width: 250px;
+    }
+}
+

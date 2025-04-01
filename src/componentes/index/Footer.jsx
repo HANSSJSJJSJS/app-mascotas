@@ -1,5 +1,5 @@
 import React from "react";
-import '../stylos/Footer.css'
+import '../../stylos/Footer.css'
 
 const Footer = () => {
 return (
@@ -16,20 +16,6 @@ return (
         <h3>Horario</h3>
         <p>Lunes a Sábado: 8am – 5pm</p>
         <p>Urgencias: 24/7</p>
-        <div className="social-icons">
-            <img
-            src="https://raw.githubusercontent.com/Vale250910/danna/refs/heads/main/img/facebook.png"
-            alt="Facebook"
-            />
-            <img
-            src="https://raw.githubusercontent.com/Vale250910/danna/refs/heads/main/img/instagram.png"
-            alt="Instagram"
-            />
-            <img
-            src="https://raw.githubusercontent.com/Vale250910/danna/refs/heads/main/img/whatsapp.png"
-            alt="WhatsApp"
-            />
-        </div>
         </div>
     </div>
     </footer>
