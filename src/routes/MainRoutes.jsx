@@ -5,6 +5,8 @@ import Servicios from "../componentes/paginas/Servicios"
 import Adopcion from "../componentes/paginas/Adopcion";
 import SobreNosotros from "../componentes/paginas/SobreNosotros";
 import Login from "../componentes/formulario/Login";
+import Propietario from "../componentes/formulario/Propietario"
+import OlvideContrasena from "../componentes/formulario/OlvideContrasena";
 import NotFound from "../componentes/paginas/NotFound"; // Página para errores 404
 
 const MainRoutes = () => {
@@ -15,6 +17,10 @@ const MainRoutes = () => {
       <Route path="/servicios" element={<Servicios />} />
       <Route path="/adopcion" element={<Adopcion />} />
       <Route path="/sobre-nosotros" element={<SobreNosotros />} />
+      <Route path="/Propietario" element={<Propietario />} />
+      <Route path="/OlvideContrasena" element={<OlvideContrasena />} />
+      
+      
 
       {/* Página de error 404 */}
       <Route path="*" element={<NotFound />} />

@@ -106,10 +106,12 @@ a {
   width: 100%;
 }
 
+.carousel-inner{
+  min-height: 15vh; /* Ajusta la altura mínima */
+  width: 100%;
+}
 
 .carousel-item {
-  height: 10%;   /* Puedes reducir esta altura si deseas que las imágenes sean más pequeñas */
-  min-height: 20vh;
   padding: 80px 0;
   display: flex;
   align-items: center;
@@ -122,6 +124,9 @@ a {
 }
 
 .carousel-fade .carousel-item {
+
+
+  
   opacity: 0;
   transition-property: opacity;
   transform: none;

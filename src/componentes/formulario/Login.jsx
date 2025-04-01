@@ -122,7 +122,7 @@ import logo from "../../imagenes/logo.png";
               {errors.password && <p className="error-message">{errors.password}</p>}
 
               {/* Enlace para recuperar contraseña */}
-              <a href="/forgot-password" className="forgot-password-link">
+              <a href="/OlvideContrasena" className="forgot-password-link">
                 ¿Olvidaste tu contraseña?
               </a>
             </div>
@@ -134,7 +134,7 @@ import logo from "../../imagenes/logo.png";
               {/* Enlace para registrarse */}
               <p>
                 ¿No tienes una cuenta?{' '}
-                <a href="/register" className="link">
+                <a href="/Propietario" className="link">
                   Regístrate aquí
                 </a>
               </p>

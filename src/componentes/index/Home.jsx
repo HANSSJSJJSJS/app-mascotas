@@ -28,14 +28,14 @@ export default function Home() {
           {/* Primer slide (activo por defecto) */}
           <div className="carousel-item active" style={{
             background: `linear-gradient(#c2d8ff80, #8196eb80), url(${carousel1}) center/cover no-repeat`,
-            minHeight: '100vh'
+            minHeight: '80vh'
           }}>
             <div className="container h-100 d-flex align-items-center justify-content-center">
               <div className="row justify-content-center">
                 <div className="col-md-8 text-center">
                   <h2 className="display-4 hero-title">Cuidado Veterinario de Calidad</h2>
                   <p className="lead">En Moybe nos preocupamos por la salud y bienestar de tu mascota</p>
-                  <Link to="/formulario/Login" className="btn btn-primary mt-3">Reservar Cita</Link>
+                  <Link to="/Login" className="btn btn-primary mt-3">Reservar Cita</Link>
                 </div>
               </div>
             </div>
@@ -44,14 +44,14 @@ export default function Home() {
           {/* Segundo slide */}
           <div className="carousel-item" style={{
             background: `linear-gradient(#c2d8ff80, #8196eb80), url(${carousel2}) center/cover no-repeat`,
-            minHeight: '100vh'
+            minHeight: '80vh'
           }}>
             <div className="container h-100 d-flex align-items-center justify-content-center">
               <div className="row justify-content-center">
                 <div className="col-md-8 text-center">
                   <h2 className="display-4 hero-title">Servicios Especializados</h2>
                   <p className="lead">Contamos con equipos de última generación</p>
-                  <Link to="/formulario/Login" className="btn btn-primary mt-3">Reservar Cita</Link>
+                  <Link to="/Login" className="btn btn-primary mt-3">Reservar Cita</Link>
                 </div>
               </div>
             </div>
@@ -60,14 +60,14 @@ export default function Home() {
           {/* Tercer slide */}
           <div className="carousel-item" style={{
             background: `linear-gradient(#c2d8ff80, #8196eb80), url(${carousel3}) center/cover no-repeat`,
-            minHeight: '100vh'
+            minHeight: '80vh'
           }}>
             <div className="container h-100 d-flex align-items-center justify-content-center">
               <div className="row justify-content-center">
                 <div className="col-md-8 text-center">
                   <h2 className="display-4 hero-title">Atención 24/7</h2>
                   <p className="lead">Emergencias veterinarias cuando las necesites</p>
-                  <Link to="/formulario/Login" className="btn btn-primary mt-3">Reservar Cita</Link>
+                  <Link to="/Login" className="btn btn-primary mt-3">Reservar Cita</Link>
                 </div>
               </div>
             </div>
@@ -101,7 +101,7 @@ export default function Home() {
                 <Heart size={48} className="service-icon" />
                 <h4>Medicina General</h4>
                 <p>Consultas, vacunación y tratamientos para todo tipo de mascotas.</p>
-                <Link to="/servicios/medicina" className="service-link">Más información</Link>
+                <Link to="/Login" className="service-link">Más información</Link>
               </div>
             </div>
             <div className="col-md-4">
@@ -109,7 +109,7 @@ export default function Home() {
                 <Calendar size={48} className="service-icon" />
                 <h4>Spa y Grooming</h4>
                 <p>Baños, cortes de pelo y cuidados estéticos para tu mascota.</p>
-                <Link to="/servicios/spa" className="service-link">Más información</Link>
+                <Link to="/Login" className="service-link">Más información</Link>
               </div>
             </div>
             <div className="col-md-4">
@@ -117,7 +117,7 @@ export default function Home() {
                 <Phone size={48} className="service-icon" />
                 <h4>Emergencias 24/7</h4>
                 <p>Atención de urgencias veterinarias las 24 horas del día.</p>
-                <Link to="/servicios/emergencias" className="service-link">Más información</Link>
+                <Link to="/Login" className="service-link">Más información</Link>
               </div>
             </div>
           </div>
