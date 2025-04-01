@@ -20,9 +20,9 @@
     top: 0;
     left: 0;
     width: 100%;
-    z-index: 1000;
-    background-color: transparent;
+    z-index: 2; /* Un valor bajo para que quede detrás */
 }
+
 
 /* 🔹 Barra superior con redes sociales */
 .top-container {
@@ -78,6 +78,7 @@
 
 /* 🔹 Alineación de enlaces */
 .left-nav, .right-nav {
+    color: #8196eb;
     display: flex;
     gap: 40px;
 }
