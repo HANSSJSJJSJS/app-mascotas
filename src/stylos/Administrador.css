@@ -47,6 +47,154 @@
     width: 100%;
   }
   
+  /* Estilos para el contenedor de subida de imagen */
+  .image-upload-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .image-upload-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .image-upload-label {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background-color: var(--color5);
+    border: 2px dashed var(--color4);
+    cursor: pointer;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    z-index: 1; /* Asegurar que esté por encima de otros elementos */
+  }
+  
+  .image-upload-label:hover {
+    background-color: var(--color4);
+    border-color: var(--color3);
+  }
+  
+  .image-upload-label span {
+    color: var(--color3);
+    font-size: 16px;
+    font-weight: 500;
+    text-align: center;
+  }
+  
+  .image-preview {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--color4);
+  }
+  
+  .image-upload-input {
+    display: none;
+  }
+  
+  /* Estilos para el menú de opciones */
+  .image-options-menu {
+    position: absolute;
+    top: 160px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    width: 200px;
+    z-index: 10;
+    overflow: hidden;
+  }
+  
+  .option-button {
+    width: 100%;
+    padding: 12px 16px;
+    text-align: left;
+    background: none;
+    border: none;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .option-button:last-child {
+    border-bottom: none;
+  }
+  
+  .option-button:hover {
+    background-color: var(--color5);
+  }
+  
+  /* Estilos para la cámara */
+  .camera-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 15px;
+  }
+  
+  .camera-preview {
+    width: 100%;
+    min-height: 300px; /* Altura mínima para asegurar visibilidad */
+    max-height: 400px;
+    border-radius: 8px;
+    border: 2px solid var(--color4);
+    background-color: #000;
+    object-fit: cover; /* Mantener la relación de aspecto */
+  }
+  
+  .camera-controls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+    width: 100%;
+  }
+  
+  .camera-button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .camera-button.capture {
+    background-color: var(--color3);
+    color: white;
+  }
+  
+  .camera-button.capture:hover {
+    background-color: var(--color2);
+  }
+  
+  .camera-button.cancel {
+    background-color: #f44336;
+    color: white;
+  }
+  
+  .camera-button.cancel:hover {
+    background-color: #d32f2f;
+  }
+  
+  .upload-placeholder {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+  }
   
   #checklist {
     --text: #414856;
