@@ -11,21 +11,12 @@
   --shadow-md: 0 8px 20px rgba(26, 37, 64, 0.15);
   --border-radius: 10px;
 }
-.footer-image {
-  margin-top: -30vh;
-  display: flex;
-  z-index: 2;
-  position: fixed;
-  right: 50px; /* Esto lo coloca en el lado derecho */
-  bottom: 0; /* Esto lo coloca en la parte inferior */
+
+
+
+.footer-prin {
+  position: relative; /* Asegura que el posicionamiento absoluto de la imagen sea relativo al footer */
 }
-
-.footer-img {
-  width: 100%;
-  max-width: 200px; /* Ajusta según necesites */
-}
-
-
 
 .footer-container {
   width: 100vw; /* Asegura que ocupe todo el ancho de la pantalla */
@@ -36,6 +27,7 @@
   gap: 2rem;
   font-family: "Poppins", sans-serif;
   box-sizing: border-box;
+
 }
 
 @media (max-width: 768px) {
@@ -157,6 +149,18 @@
   .social-icons {
     justify-content: center;
   }
+}
+
+.footer-image {
+  margin-top: -30vh; /* Puedes ajustarlo si es necesario */
+  position: absolute; /* Lo posiciona dentro del footer */
+  right: 50px; /* Esto lo coloca en el lado derecho */
+  bottom: 0; /* Esto lo coloca en la parte inferior del footer */
+}
+
+.footer-img {
+  width: 100%;
+  max-width: 200px; /* Ajusta según necesites */
 }
 
 /* Animación similar al header */
