@@ -163,6 +163,7 @@
   max-width: 200px; /* Ajusta según necesites */
 }
 
+
 /* Animación similar al header */
 @keyframes fade-in {
   from { opacity: 0; transform: translateY(10px); }

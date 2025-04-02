@@ -74,8 +74,7 @@
 
 /* 🔹 Barra de navegación principal */
 .navbarra {
-    
-    background-color: var(--color2);
+    background-color: white;
     width: 80%;
     max-width: 1200px;
     height: 80px;
@@ -100,7 +99,7 @@
 
 /* 🔹 Alineación de enlaces */
 .left-nav, .right-nav {
-    color: #8196eb;
+    color: var(--color2);
     display: flex;
     gap: 40px;
 }
@@ -110,13 +109,31 @@
     text-decoration: none;
     font-weight: 500;
     font-size: 1rem;
+    position: relative; /* Necesario para posicionar la línea */
     transition: color 0.3s ease-in-out, transform 0.2s;
+}
+
+.nav-item::after {
+    content: ""; /* Crea la línea */
+    position: absolute;
+    bottom: -3px; /* Ubica la línea debajo del texto */
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background-color: var(--color4); /* Color de la línea */
+    transition: width 0.3s ease-in-out, left 0.3s ease-in-out;
 }
 
 .nav-item:hover {
     color: var(--color4);
     transform: scale(1.05);
 }
+
+.nav-item:hover::after {
+    width: 100%; /* Expande la línea */
+    left: 0; /* Asegura que cubra todo el ancho */
+}
+
 
 /* 🔹 Logo central */
 .center-nav {
@@ -128,7 +145,7 @@
     font-weight: 700;
     margin: 0;
     transition: transform 0.3s ease-in-out;
-    color: var(--color5);
+    color: var(--color2);
 }
 
 .icono:hover {
