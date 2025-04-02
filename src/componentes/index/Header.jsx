@@ -10,8 +10,8 @@ const Header = () => {
             <Link to="/Login" aria-label="Iniciar sesión">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
+                width="50"
+                height="30"
                 fill="currentColor"
                 className="bi bi-person-heart"
                 viewBox="0 0 16 16"

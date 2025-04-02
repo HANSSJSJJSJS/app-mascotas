@@ -1,104 +1,133 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Spicy+Rice&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&family=Spicy+Rice&display=swap');
 
 :root {
-  --primary-color: #1c2951;
-  --secondary-color: #dcc0ff;
-  --accent-color: #8c89f4;
-  --border-color: #4c569d;
-  --dark-color: #000012;
+  --color1: #000000;
+  --color2: #1a2540;
+  --color3: #495a90;
+  --color4: #8196eb;
+  --color5: #c2d8ff;
+  --transition: all 0.3s ease;
+  --shadow-sm: 0 4px 15px rgba(26, 37, 64, 0.1);
+  --shadow-md: 0 8px 20px rgba(26, 37, 64, 0.15);
+  --border-radius: 10px;
+}
+.footer-image {
+  margin-top: -30vh;
+  display: flex;
+  z-index: 2;
+  position: fixed;
+  right: 50px; /* Esto lo coloca en el lado derecho */
+  bottom: 0; /* Esto lo coloca en la parte inferior */
 }
 
-/* Asegura que el footer abarque todo el ancho de la pantalla */
+.footer-img {
+  width: 100%;
+  max-width: 200px; /* Ajusta según necesites */
+}
+
+
+
 .footer-container {
-  background-color: var(--primary-color);
-  color: var(--secondary-color);
-  padding: 2rem;
+  width: 100vw; /* Asegura que ocupe todo el ancho de la pantalla */
+  background-color: white;
+  color: var(--color2);
+  padding: 3rem 2rem;
   display: flex;
-  justify-content: space-around;
-  flex-wrap: wrap;
   gap: 2rem;
   font-family: "Poppins", sans-serif;
-  width: 100vw; /* Asegura el ancho total */
-  max-width: 100%;
-  box-sizing: border-box; /* Evita que los paddings afecten el ancho */
-  position: relative;
-  bottom: 0;
-  left: 0;
-
-
-  /* Animación de entrada */
-  -webkit-animation: scale-up-ver-bottom 0.4s cubic-bezier(0.39, 0.575, 0.565, 1) both;
-  animation: scale-up-ver-bottom 0.4s cubic-bezier(0.39, 0.575, 0.565, 1) both;
+  box-sizing: border-box;
 }
 
-/* Evitar márgenes y paddings en body/html */
+@media (max-width: 768px) {
+  .footer-container {
+    flex-direction: column;
+    text-align: center;
+  }
+}
 
-
-/* Asegurar que el contenedor del footer ocupe todo el espacio disponible */
 .footer-container > div {
   flex: 1;
-  min-width: 250px;
-  padding: 1rem;
+  padding: 1.5rem;
+  transition: var(--transition);
+  border-radius: var(--border-radius);
+}
+
+.footer-container > div:hover {
+  transform: translateY(-5px);
+  background-color: rgba(194, 216, 255, 0.3);
+  box-shadow: var(--shadow-sm);
 }
 
 .footer-container h3 {
-  font-family: "Spicy Rice", cursive;
-  color: var(--accent-color);
-  border-bottom: 2px solid var(--border-color);
+  color: var(--color3); /* Azul medio */
+  border-bottom: 2px solid var(--color5); /* Azul muy claro */
   padding-bottom: 0.5rem;
-  margin-bottom: 1rem;
-  font-size: 1.8rem;
-  letter-spacing: 1px;
-  text-shadow: 2px 2px 4px rgba(0, 0, 18, 0.3);
+  margin-bottom: 1.25rem;
+  font-size: 1.3rem;
 }
 
 .footer-container p {
-  color: var(--secondary-color);
-  margin-bottom: 0.5rem;
-  line-height: 1.6;
-  font-weight: 300;
+  color: var(--color2); /* Azul oscuro */
+  margin-bottom: 0.75rem;
+  line-height: 1.7;
+  font-weight: 400;
   font-size: 0.95rem;
-  letter-spacing: 0.3px;
 }
 
+.footer-slogan {
+  font-size: 1.2rem !important;
+  font-weight: 500 !important;
+  margin-bottom: 1.5rem !important;
+  color: var(--color3) !important; /* Azul medio */
+}
+
+/* Redes sociales - Estilo similar al header */
 .social-icons {
   display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
+  gap: 1.25rem;
+  margin-top: 1.5rem;
 }
 
-.social-icons img {
-  width: 30px;
-  height: 30px;
-  transition: all 0.3s ease;
-  filter: drop-shadow(0 0 4px var(--accent-color));
+.social-icons a {
+  color: var(--color2); /* Azul oscuro */
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  padding: 0.65rem;
+  background-color: var(--color5); /* Azul muy claro */
+  width: 42px;
+  height: 42px;
+  box-shadow: var(--shadow-sm);
 }
 
-.social-icons img:hover {
-  transform: scale(1.1) rotate(5deg);
-  filter: drop-shadow(0 0 8px var(--accent-color));
+.social-icons a:hover {
+  background-color: var(--color3); /* Azul claro */
+  transform: translateY(-3px);
 }
 
-/* Enlaces del footer */
+/* Enlaces - Estilo similar al header */
 .footer-container a {
-  color: var(--secondary-color);
+  color: var(--color3); /* Azul medio */
   text-decoration: none;
-  transition: color 0.3s ease;
+  transition: var(--transition);
+  font-weight: 500;
   position: relative;
 }
 
 .footer-container a:hover {
-  color: var(--accent-color);
+  color: var(--color4); /* Azul claro */
 }
 
 .footer-container a::after {
   content: "";
   position: absolute;
   width: 0;
-  height: 1px;
-  bottom: -2px;
+  height: 2px;
+  bottom: -3px;
   left: 0;
-  background-color: var(--accent-color);
+  background-color: var(--color4); /* Azul claro */
   transition: width 0.3s ease;
 }
 
@@ -106,62 +135,36 @@
   width: 100%;
 }
 
-/* Responsivo */
+/* Responsivo - Coherente con el header */
+@media (max-width: 1024px) {
+  .footer-container > div {
+    min-width: 200px;
+  }
+}
+
 @media (max-width: 768px) {
   .footer-container {
     flex-direction: column;
     text-align: center;
+    padding: 2rem 1.5rem;
+    gap: 1.5rem;
   }
-
+  
+  .footer-container > div {
+    width: 100%;
+  }
+  
   .social-icons {
     justify-content: center;
   }
-
-  .footer-container h3 {
-    font-size: 1.5rem;
-  }
-
-  .footer-container p {
-    font-size: 0.9rem;
-  }
 }
 
-/* Animación */
-@-webkit-keyframes scale-up-ver-bottom {
-  0% {
-    -webkit-transform: scaleY(0.4);
-    transform: scaleY(0.4);
-    -webkit-transform-origin: 0% 100%;
-    transform-origin: 0% 100%;
-  }
-  100% {
-    -webkit-transform: scaleY(1);
-    transform: scaleY(1);
-    -webkit-transform-origin: 0% 100%;
-    transform-origin: 0% 100%;
-  }
+/* Animación similar al header */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes scale-up-ver-bottom {
-  0% {
-    -webkit-transform: scaleY(0.4);
-    transform: scaleY(0.4);
-    -webkit-transform-origin: 0% 100%;
-    transform-origin: 0% 100%;
-  }
-  100% {
-    -webkit-transform: scaleY(1);
-    transform: scaleY(1);
-    -webkit-transform-origin: 0% 100%;
-    transform-origin: 0% 100%;
-  }
-}
-
-/* Animación adicional para los elementos al hacer hover */
-.footer-container > div {
-  transition: transform 0.3s ease;
-}
-
-.footer-container > div:hover {
-  transform: translateY(-5px);
+.footer-container {
+  animation: fade-in 0.5s var(--transition) both;
 }

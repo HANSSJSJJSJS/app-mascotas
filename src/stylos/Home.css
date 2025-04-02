@@ -1,145 +1,188 @@
-:root {
-  --color1: #000000; /* Black */
-  --color2: #3a1f5d; /* Warmer dark purple */
-  --color3: #7045af; /* Warmer medium purple */
-  --color4: #a67ce9; /* Warmer light purple */
-  --color5: #e2d5f8; /* Very light warm purple */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&family=Spicy+Rice&display=swap');
 
-  /* Variables for consistency */
+:root {
+  /* Paleta de colores azules */
+  --color1: #000000;        /* Negro */
+  --color2: #1a2540;        /* Azul oscuro */
+  --color3: #495a90;        /* Azul medio */
+  --color4: #8196eb;        /* Azul claro */
+  --color5: #c2d8ff;        /* Azul muy claro */
+
+  /* Variables de diseño */
   --transition: all 0.3s ease;
-  --shadow-sm: 0 4px 15px rgba(58, 31, 93, 0.1);
-  --shadow-md: 0 10px 25px rgba(58, 31, 93, 0.15);
+  --shadow-sm: 0 4px 15px rgba(26, 37, 64, 0.1);
+  --shadow-md: 0 10px 25px rgba(26, 37, 64, 0.15);
   --border-radius: 10px;
 }
 
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
 
-/* Top container with social links and login */
+.header-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 2;
+    background: transparent;
+}
+
+/* 🔹 Barra superior con redes sociales - Azul medio */
 .top-container {
-  background-color: var(--color3);
-  color: white;
-  padding: 8px 0;
+    background-color: var(--color3); /* Azul medio */
+    height: 10vh;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 20px;
+    box-shadow: var(--shadow-sm);
 }
 
-.top-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center; /* Cambia 'right' a 'center' */
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
-  width: 100%;
+.links {
+    display: flex;
+    gap: 15px;
 }
 
-.login-link {
-  margin-top: -20px;
-  margin-left: auto; /* Empuja el elemento hacia la derecha */
+.links a {
+    color: var(--color5); /* Azul muy claro */
+    text-decoration: none;
+    font-size: 22px;
+    transition: var(--transition);
 }
 
-.login-link a {
-  display: flex;
-  gap: 10px;
-  color: white;
-  font-size: 16px;
-  font-weight: 500;
-  transition: var(--transition);
+.links a:hover {
+    color: white;
+    transform: scale(1.1);
 }
 
-.login-link a:hover {
-  color: var(--color5);
-  transform: translateY(-2px);
-}
-
-/* Navigation bar */
+/* 🔹 Barra de navegación principal - Blanca */
 .navbarra {
-  padding: 15px 0;
-  background-color: white;
+    background-color: white; /* Fondo blanco */
+    width: 80%;
+    max-width: 1200px;
+    height: 80px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 7vh;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-md);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: var(--transition);
+    border: 1px solid rgba(129, 150, 235, 0.3);
 }
 
 .navtext {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
+    width: 85%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.left-nav,
-.right-nav {
-  display: flex;
-  gap: 25px;
+/* 🔹 Alineación de enlaces */
+.left-nav, .right-nav {
+    display: flex;
+    gap: 40px;
 }
 
 .nav-item {
-  color: var(--color2);
-  font-weight: 500;
-  position: relative;
-  transition: var(--transition);
+    color: var(--color2); /* Azul oscuro */
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1rem;
+    transition: var(--transition);
+    position: relative;
 }
 
 .nav-item:hover {
-  color: var(--color3);
+    color: var(--color3); /* Azul medio */
 }
 
 .nav-item::after {
-  content: "";
-  position: absolute;
-  width: 0;
-  height: 2px;
-  bottom: -5px;
-  left: 0;
-  background-color: var(--color3);
-  transition: var(--transition);
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--color4); /* Azul claro */
+    transition: var(--transition);
 }
 
 .nav-item:hover::after {
-  width: 100%;
+    width: 100%;
 }
 
-.center-nav .nav-item {
-  text-decoration: none;
+/* 🔹 Logo central */
+.center-nav {
+    text-align: center;
 }
 
 .icono {
-  font-size: 40px; /* Ajusta el tamaño según lo necesites */
-  font-weight: 700;
-  margin: 0;
-  color: var(--color3);
+    font-size: 2.5em;
+    font-weight: 700;
+    margin: 0;
+    transition: var(--transition);
+    color: var(--color2); /* Azul oscuro */
 }
 
+.icono:hover {
+    transform: rotate(5deg);
+    color: var(--color3); /* Azul medio */
+}
 
 .text-ico {
-  size: 200px;
-  color: var(--color4);
+    color: var(--color3); /* Azul medio */
+    font-size: 0.8em;
+    margin-top: -5px;
 }
 
-/* Responsive styles */
+/* 🔹 Responsividad */
+@media (max-width: 1024px) {
+    .navbarra {
+        width: 85%;
+    }
+    
+    .navtext {
+        width: 95%;
+    }
+}
+
 @media (max-width: 768px) {
-  .navtext {
-    flex-direction: column;
-    gap: 15px;
-  }
+    .navbarra {
+        height: auto;
+        padding: 15px;
+        top: 11vh;
+        width: 90%;
+    }
 
-  .left-nav,
-  .right-nav {
-    justify-content: center;
-  }
+    .navtext {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
 
-  .center-nav {
-    order: -1;
-    margin-bottom: 10px;
-  }
+    .left-nav, .right-nav {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .center-nav {
+        order: -1;
+    }
+
+    .icono {
+        font-size: 2em;
+    }
+
+    .links {
+        width: 100%;
+        justify-content: center;
+    }
 }
-
-@media (max-width: 576px) {
-  .top-content {
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .left-nav,
-  .right-nav {
-    gap: 15px;
-  }
-}
-

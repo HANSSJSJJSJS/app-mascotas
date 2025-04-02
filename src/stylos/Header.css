@@ -34,6 +34,27 @@
     padding-right: 20px;
 }
 
+.login-link {
+    position: absolute;
+    top: 2vh; /* Ajusta la distancia desde la parte superior */
+    right: 20vw; /* Ajusta la distancia desde la derecha */
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.login-link a {
+    color: var(--color5);
+    text-decoration: none;
+    transition: color 0.3s ease-in-out, transform 0.2s;
+}
+
+.login-link a:hover {
+    color: var(--color4);
+    transform: scale(1.1);
+}
+
+
+
 .links {
     display: flex;
     gap: 15px;
@@ -53,6 +74,7 @@
 
 /* 🔹 Barra de navegación principal */
 .navbarra {
+    
     background-color: var(--color2);
     width: 80%;
     max-width: 1200px;
