@@ -197,11 +197,12 @@
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-/* Iconos */
 .service-icon {
-    color: var(--color3); /* Azul medio */
-    margin-bottom: 8px;
+  font-size: 6rem !important;
+  width: 80px !important;
+  height: 80px !important;
 }
+
 
 /* Título del servicio */
 .service-card h4 {
@@ -232,6 +233,290 @@
     background-color: var(--color3); /* Azul medio */
     color: white;
 }
+
+
+/*estilo de about*/
+.about {
+  background-color: white; /* Fondo azul muy claro */
+  padding: 5rem 0;
+}
+
+.container-about {
+  gap: 2px; /* Ajusta según la separación deseada */
+  padding: 1rem; /* Reduce el padding superior */
+  padding-left: 5%;
+  margin-top: -90px; /* Ajusta según sea necesario */
+  justify-content: center;
+  width: 90%;
+}
+
+.container-about .col-md-6:last-child {
+  padding-left: 20vh; /* Ajusta para dar más separación */
+}
+.about p {
+  color: var(--color1); /* Negro */
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.features {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.1rem;
+  color: var(--color3); /* Azul medio */
+}
+
+.feature-icon {
+  color: var(--color4); /* Azul claro */
+}
+
+
+button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  text-transform: uppercase;
+  border-radius: 8px;
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--color3); /* Azul medio */
+  background: transparent;
+  cursor: pointer;
+  border: 2px solid var(--color3); /* Azul medio */
+  transition: 0.4s ease-in-out;
+  user-select: none;
+}
+
+#btn-about:hover,
+#btn-about:focus {
+  color: white;
+  background: var(--color4); /* Azul claro */
+  border: 2px solid var(--color4);
+  text-shadow: 0 0 5px var(--color5), 0 0 10px var(--color5);
+  box-shadow: 0 0 10px var(--color4), 0 0 20px var(--color4);
+}
+
+
+
+
+.img-fluid {
+  border-radius: 15px;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Estilos para la sección "Por qué elegirnos" */
+.why-choose-us {
+  background-color: var(--color5); /* Azul muy claro */
+  padding: 5rem 0;
+}
+
+.section-subtitle {
+  color: var(--color3); /* Azul medio */
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.choose-card {
+  background-color: white;
+  padding: 30px;
+  border-radius: 15px;
+  text-align: center;
+  height: 220px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.choose-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.choose-icon {
+  color: var(--color4); /* Azul claro */
+  width: 50px;
+  height: 50px;
+  margin-bottom: 15px;
+}
+
+.choose-card h4 {
+  color: var(--color2); /* Azul oscuro */
+  font-size: 1.3rem;
+  margin-bottom: 10px;
+}
+
+.choose-card p {
+  color: var(--color3); /* Azul medio */
+  font-size: 0.95rem;
+}
+
+/* Estilos para la sección de testimonios */
+.testimonials {
+  background-color: white;
+  padding: 5rem 0;
+}
+
+.testimonial-card {
+  background-color: white;
+  border-radius: 15px;
+  padding: 30px;
+  margin: 0 auto;
+  max-width: 800px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.testimonial-content {
+  position: relative;
+  padding: 20px;
+}
+
+.testimonial-quote-icon {
+  color: var(--color4); /* Azul claro */
+  width: 40px;
+  height: 40px;
+  margin-bottom: 15px;
+}
+
+.testimonial-content p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: var(--color1); /* Negro */
+  font-style: italic;
+  margin-bottom: 20px;
+}
+
+.testimonial-author {
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.testimonial-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: var(--color4); /* Azul claro */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 15px;
+}
+
+.testimonial-avatar span {
+  color: white;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.testimonial-info h5 {
+  margin: 0;
+  color: var(--color2); /* Azul oscuro */
+  font-size: 1.1rem;
+}
+
+.testimonial-stars {
+  display: flex;
+  margin-top: 5px;
+}
+
+.star-icon {
+  color: gold;
+  margin-right: 2px;
+}
+
+.testimonial-indicators {
+  position: relative;
+  margin-top: 30px;
+  justify-content: center;
+}
+
+.testimonial-indicators button {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: var(--color5); /* Azul muy claro */
+  border: none;
+  margin: 0 5px;
+}
+
+.testimonial-indicators button.active {
+  background-color: var(--color4); /* Azul claro */
+}
+
+/* Estilos para la sección de información de contacto */
+.contact-info {
+  background-color: var(--color5); /* Azul muy claro */
+  padding: 5rem 0;
+}
+
+.info-card {
+  background-color: white;
+  padding: 30px;
+  border-radius: 15px;
+  text-align: center;
+  height: 220px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out;
+}
+
+.info-card:hover {
+  transform: translateY(-5px);
+}
+
+.info-icon {
+  color: var(--color4); /* Azul claro */
+  width: 40px;
+  height: 40px;
+  margin-bottom: 15px;
+}
+
+.info-card h4 {
+  color: var(--color2); /* Azul oscuro */
+  font-size: 1.3rem;
+  margin-bottom: 10px;
+}
+
+.info-card p {
+  color: var(--color3); /* Azul medio */
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .choose-card,
+  .info-card {
+    height: auto;
+    min-height: 200px;
+    margin-bottom: 20px;
+  }
+
+  .testimonial-card {
+    padding: 20px 15px;
+  }
+
+  .testimonial-content p {
+    font-size: 1rem;
+  }
+}
+
+
 
 /* RESPONSIVE */
 @media (max-width: 768px) {
