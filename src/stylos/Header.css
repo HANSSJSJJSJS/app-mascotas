@@ -34,38 +34,7 @@
     padding-right: 20px;
 }
 
-.login-link {
-    position: absolute;
-    top: 2vh; /* Ajusta la distancia desde la parte superior */
-    right: 20vw; /* Ajusta la distancia desde la derecha */
-    font-size: 18px;
-    font-weight: bold;
-}
 
-.login-link a {
-    color: var(--color5);
-    text-decoration: none;
-    transition: color 0.3s ease-in-out, transform 0.2s;
-}
-
-.login-link a:hover {
-    color: var(--color4);
-    transform: scale(1.1);
-}
-
-
-
-.links {
-    display: flex;
-    gap: 15px;
-}
-
-.links a {
-    color: var(--color5);
-    text-decoration: none;
-    font-size: 22px;
-    transition: color 0.3s ease-in-out, transform 0.2s;
-}
 
 .links a:hover {
     color: var(--color4);
@@ -105,7 +74,7 @@
 }
 
 .nav-item {
-    color: var(--color5);
+    color: var(--color2);
     text-decoration: none;
     font-weight: 500;
     font-size: 1rem;
