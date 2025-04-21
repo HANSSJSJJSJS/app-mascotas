@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import FormUsuarios from './FormUsuarios';
+<<<<<<< HEAD
 import { exportarExcel } from '../../funcionalidades/expExcel';
 import { exportarPDF } from '../../funcionalidades/expPDF';
 import '../../stylos/cssAdmin/TablaUsuarios.css';
+=======
+import { exportarExcel } from '../funcionalidades/expExcel';
+import { exportarPDF } from '../funcionalidades/expPDF';
+import '../stylos/cssAdmin/TablaUsuarios.css';
+>>>>>>> 7a29e7559b85d5c5f61f453e87e8560c5783623b
 
 const TablaUsuarios = () => {
   // Estados principales

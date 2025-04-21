@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
+<<<<<<< HEAD
 import '../../stylos/cssAdmin/ModuloHorarios.css'; 
+=======
+import '../stylos/cssAdmin/ModuloHorarios.css'; 
+>>>>>>> 7a29e7559b85d5c5f61f453e87e8560c5783623b
 
 function ModuloHorarios() {
   // Estado inicial para los horarios

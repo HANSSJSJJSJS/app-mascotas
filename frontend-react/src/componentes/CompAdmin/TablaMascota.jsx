@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
+<<<<<<< HEAD
 import '../../stylos/cssAdmin/TablaMascota.css';
+=======
+import '../stylos/cssAdmin/TablaMascota.css';
+>>>>>>> 7a29e7559b85d5c5f61f453e87e8560c5783623b
 
 const TablaMascotas = ({ onMascotaSelect }) => {
   const [mascotas, setMascotas] = useState([]);

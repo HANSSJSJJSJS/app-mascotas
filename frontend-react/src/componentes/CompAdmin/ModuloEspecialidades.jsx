@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
+<<<<<<< HEAD
 import '../../stylos/cssAdmin/ModEspecialidades.css';
+=======
+import '../stylos/cssAdmin/ModEspecialidades.css';
+>>>>>>> 7a29e7559b85d5c5f61f453e87e8560c5783623b
 
 function ModuloEspecialidades() {
   // Datos iniciales de especialidades
@@ -14,9 +18,12 @@ function ModuloEspecialidades() {
   const [busqueda, setBusqueda] = useState('');
   const [registrosPorPagina, setRegistrosPorPagina] = useState(10);
   const [paginaActual, setPaginaActual] = useState(1);
+<<<<<<< HEAD
   const [especialidadEditando, setEspecialidadEditando] = useState(null);
   const [nuevoEspecialidad, setNuevoEspecialidad] = useState({});
   const [mostrarModal, setMostrarModal] = useState(false);
+=======
+>>>>>>> 7a29e7559b85d5c5f61f453e87e8560c5783623b
 
   // Filtrar especialidades según la búsqueda
   const especialidadesFiltradas = especialidades.filter(esp => 
@@ -80,6 +87,7 @@ function ModuloEspecialidades() {
     };
     setEspecialidades([...especialidades, nuevaEspecialidad]);
   };
+<<<<<<< HEAD
   
   // Función para abrir el modal de edición
   const abrirModalEdicion = (especialidad) => {
@@ -87,6 +95,8 @@ function ModuloEspecialidades() {
     setNuevoEspecialidad({...especialidad});
     setMostrarModal(true);
   };
+=======
+>>>>>>> 7a29e7559b85d5c5f61f453e87e8560c5783623b
 
   return (
     <div className="app">
@@ -138,6 +148,19 @@ function ModuloEspecialidades() {
                 <th>#</th>
                 <th>ESPECIALIDAD</th>
                 <th>ACCIONES</th>
+<<<<<<< HEAD
+=======
+                    <div className="action-icons">
+                      <a href="#" onClick={(e) => {
+                        e.preventDefault();
+                        abrirModalEdicion(especialista);
+                      }} aria-label="Editar">✏️</a>
+                      <a href="#" onClick={(e) => {
+                        e.preventDefault();
+                        eliminarEspecialista(especialista.id);
+                      }} aria-label="Eliminar">🗑️</a>
+                    </div>   
+>>>>>>> 7a29e7559b85d5c5f61f453e87e8560c5783623b
               </tr>
             </thead>
             <tbody>
@@ -146,6 +169,7 @@ function ModuloEspecialidades() {
                   <td>{especialidad.id}</td>
                   <td>{especialidad.nombre}</td>
                   <td>
+<<<<<<< HEAD
                     <div className="action-icons">
                       <a href="#" onClick={(e) => {
                         e.preventDefault();
@@ -155,6 +179,24 @@ function ModuloEspecialidades() {
                         e.preventDefault();
                         eliminarEspecialidad(especialidad.id);
                       }} aria-label="Eliminar">🗑️</a>
+=======
+                    <div className="actions">
+                      <span className="edit-icon">
+                        <svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                      </span>
+                      <span 
+                        className="delete-icon" 
+                        onClick={() => eliminarEspecialidad(especialidad.id)}
+                      >
+                        <svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M3 6h18"></path>
+                          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        </svg>
+                      </span>
+>>>>>>> 7a29e7559b85d5c5f61f453e87e8560c5783623b
                     </div>
                   </td>
                 </tr>
