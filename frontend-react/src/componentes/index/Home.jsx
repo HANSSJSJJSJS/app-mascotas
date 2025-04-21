@@ -8,6 +8,8 @@ import '../../stylos/cssIndex/Home.css';
 import { useEffect } from 'react';
 import imgAbout from '../../imagenes/about.png'
 import Carousel from 'bootstrap/js/dist/carousel';
+import Header from '../index/Header';
+import Footer from '../index/Footer';
 
 
 // Import images directly
@@ -25,6 +27,7 @@ export default function Home() {
 
   return (
     <main className="main-content">
+      <Header />
       {/* Hero Section */}
       <div id="heroCarousel" className="carousel slide carousel-fade" data-bs-ride="carousel">
         <div className="carousel-inner">
@@ -345,7 +348,7 @@ export default function Home() {
           </div>
         </div>
       </section>
-
+      <Footer /> 
 
     </main>
   );
