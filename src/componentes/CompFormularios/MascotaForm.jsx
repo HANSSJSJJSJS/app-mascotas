@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import "../stylos/MascotaForm.css";
+import "../../stylos/cssFormularios/MascotaForm.css";
 
 function MascotaForm() {
     const { register, handleSubmit, reset, formState: { errors } } = useForm();

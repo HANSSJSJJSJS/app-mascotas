@@ -1,6 +1,6 @@
 import React from 'react';
 import { Bone, Stethoscope, Calendar } from 'lucide-react';
-import '../stylos/TarjetaEstadistica.css';
+import '../../stylos/cssAdmin/TarjetaEstadistica.css';
 
 const TarjetasEstadisticas = () => {
     const estadisticas = [

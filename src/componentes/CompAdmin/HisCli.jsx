@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import '../stylos/HisCli.css'
-import { obtenerFechaHoraActual, guardarDatos, validarCamposObligatorios } from '../funcionalidades/HisCli';
+import '../../stylos/cssAdmin/HisCli.css'
+import { obtenerFechaHoraActual, guardarDatos, validarCamposObligatorios } from '../../funcionalidades/HisCli';
 
 function FormularioVeterinario() {
   const [datosFormulario, setDatosFormulario] = useState({

@@ -1,6 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import "../stylos/CambioContraseña.css";
+import "../../stylos/cssFormularios/CambioContraseña.css";
 import logo from "../imagenes/logo.png";
 
 function CambioContraseña() {

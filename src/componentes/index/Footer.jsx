@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import Catimg from "../../imagenes/cat.png"
-import '../../stylos/Footer.css';
+import '../../stylos/cssIndex/Footer.css';
 
 const Footer = () => {
   return (

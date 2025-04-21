@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Calendar, MapPin } from 'lucide-react';
 import { fetchMascotas } from '../api/mascotas';
-import '../../stylos/Adopcion.css';
+import '../../stylos/cssHome/Adopcion.css';
 
 const Adopcion = () => {
   const [mascotas, setMascotas] = useState([]);

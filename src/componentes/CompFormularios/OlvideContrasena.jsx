@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import '../../stylos/OlvideContrasena.css'; // Asumiendo que crearás este archivo CSS
+import '../../stylos/cssFormularios/OlvideContrasena.css'; // Asumiendo que crearás este archivo CSS
 import logo from "../../imagenes/logo.png"; // Usando el mismo logo que en Login
 
 const OlvideContrasena = () => {

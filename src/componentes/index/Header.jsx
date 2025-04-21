@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom"
-import "../../stylos/Header.css"
+import "../../stylos/cssIndex/Header.css"
 
 const Header = () => {
   return (

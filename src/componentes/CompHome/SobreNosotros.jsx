@@ -1,5 +1,5 @@
 import React from "react";
-import "../../stylos/SobreNosotros.css";
+import "../../stylos/cssHome/SobreNosotros.css";
 import Sobrenosotros1 from "../../imagenes/Sobrenosotros1.png";
 import Sobrenosotros2 from "../../imagenes/Sobrenosotros2.jpg";
 import Sobrenosotros3 from "../../imagenes/Sobrenosotros3.png";

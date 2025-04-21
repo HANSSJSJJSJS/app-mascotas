@@ -1,6 +1,6 @@
 import React from 'react';
 import { Home, Calendar, Users, Briefcase, Stethoscope, Bone, Clock, History, Gift } from 'lucide-react';
-import '../stylos/BarraLateral.css';
+import '../../stylos/cssAdmin/BarraLateral.css';
 
 const BarraLateral = () => {
     return (

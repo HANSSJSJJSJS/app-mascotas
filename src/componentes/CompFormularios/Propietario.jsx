@@ -3,14 +3,14 @@ import { useForm } from "react-hook-form"
 import "react-datepicker/dist/react-datepicker.css"
 import { registerLocale, setDefaultLocale } from "react-datepicker"
 import es from "date-fns/locale/es"
-import "../../stylos/Propietario.css"
+import "../../stylos/cssFormularios/Propietario.css"
 
 // Registrar el idioma español para el calendario
 registerLocale("es", es)
 setDefaultLocale("es")
 
 
-function Administrador() {
+function Propietario() {
     const [showPassword, setShowPassword] = useState(false);
     const {
       register,
@@ -154,85 +154,13 @@ function Administrador() {
     // Observar los valores de email y password para compararlos con los de confirmación
     const email = watch("email");
     const password = watch("password");
-  
-    // Registrar el input de imagen después de que el componente se monte
-    useEffect(() => {
-      // Registrar la imagen en el formulario
-      register("imagen");
-    }, [register]);
+
 
   return (
     <div className="container">
       <div className="form-container">
         <h2 className="form-title">Registro</h2>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="image-upload-container">
-            {showCamera ? (
-              <div className="camera-container">
-                <video
-                  ref={videoRef}
-                  autoPlay
-                  playsInline
-                  muted
-                  className="camera-preview"
-                  style={{ display: showCamera ? "block" : "none" }}
-                />
-                <div className="camera-controls">
-                  <button type="button" onClick={capturePhoto} className="camera-button capture">
-                    Capturar
-                  </button>
-                  <button type="button" onClick={stopCamera} className="camera-button cancel">
-                    Cancelar
-                  </button>
-                </div>
-                <canvas ref={canvasRef} style={{ display: "none" }} />
-              </div>
-            ) : (
-              <div className="image-upload-wrapper">
-                <div className="image-upload-label" onClick={openImageOptions}>
-                  {imagePreview ? (
-                    <img src={imagePreview || "/placeholder.svg"} alt="Vista previa" className="image-preview" />
-                  ) : (
-                    <div className="upload-placeholder">
-                      <span>Subir Imagen</span>
-                    </div>
-                  )}
-                </div>
-
-                {showOptions && (
-                  <div className="image-options-menu">
-                    <button type="button" onClick={selectFromFiles} className="option-button">
-                      Buscar en archivos
-                    </button>
-                    <button type="button" onClick={startCamera} className="option-button">
-                      Usar cámara
-                    </button>
-                  </div>
-                )}
-
-                <input
-                  type="file"
-                  id="imagen"
-                  ref={fileInputRef}
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  className="image-upload-input"
-                />
-              </div>
-            )}
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="tipoRol">Tipo rol:</label>
-            <select id="tipoRol" {...register("tipoRol", { required: "El tipo de rol es obligatorio" })}>
-              <option value="">Seleccione un rol</option>
-              <option value="A">Administrador</option>
-              <option value="V">Veterinario</option>
-              <option value="P">Propietario</option>
-            </select>
-            {errors.tipoRol && <p className="error-message">{errors.tipoRol.message}</p>}
-          </div>
-
           <div className="form-group">
             <label htmlFor="tipoDocumento">Tipo de documento:</label>
             <select
@@ -367,6 +295,42 @@ function Administrador() {
           </div>
 
           <div className="form-group">
+            <label htmlFor="ciudad">Ciudad:</label>
+            <input
+              type="text"
+              id="ciudad"
+              {...register("ciudad", {
+                required: { value: true, message: "La ciudad es obligaria" },
+                minLength: { value: 3, message: "Mínimo 3 caracteres" },
+                maxLength: { value: 30, message: "Máximo 30 caracteres" },
+                pattern: {
+                  value: /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/,
+                  message: "Solo letras y espacios",
+                },
+              })}
+            />
+            {errors.ciudad && <p className="error-message">{errors.ciudad.message}</p>}
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="direccion">Dirección:</label>
+            <input
+              type="text"
+              id="direccion"
+              {...register("direccion", {
+                required: { value: true, message: "La dirección es obligaria" },
+                minLength: { value: 3, message: "Mínimo 3 caracteres" },
+                maxLength: { value: 30, message: "Máximo 30 caracteres" },
+                pattern: {
+                  value: /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/,
+                  message: "Solo letras y espacios",
+                },
+              })}
+            />
+            {errors.direccion && <p className="error-message">{errors.direccion.message}</p>}
+          </div>
+
+          <div className="form-group">
             <label htmlFor="email">Email:</label>
             <input
               type="email"
@@ -440,4 +404,4 @@ function Administrador() {
   )
 }
 
-export default Administrador;
+export default Propietario;

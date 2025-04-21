@@ -1,6 +1,6 @@
 import React from 'react';
 import { Menu } from 'lucide-react';
-import '../stylos/Encabezado.css';
+import '../../stylos/cssAdmin/Encabezado.css';
 
 const Encabezado = () => {
     return (

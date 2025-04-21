@@ -1,6 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import "../stylos/FormularioCita.css";
+import "../../stylos/cssFormularios/FormularioCita.css";
 import logo from "../../public/imagenes/logo.png"; 
 
 function FormularioCita() {

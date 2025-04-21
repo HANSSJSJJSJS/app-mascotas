@@ -4,7 +4,7 @@ import 'animate.css';
 import { InView } from 'react-intersection-observer';
 import { Heart, Phone, Calendar, MapPin, Star, Clock, Award, Users, MessageSquare, CheckCircle } from "lucide-react"
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../../stylos/Home.css';
+import '../../stylos/cssIndex/Home.css';
 import { useEffect } from 'react';
 import imgAbout from '../../imagenes/about.png'
 import Carousel from 'bootstrap/js/dist/carousel';

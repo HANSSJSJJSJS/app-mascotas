@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from "react-router-dom";
 import { FaCut, FaBath, FaHeartbeat, FaTeeth, FaClock, FaUserMd, FaPaw } from 'react-icons/fa';
 import { MdLocationOn,  MdPhone } from 'react-icons/md';
-import '../../stylos/Servicios.css';
+import '../../stylos/cssHome/Servicios.css';
 
 const Servicios = () => {
   const servicios = [
