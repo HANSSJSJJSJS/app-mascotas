@@ -1,13 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import TablaCitas from './TablaCitas';
 import '../../stylos/cssAdmin/ModuloCitas.css';
-<<<<<<< HEAD
 import { exportarExcel } from '../../funcionalidades/expExcel';
 import { exportarPDF } from '../../funcionalidades/expPDF';
-=======
-import { exportarExcel } from '../funcionalidades/expExcel';
-import { exportarPDF } from '../funcionalidades/expPDF';
->>>>>>> 7a29e7559b85d5c5f61f453e87e8560c5783623b
+
 
 const ModuloCitas = () => {
   const citasData = [

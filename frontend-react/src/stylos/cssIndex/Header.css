@@ -21,6 +21,7 @@
     left: 0;
     width: 100%;
     z-index: 2; /* Un valor bajo para que quede detrás */
+    background-color: var(--color3);
 }
 
 
