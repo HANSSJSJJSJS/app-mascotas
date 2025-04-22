@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Home, Calendar, User, FileText, Bone, X } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
-import '../../stylos/cssProp/BarraPropietario.css';
+import '../../stylos/cssPropietario/BarraPropietario.css';
 
 const BarraPropietario = ({ onToggleMenu, menuAbierto }) => {
   const [isMobile, setIsMobile] = useState(false);

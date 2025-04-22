@@ -1,6 +1,6 @@
 import React from 'react';
 import { Menu } from 'lucide-react';
-import '../../stylos/cssProp/EncabezadoPropietario.css';
+import '../../stylos/cssPropietario/EncabezadoPropietario.css';
 
 const EncabezadoPropietario = ({ onToggleMenu, userData }) => {
   return (

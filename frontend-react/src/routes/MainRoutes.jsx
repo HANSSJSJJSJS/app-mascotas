@@ -23,12 +23,12 @@ const ModuloHorarios = React.lazy(() => import("../componentes/CompAdmin/ModuloH
 const ModuloEspecialidades = React.lazy(() => import("../componentes/CompAdmin/ModuloEspecialidades"));
 const ModuloEspecialistas = React.lazy(() => import("../componentes/CompAdmin/ModuloEspecialistas"));
 const TablaUsuarios = React.lazy(() => import("../componentes/CompAdmin/TablaUsuarios"));
+const HisCli = React.lazy(() => import("../componentes/CompAdmin/HisCli"));
 
 // Componentes propietario
 const PanelPropietario = React.lazy(() => import("../componentes/CompPropietario/PanelPropietario"));
 const InicioPropietario = React.lazy(() => import("../componentes/CompPropietario/InicioPropietario"));
 const FormularioCita = React.lazy(() => import("../componentes/CompFormularios/FormularioCita"));
-const HisCli = React.lazy(() => import("../componentes/CompAdmin/HisCli"));
 const ActualizarDatos = React.lazy(() => import("../componentes/CompPropietario/ActualizarDatos"));
 const Mascota = React.lazy(() => import("../componentes/CompPropietario/Mascota"));
 
@@ -65,7 +65,7 @@ const MainRoutes = () => {
     <Routes>
       {/* Redirección por defecto */}
       <Route path="/" element={<Navigate to="/Home" replace />} />
-      
+
       {/* Rutas públicas */}
       <Route element={<RutasPublicas />}>
         <Route path="/Home" element={<Home />} />
@@ -78,19 +78,20 @@ const MainRoutes = () => {
       </Route>
 
       {/* Rutas admin */}
-      <Route element={isDevelopment ? <RutasAdmin /> : 
-        <RutaProtegida rolPermitido="admin"><RutasAdmin /></RutaProtegida>}>
-        <Route path="/PanelPri" element={<PanelPri />} />
+      <Route element={isDevelopment ? <RutasAdmin /> : <RutaProtegida rolPermitido="admin"><RutasAdmin /></RutaProtegida>}>
+        <Route path="/PanelPri" element={<PanelPri />}>
+        </Route>
         <Route path="/ModuloCitas" element={<ModuloCitas />} />
         <Route path="/ModuloHorarios" element={<ModuloHorarios />} />
         <Route path="/ModuloEspecialidades" element={<ModuloEspecialidades />} />
         <Route path="/ModuloEspecialistas" element={<ModuloEspecialistas />} />
         <Route path="/TablaUsuarios" element={<TablaUsuarios />} />
+        <Route path="/HisCli" element={<TablaUsuarios />} />
+        
       </Route>
 
       {/* Rutas propietario */}
-      <Route element={isDevelopment ? <RutasPropietario /> : 
-        <RutaProtegida rolPermitido="propietario"><RutasPropietario /></RutaProtegida>}>
+      <Route element={isDevelopment ? <RutasPropietario /> : <RutaProtegida rolPermitido="propietario"><RutasPropietario /></RutaProtegida>}>
         <Route path="/PanelPropietario" element={<PanelPropietario />}>
           <Route index element={<InicioPropietario />} />
           <Route path="agendar-cita" element={<FormularioCita />} />
