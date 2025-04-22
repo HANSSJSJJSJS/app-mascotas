@@ -1,7 +1,7 @@
 // PanelPropietario.jsx
 import { Outlet } from "react-router-dom";
 import { useState } from "react";
-import "../../stylos/cssProp/PanelPropietario.css";
+import "../../stylos/cssPropietario/PanelPropietario.css";
 import BarraPropietario from "./BarraPropietario";
 import EncabezadoPropietario from "./EncabezadoPropietario";
 
