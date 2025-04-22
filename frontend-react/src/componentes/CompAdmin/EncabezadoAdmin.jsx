@@ -2,7 +2,7 @@ import React from 'react';
 import { Menu } from 'lucide-react';
 import '../../stylos/cssAdmin/Encabezado.css';
 
-const Encabezado = () => {
+const EncabezadoAdmin = () => {
     return (
         <header className="encabezado">
             <button className="boton-menu">
@@ -20,6 +20,6 @@ const Encabezado = () => {
     );
 };
 
-export default Encabezado;
+export default EncabezadoAdmin;
 
 

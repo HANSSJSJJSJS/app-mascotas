@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import BarraLateral from './BarraLateral';
-import Encabezado from './Encabezado';
+import BarraLateral from './BarraAdmin';
+import Encabezado from './EncabezadoAdmin';
 import TarjetaEstadistica from './TarjetaEstadistica';
 import TablaMascota from './TablaMascota';
 

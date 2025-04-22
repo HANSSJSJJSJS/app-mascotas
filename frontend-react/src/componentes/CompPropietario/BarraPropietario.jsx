@@ -1,19 +1,18 @@
-// src/componentes/BarraPropietario.jsx
 import React, { useState, useEffect } from 'react';
 import { Home, Calendar, User, FileText, Bone, X } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom'; // 👈 Importa Link
+import { Link, useLocation } from 'react-router-dom';
 import '../../stylos/cssProp/BarraPropietario.css';
 
-const BarraPropietario = ({ onMenuSelect, onToggleMenu, menuAbierto }) => {
+const BarraPropietario = ({ onToggleMenu, menuAbierto }) => {
   const [isMobile, setIsMobile] = useState(false);
   const location = useLocation();
 
   const menuItems = [
-    { icon: Home, text: 'Inicio', path: '/' },
-    { icon: Calendar, text: 'Agendar Cita', path: '/agendar-cita' },
-    { icon: User, text: 'Actualizar Datos', path: '/actualizar-datos' },
-    { icon: FileText, text: 'Historia Clínica', path: '/historia-clinica' },
-    { icon: Bone, text: 'Mascota', path: '/mascota' },
+    { icon: Home, text: 'Inicio', path: '/PanelPropietario' },
+    { icon: Calendar, text: 'Agendar Cita', path: '/PanelPropietario/agendar-cita' },
+    { icon: User, text: 'Actualizar Datos', path: '/PanelPropietario/actualizar-datos' },
+    { icon: FileText, text: 'Historia Clínica', path: '/PanelPropietario/historia-clinica' },
+    { icon: Bone, text: 'Mascota', path: '/PanelPropietario/mascota' },
   ];
 
   useEffect(() => {
@@ -24,11 +23,6 @@ const BarraPropietario = ({ onMenuSelect, onToggleMenu, menuAbierto }) => {
     window.addEventListener('resize', checkIfMobile);
     return () => window.removeEventListener('resize', checkIfMobile);
   }, []);
-
-  const handleItemClick = (itemText) => {
-    if (onMenuSelect) onMenuSelect(itemText);
-    if (isMobile && onToggleMenu) onToggleMenu();
-  };
 
   return (
     <aside className={`barra-lateral ${isMobile ? 'mobile' : ''} ${menuAbierto && isMobile ? 'open' : ''}`}>
@@ -56,9 +50,12 @@ const BarraPropietario = ({ onMenuSelect, onToggleMenu, menuAbierto }) => {
             <li 
               key={text} 
               className={location.pathname === path ? 'active' : ''}
-              onClick={() => handleItemClick(text)}
             >
-              <Link to={path} className="link">
+              <Link 
+                to={path} 
+                className="link" 
+                onClick={() => isMobile && onToggleMenu()}
+              >
                 <Icon />
                 <span>{text}</span>
               </Link>

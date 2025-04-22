@@ -2,7 +2,7 @@ import React from 'react';
 import { Home, Calendar, Users, Briefcase, Stethoscope, Bone, Clock, History, Gift } from 'lucide-react';
 import '../../stylos/cssAdmin/BarraLateral.css';
 
-const BarraLateral = () => {
+const BarraAdmin = () => {
     return (
         <aside className="barra-lateral">
             <h2>MENU</h2>
@@ -39,4 +39,4 @@ const BarraLateral = () => {
     );
 };
 
-export default BarraLateral;
+export default BarraAdmin;
