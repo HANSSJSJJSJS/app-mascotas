@@ -1,0 +1,105 @@
+.encabezado {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 30px;
+    background-color: white;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    height: 70px;
+    position: fixed;
+    top: 0;
+    left: 250px;
+    width: calc(100% - 250px);
+    z-index: 90;
+  }
+  
+  .boton-menu {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #333;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+  }
+  
+  .boton-menu:hover {
+    background-color: #f5f5f5;
+  }
+  
+  .boton-menu svg {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .info-usuario {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    background-color: #f4f4f4;
+    padding: 5px 20px;
+    border-radius: 10px;
+  }
+  
+  .info-usuario span {
+    font-weight: 600;
+    color: #3f3399;
+    font-size: 14px;
+  }
+  
+  .info-usuario small {
+    font-size: 12px;
+    color: #666;
+  }
+  
+  .tarjeta-bienvenida {
+    position: fixed;
+    top: 70px;
+    left: 250px;
+    right: 0;
+    background-color: #3f51b5;
+    color: white;
+    padding: 0 25px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    z-index: 80;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .tarjeta-bienvenida h2 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 500;
+  }
+  
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .encabezado {
+      left: 0;
+      width: 100%;
+      padding: 10px 20px;
+    }
+  
+    .tarjeta-bienvenida {
+      left: 0;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .boton-menu span {
+      display: none;
+    }
+  
+    .info-usuario {
+      padding: 5px 10px;
+    }
+  
+    .tarjeta-bienvenida h2 {
+      font-size: 14px;
+    }
+  }
+  

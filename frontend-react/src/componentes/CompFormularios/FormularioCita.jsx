@@ -1,10 +1,10 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import "../../stylos/cssFormularios/FormularioCita.css";
-import logo from "../../public/imagenes/logo.png"; 
 
 function FormularioCita() {
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
+
     const onSubmit = handleSubmit(data => {
         console.log(data);
         reset();
@@ -14,10 +14,11 @@ function FormularioCita() {
         <div className="container">
             <form onSubmit={onSubmit}>
                 <h1>Registro de Cita</h1>
-                
+
                 <label>
                     Nombre del Propietario:
-                    <input type="text"
+                    <input
+                        type="text"
                         {...register("nombrePropietario", {
                             required: "El nombre del propietario es obligatorio",
                             minLength: { value: 3, message: "Debe tener al menos 3 caracteres" },
@@ -30,7 +31,8 @@ function FormularioCita() {
 
                 <label>
                     Nombre de la Mascota:
-                    <input type="text"
+                    <input
+                        type="text"
                         {...register("nombreMascota", {
                             required: "El nombre de la mascota es obligatorio",
                             minLength: { value: 3, message: "Debe tener al menos 3 caracteres" },
@@ -43,7 +45,8 @@ function FormularioCita() {
 
                 <label>
                     Fecha:
-                    <input type="date"
+                    <input
+                        type="date"
                         {...register("fecha", {
                             required: "La fecha es obligatoria",
                             validate: {
@@ -58,7 +61,8 @@ function FormularioCita() {
 
                 <label>
                     Hora:
-                    <input type="time"
+                    <input
+                        type="time"
                         {...register("hora", {
                             required: "La hora es obligatoria",
                             validate: value => {
@@ -71,18 +75,6 @@ function FormularioCita() {
                         })}
                     />
                     {errors.hora && <p>{errors.hora.message}</p>}
-                </label>
-
-
-                <label>
-                    Estado:
-                    <select {...register("estado", { required: "El estado es obligatorio" })}>
-                        <option value="">Seleccione...</option>
-                        <option value="Pendiente">Pendiente</option>
-                        <option value="Confirmada">Confirmada</option>
-                        <option value="Cancelada">Cancelada</option>
-                    </select>
-                    {errors.estado && <p>{errors.estado.message}</p>}
                 </label>
 
                 <label>
@@ -110,14 +102,13 @@ function FormularioCita() {
                     {errors.idVeterinario && <p>{errors.idVeterinario.message}</p>}
                 </label>
 
-                <button type="submit">Enviar</button>
+                <button type="submit">Registrar</button>
             </form>
-
-            <div className="logo-container">
-                <img src={logo} alt="Logo" />
-            </div>
         </div>
     );
 }
 
 export default FormularioCita;
+
+
+

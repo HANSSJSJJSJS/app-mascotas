@@ -43,8 +43,8 @@ export const guardarDatos = (datos) => {
 // Función para validar campos obligatorios
 export const validarCamposObligatorios = (datos) => {
     const camposObligatorios = [
-        'nombrePropietario', 'identidad', 'celular1',
-        'nombreMascota', 'especie', 'raza', 'sexo'
+        'nombre Propietario', 'identidad', 'celular1',
+        'nombre Mascota', 'especie', 'raza', 'sexo'
     ];
 
     for (let campo of camposObligatorios) {

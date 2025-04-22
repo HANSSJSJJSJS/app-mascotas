@@ -21,6 +21,9 @@ import ModuloEspecialidades from "../componentes/CompAdmin/ModuloEspecialidades"
 import ModuloEspecialistas from "../componentes/CompAdmin/ModuloEspecialistas";
 import TablaUsuarios from "../componentes/CompAdmin/TablaUsuarios";
 
+// Componentes prop
+import PanelPropietario from "../componentes/CompPropietario/PanelPropietario.jsx";
+
 const MainRoutes = () => {
   return (
     <Routes>
@@ -82,6 +85,16 @@ const MainRoutes = () => {
         element={
           <RutaProtegida rolPermitido="admin">
             <TablaUsuarios />
+          </RutaProtegida>
+        }
+      />
+
+      {/* Rutas prop protegidas */}
+      <Route
+        path="/PanelPropietario/*"
+        element={
+          <RutaProtegida rolPermitido="propietario">
+            <PanelPropietario />
           </RutaProtegida>
         }
       />
