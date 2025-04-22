@@ -1,262 +1,229 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Montserrat:wght@700&display=swap');
-/* Define the custom color palette */
+
 :root {
-    --color1: #000000;        /* Negro */
-    --color2: #1a2540;        /* Azul oscuro */
-    --color3: #495a90;        /* Azul medio */
-    --color4: #8196eb;        /* Azul claro */
-    --color5: #c2d8ff;        /* Azul muy claro */
-  }
-  body {
-    font-family: 'Roboto', sans-serif;  /* Tipografía moderna */
-  }
-  
-
-  /* Body and Main Content Styling */
-  .main-content {
-    font-family: 'Arial', sans-serif;
-    color: var(--color1);
-  }
-  
-  .carousel-inner {
-    width: 100vw; /* Ocupa todo el ancho de la ventana */
-  }
-  
-  .carousel-item {
-    width: 100vw; /* Asegura que cada item ocupe todo el ancho */
-    min-height: 100vh; /* Opcional: Hace que cada item ocupe toda la altura */
-  }
-  
-  .carousel-item img {
-    width: 100vw; /* Asegura que la imagen cubra todo el ancho */
-    height: 100vh; /* Asegura que la imagen cubra toda la altura */
-    object-fit: cover; /* Evita que la imagen se deforme */
-  }
-  
-  
-
-  /* Estilo general del botón */
-  .button-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    margin-top: 20px; /* Ajusta el margen según sea necesario */
+  --color1: #000000;
+  --color2: #1a2540;
+  --color3: #495a90;
+  --color4: #8196eb;
+  --color5: #c2d8ff;
 }
 
-  .button {
-    height: 50px;
-    width: 200px;
-    position: relative;
-    background-color: transparent;
-    cursor: pointer;
-    text-decoration: none;
-    border: 2px solid var(--color3); /* Azul medio */
-    overflow: hidden;
-    border-radius: 30px;
-    color: white;
-    transition: all 0.5s ease-in-out;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+body {
+  font-family: 'Roboto', sans-serif;
+  overflow-x: hidden;
+}
+
+.main-content {
+  color: var(--color1);
+}
+
+.carousel-inner,
+.carousel-item {
+  width: 100%;
+}
+
+.carousel-item {
+  min-height: 100vh;
+}
+
+.carousel-item img {
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.button {
+  height: 50px;
+  width: 200px;
+  position: relative;
+  background-color: transparent;
+  cursor: pointer;
+  text-decoration: none;
+  border: 2px solid var(--color3);
+  overflow: hidden;
+  border-radius: 30px;
+  color: white;
+  transition: all 0.5s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn-txt {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1;
-    font-weight: 800;
-    letter-spacing: 4px;
+  z-index: 1;
+  font-weight: 800;
+  letter-spacing: 4px;
 }
 
 .type1::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0;
-    transition: all 0.5s ease-in-out;
-    background-color: var(--color3); /* Azul medio */
-    border-radius: 30px;
-    visibility: hidden;
-    height: 10px;
-    width: 10px;
-    z-index: -1;
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  transition: all 0.5s ease-in-out;
+  background-color: var(--color3);
+  border-radius: 30px;
+  visibility: hidden;
+  height: 10px;
+  width: 10px;
+  z-index: -1;
 }
 
 .button:hover {
-    box-shadow: 1px 1px 200px var(--color3); /* Agrega el efecto de sombra al hacer hover */
-    color: #fff; /* Cambia el color del texto a blanco */
-    border: none; /* Elimina el borde */
-    transition: box-shadow 0.3s ease-in-out;
+  box-shadow: 1px 1px 200px var(--color3);
+  color: #fff;
+  border: none;
+  transition: box-shadow 0.3s ease-in-out;
 }
 
 .type1:hover::after {
-    visibility: visible;
-    transform: scale(100) translateX(2px);
+  visibility: visible;
+  transform: scale(100) translateX(2px);
 }
 
-  
-  .hero-title {
-    margin-top: 30%;
-    font-size: 3rem;
-    font-weight: bold;
-    color: var(--color5);
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-  }
-  
-  .carousel-indicators button {
-    background-color: var(--color5);
-  }
-  
-  .carousel-control-prev-icon, 
-  .carousel-control-next-icon {
-      width: 20px;
-      height: 20px;
-      background-size: 100%;
-      filter: invert(1); /* Cambia el color del icono si es necesario */
-  }
-  
-  .carousel-control-prev, 
-  .carousel-control-next {
-      margin-top: 50vh;
-      width: 50px; /* Ajusta el tamaño del botón */
-      height: 50px;
-      border-radius: 50%; /* Hace el botón completamente redondo */
-      background-color: var(--color5); /* Color de fondo */
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      display: inline;
-  }
+.hero-title {
+  margin-top: 30%;
+  font-size: 3rem;
+  font-weight: bold;
+  color: var(--color5);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.carousel-indicators button {
+  background-color: var(--color5);
+}
+
+.carousel-control-prev-icon, 
+.carousel-control-next-icon {
+  width: 20px;
+  height: 20px;
+  background-size: 100%;
+  filter: invert(1);
+}
+
+.carousel-control-prev, 
+.carousel-control-next {
+  margin-top: 50vh;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: var(--color5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 .carousel-control-prev {
-    left: 5%; /* Reduce la distancia desde el borde izquierdo */
+  left: 5%;
 }
 
 .carousel-control-next {
-    right: 5%; /* Reduce la distancia desde el borde derecho */
+  right: 5%;
 }
-  
-  body {
-    font-family: 'Roboto', sans-serif;  /* Tipografía moderna */
-  }
-  
-  .row {
-    display: flex;  /* Usamos flexbox */
-    justify-content: center;  /* Centrado horizontal */
-    align-items: center;  /* Centrado vertical */
-    margin-top: 20vh;  /* Ajuste de margen superior */
-  }
 
+.row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20vh;
+}
 
-/* Estilo general de la sección */
 .services {
-    margin-top: -30%;
-    background-color: var(--color5); /* Azul muy claro */
-}
-
-
-/* Contenedor del título */
-.section-title-container {
-    margin-top: 10%;
-    display: flex;
-    flex-direction: left; /* Alinear a la izquierda */
-    padding-left: -50vh; /* Ajusta según el diseño */
-}
-
-/* Título */
-.section {
-    color: var(--color2); /* Azul oscuro */
-    font-weight: bold;
-    font-size: 3rem;
-    position: relative;
-    margin-bottom: 50px;
-    flex-direction: left; /* Alinear a la izquierda */
-    padding-left: -50vh; /* Ajusta según el diseño */
-}
-
-
-
-/* Tarjeta de servicio */
-.services{
   margin-top: 50px;
   height: 350px;
+  background-color: var(--color5);
+}
 
+.section-title-container {
+  margin-top: 10%;
+  display: flex;
+  justify-content: flex-start;
+  padding-left: 5%;
+}
+
+.section {
+  color: var(--color2);
+  font-weight: bold;
+  font-size: 3rem;
+  position: relative;
+  margin-bottom: 50px;
+  padding-left: 5%;
 }
 
 .service-card {
-    margin-top: -150px;
-    background-color: white; /* Fondo blanco */
-    padding: 20px;
-    border-radius: 15px;
-    text-align: center;
-    height: 250px; /* Altura fija para uniformidad */
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  margin-top: -150px;
+  background-color: white;
+  padding: 20px;
+  border-radius: 15px;
+  text-align: center;
+  height: 250px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
 
 .service-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transform: translateY(-5px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-/* Título del servicio */
 .service-card h4 {
-    color: var(--color2); /* Azul oscuro */
-    font-size: 1.5rem;
+  color: var(--color2);
+  font-size: 1.5rem;
 }
 
-/* Descripción */
 .service-card p {
-    color: var(--color3); /* Azul medio */
-    font-size: 1rem;
+  color: var(--color3);
+  font-size: 1rem;
 }
 
-
-/* Botón de enlace */
 .service-link {
-    display: inline-block;
-    padding: 8px 16px;
-    background-color: var(--color4); /* Azul claro */
-    color: white; /* Texto en blanco */
-    font-weight: bold;
-    text-decoration: none;
-    border-radius: 8px;
-    transition: background-color 0.3s ease-in-out, color 0.3s;
+  display: inline-block;
+  padding: 8px 16px;
+  background-color: var(--color4);
+  color: white;
+  font-weight: bold;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: background-color 0.3s ease-in-out, color 0.3s;
 }
 
 .service-link:hover {
-    background-color: var(--color3); /* Azul medio */
-    color: white;
+  background-color: var(--color3);
+  color: white;
 }
 
-
-/*estilo de about*/
 .about {
-  background-color: white; /* Fondo azul muy claro */
+  background-color: white;
   padding: 5rem 0;
 }
 
 .container-about {
-  gap: 2px; /* Ajusta según la separación deseada */
-  padding: 1rem; /* Reduce el padding superior */
+  gap: 2px;
+  padding: 1rem;
   padding-left: 5%;
-  margin-top: -70px; /* Ajusta según sea necesario */
+  margin-top: -70px;
   justify-content: center;
   width: 90%;
 }
 
-
 .container-about .col-md-6:last-child {
-  padding-left: 20vh; /* Ajusta para dar más separación */
+  padding-left: 20vh;
 }
+
 .about p {
-  color: var(--color1); /* Negro */
+  color: var(--color1);
   font-size: 1.1rem;
   line-height: 1.6;
 }
@@ -272,13 +239,12 @@
   align-items: center;
   gap: 10px;
   font-size: 1.1rem;
-  color: var(--color3); /* Azul medio */
+  color: var(--color3);
 }
 
 .feature-icon {
-  color: var(--color4); /* Azul claro */
+  color: var(--color4);
 }
-
 
 button {
   margin-top: 20px;
@@ -287,10 +253,10 @@ button {
   border-radius: 8px;
   font-size: 17px;
   font-weight: 500;
-  color: var(--color3); /* Azul medio */
+  color: var(--color3);
   background: transparent;
   cursor: pointer;
-  border: 2px solid var(--color3); /* Azul medio */
+  border: 2px solid var(--color3);
   transition: 0.4s ease-in-out;
   user-select: none;
 }
@@ -298,40 +264,31 @@ button {
 #btn-about:hover,
 #btn-about:focus {
   color: white;
-  background: var(--color4); /* Azul claro */
+  background: var(--color4);
   border: 2px solid var(--color4);
   text-shadow: 0 0 5px var(--color5), 0 0 10px var(--color5);
   box-shadow: 0 0 10px var(--color4), 0 0 20px var(--color4);
 }
-
-
-
 
 .img-fluid {
   border-radius: 15px;
   box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
 }
 
-
-
-/* RESPONSIVE */
 @media (max-width: 768px) {
-    .row {
-        flex-direction: column;
-        align-items: center;
-    }
-
+  .row {
+    flex-direction: column;
+    align-items: center;
+  }
 }
 
-
-/* Estilos para la sección "Por qué elegirnos" */
 .why-choose-us {
-  background-color: var(--color5); /* Azul muy claro */
+  background-color: var(--color5);
   padding: 5rem 0;
 }
 
 .section-subtitle {
-  color: var(--color3); /* Azul medio */
+  color: var(--color3);
   font-size: 1.2rem;
   margin-bottom: 2rem;
   max-width: 800px;
@@ -359,25 +316,23 @@ button {
 }
 
 .choose-icon {
-  color: var(--color4); /* Azul claro */
+  color: var(--color4);
   width: 50px;
   height: 50px;
   margin-bottom: 15px;
 }
 
 .choose-card h4 {
-  color: var(--color2); /* Azul oscuro */
+  color: var(--color2);
   font-size: 1.3rem;
   margin-bottom: 10px;
 }
 
 .choose-card p {
-  color: var(--color3); /* Azul medio */
+  color: var(--color3);
   font-size: 0.95rem;
 }
 
-
-/* Estilos para la sección de testimonios */
 .testimonials {
   background-color: white;
   padding: 5rem 0;
@@ -396,10 +351,9 @@ button {
   position: relative;
   padding: 20px;
 }
-    
 
 .testimonial-quote-icon {
-  color: var(--color4); /* Azul claro */
+  color: var(--color4);
   width: 40px;
   height: 40px;
   margin-bottom: 15px;
@@ -408,7 +362,7 @@ button {
 .testimonial-content p {
   font-size: 1.1rem;
   line-height: 1.6;
-  color: var(--color1); /* Negro */
+  color: var(--color1);
   font-style: italic;
   margin-bottom: 20px;
 }
@@ -423,7 +377,7 @@ button {
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background-color: var(--color4); /* Azul claro */
+  background-color: var(--color4);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -438,7 +392,7 @@ button {
 
 .testimonial-info h5 {
   margin: 0;
-  color: var(--color2); /* Azul oscuro */
+  color: var(--color2);
   font-size: 1.1rem;
 }
 
@@ -462,18 +416,17 @@ button {
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background-color: var(--color5); /* Azul muy claro */
+  background-color: var(--color5);
   border: none;
   margin: 0 5px;
 }
 
 .testimonial-indicators button.active {
-  background-color: var(--color4); /* Azul claro */
+  background-color: var(--color4);
 }
 
-/* Estilos para la sección de información de contacto */
 .contact-info {
-  background-color: var(--color5); /* Azul muy claro */
+  background-color: var(--color5);
   padding: 5rem 0;
 }
 
@@ -496,20 +449,53 @@ button {
 }
 
 .info-icon {
-  color: var(--color4); /* Azul claro */
+  color: var(--color4);
   width: 40px;
   height: 40px;
   margin-bottom: 15px;
 }
 
 .info-card h4 {
-  color: var(--color2); /* Azul oscuro */
+  color: var(--color2);
   font-size: 1.3rem;
   margin-bottom: 10px;
 }
 
 .info-card p {
-  color: var(--color3); /* Azul medio */
+  color: var(--color3);
   font-size: 0.95rem;
   line-height: 1.6;
+}
+
+/* Estilos para la navegación de escritorio */
+.desktop-nav {
+  display: block;
+}
+
+.desktop-nav ul {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.desktop-nav li {
+  margin-right: 20px;
+}
+
+.desktop-nav a {
+  color: var(--color2);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+/* Ocultar navegación desktop en móviles */
+@media (max-width: 768px) {
+  .desktop-nav {
+    display: none;
+  }
+}
+/* Añade esto para asegurar que el drawer esté por encima */
+.carousel {
+  z-index: 1;
 }

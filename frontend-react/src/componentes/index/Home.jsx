@@ -9,10 +9,11 @@ import { useEffect } from 'react';
 import imgAbout from '../../imagenes/about.png'
 import Carousel from 'bootstrap/js/dist/carousel';
 import Header from '../index/Header';
-import Footer from '../index/Footer';
+import NavigationDrawer from '../index/NavigationDrawer';
 
 
-// Import images directly
+
+// Import images directlyS
 import carousel1 from '../../imagenes/carousel-1.jpg';
 import carousel2 from '../../imagenes/carousel-2.jpg';
 import carousel3 from '../../imagenes/carousel-3.jpg';
@@ -350,5 +351,6 @@ export default function Home() {
       </section>  
 
     </main>
+    
   );
 }
