@@ -13,9 +13,9 @@ const BarraAdmin = () => {
     { icon: Users, text: 'Usuarios', path: '/TablaUsuarios' },
     { icon: Briefcase, text: 'Servicios', path: '/ModuloEspecialidades' },
     { icon: Stethoscope, text: 'Veterinarios', path: '/ModuloEspecialistas' },
-    { icon: Bone, text: 'Mascotas', path: '/PanelPri' }, // ejemplo
+    { icon: Bone, text: 'Mascotas', path: '/TablaMascota' }, 
     { icon: Clock, text: 'Horarios', path: '/ModuloHorarios' },
-    { icon: History, text: 'Historial Clínico', path: '/PanelPri' }, // ejemplo
+    { icon: History, text: 'Historial Clínico', path: '/HisCli' },
   ];
 
   return (
