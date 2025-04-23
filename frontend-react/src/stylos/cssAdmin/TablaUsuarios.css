@@ -1,35 +1,28 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
     margin: 0;
     padding: 0;
     background-color: #f5f5f7;
   }
   
   .container {
-    max-width: 1200px;
+    width: 500px;
     margin: 0 auto;
     padding: 20px;
+    position: relative;
+    right: 8em;
+    top: 10em;
+    justify-content: center;
   }
-  
-  .header {
-    padding: 15px 0;
-    background-color: white;
-    border-bottom: 1px solid #e0e0e0;
-  }
-  
-  .header h1 {
-    margin: 0;
-    padding-left: 20px;
-    font-size: 24px;
-    color: #333;
-  }
+
   
   .content-card {
-    background-color: white;
+    background-color: rgb(245, 245, 245);
     border-radius: 8px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     padding: 20px;
     margin-top: 20px;
+    width: 1000px;
   }
   
   /* Botones */
@@ -40,11 +33,16 @@ body {
   .btn {
     padding: 10px 20px;
     border: none;
-    border-radius: 5px;
+    border-radius: 7px;
     cursor: pointer;
     font-weight: bold;
     margin-right: 10px;
     transition: all 0.3s ease;
+  }
+
+  .btn:focus {
+    outline: 2px solid rgba(124, 58, 237, 0.5);
+    outline-offset: 2px;
   }
   
   .btn-primary {
@@ -115,49 +113,52 @@ body {
   /* Tabla */
   table {
     width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-bottom: 24px;
+    font-size: 0.95rem;
+    overflow: hidden;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
   }
-  
+
   th, td {
     padding: 15px;
     text-align: left;
-    border-bottom: 1px solid #eee;
+    border: 1px solid #e0e0e0;
+    border-bottom: 1px solid #d8d8d8;
   }
   
   th {
-    background-color: #f9f9f9;
     position: relative;
-    font-weight: bold;
-    color: #444;
+    font-weight: 600;
+    color: #000000;
     cursor: pointer;
     user-select: none;
+    border-bottom: 2px solid #e5e7eb;
+    white-space: nowrap;
   }
   
   th:hover {
-    background-color: #f0f0f0;
+    background-color: #f3f4f6;
   }
   
   th::after {
-    content: "⮃";
-    position: absolute;
-    right: 10px;
-    color: #999;
-    opacity: 0.5;
+    margin-left: 8px;
+    font-size: 0.8rem;
   }
   
-  th.asc::after {
-    content: "⮉";
-    opacity: 1;
+  tr:last-child td {
+    border-bottom: none;
   }
   
-  th.desc::after {
-    content: "⮋";
-    opacity: 1;
+  td {
+    border-bottom: 1px solid #e5e7eb;
+    color: #4b5563;
   }
   
-  tr:hover {
-    background-color: #fafafa;
+  tr:hover td {
+    background-color: #e5e7eb;
   }
   
   .role-badge {
@@ -186,25 +187,40 @@ body {
   /* Botones de acción */
   .action-buttons {
     display: flex;
-    gap: 15px;
+    gap: 12px;
+    justify-content: center;
   }
   
   .edit-btn, .delete-btn {
     cursor: pointer;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: all 0.2s ease;
     font-size: 18px;
-    transition: transform 0.2s ease;
-  }
-  
-  .edit-btn:hover, .delete-btn:hover {
-    transform: scale(1.1);
   }
   
   .edit-btn {
-    color: #7c3aed;
+    background-color: rgba(124, 58, 237, 0.1);
+    color: #6d28d9;
+  }
+  
+  .edit-btn:hover {
+    background-color: rgba(124, 58, 237, 0.2);
+    transform: translateY(-2px);
   }
   
   .delete-btn {
-    color: #e53935;
+    background-color: rgba(239, 68, 68, 0.1);
+    color: #dc2626;
+  }
+  
+  .delete-btn:hover {
+    background-color: rgba(239, 68, 68, 0.2);
+    transform: translateY(-2px);
   }
   
   /* Paginación */
@@ -224,23 +240,31 @@ body {
   
   .page-controls {
     display: flex;
-    gap: 8px;
+    gap: 12px;
     flex-wrap: wrap; /* Para dispositivos móviles */
   }
   
   .page-btn {
     padding: 8px 15px;
-    background-color: #7c3aed;
-    cursor: pointer;
+    background-color: #6d28d9;
+    color: white;
+    border: 1px solid #6d28d9;
     border-radius: 5px;
     transition: all 0.3s ease;
-    min-width: 40px; /* Asegura un ancho mínimo */
-    text-align: center; /* Centra el texto */
-    display: inline-block; /* Mejor control del tamaño */
+    min-width: 40px; 
+    text-align: center;
+    display: inline-block; 
   }
   
   .page-btn:disabled {
-    opacity: 0.5;
+    opacity: 0.8;
+    cursor: not-allowed;
+  }
+  
+  .page-btn.active {
+    background-color: #6d28d9;
+    color: white;
+    border-color: #6d28d9;
   }
   
   /* Modal y formulario */
@@ -259,16 +283,17 @@ body {
   
   .modal-content {
     background: white;
-    padding: 25px;
-    border-radius: 8px;
-    width: 450px;
+    padding: 28px;
+    border-radius: 12px;
+    width: 500px;
     max-width: 90%;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    animation: slideIn 0.3s ease;
   }
   
   .modal-content h2 {
     margin-top: 0;
-    color: #333;
+    color: #000;
     font-size: 20px;
     padding-bottom: 15px;
     border-bottom: 1px solid #eee;
@@ -282,14 +307,14 @@ body {
     display: block;
     margin-bottom: 8px;
     font-weight: 600;
-    color: #555;
-    font-size: 14px;
+    color: #4d4d4d;
+    font-size: 0.9rem;
   }
   
   .form-group input,
   .form-group select {
     width: 100%;
-    padding: 10px 12px;
+    padding: 10px 5px;
     border: 1px solid #ddd;
     border-radius: 5px;
     font-size: 14px;

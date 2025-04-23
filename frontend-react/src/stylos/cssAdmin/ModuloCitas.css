@@ -1,16 +1,25 @@
+/* Estilos generales para el módulo de citas */
+.appointments-module {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+}
+
 .appointments-module h1 {
-  margin: 0;
+  margin: 0 0 20px 0;
   font-size: 20px;
   font-weight: 600;
   color: #333;
   letter-spacing: 0.5px;
+  text-transform: uppercase;
 }
 
+/* Botones de acción superiores */
 .actions {
   display: flex;
   gap: 12px;
   margin-bottom: 25px;
   flex-wrap: wrap;
+  /* Eliminamos posicionamiento absoluto para mejor alineación */
 }
 
 .btn {
@@ -24,7 +33,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 100px;
+  min-width: 80px;
 }
 
 .btn-purple {
@@ -34,7 +43,7 @@
 }
 
 .btn-purple:hover {
-  background-color: #6d28d9;
+  background-color: #5b21b6;
   box-shadow: 0 3px 6px rgba(124, 58, 237, 0.4);
   transform: translateY(-1px);
 }
@@ -43,6 +52,7 @@
   transform: translateY(0);
 }
 
+/* Controles de tabla */
 .table-controls {
   display: flex;
   justify-content: space-between;
@@ -65,19 +75,13 @@
 
 .records-display select {
   margin: 0 5px;
-  padding: 8px 12px;
+  padding: 6px 10px;
   border: 1px solid #ddd;
-  border-radius: 6px;
+  border-radius: 4px;
   font-size: 14px;
   background-color: white;
   cursor: pointer;
   outline: none;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-}
-
-.records-display select:focus {
-  border-color: #6d28d9;
-  box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
 }
 
 .search-box {
@@ -92,36 +96,31 @@
 }
 
 .search-box input {
-  padding: 8px 15px;
+  padding: 7px 12px;
   border: 1px solid #ddd;
-  border-radius: 6px;
+  border-radius: 4px;
   width: 250px;
   font-size: 14px;
   outline: none;
-  transition: all 0.2s;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
-.search-box input:focus {
-  border-color: #7c3aed;
-  box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
-}
-
+/* Tabla de citas */
 table {
   width: 100%;
   border-collapse: collapse;
   border-spacing: 0;
   margin-bottom: 25px;
   box-shadow: 0 1px 4px rgba(0,0,0,0.05);
-  border-radius: 8px;
+  border-radius: 4px;
   overflow: hidden;
+  /* Eliminamos posicionamiento absoluto */
 }
 
 th, td {
-  padding: 14px 16px;
+  padding: 12px 16px;
   border: 1px solid #e0e0e0;
   text-align: left;
-  border-bottom: 1px solid #efefef;
+  font-size: 14px;
 }
 
 th {
@@ -133,22 +132,19 @@ th {
   top: 0;
 }
 
-tr:last-child td {
-  border-bottom: none;
-}
-
 tr:hover {
   background-color: #f5f5ff;
 }
 
+/* Estados de citas */
 .badge-estado {
-  padding: 6px 12px;
-  border-radius: 20px;
+  padding: 5px 10px;
+  border-radius: 15px;
   display: inline-block;
   font-size: 12px;
   font-weight: 600;
   text-align: center;
-  min-width: 100px;
+  min-width: 90px;
 }
 
 .pendiente {
@@ -166,24 +162,25 @@ tr:hover {
   color: white;
 }
 
+/* Botones de acción en tabla */
 .acciones {
   display: flex;
   gap: 8px;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 .btn-accion {
-  padding: 6px 10px;
+  padding: 5px 10px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   font-size: 13px;
   transition: all 0.2s;
-  background-color: transparent;
 }
 
 .btn-aceptar {
   color: #27ae60;
+  background-color: transparent;
 }
 
 .btn-aceptar:hover {
@@ -192,6 +189,7 @@ tr:hover {
 
 .btn-cancelar {
   color: #e74c3c;
+  background-color: transparent;
 }
 
 .btn-cancelar:hover {
@@ -200,34 +198,35 @@ tr:hover {
 
 .btn-eliminar {
   color: #7c3aed;
+  background-color: transparent;
 }
 
 .btn-eliminar:hover {
   background-color: rgba(124, 58, 237, 0.1);
 }
 
+/* Paginación */
 .pagination {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 10px 0;
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
 .page-btn {
-  padding: 8px 15px;
+  padding: 6px 12px;
   background-color: #6d28d9;
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 4px;
   cursor: pointer;
   font-weight: 600;
   transition: all 0.2s ease;
 }
 
 .page-btn:hover:not(:disabled) {
-  background-color: #6d28d9;
-  box-shadow: 0 2px 4px rgba(124, 58, 237, 0.3);
+  background-color: #5b21b6;
 }
 
 .page-btn:disabled {
@@ -235,120 +234,70 @@ tr:hover {
   cursor: not-allowed;
 }
 
+.page-btn.active {
+  background-color: #4c1d95;
+}
+
 .page-info {
-  font-weight: 600;
+  font-weight: 500;
   color: #555;
 }
 
-.no-results {
-  text-align: center;
-  padding: 30px;
-  color: #666;
-  font-style: italic;
-  background-color: #f9f9f9;
+/* Estilos para botones específicos como en la imagen */
+.btn-nuevo, .btn-excel, .btn-pdf {
+  padding: 8px 18px;
   border-radius: 6px;
-  margin-top: 20px;
-}
-
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  padding: 20px;
-}
-
-.modal-content {
-  background-color: white;
-  border-radius: 8px;
-  padding: 25px;
-  width: 100%;
-  max-width: 600px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  max-height: 90vh;
-  overflow-y: auto;
-}
-
-.modal-content h2 {
-  margin-top: 0;
-  color: #333;
-  border-bottom: 2px solid #7c3aed;
-  padding-bottom: 12px;
-  margin-bottom: 20px;
-}
-
-.form-group {
-  margin-bottom: 18px;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 600;
-  color: #444;
-}
-
-.form-group input,
-.form-group textarea {
-  width: 100%;
-  padding: 10px 12px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 14px;
-  transition: all 0.2s;
-}
-
-.form-group input:focus,
-.form-group textarea:focus {
-  border-color: #6d28d9;
-  box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
-  outline: none;
-}
-
-.form-group textarea {
-  min-height: 100px;
-  resize: vertical;
-}
-
-.form-buttons {
-  display: flex;
-  justify-content: flex-end;
-  
-  gap: 12px;
-  margin-top: 25px;
-}
-
-.btn-save {
-  background-color: #6d28d9;
   color: white;
+  font-weight: 600;
 }
 
-.btn-save:hover {
+.btn-nuevo {
   background-color: #6d28d9;
 }
 
-.btn-cancel {
-  background-color: #e0e0e0;
-  color: #333;
+.btn-excel {
+  background-color: #6d28d9;
 }
 
-.btn-cancel:hover {
-  background-color: #d0d0d0;
+.btn-pdf {
+  background-color: #6d28d9;
 }
 
-/* Responsive adjustments */
+/* Estilo para el icono de eliminar */
+.btn-trash {
+  color: #6d28d9;
+  font-size: 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* Estilos específicos para los botones pendiente/aceptar/cancelar */
+.btn-pendiente {
+  background-color: #f39c12;
+  color: white;
+  border-radius: 15px;
+  padding: 3px 8px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.btn-aceptar {
+  color: #27ae60;
+  background-color: transparent;
+  padding: 3px 8px;
+  font-size: 12px;
+}
+
+.btn-cancelar {
+  color: #e74c3c;
+  background-color: transparent;
+  padding: 3px 8px;
+  font-size: 12px;
+}
+
+/* Responsive design */
 @media (max-width: 768px) {
-  .appointments-module main {
-    margin: 15px;
-    padding: 15px;
-  }
-  
   .table-controls {
     flex-direction: column;
     align-items: flex-start;
@@ -358,7 +307,8 @@ tr:hover {
     width: 100%;
   }
   
-  .modal-content {
-    width: 95%;
+  th, td {
+    padding: 10px 8px;
+    font-size: 13px;
   }
 }
