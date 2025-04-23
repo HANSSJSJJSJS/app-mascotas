@@ -1,0 +1,492 @@
+/* Paleta de colores */
+:root {
+    --color1: #000000;
+    --color2: #1a2540;
+    --color3: #495a90;
+    --color4: #8196eb;
+    --color5: #c2d8ff;
+  }
+  
+  /* Estilos generales */
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    font-family: Arial, sans-serif;
+    color: var(--color2);
+    background-color: #f9f9f9;
+  }
+  
+  /* Contenido principal */
+  .page-content {
+    width: 100%;
+    margin-top: -20vh;
+    margin-left: 250px; /* Ancho del menú lateral */
+    padding-top: 120px; /* Altura del encabezado superior + bienvenida */
+    padding: 120px 20px 30px 20px;
+    min-height: 70vh;
+  }
+  
+  /* Encabezado de bienvenida */
+  .welcome-header {
+    margin-top: -8vh;
+    background-color: var(--color5);
+    border-radius: 10px;
+    padding: 20px 25px;
+    margin-bottom: 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  }
+  
+  .welcome-title {
+    font-size: 24px;
+    color: var(--color2);
+    margin-bottom: 5px;
+  }
+  
+  .welcome-date {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--color3);
+    font-size: 14px;
+  }
+  
+  .welcome-time {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: var(--color3);
+    color: white;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 16px;
+    font-weight: 500;
+  }
+  
+  .time-icon {
+    color: white;
+  }
+  
+  .icon {
+    color: var(--color3);
+  }
+  
+  /* Dashboard grid */
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+  }
+  
+  .dashboard-column {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  /* Secciones del dashboard */
+  .dashboard-section {
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  }
+  
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+  
+  .section-title {
+    font-size: 18px;
+    color: var(--color2);
+    margin-bottom: 15px;
+    font-weight: 600;
+  }
+  
+  .view-all-button {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: none;
+    border: none;
+    color: var(--color4);
+    font-size: 14px;
+    cursor: pointer;
+  }
+  
+  .view-all-button:hover {
+    color: var(--color3);
+  }
+  
+  /* Tarjetas de estadísticas */
+  .stats-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+  }
+  
+  .stat-card {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  .stat-icon {
+    background-color: var(--color5);
+    color: var(--color3);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  
+  .stat-info h3 {
+    font-size: 14px;
+    color: var(--color3);
+    margin-bottom: 5px;
+    font-weight: 500;
+  }
+  
+  .stat-value {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--color2);
+  }
+  
+  /* Citas */
+  .appointments-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .appointment-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    transition: transform 0.2s;
+  }
+  
+  .appointment-card:hover {
+    transform: translateX(5px);
+  }
+  
+  .appointment-card.today {
+    background-color: rgba(129, 150, 235, 0.1);
+    border-left: 3px solid var(--color4);
+  }
+  
+  .appointment-icon {
+    background-color: var(--color5);
+    color: var(--color3);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  
+  .appointment-details {
+    flex: 1;
+  }
+  
+  .appointment-details h3 {
+    font-size: 15px;
+    color: var(--color2);
+    margin-bottom: 5px;
+  }
+  
+  .appointment-date,
+  .appointment-time {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 13px;
+    color: var(--color3);
+    margin-bottom: 3px;
+  }
+  
+  .mini-icon {
+    color: var(--color3);
+  }
+  
+  .appointment-actions {
+    flex-shrink: 0;
+  }
+  
+  .action-button {
+    background-color: var(--color4);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 12px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .action-button:hover {
+    background-color: var(--color3);
+  }
+  
+  /* Recordatorios */
+  .reminders-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .reminder-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+  }
+  
+  .reminder-card.today {
+    background-color: rgba(129, 150, 235, 0.1);
+    border-left: 3px solid var(--color4);
+  }
+  
+  .reminder-icon {
+    background-color: var(--color5);
+    color: var(--color3);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  
+  .reminder-details {
+    flex: 1;
+  }
+  
+  .reminder-text {
+    font-size: 14px;
+    color: var(--color2);
+    margin-bottom: 5px;
+  }
+  
+  .reminder-date {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    color: var(--color3);
+  }
+  
+  /* Mascotas */
+  .pets-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .pet-card {
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s;
+  }
+  
+  .pet-card:hover {
+    transform: translateY(-3px);
+  }
+  
+  .pet-image-container {
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color5);
+  }
+  
+  .pet-image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid white;
+  }
+  
+  .pet-details {
+    padding: 15px;
+    text-align: center;
+  }
+  
+  .pet-name {
+    font-size: 16px;
+    color: var(--color2);
+    margin-bottom: 5px;
+  }
+  
+  .pet-breed {
+    font-size: 14px;
+    color: var(--color3);
+    margin-bottom: 3px;
+  }
+  
+  .pet-age {
+    font-size: 12px;
+    color: var(--color3);
+    margin-bottom: 10px;
+  }
+  
+  .pet-details-button {
+    width: 100%;
+    padding: 8px;
+    background-color: var(--color4);
+    color: white;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    transition: background-color 0.2s;
+  }
+  
+  .pet-details-button:hover {
+    background-color: var(--color3);
+  }
+  
+  .add-pet-card {
+    background-color: white;
+    border: 2px dashed var(--color4);
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .add-pet-card:hover {
+    background-color: rgba(129, 150, 235, 0.1);
+  }
+  
+  .add-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--color5);
+    color: var(--color3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  /* Accesos rápidos */
+  .quick-links {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  
+  .quick-link-card {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--color2);
+    transition: transform 0.2s, background-color 0.2s;
+  }
+  
+  .quick-link-card:hover {
+    background-color: var(--color5);
+    transform: translateY(-3px);
+  }
+  
+  .quick-link-card svg {
+    color: var(--color3);
+  }
+  
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .page-content {
+      margin-left: 0;
+    }
+  
+    .dashboard-grid {
+      grid-template-columns: 1fr;
+    }
+  
+    .stats-container {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  
+    .quick-links {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .welcome-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 15px;
+    }
+  
+    .welcome-time {
+      align-self: flex-start;
+    }
+  
+    .stats-container {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  
+    .quick-links {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .stats-container {
+      grid-template-columns: 1fr;
+    }
+  
+    .quick-links {
+      grid-template-columns: 1fr;
+    }
+  }
