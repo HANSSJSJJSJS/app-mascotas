@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import '../../stylos/cssAdmin/ModEspecialidades.css';
-
+import { exportarExcel } from '../../funcionalidades/expExcel';
+import { exportarPDF } from '../../funcionalidades/expPDF';
 
 function ModuloEspecialidades() {
   // Datos iniciales de especialidades
@@ -16,8 +17,39 @@ function ModuloEspecialidades() {
   const [registrosPorPagina, setRegistrosPorPagina] = useState(10);
   const [paginaActual, setPaginaActual] = useState(1);
   const [especialidadEditando, setEspecialidadEditando] = useState(null);
-  const [nuevoEspecialidad, setNuevoEspecialidad] = useState({});
+  const [nuevaEspecialidad, setNuevaEspecialidad] = useState({ nombre: '' });
   const [mostrarModal, setMostrarModal] = useState(false);
+  const [modoEdicion, setModoEdicion] = useState(false);
+  const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false);
+  const [idParaEliminar, setIdParaEliminar] = useState(null);
+  const [error, setError] = useState('');
+  
+  const modalRef = useRef(null);
+  const nombreInputRef = useRef(null);
+
+  // Efecto para manejar el foco en el modal
+  useEffect(() => {
+    if (mostrarModal && nombreInputRef.current) {
+      nombreInputRef.current.focus();
+    }
+  }, [mostrarModal]);
+
+  // Efecto para cerrar el modal al hacer clic fuera
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        cerrarModal();
+      }
+    }
+    
+    if (mostrarModal) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [mostrarModal]);
 
   // Filtrar especialidades según la búsqueda
   const especialidadesFiltradas = especialidades.filter(esp => 
@@ -67,156 +99,304 @@ function ModuloEspecialidades() {
     setPaginaActual(1);
   };
 
-  // Eliminar especialidad
-  const eliminarEspecialidad = (id) => {
-    const nuevasEspecialidades = especialidades.filter(esp => esp.id !== id);
-    setEspecialidades(nuevasEspecialidades);
+  // Eliminar especialidad con confirmación
+  const iniciarEliminarEspecialidad = (id) => {
+    setIdParaEliminar(id);
+    setMostrarConfirmacion(true);
   };
 
-  // Agregar nueva especialidad
-  const agregarEspecialidad = () => {
-    const nuevaEspecialidad = {
-      id: especialidades.length + 1,
-      nombre: 'Nueva Especialidad'
-    };
-    setEspecialidades([...especialidades, nuevaEspecialidad]);
+  const confirmarEliminarEspecialidad = () => {
+    const nuevasEspecialidades = especialidades.filter(esp => esp.id !== idParaEliminar);
+    setEspecialidades(nuevasEspecialidades);
+    setMostrarConfirmacion(false);
+    // Si estamos en una página que ya no existe después de eliminar, volvemos a la anterior
+    if (especialidadesActuales.length === 1 && paginaActual > 1) {
+      setPaginaActual(paginaActual - 1);
+    }
+  };
+
+  const cancelarEliminarEspecialidad = () => {
+    setMostrarConfirmacion(false);
+    setIdParaEliminar(null);
+  };
+
+  // Preparar para agregar nueva especialidad
+  const prepararNuevaEspecialidad = () => {
+    setModoEdicion(false);
+    setNuevaEspecialidad({ nombre: '' });
+    setError('');
+    setMostrarModal(true);
   };
   
   // Función para abrir el modal de edición
   const abrirModalEdicion = (especialidad) => {
+    setModoEdicion(true);
     setEspecialidadEditando(especialidad);
-    setNuevoEspecialidad({...especialidad});
+    setNuevaEspecialidad({...especialidad});
+    setError('');
     setMostrarModal(true);
   };
 
+  // Cerrar modal
+  const cerrarModal = () => {
+    setMostrarModal(false);
+    setEspecialidadEditando(null);
+    setNuevaEspecialidad({ nombre: '' });
+    setError('');
+  };
+
+  // Manejar cambio en el formulario
+  const handleInputChange = (e) => {
+    setNuevaEspecialidad({
+      ...nuevaEspecialidad,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  // Validar el formulario
+  const validarFormulario = () => {
+    if (!nuevaEspecialidad.nombre || nuevaEspecialidad.nombre.trim() === '') {
+      setError('El nombre de la especialidad es obligatorio');
+      return false;
+    }
+
+    // Verificar si ya existe la especialidad (ignorando la que estamos editando)
+    const nombreExiste = especialidades.some(
+      esp => esp.nombre.toLowerCase() === nuevaEspecialidad.nombre.toLowerCase() && 
+      (!modoEdicion || (modoEdicion && esp.id !== especialidadEditando.id))
+    );
+
+    if (nombreExiste) {
+      setError('Esta especialidad ya existe');
+      return false;
+    }
+
+    return true;
+  };
+
+  // Guardar especialidad (nueva o editada)
+  const guardarEspecialidad = (e) => {
+    e.preventDefault();
+    
+    if (!validarFormulario()) {
+      return;
+    }
+
+    if (modoEdicion) {
+      // Actualizar especialidad existente
+      const especialidadesActualizadas = especialidades.map(esp => 
+        esp.id === especialidadEditando.id ? { ...esp, ...nuevaEspecialidad } : esp
+      );
+      setEspecialidades(especialidadesActualizadas);
+    } else {
+      // Agregar nueva especialidad
+      const especialidadConId = {
+        ...nuevaEspecialidad,
+        id: especialidades.length > 0 ? Math.max(...especialidades.map(e => e.id)) + 1 : 1
+      };
+      setEspecialidades([...especialidades, especialidadConId]);
+    }
+
+    cerrarModal();
+  };
+  
   return (
-    <div className="app">
-      <header>
+    <div className="modulo-especialidades">
+      <header className="modulo-header">
         <h1>MÓDULO DE REGISTROS DE ESPECIALIDADES</h1>
       </header>
       
-      <main>
-        {/* Sección de controles */}
-        <section className="controls">
-          <button type="button" onClick={agregarEspecialidad}>Nuevo</button>
-          <button type="button">Excel</button>
-          <button type="button">PDF</button>
-        </section>
-
-        {/* Sección de filtros */}
-        <section className="filters">
-          <div className="show-entries">
-            <label htmlFor="show-entries">Mostrar</label>
-            <select 
-              id="show-entries" 
-              value={registrosPorPagina} 
-              onChange={cambiarRegistrosPorPagina}
-            >
-              <option value="10">10</option>
-              <option value="25">25</option>
-              <option value="50">50</option>
-              <option value="100">100</option>
-            </select>
-            <span>registros</span>
-          </div>
-
-          <div className="search-box">
-            <label htmlFor="search">Buscar:</label>
-            <input 
-              type="search" 
-              id="search" 
-              value={busqueda} 
-              onChange={manejarBusqueda} 
-            />
-          </div>
-        </section>
-
-        {/* Tabla de especialidades */}
-        <section>
-          <table>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>ESPECIALIDAD</th>
-                <th>ACCIONES</th>
-              </tr>
-            </thead>
-            <tbody>
-              {especialidadesActuales.map((especialidad) => (
-                <tr key={especialidad.id}>
-                  <td>{especialidad.id}</td>
-                  <td>{especialidad.nombre}</td>
-                  <td>
-                    <div className="action-icons">
-                      <a href="#" onClick={(e) => {
-                        e.preventDefault();
-                        abrirModalEdicion(especialidad);
-                      }} aria-label="Editar">✏️</a>
-                      <a href="#" onClick={(e) => {
-                        e.preventDefault();
-                        eliminarEspecialidad(especialidad.id);
-                      }} aria-label="Eliminar">🗑️</a>
-                    </div>
-                    <div className="actions">
-                      <span className="edit-icon">
-                        <svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                        </svg>
-                      </span>
-                      <span 
-                        className="delete-icon" 
-                        onClick={() => eliminarEspecialidad(especialidad.id)}
-                      >
-                        <svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <path d="M3 6h18"></path>
-                          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                        </svg>
-                      </span>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </section>
-        {/* Paginación */}
-        <section className="pagination">
-          <p className="page-info">
-            {especialidadesFiltradas.length === 0 
-              ? 'No hay registros para mostrar' 
-              : `Mostrando del ${indexPrimero + 1} al ${Math.min(indexUltimo, especialidadesFiltradas.length)} de total ${especialidadesFiltradas.length} registros`
-            }
-          </p>
-          <div className="page-controls">
-            <button 
-              className="page-button" 
-              onClick={paginaAnterior} 
-              disabled={paginaActual === 1}
-            >
-              Anterior
+      <main className="modulo-main">
+        <div className="tabla-especialidades-container">
+          {/* Sección de controles */}
+          <section className="controls">
+            <button type="button" className="btn btn-nuevo" onClick={prepararNuevaEspecialidad}>
+              Nuevo
             </button>
-            
-            {numeroPaginas.map(numero => (
-              <button 
-                key={numero}
-                className={`page-button ${paginaActual === numero ? 'active' : ''}`}
-                onClick={() => cambiarPagina(numero)}
+            <button type="button" className="btn btn-excel" onClick={exportarExcel}>
+              Excel
+            </button>
+            <button type="button" className="btn btn-pdf" onClick={exportarPDF}>
+              PDF
+            </button>
+          </section>
+
+          {/* Sección de filtros */}
+          <section className="filters">
+            <div className="show-entries">
+              <label htmlFor="show-entries">Mostrar</label>
+              <select 
+                id="show-entries" 
+                value={registrosPorPagina} 
+                onChange={cambiarRegistrosPorPagina}
               >
-                {numero}
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+              </select>
+              <span>registros</span>
+            </div>
+
+            <div className="search-box">
+              <label htmlFor="search">Buscar:</label>
+              <input 
+                type="search" 
+                id="search" 
+                value={busqueda} 
+                onChange={manejarBusqueda} 
+                placeholder="Buscar especialidad..."
+              />
+            </div>
+          </section>
+
+          {/* Tabla de especialidades */}
+          <section className="table-container">
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th className="column-id">#</th>
+                  <th className="column-nombre">ESPECIALIDAD</th>
+                  <th className="column-acciones">ACCIONES</th>
+                </tr>
+              </thead>
+              <tbody>
+                {especialidadesActuales.length > 0 ? (
+                  especialidadesActuales.map((especialidad) => (
+                    <tr key={especialidad.id}>
+                      <td>{especialidad.id}</td>
+                      <td>{especialidad.nombre}</td>
+                      <td>
+                      <div className="actions">
+                        <button 
+                          className="action-btn edit" 
+                          onClick={() => abrirModalEdicion(especialidad)}
+                          aria-label="Editar"
+                        >
+                          ✏️
+                        </button>
+                        <button 
+                          className="action-btn delete" 
+                          onClick={() => iniciarEliminarEspecialidad(especialidad.id)}
+                          aria-label="Eliminar"
+                        >
+                          🗑️
+                        </button>
+                      </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="3" className="no-records">
+                      {busqueda ? 'No se encontraron especialidades con ese término' : 'No hay especialidades registradas'}
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </section>
+          
+          {/* Paginación */}
+          <section className="pagination">
+            <p className="page-info">
+              {especialidadesFiltradas.length === 0 
+                ? 'No hay registros para mostrar' 
+                : `Mostrando del ${indexPrimero + 1} al ${Math.min(indexUltimo, especialidadesFiltradas.length)} de un total de ${especialidadesFiltradas.length} registros`
+              }
+            </p>
+            <div className="page-controls">
+              <button 
+                className="page-button" 
+                onClick={paginaAnterior} 
+                disabled={paginaActual === 1 || totalPaginas === 0}
+              >
+                Anterior
               </button>
-            ))}
-            
-            <button 
-              className="page-button" 
-              onClick={paginaSiguiente} 
-              disabled={paginaActual === totalPaginas || totalPaginas === 0}
-            >
-              Siguiente
-            </button>
-          </div>
-        </section>
+              
+              {numeroPaginas.map(numero => (
+                <button 
+                  key={numero}
+                  className={`page-button ${paginaActual === numero ? 'active' : ''}`}
+                  onClick={() => cambiarPagina(numero)}
+                >
+                  {numero}
+                </button>
+              ))}
+              
+              <button 
+                className="page-button" 
+                onClick={paginaSiguiente} 
+                disabled={paginaActual === totalPaginas || totalPaginas === 0}
+              >
+                Siguiente
+              </button>
+            </div>
+          </section>
+        </div>
       </main>
+
+      {/* Modal para agregar/editar especialidad */}
+      {mostrarModal && (
+        <div className="modal-overlay">
+          <div className="modal-container" ref={modalRef}>
+            <div className="modal-header">
+              <h2>{modoEdicion ? 'Editar Especialidad' : 'Nueva Especialidad'}</h2>
+              <button className="modal-close" onClick={cerrarModal} aria-label="Cerrar">
+              </button>
+            </div>
+            
+            <form onSubmit={guardarEspecialidad} className="modal-form">
+              <div className="form-group">
+                <label htmlFor="nombre">Nombre de la especialidad:</label>
+                <input
+                  type="text"
+                  id="nombre"
+                  name="nombre"
+                  value={nuevaEspecialidad.nombre || ''}
+                  onChange={handleInputChange}
+                  ref={nombreInputRef}
+                  placeholder="Ingrese el nombre de la especialidad"
+                  className={error ? 'input-error' : ''}
+                  autoComplete="off"
+                />
+                {error && <p className="error-message">{error}</p>}
+              </div>
+              
+              <div className="modal-actions">
+                <button type="button" className="btn btn-cancelar" onClick={cerrarModal}>
+                  Cancelar
+                </button>
+                <button type="submit" className="btn btn-guardar">
+                  {modoEdicion ? 'Actualizar' : 'Guardar'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de confirmación para eliminar */}
+      {mostrarConfirmacion && (
+        <div className="modal-overlay">
+          <div className="modal-container modal-confirmacion" ref={modalRef}>
+            <div className="modal-header">
+              <h2>Confirmar eliminación</h2>
+              <button className="modal-close" onClick={cancelarEliminarEspecialidad} aria-label="Cerrar">
+              </button>
+            </div>
+            
+            <div className="modal-body">
+              <p>¿Está seguro de que desea eliminar esta especialidad?</p>
+              <p>Esta acción no se puede deshacer.</p>
+            </div>
+            
+              <button type="button" className="btn btn-eliminar" onClick={confirmarEliminarEspecialidad}>
+                Eliminar
+              </button>
+            </div>
+          </div>
+      )}
     </div>
   );
 }
