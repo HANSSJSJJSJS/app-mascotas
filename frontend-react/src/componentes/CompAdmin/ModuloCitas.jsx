@@ -4,13 +4,12 @@ import '../../stylos/cssAdmin/ModuloCitas.css';
 import { exportarExcel } from '../../funcionalidades/expExcel';
 import { exportarPDF } from '../../funcionalidades/expPDF';
 
-
 const ModuloCitas = () => {
   const citasData = [
     {
       id: 1,
-      paciente: 'Edgar Lucas',
-      descripcion: 'Revisión anual',
+      paciente: 'edgar lucas',
+      descripcion: 'sdfdsf',
       especialista: 'Dr. Carlos Sánchez',
       especialidad: 'Oftalmología',
       fecha: '18, Septiembre 2023',
@@ -19,18 +18,18 @@ const ModuloCitas = () => {
     },
     {
       id: 2,
-      paciente: 'Edgar Lucas',
-      descripcion: 'Seguimiento',
+      paciente: 'edgar lucas',
+      descripcion: 'asdasdasd',
       especialista: 'Dr. Carlos Sánchez',
       especialidad: 'Oftalmología',
       fecha: '25, Septiembre 2023',
       horaInicio: '13:45',
       estado: 'pendiente'
     },
-  ];
+  ]
 
   const [citas, setCitas] = useState(citasData);
-  const [filteredCitas, setFilteredCitas] = useState([]);
+  const [filteredCitas, setFilteredCitas] = useState(citasData);
   const [search, setSearch] = useState('');
   const [recordsPerPage, setRecordsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
@@ -150,91 +149,10 @@ const ModuloCitas = () => {
   };
 
   return (
-    <div className="appointments-module">
+    <div className="container">
       <header>
-        <h1>MÓDULO DE REGISTROS DE CITAS</h1>
+        <h1>MODULO DE REGISTROS DE CITAS</h1>
       </header>
-      
-      <main>
-        <section className="actions">
-          <button className="btn btn-purple" onClick={handleNewCitaClick}>
-            Nuevo
-          </button>
-          <button className="btn btn-purple" onClick={handleExportExcel}>
-            Excel
-          </button>
-          <button className="btn btn-purple" onClick={handleExportPDF}>
-            PDF
-          </button>
-        </section>
-        
-        <section className="table-controls">
-          <div className="records-display">
-            <label htmlFor="show-records">Mostrar</label>
-            <select 
-              id="show-records" 
-              value={recordsPerPage} 
-              onChange={handleRecordsPerPageChange}
-            >
-              <option value={10}>10</option>
-              <option value={25}>25</option>
-              <option value={50}>50</option>
-              <option value={100}>100</option>
-            </select>
-            <span>registros</span>
-          </div>
-          
-          <div className="search-box">
-            <label htmlFor="search">Buscar:</label>
-            <input 
-              type="text" 
-              id="search" 
-              value={search} 
-              onChange={handleSearchChange} 
-              placeholder="Buscar por paciente, especialista..."
-            />
-          </div>
-        </section>
-        
-        <TablaCitas 
-          citas={currentRecords} 
-          onAccept={handleAcceptCita}
-          onCancel={handleCancelCita}
-          onDelete={handleDeleteCita}
-        />
-        
-        {/* Pagination */}
-        {filteredCitas.length > 0 && (
-          <div className="pagination">
-            <button 
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 1}
-              className="page-btn"
-            >
-              Anterior
-            </button>
-            
-            <span className="page-info">
-              Página {currentPage} de {totalPages}
-            </span>
-            
-            <button 
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === totalPages}
-              className="page-btn"
-            >
-              Siguiente
-            </button>
-          </div>
-        )}
-        
-        {/* No results message */}
-        {filteredCitas.length === 0 && (
-          <div className="no-results">
-            No se encontraron citas que coincidan con la búsqueda.
-          </div>
-        )}
-      </main>
       
       {/* Modal Form for New Appointment */}
       {showForm && (
@@ -314,13 +232,107 @@ const ModuloCitas = () => {
               </div>
               
               <div className="form-buttons">
-                <button type="submit" className="btn btn-save">Guardar</button>
                 <button type="button" className="btn btn-cancel" onClick={handleFormClose}>Cancelar</button>
+                <button type="submit" className="btn btn-save">Guardar</button>
               </div>
             </form>
           </div>
         </div>
       )}
+
+      <div className="content-card">
+        <div className="button-group">
+          <button className="btn btn-primary" onClick={handleNewCitaClick}>
+            Nuevo
+          </button>
+          <button className="btn btn-primary" onClick={handleExportExcel}>
+            Excel
+          </button>
+          <button className="btn btn-primary" onClick={handleExportPDF}>
+            PDF
+          </button>
+        </div>
+        
+        <div className="controls-row">
+          <div className="show-entries">
+            <span>Mostrar</span>
+            <select 
+              id="show-records" 
+              value={recordsPerPage} 
+              onChange={handleRecordsPerPageChange}
+            >
+              <option value={10}>10</option>
+              <option value={25}>25</option>
+              <option value={50}>50</option>
+              <option value={100}>100</option>
+            </select>
+            <span>registros</span>
+          </div>
+          
+          <div className="search-box">
+            <span>Buscar:</span>
+            <input 
+              type="text" 
+              id="search" 
+              value={search} 
+              onChange={handleSearchChange} 
+              placeholder="Buscar..."
+            />
+          </div>
+        </div>
+        
+        {/* Tabla de citas */}
+        <TablaCitas 
+          citas={currentRecords} 
+          onAccept={handleAcceptCita}
+          onCancel={handleCancelCita}
+          onDelete={handleDeleteCita}
+        />
+        
+        {/* Pagination */}
+        {filteredCitas.length > 0 && (
+          <div className="pagination">
+            <div className="page-info">
+              Mostrando del {filteredCitas.length ? indexOfFirstRecord + 1 : 0} al {Math.min(indexOfLastRecord, filteredCitas.length)} de total {filteredCitas.length} registros
+            </div>
+            <div className="page-controls">
+              <button 
+                className="page-btn" 
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                Anterior
+              </button>
+              
+              {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                const pageNum = currentPage <= 3 
+                  ? i + 1 
+                  : currentPage >= totalPages - 2 
+                    ? totalPages - 4 + i 
+                    : currentPage - 2 + i;
+                
+                return pageNum > 0 && pageNum <= totalPages ? (
+                  <button
+                    key={pageNum}
+                    className={`page-btn ${currentPage === pageNum ? 'active' : ''}`}
+                    onClick={() => handlePageChange(pageNum)}
+                  >
+                    {pageNum}
+                  </button>
+                ) : null;
+              })}
+              
+              <button 
+                className="page-btn" 
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              >
+                Siguiente
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

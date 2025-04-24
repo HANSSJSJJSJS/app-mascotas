@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-
 import '../../stylos/cssAdmin/ModuloHorarios.css'; 
 
 function ModuloHorarios() {
@@ -75,90 +74,97 @@ function ModuloHorarios() {
 
   return (
     <div>
+      {/* Header fijo en la parte superior */}
       <header className="header">
         <h1 className="titulo">MODULO DE HORARIOS</h1>
       </header>
 
-      <main className="main">
-        <section className="controles">
-          <button onClick={agregarHorario} className="boton">
-            Nuevo hora
-          </button>
-          
-          <p className="nombre-doctor">
-            Dr. Carlos Sánchez
-          </p>
-          
-          <button onClick={guardarCambios} className="boton">
-            Guardar Cambios
-          </button>
-        </section>
+      <div className="modulo-horarios-container">
+        <div className="modulo-wrapper">
+          <main className="main">
+            <div className="panel-contenido">
+              <section className="controles">
+                <button onClick={agregarHorario} className="boton">
+                  Nuevo hora
+                </button>
+                
+                <p className="nombre-doctor">
+                  Dr. Carlos Sánchez
+                </p>
+                
+                <button onClick={guardarCambios} className="boton">
+                  Guardar Cambios
+                </button>
+              </section>
 
-        <section className="tabla-container">
-          <table className="tabla">
-            <thead>
-              <tr>
-                <th className="cabecera-tabla">DIA</th>
-                <th className="cabecera-tabla">ESTADO</th>
-                <th colSpan="2" className="cabecera-tabla">TURNO MAÑANA</th>
-                <th colSpan="2" className="cabecera-tabla">TURNO TARDE</th>
-              </tr>
-            </thead>
-            <tbody>
-              {horarios.map((horario, index) => (
-                <tr key={index}>
-                  <td className={index === horarios.length - 1 ? "ultima-celda" : "celda-tabla"}>
-                    {horario.dia}
-                  </td>
-                  <td className={index === horarios.length - 1 ? "ultima-celda" : "celda-tabla"}>
-                    <label className="switch-container">
-                      <input 
-                        type="checkbox" 
-                        checked={horario.activo}
-                        onChange={() => cambiarEstado(index)}
-                        className="switch-input"
-                      />
-                      <span className="slider"></span>
-                    </label>
-                  </td>
-                  <td className={index === horarios.length - 1 ? "ultima-celda" : "celda-tabla"}>
-                    <input 
-                      type="time" 
-                      value={horario.mananaInicio}
-                      onChange={(e) => actualizarTiempo(index, 'mananaInicio', e.target.value)}
-                      className="input-tiempo"
-                    />
-                  </td>
-                  <td className={index === horarios.length - 1 ? "ultima-celda" : "celda-tabla"}>
-                    <input 
-                      type="time" 
-                      value={horario.mananaFin}
-                      onChange={(e) => actualizarTiempo(index, 'mananaFin', e.target.value)}
-                      className="input-tiempo"
-                    />
-                  </td>
-                  <td className={index === horarios.length - 1 ? "ultima-celda" : "celda-tabla"}>
-                    <input 
-                      type="time" 
-                      value={horario.tardeInicio}
-                      onChange={(e) => actualizarTiempo(index, 'tardeInicio', e.target.value)}
-                      className="input-tiempo"
-                    />
-                  </td>
-                  <td className={index === horarios.length - 1 ? "ultima-celda" : "celda-tabla"}>
-                    <input 
-                      type="time" 
-                      value={horario.tardeFin}
-                      onChange={(e) => actualizarTiempo(index, 'tardeFin', e.target.value)}
-                      className="input-tiempo"
-                    />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </section>
-      </main>
+              <section className="tabla-container">
+                <table className="tabla">
+                  <thead>
+                    <tr>
+                      <th className="cabecera-tabla">DIA</th>
+                      <th className="cabecera-tabla">ESTADO</th>
+                      <th colSpan="2" className="cabecera-tabla">TURNO MAÑANA</th>
+                      <th colSpan="2" className="cabecera-tabla">TURNO TARDE</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {horarios.map((horario, index) => (
+                      <tr key={index}>
+                        <td className={index === horarios.length - 1 ? "ultima-celda" : "celda-tabla"}>
+                          {horario.dia}
+                        </td>
+                        <td className={index === horarios.length - 1 ? "ultima-celda" : "celda-tabla"}>
+                          <label className="switch-container">
+                            <input 
+                              type="checkbox" 
+                              checked={horario.activo}
+                              onChange={() => cambiarEstado(index)}
+                              className="switch-input"
+                            />
+                            <span className="slider"></span>
+                          </label>
+                        </td>
+                        <td className={index === horarios.length - 1 ? "ultima-celda" : "celda-tabla"}>
+                          <input 
+                            type="time" 
+                            value={horario.mananaInicio}
+                            onChange={(e) => actualizarTiempo(index, 'mananaInicio', e.target.value)}
+                            className="input-tiempo"
+                          />
+                        </td>
+                        <td className={index === horarios.length - 1 ? "ultima-celda" : "celda-tabla"}>
+                          <input 
+                            type="time" 
+                            value={horario.mananaFin}
+                            onChange={(e) => actualizarTiempo(index, 'mananaFin', e.target.value)}
+                            className="input-tiempo"
+                          />
+                        </td>
+                        <td className={index === horarios.length - 1 ? "ultima-celda" : "celda-tabla"}>
+                          <input 
+                            type="time" 
+                            value={horario.tardeInicio}
+                            onChange={(e) => actualizarTiempo(index, 'tardeInicio', e.target.value)}
+                            className="input-tiempo"
+                          />
+                        </td>
+                        <td className={index === horarios.length - 1 ? "ultima-celda" : "celda-tabla"}>
+                          <input 
+                            type="time" 
+                            value={horario.tardeFin}
+                            onChange={(e) => actualizarTiempo(index, 'tardeFin', e.target.value)}
+                            className="input-tiempo"
+                          />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </section>
+            </div>
+          </main>
+        </div>
+      </div>
     </div>
   );
 }

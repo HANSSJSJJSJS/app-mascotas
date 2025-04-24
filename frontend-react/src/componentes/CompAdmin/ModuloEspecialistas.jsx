@@ -136,9 +136,9 @@ export default function App() {
   };
 
   return (
-    <div className="app">
+    <div className="contenedor-especialistas">
       <header>
-        <h1>MÓDULO DE REGISTROS DE ESPECIALISTA</h1>
+        <h1>MODULO DE REGISTROS DE ESPECIALISTA</h1>
       </header>
       
       <main>
@@ -324,8 +324,8 @@ export default function App() {
                 />
               </div>
               <div className="modal-buttons">
+                <button type="submit">Cancelar</button>
                 <button type="submit">Guardar</button>
-                <button type="button" onClick={() => setMostrarModal(false)}>Cancelar</button>
               </div>
             </form>
           </div>
