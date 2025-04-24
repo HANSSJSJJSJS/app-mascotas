@@ -1,69 +1,122 @@
 .barra-lateral {
+  width: 250px;
+  background-color: #3f3399;
+  color: white;
+  padding: 20px 0;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 100;
+  transform: translateX(0);
+  transition: all 0.3s ease;
+}
+
+.barra-lateral.closed {
+  width: 70px;
+}
+
+.barra-lateral h2 {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 18px;
+  font-weight: 600;
+  padding: 10px;
+  transition: opacity 0.3s ease;
+}
+
+.barra-lateral h2.hidden {
+  font-size: 0;
+  margin-bottom: 15px;
+}
+
+.menu-lateral {
+  list-style: none;
+  padding: 0 15px;
+}
+
+.barra-lateral.closed .menu-lateral {
+  padding: 0 5px;
+}
+
+.menu-lateral li {
+  padding: 12px 15px;
+  margin-bottom: 5px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.barra-lateral.closed .menu-lateral li {
+  padding: 12px 0;
+  display: flex;
+  justify-content: center;
+}
+
+.menu-lateral li:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.menu-lateral li.active {
+  background-color: rgba(127, 180, 42, 0.2);
+  border-left: 3px solid white;
+}
+
+.barra-lateral.closed .menu-lateral li.active {
+  border-left: none;
+  border-bottom: 3px solid white;
+}
+
+.menu-lateral a {
+  color: white;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+}
+
+.menu-lateral svg {
+  width: 16px;
+  height: 16px;
+}
+
+.close-button {
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+.toggle-sidebar-button {
+  position: absolute;
+  right: -12px;
+  top: 80px;
+  background-color: #3f3399;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  z-index: 101;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .barra-lateral.mobile {
+    transform: translateX(-100%);
     width: 250px;
-    background-color: #3f3399;
-    color: white;
-    padding: 20px 0;
-    height: 100vh;
-    position: fixed;
-    left: 0;
-    top: 0;
-    z-index: 100;
+  }
+
+  .barra-lateral.mobile.open {
     transform: translateX(0);
-    transition: transform 0.3s ease;
   }
-  
-  .barra-lateral h2 {
-    text-align: center;
-    margin-bottom: 30px;
-    font-size: 18px;
-    font-weight: 600;
-    padding: 10px;
-  }
-  
-  .menu-lateral {
-    list-style: none;
-    padding: 0 15px;
-  }
-  
-  .menu-lateral li {
-    padding: 12px 15px;
-    margin-bottom: 5px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  
-  .menu-lateral li:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-  }
-  
-  .menu-lateral li.active {
-    background-color: rgba(127, 180, 42, 0.2);
-    border-left: 3px solid white;
-  }
-  
-  .menu-lateral a {
-    color: white;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 14px;
-  }
-  
-  .menu-lateral svg {
-    width: 16px;
-    height: 16px;
-  }
-  
-  /* Responsive */
-  @media (max-width: 1024px) {
-    .barra-lateral.mobile {
-      transform: translateX(-100%);
-    }
-  
-    .barra-lateral.mobile.open {
-      transform: translateX(0);
-    }
-  }
-  
+}
