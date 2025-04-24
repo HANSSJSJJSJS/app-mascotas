@@ -11,6 +11,8 @@
 body {
   font-family: 'Roboto', sans-serif;
   overflow-x: hidden;
+  margin: 0;
+  padding: 0;
 }
 
 .main-content {
@@ -24,12 +26,6 @@ body {
 
 .carousel-item {
   min-height: 100vh;
-}
-
-.carousel-item img {
-  width: 100vw;
-  height: 100vh;
-  object-fit: cover;
 }
 
 .button-container {
@@ -50,7 +46,7 @@ body {
   border: 2px solid var(--color3);
   overflow: hidden;
   border-radius: 30px;
-  color: white;
+  color: rgb(48, 45, 45);
   transition: all 0.5s ease-in-out;
   display: flex;
   align-items: center;
@@ -154,8 +150,9 @@ body {
   font-weight: bold;
   font-size: 3rem;
   position: relative;
-  margin-bottom: 50px;
-  padding-left: 5%;
+  margin: 0 0 1rem 0;
+  padding: 0;
+  line-height: 1.2;
 }
 
 .service-card {
@@ -206,14 +203,14 @@ body {
 
 .about {
   background-color: white;
-  padding: 5rem 0;
+  padding: 3rem 0 5rem 0;
 }
 
 .container-about {
   gap: 2px;
   padding: 1rem;
   padding-left: 5%;
-  margin-top: -70px;
+  margin-top: 0;
   justify-content: center;
   width: 90%;
 }
@@ -226,12 +223,14 @@ body {
   color: var(--color1);
   font-size: 1.1rem;
   line-height: 1.6;
+  margin-top: 1rem;
 }
 
 .features {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  margin-top: 1.5rem;
 }
 
 .feature-item {
@@ -279,6 +278,10 @@ button {
   .row {
     flex-direction: column;
     align-items: center;
+  }
+  
+  .container-about .col-md-6:last-child {
+    padding-left: 0;
   }
 }
 
@@ -425,77 +428,12 @@ button {
   background-color: var(--color4);
 }
 
-.contact-info {
-  background-color: var(--color5);
-  padding: 5rem 0;
+/* Eliminar espacios no deseados */
+body::after {
+  content: none !important;
 }
 
-.info-card {
-  background-color: white;
-  padding: 30px;
-  border-radius: 15px;
-  text-align: center;
-  height: 220px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease-in-out;
-}
-
-.info-card:hover {
-  transform: translateY(-5px);
-}
-
-.info-icon {
-  color: var(--color4);
-  width: 40px;
-  height: 40px;
-  margin-bottom: 15px;
-}
-
-.info-card h4 {
-  color: var(--color2);
-  font-size: 1.3rem;
-  margin-bottom: 10px;
-}
-
-.info-card p {
-  color: var(--color3);
-  font-size: 0.95rem;
-  line-height: 1.6;
-}
-
-/* Estilos para la navegación de escritorio */
-.desktop-nav {
-  display: block;
-}
-
-.desktop-nav ul {
-  display: flex;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.desktop-nav li {
-  margin-right: 20px;
-}
-
-.desktop-nav a {
-  color: var(--color2);
-  text-decoration: none;
-  font-weight: 500;
-}
-
-/* Ocultar navegación desktop en móviles */
-@media (max-width: 768px) {
-  .desktop-nav {
-    display: none;
-  }
-}
-/* Añade esto para asegurar que el drawer esté por encima */
-.carousel {
-  z-index: 1;
+h1, h2, h3, h4, h5, h6 {
+  margin-top: 0;
+  padding-top: 0;
 }
