@@ -10,7 +10,7 @@ const BarraPropietario = ({ onToggleMenu, menuAbierto }) => {
   const menuItems = [
     { icon: Home, text: 'Inicio', path: '/PanelPropietario' },
     { icon: Calendar, text: 'Agendar Cita', path: '/PanelPropietario/agendar-cita' },
-    { icon: User, text: 'Actualizar Datos', path: '/PanelPropietario/actualizar-datos' },
+    { icon: User, text: 'Actualizar Datos', path: '/PanelPropietario/ActualizarPropietario' },
     { icon: FileText, text: 'Historia Clínica', path: '/PanelPropietario/historia-clinica' },
     { icon: Bone, text: 'Mascota', path: '/PanelPropietario/mascota' },
   ];

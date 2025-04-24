@@ -1,47 +1,44 @@
-// BarraAdmin.jsx
 import React from 'react';
-import { Home, Calendar, Users, Briefcase, Stethoscope, Bone, Clock, History, Gift } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { Home, Calendar, Users, Briefcase, Stethoscope, Bone, Clock, History, LogOut } from 'lucide-react';
 import '../../stylos/cssAdmin/BarraLateral.css';
 
-const BarraAdmin = () => {
-  const location = useLocation();
-
-  const menuItems = [
-    { icon: Home, text: 'Inicio', path: '/PanelPri' },
-    { icon: Calendar, text: 'Citas', path: '/ModuloCitas' },
-    { icon: Users, text: 'Usuarios', path: '/TablaUsuarios' },
-    { icon: Briefcase, text: 'Servicios', path: '/ModuloEspecialidades' },
-    { icon: Stethoscope, text: 'Veterinarios', path: '/ModuloEspecialistas' },
-    { icon: Bone, text: 'Mascotas', path: '/TablaMascota' }, 
-    { icon: Clock, text: 'Horarios', path: '/ModuloHorarios' },
-    { icon: History, text: 'Historial Clínico', path: '/HisCli' },
-  ];
-
-  return (
-    <aside className="barra-lateral">
-      <h2>MENU</h2>
-      <nav>
-        <ul className="menu-lateral">
-          {menuItems.map(({ icon: Icon, text, path }) => (
-            <li
-              key={text}
-              className={location.pathname === path ? 'active' : ''}
-            >
-              <Link to={path} className="link">
-                <Icon />
-                <span>{text}</span>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </nav>
-
-      <div className="icono-regalo">
-        <Gift size={50} />
-      </div>
-    </aside>
-  );
+const BarraLateral = () => {
+    return (
+        <aside className="barra-lateral">
+            <h2>MENU</h2>
+            <nav>
+                <ul className="menu-lateral">
+                    {[
+                        { icon: Home, text: 'Inicio' },
+                        { icon: Calendar, text: 'Citas' },
+                        { icon: Users, text: 'Usuarios', active: true },
+                        { icon: Briefcase, text: 'Servicios' },
+                        { icon: Stethoscope, text: 'Veterinarios' },
+                        { icon: Bone, text: 'Mascotas' },
+                        { icon: Clock, text: 'Horarios' },
+                        { icon: History, text: 'Historial Clínico' },
+                    ].map(({ icon: Icon, text, active }) => (
+                        <li 
+                            key={text} 
+                            className={active ? 'active' : ''}
+                        >
+                            <a href="#">
+                                <Icon />
+                                <span>{text}</span>
+                            </a>
+                        </li>
+                    ))}
+                </ul>
+            </nav>
+            
+            <div className="close-sesion">
+                <a href="#" style={{ color: 'white', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
+                    <LogOut size={16} />
+                    <h3>Cerrar Sesión</h3>
+                </a>
+            </div>
+        </aside>
+    );
 };
 
-export default BarraAdmin;
+export default BarraLateral;

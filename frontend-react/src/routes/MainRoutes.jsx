@@ -30,7 +30,7 @@ const HisCli = React.lazy(() => import("../componentes/CompAdmin/HisCli"));
 const PanelPropietario = React.lazy(() => import("../componentes/CompPropietario/PanelPropietario"));
 const InicioPropietario = React.lazy(() => import("../componentes/CompPropietario/InicioPropietario"));
 const FormularioCita = React.lazy(() => import("../componentes/CompFormularios/FormularioCita"));
-const ActualizarDatos = React.lazy(() => import("../componentes/CompPropietario/ActualizarDatos"));
+const ActualizarPropietario = React.lazy(() => import("../componentes/CompPropietario/ActualizarPropietario"));
 const Mascota = React.lazy(() => import("../componentes/CompPropietario/Mascota"));
 
 const Loading = () => <div className="loading-spinner">Cargando...</div>;
@@ -98,7 +98,7 @@ const MainRoutes = () => {
           <Route index element={<InicioPropietario />} />
           <Route path="agendar-cita" element={<FormularioCita />} />
           <Route path="historia-clinica" element={<HisCli />} />
-          <Route path="actualizar-datos" element={<ActualizarDatos />} />
+          <Route path="ActualizarPropietario" element={<ActualizarPropietario />} />
           <Route path="mascota" element={<Mascota />} />
         </Route>
       </Route>
