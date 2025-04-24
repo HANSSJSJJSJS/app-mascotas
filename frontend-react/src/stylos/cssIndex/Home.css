@@ -341,18 +341,25 @@ button {
   padding: 5rem 0;
 }
 
+.testimonials .row {
+  margin-top: 0;
+  justify-content: center;
+}
+
 .testimonial-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
   background-color: white;
   border-radius: 15px;
   padding: 30px;
-  margin: 0 auto;
-  max-width: 800px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .testimonial-content {
   position: relative;
   padding: 20px;
+  flex: 1;
 }
 
 .testimonial-quote-icon {
@@ -407,25 +414,6 @@ button {
 .star-icon {
   color: gold;
   margin-right: 2px;
-}
-
-.testimonial-indicators {
-  position: relative;
-  margin-top: 30px;
-  justify-content: center;
-}
-
-.testimonial-indicators button {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background-color: var(--color5);
-  border: none;
-  margin: 0 5px;
-}
-
-.testimonial-indicators button.active {
-  background-color: var(--color4);
 }
 
 /* Eliminar espacios no deseados */
