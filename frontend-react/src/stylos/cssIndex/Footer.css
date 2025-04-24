@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&family=Spicy+Rice&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Spicy+Rice&display=swap');
 
 :root {
   --color1: #000000;
@@ -12,34 +12,38 @@
   --border-radius: 10px;
 }
 
-
-
 .footer-prin {
-  position: relative; /* Asegura que el posicionamiento absoluto de la imagen sea relativo al footer */
+  position: relative;
+  margin-top: 50px;
+  width: 100%;
+  overflow: hidden; /* Evita desbordamiento */
 }
 
 .footer-container {
-  width: 100vw; /* Asegura que ocupe todo el ancho de la pantalla */
+  width: 100%;
   background-color: white;
   color: var(--color2);
-  padding: 3rem 2rem;
+  padding: 2rem 0; /* Eliminado padding lateral */
   display: flex;
   gap: 2rem;
   font-family: "Poppins", sans-serif;
   box-sizing: border-box;
-
+  margin: 0; /* Eliminado margen */
+  max-width: 100%; /* Asegura ancho máximo */
+  overflow-x: hidden; /* Evita scroll horizontal */
 }
 
 @media (max-width: 768px) {
   .footer-container {
     flex-direction: column;
     text-align: center;
+    padding: 1.5rem 0; /* Eliminado padding lateral */
   }
 }
 
 .footer-container > div {
   flex: 1;
-  padding: 1.5rem;
+  padding: 1rem;
   transition: var(--transition);
   border-radius: var(--border-radius);
 }
@@ -51,15 +55,15 @@
 }
 
 .footer-container h3 {
-  color: var(--color3); /* Azul medio */
-  border-bottom: 2px solid var(--color5); /* Azul muy claro */
+  color: var(--color3);
+  border-bottom: 2px solid var(--color5);
   padding-bottom: 0.5rem;
   margin-bottom: 1.25rem;
   font-size: 1.3rem;
 }
 
 .footer-container p {
-  color: var(--color2); /* Azul oscuro */
+  color: var(--color2);
   margin-bottom: 0.75rem;
   line-height: 1.7;
   font-weight: 400;
@@ -70,10 +74,9 @@
   font-size: 1.2rem !important;
   font-weight: 500 !important;
   margin-bottom: 1.5rem !important;
-  color: var(--color3) !important; /* Azul medio */
+  color: var(--color3) !important;
 }
 
-/* Redes sociales - Estilo similar al header */
 .social-icons {
   display: flex;
   gap: 1.25rem;
@@ -81,27 +84,27 @@
 }
 
 .social-icons a {
-  color: var(--color2); /* Azul oscuro */
+  color: var(--color2);
   transition: var(--transition);
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
   padding: 0.65rem;
-  background-color: var(--color5); /* Azul muy claro */
+  background-color: var(--color5);
   width: 42px;
   height: 42px;
   box-shadow: var(--shadow-sm);
 }
 
 .social-icons a:hover {
-  background-color: var(--color3); /* Azul claro */
+  background-color: var(--color3);
   transform: translateY(-3px);
+  color: white;
 }
 
-/* Enlaces - Estilo similar al header */
 .footer-container a {
-  color: var(--color3); /* Azul medio */
+  color: var(--color3);
   text-decoration: none;
   transition: var(--transition);
   font-weight: 500;
@@ -109,7 +112,7 @@
 }
 
 .footer-container a:hover {
-  color: var(--color4); /* Azul claro */
+  color: var(--color4);
 }
 
 .footer-container a::after {
@@ -119,7 +122,7 @@
   height: 2px;
   bottom: -3px;
   left: 0;
-  background-color: var(--color4); /* Azul claro */
+  background-color: var(--color4);
   transition: width 0.3s ease;
 }
 
@@ -127,7 +130,6 @@
   width: 100%;
 }
 
-/* Responsivo - Coherente con el header */
 @media (max-width: 1024px) {
   .footer-container > div {
     min-width: 200px;
@@ -138,7 +140,6 @@
   .footer-container {
     flex-direction: column;
     text-align: center;
-    padding: 2rem 1.5rem;
     gap: 1.5rem;
   }
   
@@ -152,19 +153,18 @@
 }
 
 .footer-image {
-  margin-top: -30vh; /* Puedes ajustarlo si es necesario */
-  position: absolute; /* Lo posiciona dentro del footer */
-  right: 50px; /* Esto lo coloca en el lado derecho */
-  bottom: 0; /* Esto lo coloca en la parte inferior del footer */
+  position: absolute;
+  right: 50px;
+  bottom: 0;
+  z-index: 1;
 }
 
 .footer-img {
   width: 100%;
-  max-width: 200px; /* Ajusta según necesites */
+  max-width: 200px;
+  height: auto;
 }
 
-
-/* Animación similar al header */
 @keyframes fade-in {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
@@ -172,4 +172,22 @@
 
 .footer-container {
   animation: fade-in 0.5s var(--transition) both;
+}
+
+/* Corrección para eliminar espacios laterales */
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* Asegura que el footer ocupe todo el ancho */
+#moybe-footer {
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  box-sizing: border-box;
+  position: relative;
+  left: 0;
+  right: 0;
+  background-color: white;
 }
