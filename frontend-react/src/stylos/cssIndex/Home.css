@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Montserrat:wght@700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Montserrat:wght@700&display=swap");
 
 :root {
   --color1: #000000;
@@ -9,7 +9,7 @@
 }
 
 body {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   overflow-x: hidden;
   margin: 0;
   padding: 0;
@@ -17,8 +17,10 @@ body {
 
 .main-content {
   color: var(--color1);
+  /* El padding-top se ajustará dinámicamente con JavaScript */
 }
 
+/* Hero Section */
 .carousel-inner,
 .carousel-item {
   width: 100%;
@@ -26,6 +28,28 @@ body {
 
 .carousel-item {
   min-height: 100vh;
+  display: flex;
+  align-items: center;
+}
+
+.carousel-content {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-top: 330px;
+}
+
+.hero-title {
+  font-size: 3rem;
+  font-weight: bold;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  margin-bottom: 1rem;
+}
+
+.lead {
+  font-size: 1.25rem;
+  margin-bottom: 2rem;
 }
 
 .button-container {
@@ -43,10 +67,10 @@ body {
   background-color: transparent;
   cursor: pointer;
   text-decoration: none;
-  border: 2px solid var(--color3);
+  border: 2px solid white;
   overflow: hidden;
   border-radius: 30px;
-  color: rgb(48, 45, 45);
+  color: white;
   transition: all 0.5s ease-in-out;
   display: flex;
   align-items: center;
@@ -85,19 +109,12 @@ body {
   transform: scale(100) translateX(2px);
 }
 
-.hero-title {
-  margin-top: 30%;
-  font-size: 3rem;
-  font-weight: bold;
-  color: var(--color5);
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-}
-
+/* Carousel Controls */
 .carousel-indicators button {
   background-color: var(--color5);
 }
 
-.carousel-control-prev-icon, 
+.carousel-control-prev-icon,
 .carousel-control-next-icon {
   width: 20px;
   height: 20px;
@@ -105,9 +122,8 @@ body {
   filter: invert(1);
 }
 
-.carousel-control-prev, 
+.carousel-control-prev,
 .carousel-control-next {
-  margin-top: 50vh;
   width: 50px;
   height: 50px;
   border-radius: 50%;
@@ -115,6 +131,9 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  opacity: 0.8;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .carousel-control-prev {
@@ -125,30 +144,24 @@ body {
   right: 5%;
 }
 
-.row {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20vh;
-}
-
+/* Services Section */
 .services {
-  margin-top: 50px;
-  height: 350px;
+  padding: 100px 0 200px;
   background-color: var(--color5);
+  position: relative;
 }
 
 .section-title-container {
-  margin-top: 10%;
+  margin-bottom: 30px;
   display: flex;
   justify-content: flex-start;
-  padding-left: 5%;
+  padding-left: 15px;
 }
 
 .section {
   color: var(--color2);
   font-weight: bold;
-  font-size: 3rem;
+  font-size: 2.5rem;
   position: relative;
   margin: 0 0 1rem 0;
   padding: 0;
@@ -156,12 +169,13 @@ body {
 }
 
 .service-card {
-  margin-top: -150px;
+  margin-top: 20px;
   background-color: white;
-  padding: 20px;
+  padding: 30px;
   border-radius: 15px;
   text-align: center;
-  height: 250px;
+  height: 100%;
+  min-height: 250px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -175,14 +189,20 @@ body {
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
+.service-icon {
+  margin-bottom: 15px;
+}
+
 .service-card h4 {
   color: var(--color2);
   font-size: 1.5rem;
+  margin-bottom: 15px;
 }
 
 .service-card p {
   color: var(--color3);
   font-size: 1rem;
+  margin-bottom: 20px;
 }
 
 .service-link {
@@ -201,35 +221,16 @@ body {
   color: white;
 }
 
+/* About Section */
 .about {
   background-color: white;
-  padding: 3rem 0 5rem 0;
-}
-
-.container-about {
-  gap: 2px;
-  padding: 1rem;
-  padding-left: 5%;
-  margin-top: 0;
-  justify-content: center;
-  width: 90%;
-}
-
-.container-about .col-md-6:last-child {
-  padding-left: 20vh;
-}
-
-.about p {
-  color: var(--color1);
-  font-size: 1.1rem;
-  line-height: 1.6;
-  margin-top: 1rem;
+  padding: 5rem 0;
 }
 
 .features {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 15px;
   margin-top: 1.5rem;
 }
 
@@ -245,8 +246,8 @@ body {
   color: var(--color4);
 }
 
-button {
-  margin-top: 20px;
+#btn-about {
+  margin-top: 25px;
   padding: 10px 20px;
   text-transform: uppercase;
   border-radius: 8px;
@@ -272,19 +273,11 @@ button {
 .img-fluid {
   border-radius: 15px;
   box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  height: auto;
 }
 
-@media (max-width: 768px) {
-  .row {
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .container-about .col-md-6:last-child {
-    padding-left: 0;
-  }
-}
-
+/* Why Choose Us Section */
 .why-choose-us {
   background-color: var(--color5);
   padding: 5rem 0;
@@ -304,7 +297,8 @@ button {
   padding: 30px;
   border-radius: 15px;
   text-align: center;
-  height: 220px;
+  height: 100%;
+  min-height: 220px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -334,16 +328,13 @@ button {
 .choose-card p {
   color: var(--color3);
   font-size: 0.95rem;
+  margin-bottom: 0;
 }
 
+/* Testimonials Section */
 .testimonials {
   background-color: white;
   padding: 5rem 0;
-}
-
-.testimonials .row {
-  margin-top: 0;
-  justify-content: center;
 }
 
 .testimonial-card {
@@ -416,12 +407,128 @@ button {
   margin-right: 2px;
 }
 
-/* Eliminar espacios no deseados */
-body::after {
-  content: none !important;
+/* Responsive Styles */
+@media (max-width: 1199.98px) {
+  .hero-title {
+    font-size: 2.5rem;
+  }
+
+  .section {
+    font-size: 2.2rem;
+  }
 }
 
-h1, h2, h3, h4, h5, h6 {
-  margin-top: 0;
-  padding-top: 0;
+@media (max-width: 991.98px) {
+  .services {
+    padding: 80px 0 150px;
+  }
+
+  .service-card {
+    margin-top: 0;
+  }
+
+  .hero-title {
+    font-size: 2.2rem;
+  }
+
+  .section {
+    font-size: 2rem;
+  }
+
+  .carousel-control-prev,
+  .carousel-control-next {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .services {
+    padding: 60px 0 100px;
+  }
+
+  .hero-title {
+    font-size: 2rem;
+    margin-top: 0;
+  }
+
+  .section {
+    font-size: 1.8rem;
+  }
+
+  .section-title-container {
+    justify-content: center;
+    padding-left: 0;
+    text-align: center;
+  }
+
+  .carousel-control-prev,
+  .carousel-control-next {
+    width: 40px;
+    height: 40px;
+  }
+
+  .button {
+    height: 45px;
+    width: 180px;
+  }
+
+  .btn-txt {
+    letter-spacing: 2px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .services {
+    padding: 40px 0 80px;
+  }
+
+  .hero-title {
+    font-size: 1.8rem;
+  }
+
+  .lead {
+    font-size: 1rem;
+  }
+
+  .section {
+    font-size: 1.6rem;
+  }
+
+  .carousel-control-prev,
+  .carousel-control-next {
+    width: 30px;
+    height: 30px;
+  }
+
+  .button {
+    height: 40px;
+    width: 160px;
+  }
+
+  .btn-txt {
+    letter-spacing: 1px;
+    font-size: 0.8rem;
+  }
+
+  .service-card h4 {
+    font-size: 1.3rem;
+  }
+
+  .service-card p {
+    font-size: 0.9rem;
+  }
+
+  .choose-card h4 {
+    font-size: 1.1rem;
+  }
+
+  .choose-card p {
+    font-size: 0.85rem;
+  }
+
+  .testimonial-content p {
+    font-size: 0.95rem;
+  }
 }
