@@ -125,7 +125,7 @@ export default function InicioPropietario() {
               <div className="dashboard-section">
                 <h3 className="section-title">Accesos rápidos</h3>
                 <div className="quick-links">
-                  <Link to="#" className="quick-link-card">
+                  <Link to="/agendar-cita" className="quick-link-card">
                     <Calendar size={24} className="icon" />
                     <span>Agendar cita</span>
                   </Link>
@@ -135,7 +135,7 @@ export default function InicioPropietario() {
                     <span>Historial clínico</span>
                   </Link>
 
-                  <Link to="#" className="quick-link-card">
+                  <Link to="/ActualizarPropietario" className="quick-link-card">
                     <User size={24} className="icon" />
                     <span>Mi perfil</span>
                   </Link>
