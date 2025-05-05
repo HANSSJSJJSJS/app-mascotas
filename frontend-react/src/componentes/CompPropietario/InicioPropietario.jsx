@@ -1,235 +1,230 @@
-"use client"
+import { Bell, Calendar, Clipboard, PawPrint, User } from "lucide-react"
+import Link from "next/link"
 
-import { useState, useEffect } from 'react'
-import { Calendar, Clock, PawPrint, FileText, Bell, Stethoscope, Pill, ChevronRight, User, MapPin, Phone } from 'lucide-react'
-import "../../stylos/cssPropietario/InicioPropietario.css"
-
-const InicioPropietario = () => {
-  const [currentTime, setCurrentTime] = useState(new Date())
-  const [greeting, setGreeting] = useState('')
-
-  // Datos de ejemplo
-  const propietario = {
-    nombre: "Juan",
-    apellido: "Pérez",
-    mascotas: [
-      { id: 1, nombre: "Max", especie: "Perro", raza: "Labrador", edad: 3, imagen: "/placeholder.svg?height=80&width=80" },
-      { id: 2, nombre: "Luna", especie: "Gato", raza: "Siamés", edad: 2, imagen: "/placeholder.svg?height=80&width=80" }
-    ],
-    proximasCitas: [
-      { id: 1, fecha: "2023-06-15", hora: "10:30", mascota: "Max", tipo: "Vacunación", veterinario: "Dr. García" },
-      { id: 2, fecha: "2023-06-22", hora: "16:00", mascota: "Luna", tipo: "Control", veterinario: "Dra. Rodríguez" }
-    ],
-    recordatorios: [
-      { id: 1, texto: "Desparasitación de Max", fecha: "2023-06-10" },
-      { id: 2, texto: "Comprar alimento para Luna", fecha: "2023-06-08" }
-    ]
-  }
-
-  // Determinar el saludo según la hora del día
-  useEffect(() => {
-    const updateGreeting = () => {
-      const currentHour = new Date().getHours()
-      if (currentHour < 12) {
-        setGreeting('Buenos días')
-      } else if (currentHour < 18) {
-        setGreeting('Buenas tardes')
-      } else {
-        setGreeting('Buenas noches')
-      }
-    }
-
-    updateGreeting()
-    const timer = setInterval(() => {
-      setCurrentTime(new Date())
-      updateGreeting()
-    }, 60000)
-
-    return () => clearInterval(timer)
-  }, [])
-
-  // Formatear fecha para mostrar
-  const formatDate = (date) => {
-    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
-    return new Date(date).toLocaleDateString('es-ES', options)
-  }
-
-  // Verificar si una fecha es hoy
-  const isToday = (dateString) => {
-    const today = new Date()
-    const date = new Date(dateString)
-    return date.getDate() === today.getDate() &&
-      date.getMonth() === today.getMonth() &&
-      date.getFullYear() === today.getFullYear()
-  }
-
+export default function InicioPropietario() {
   return (
-    <div className="page-content">
-      <div className="welcome-header">
-        <div className="welcome-text">
-          <h1 className="welcome-title">
-            {greeting}, {propietario.nombre}
-          </h1>
-          <p className="welcome-date">
-            <Calendar className="icon" size={16} />
-            {currentTime.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
-          </p>
+    <div className="flex min-h-screen bg-[#c2d8ff]/30">
+      {/* Sidebar */}
+      <aside className="w-64 bg-[#1a2540] text-white">
+        <div className="p-4 bg-[#000000]">
+          <h1 className="text-xl font-bold">MOYBE</h1>
+          <p className="text-sm text-[#8196eb]">Veterinaria</p>
         </div>
-        <div className="welcome-time">
-          <Clock className="time-icon" size={24} />
-          <span>{currentTime.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}</span>
-        </div>
-      </div>
 
-      <div className="dashboard-grid">
-        <div className="dashboard-column main-column">
-          <section className="dashboard-section">
-            <h2 className="section-title">Resumen</h2>
-            <div className="stats-container">
-              <div className="stat-card">
-                <div className="stat-icon">
-                  <PawPrint size={24} />
+        <nav className="mt-6 px-2">
+          <Link href="#" className="flex items-center gap-3 p-3 rounded-lg bg-[#495a90] mb-2">
+            <Home size={20} />
+            <span>InicioPropietario</span>
+          </Link>
+
+          <Link
+            href="#"
+            className="flex items-center gap-3 p-3 rounded-lg hover:bg-[#495a90]/70 mb-2 transition-colors"
+          >
+            <Calendar size={20} />
+            <span>Agendar Cita</span>
+          </Link>
+
+          <Link
+            href="#"
+            className="flex items-center gap-3 p-3 rounded-lg hover:bg-[#495a90]/70 mb-2 transition-colors"
+          >
+            <User size={20} />
+            <span>Actualizar Datos</span>
+          </Link>
+
+          <Link
+            href="#"
+            className="flex items-center gap-3 p-3 rounded-lg hover:bg-[#495a90]/70 mb-2 transition-colors"
+          >
+            <PawPrint size={20} />
+            <span>Mascota</span>
+          </Link>
+        </nav>
+      </aside>
+
+      {/* Main content */}
+      <main className="flex-1 p-6">
+        <header className="flex justify-between items-center mb-8">
+          <h2 className="text-2xl font-bold text-[#1a2540]">Bienvenido a Moybe</h2>
+          <div className="flex items-center gap-2 text-[#1a2540]">
+            <span>Juan Pérez</span>
+            <div className="w-10 h-10 rounded-full bg-[#8196eb] flex items-center justify-center text-white">JP</div>
+          </div>
+        </header>
+
+        {/* Dashboard content */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Resumen */}
+          <div className="bg-white p-6 rounded-lg shadow-sm">
+            <h3 className="text-lg font-semibold text-[#1a2540] mb-4">Resumen</h3>
+            <div className="grid grid-cols-3 gap-4">
+              <div className="flex flex-col items-center p-3 bg-[#c2d8ff] rounded-lg">
+                <div className="w-10 h-10 rounded-full bg-[#8196eb] flex items-center justify-center mb-2">
+                  <PawPrint size={18} className="text-white" />
                 </div>
-                <div className="stat-info">
-                  <h3>Mascotas</h3>
-                  <p className="stat-value">{propietario.mascotas.length}</p>
-                </div>
+                <span className="text-xl font-bold text-[#1a2540]">2</span>
+                <span className="text-xs text-[#495a90]">Mascotas</span>
               </div>
-              <div className="stat-card">
-                <div className="stat-icon">
-                  <Calendar size={24} />
+
+              <div className="flex flex-col items-center p-3 bg-[#c2d8ff] rounded-lg">
+                <div className="w-10 h-10 rounded-full bg-[#8196eb] flex items-center justify-center mb-2">
+                  <Calendar size={18} className="text-white" />
                 </div>
-                <div className="stat-info">
-                  <h3>Próximas citas</h3>
-                  <p className="stat-value">{propietario.proximasCitas.length}</p>
-                </div>
+                <span className="text-xl font-bold text-[#1a2540]">2</span>
+                <span className="text-xs text-[#495a90]">Próximas citas</span>
               </div>
-              <div className="stat-card">
-                <div className="stat-icon">
-                  <Bell size={24} />
+
+              <div className="flex flex-col items-center p-3 bg-[#c2d8ff] rounded-lg">
+                <div className="w-10 h-10 rounded-full bg-[#8196eb] flex items-center justify-center mb-2">
+                  <Bell size={18} className="text-white" />
                 </div>
-                <div className="stat-info">
-                  <h3>Recordatorios</h3>
-                  <p className="stat-value">{propietario.recordatorios.length}</p>
-                </div>
+                <span className="text-xl font-bold text-[#1a2540]">2</span>
+                <span className="text-xs text-[#495a90]">Recordatorios</span>
               </div>
             </div>
-          </section>
+          </div>
 
-          <section className="dashboard-section">
-            <div className="section-header">
-              <h2 className="section-title">Próximas citas</h2>
-              <button className="view-all-button">
-                Ver todas <ChevronRight size={16} />
+          {/* Mis mascotas */}
+          <div className="bg-white p-6 rounded-lg shadow-sm">
+            <h3 className="text-lg font-semibold text-[#1a2540] mb-4">Mis mascotas</h3>
+            <div className="space-y-4">
+              <div className="flex items-center gap-4 p-3 bg-[#c2d8ff]/50 rounded-lg">
+                <div className="w-12 h-12 rounded-full bg-[#8196eb] flex items-center justify-center">
+                  <PawPrint size={20} className="text-white" />
+                </div>
+                <div>
+                  <h4 className="font-medium text-[#1a2540]">Max</h4>
+                  <p className="text-sm text-[#495a90]">Perro - Labrador, 3 años</p>
+                </div>
+                <Link href="#" className="ml-auto text-sm text-[#495a90] hover:text-[#1a2540]">
+                  Ver ficha
+                </Link>
+              </div>
+
+              <div className="flex items-center gap-4 p-3 bg-[#c2d8ff]/50 rounded-lg">
+                <div className="w-12 h-12 rounded-full bg-[#8196eb] flex items-center justify-center">
+                  <PawPrint size={20} className="text-white" />
+                </div>
+                <div>
+                  <h4 className="font-medium text-[#1a2540]">Luna</h4>
+                  <p className="text-sm text-[#495a90]">Gato - Siamés, 2 años</p>
+                </div>
+                <Link href="#" className="ml-auto text-sm text-[#495a90] hover:text-[#1a2540]">
+                  Ver ficha
+                </Link>
+              </div>
+
+              <button className="w-full p-3 border-2 border-dashed border-[#8196eb] rounded-lg text-[#495a90] hover:bg-[#c2d8ff]/30 transition-colors flex items-center justify-center gap-2">
+                <span className="text-xl">+</span>
+                <span>Agregar mascota</span>
               </button>
             </div>
-            <div className="appointments-container">
-              {propietario.proximasCitas.map(cita => (
-                <div key={cita.id} className={`appointment-card ${isToday(cita.fecha) ? 'today' : ''}`}>
-                  <div className="appointment-icon">
-                    {cita.tipo === 'Vacunación' ? (
-                      <Pill size={24} />
-                    ) : (
-                      <Stethoscope size={24} />
-                    )}
-                  </div>
-                  <div className="appointment-details">
-                    <h3>{cita.tipo} - {cita.mascota}</h3>
-                    <p className="appointment-date">
-                      <Calendar className="mini-icon" size={14} /> {formatDate(cita.fecha)}
-                    </p>
-                    <p className="appointment-time">
-                      <Clock className="mini-icon" size={14} /> {cita.hora} - {cita.veterinario}
-                    </p>
-                  </div>
-                  <div className="appointment-actions">
-                    <button className="action-button">Detalles</button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
+          </div>
 
-          <section className="dashboard-section">
-            <div className="section-header">
-              <h2 className="section-title">Recordatorios</h2>
-              <button className="view-all-button">
-                Ver todos <ChevronRight size={16} />
-              </button>
+          {/* Próximas citas */}
+          <div className="bg-white p-6 rounded-lg shadow-sm">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold text-[#1a2540]">Próximas citas</h3>
+              <Link href="#" className="text-sm text-[#495a90] hover:text-[#1a2540]">
+                Ver todas
+              </Link>
             </div>
-            <div className="reminders-container">
-              {propietario.recordatorios.map(recordatorio => (
-                <div key={recordatorio.id} className={`reminder-card ${isToday(recordatorio.fecha) ? 'today' : ''}`}>
-                  <div className="reminder-icon">
-                    <Bell size={20} />
-                  </div>
-                  <div className="reminder-details">
-                    <p className="reminder-text">{recordatorio.texto}</p>
-                    <p className="reminder-date">
-                      <Calendar className="mini-icon" size={14} /> {formatDate(recordatorio.fecha)}
-                    </p>
-                  </div>
+            <div className="space-y-3">
+              <div className="flex items-start gap-3 p-3 bg-[#c2d8ff]/30 rounded-lg">
+                <div className="w-10 h-10 rounded-full bg-[#8196eb] flex items-center justify-center shrink-0">
+                  <Calendar size={18} className="text-white" />
                 </div>
-              ))}
-            </div>
-          </section>
-        </div>
+                <div>
+                  <h4 className="font-medium text-[#1a2540]">Vacunación - Max</h4>
+                  <p className="text-sm text-[#495a90]">miércoles, 14 de junio de 2023</p>
+                  <p className="text-sm text-[#495a90]">10:30 - Dr. García</p>
+                </div>
+              </div>
 
-        <div className="dashboard-column side-column">
-          <section className="dashboard-section">
-            <h2 className="section-title">Mis mascotas</h2>
-            <div className="pets-container">
-              {propietario.mascotas.map(mascota => (
-                <div key={mascota.id} className="pet-card">
-                  <div className="pet-image-container">
-                    <img src={mascota.imagen || "/placeholder.svg"} alt={mascota.nombre} className="pet-image" />
-                  </div>
-                  <div className="pet-details">
-                    <h3 className="pet-name">{mascota.nombre}</h3>
-                    <p className="pet-breed">{mascota.especie} - {mascota.raza}</p>
-                    <p className="pet-age">{mascota.edad} años</p>
-                  </div>
-                  <button className="pet-details-button">
-                    Ver ficha <ChevronRight size={16} />
-                  </button>
+              <div className="flex items-start gap-3 p-3 bg-[#c2d8ff]/30 rounded-lg">
+                <div className="w-10 h-10 rounded-full bg-[#8196eb] flex items-center justify-center shrink-0">
+                  <Calendar size={18} className="text-white" />
                 </div>
-              ))}
-              <div className="add-pet-card">
-                <div className="add-icon">+</div>
-                <p>Agregar mascota</p>
+                <div>
+                  <h4 className="font-medium text-[#1a2540]">Control - Luna</h4>
+                  <p className="text-sm text-[#495a90]">miércoles, 21 de junio de 2023</p>
+                  <p className="text-sm text-[#495a90]">15:00 - Dra. Rodríguez</p>
+                </div>
               </div>
             </div>
-          </section>
+          </div>
 
-          <section className="dashboard-section">
-            <h2 className="section-title">Accesos rápidos</h2>
-            <div className="quick-links">
-              <a href="#" className="quick-link-card">
-                <Calendar size={20} />
-                <span>Agendar cita</span>
-              </a>
-              <a href="#" className="quick-link-card">
-                <FileText size={20} />
-                <span>Historial clínico</span>
-              </a>
-              <a href="#" className="quick-link-card">
-                <User size={20} />
-                <span>Mi perfil</span>
-              </a>
-              <a href="#" className="quick-link-card">
-                <MapPin size={20} />
-                <span>Ubicación</span>
-              </a>
-              <a href="#" className="quick-link-card">
-                <Phone size={20} />
-                <span>Contacto</span>
-              </a>
+          {/* Recordatorios */}
+          <div className="bg-white p-6 rounded-lg shadow-sm">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold text-[#1a2540]">Recordatorios</h3>
+              <Link href="#" className="text-sm text-[#495a90] hover:text-[#1a2540]">
+                Ver todos
+              </Link>
             </div>
-          </section>
+            <div className="space-y-3">
+              <div className="flex items-start gap-3 p-3 bg-[#c2d8ff]/30 rounded-lg">
+                <div className="w-10 h-10 rounded-full bg-[#8196eb] flex items-center justify-center shrink-0">
+                  <Bell size={18} className="text-white" />
+                </div>
+                <div>
+                  <h4 className="font-medium text-[#1a2540]">Desparasitación de Max</h4>
+                  <p className="text-sm text-[#495a90]">viernes, 9 de junio de 2023</p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3 p-3 bg-[#c2d8ff]/30 rounded-lg">
+                <div className="w-10 h-10 rounded-full bg-[#8196eb] flex items-center justify-center shrink-0">
+                  <Bell size={18} className="text-white" />
+                </div>
+                <div>
+                  <h4 className="font-medium text-[#1a2540]">Comprar alimento para Luna</h4>
+                  <p className="text-sm text-[#495a90]">miércoles, 7 de junio de 2023</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
+
+        {/* Accesos rápidos */}
+        <div className="mt-6">
+          <h3 className="text-lg font-semibold text-[#1a2540] mb-4">Accesos rápidos</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <Link
+              href="#"
+              className="flex flex-col items-center p-4 bg-white rounded-lg shadow-sm hover:bg-[#c2d8ff]/30 transition-colors"
+            >
+              <Calendar size={24} className="text-[#495a90] mb-2" />
+              <span className="text-sm text-[#1a2540]">Agendar cita</span>
+            </Link>
+
+            <Link
+              href="#"
+              className="flex flex-col items-center p-4 bg-white rounded-lg shadow-sm hover:bg-[#c2d8ff]/30 transition-colors"
+            >
+              <Clipboard size={24} className="text-[#495a90] mb-2" />
+              <span className="text-sm text-[#1a2540]">Historial clínico</span>
+            </Link>
+
+            <Link
+              href="#"
+              className="flex flex-col items-center p-4 bg-white rounded-lg shadow-sm hover:bg-[#c2d8ff]/30 transition-colors"
+            >
+              <User size={24} className="text-[#495a90] mb-2" />
+              <span className="text-sm text-[#1a2540]">Mi perfil</span>
+            </Link>
+
+            <Link
+              href="#"
+              className="flex flex-col items-center p-4 bg-white rounded-lg shadow-sm hover:bg-[#c2d8ff]/30 transition-colors"
+            >
+              <Home size={24} className="text-[#495a90] mb-2" />
+              <span className="text-sm text-[#1a2540]">Ubicación</span>
+            </Link>
+          </div>
+        </div>
+      </main>
     </div>
   )
 }
-
-export default InicioPropietario

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import BarraLateral from './BarraAdmin';
 import Encabezado from './EncabezadoAdmin';
 
-function PanelPri() {
+function PanelAdmin() {
   const [barraLateralAbierta, setBarraLateralAbierta] = useState(true);
   const [datosUsuario] = useState({
     nombreUsuario: 'admin',
@@ -17,11 +17,12 @@ function PanelPri() {
 
   return (
     <div className={`panel-principal ${barraLateralAbierta ? '' : 'barra-lateral-colapsada'}`}>
-      <BarraLateral 
-        alternarBarraLateral={alternarBarraLateral}
-      />
-      
+  
       <div className={`contenido-principal ${barraLateralAbierta ? '' : 'expandido'}`}>
+        <BarraLateral 
+        onToggleMenu={alternarBarraLateral}
+        menuAbierto={barraLateralAbierta}
+        />
         <Encabezado 
           alAlternarMenu={alternarBarraLateral} 
           datosUsuario={datosUsuario} 
@@ -35,4 +36,4 @@ function PanelPri() {
   );
 }
 
-export default PanelPri;
+export default PanelAdmin;

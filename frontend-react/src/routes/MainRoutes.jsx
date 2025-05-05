@@ -17,7 +17,7 @@ const OlvideContrasena = React.lazy(() => import("../componentes/CompFormularios
 const NotFound = React.lazy(() => import("../componentes/CompHome/NotFound"));
 
 // Componentes admin
-const PanelPri = React.lazy(() => import("../componentes/CompAdmin/PanelPri"));
+const PanelAdmin = React.lazy(() => import("../componentes/CompAdmin/PanelAdmin"));
 const ModuloCitas = React.lazy(() => import("../componentes/CompAdmin/ModuloCitas"));
 const ModuloHorarios = React.lazy(() => import("../componentes/CompAdmin/ModuloHorarios"));
 const ModuloEspecialidades = React.lazy(() => import("../componentes/CompAdmin/ModuloEspecialidades"));
@@ -80,16 +80,16 @@ const MainRoutes = () => {
 
       {/* Rutas admin */}
       <Route element={isDevelopment ? <RutasAdmin /> : <RutaProtegida rolPermitido="admin"><RutasAdmin /></RutaProtegida>}>
-        <Route path="/PanelPri" element={<PanelPri />}>
-        </Route>
-        <Route path="/ModuloCitas" element={<ModuloCitas />} />
-        <Route path="/ModuloHorarios" element={<ModuloHorarios />} />
-        <Route path="/ModuloEspecialidades" element={<ModuloEspecialidades />} />
-        <Route path="/ModuloEspecialistas" element={<ModuloEspecialistas />} />
-        <Route path="/TablaMascota" element={<TablaMascota />} />
-        <Route path="/TablaUsuarios" element={<TablaUsuarios />} />
-        <Route path="/HisCli" element={<HisCli />} />
-        
+        <Route path="/PanelAdmin" element={<LayoutAdmin />}>
+          <Route index element={<ModuloCitas />} />
+          <Route path="TablaCitas" element={<ModuloCitas />} />
+          <Route path="usuarios" element={<TablaUsuarios />} />
+          <Route path="servicios" element={<ModuloEspecialidades />} />
+          <Route path="veterinarios" element={<ModuloEspecialistas />} />
+          <Route path="mascotas" element={<TablaMascota />} />
+          <Route path="horarios" element={<ModuloHorarios />} />
+          <Route path="historial-clinico" element={<HisCli />} />
+      </Route>
       </Route>
 
       {/* Rutas propietario */}

@@ -13,7 +13,7 @@ const BarraPropietario = ({ onToggleMenu, menuAbierto }) => {
     { icon: Home, text: "Inicio", path: "/PanelPropietario" },
     { icon: Calendar, text: "Agendar Cita", path: "/PanelPropietario/agendar-cita" },
     { icon: User, text: "Actualizar Datos", path: "/PanelPropietario/ActualizarPropietario" },
-    { icon: Bone, text: "Mascota", path: "/PanelPropietario/mascota" },
+    { icon: Bone, text: "Mascota", path: "/PanelPropietario/Mascota" },
   ]
 
   useEffect(() => {
