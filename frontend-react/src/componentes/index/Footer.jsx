@@ -40,7 +40,7 @@ const Footer = () => {
             <span>Carrera 73B Bis # 6 – 22 Sur</span>
           </p>
           <p>Soacha, Colombia</p>
-          <p>+57 215 1533</p>
+          <p>+57 3172467061</p>
           <p>
             <Link to="/Contacto">¿Tienes preguntas? Contáctanos</Link>
           </p>
