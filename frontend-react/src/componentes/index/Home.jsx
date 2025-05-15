@@ -22,6 +22,8 @@ import "bootstrap/dist/css/bootstrap.min.css"
 import "../../stylos/cssIndex/Home.css"
 import Carousel from "bootstrap/js/dist/carousel"
 import Header from "../index/Header"
+import { Emergencia } from "./Emergencia"
+import "../../stylos/cssIndex/Emergencia.css"
 
 // Import images
 import imgAbout from "../../imagenes/about.png"
@@ -107,7 +109,6 @@ export default function Home() {
     }
   }
 
-
   return (
     <main className="main-content">
       <Header />
@@ -123,7 +124,7 @@ export default function Home() {
             }}
           >
             <div className="container h-100 d-flex align-items-center justify-content-center carousel-content">
-            <div className="row justify-content-center">
+              <div className="row justify-content-center">
                 <div className="col-md-8 text-center">
                   <h2 className="hero-title">Cuidado Veterinario de Calidad</h2>
                   <p className="lead text-white">En Moybe nos preocupamos por la salud y bienestar de tu mascota</p>
@@ -512,6 +513,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Nuevas secciones */}
+      <Emergencia />
     </main>
   )
 }

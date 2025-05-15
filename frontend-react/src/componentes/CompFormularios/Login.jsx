@@ -124,7 +124,7 @@ const Login = () => {
                 </button>
               </div>
               {errors.password && <p className="error-message">{errors.password}</p>}
-              <a href="/forgot-password" className="forgot-password-link">
+              <a href="/OlvideContrasena" className="forgot-password-link">
                 ¿Olvidaste tu contraseña?
               </a>
             </div>

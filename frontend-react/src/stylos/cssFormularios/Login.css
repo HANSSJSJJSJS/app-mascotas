@@ -1,9 +1,18 @@
+/* Variables de colores basadas en la paleta proporcionada */
+:root {
+    --color1: #000000; /* Negro */
+    --color2: #1a2540; /* Azul oscuro */
+    --color3: #495a90; /* Azul medio */
+    --color4: #8196eb; /* Azul claro */
+    --color5: #c2d8ff; /* Azul muy claro */
+  }
+
 .main-container {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-color: #c2d8ff;
+  background-color: #f8faff;
   }
 
 .login_container {
@@ -85,10 +94,15 @@
   display: block;
   text-align: right;
   margin-top: 10px;
-  color: #675df1;
+  color: var(--color3); /* Azul medio para enlaces */
   text-decoration: none;
   font-size: 0.9rem;
 }
+.forgot-password-link.link:hover{
+    color: var(--color4); /* Azul claro para hover en enlaces */
+    text-decoration: underline;
+}
+
 
 .btn {
   width: 100%;
@@ -101,14 +115,15 @@
   transition: background-color 0.3s;
 }
 
-.btn:hover {
-  background-color: #8196eb;
-}
-
-.link {
-  color: #675df1;
-  text-decoration: none;
-}
+  .link {
+    color: var(--color3); /* Azul medio para enlaces */
+    text-decoration: none;
+  }
+  
+  .link:hover {
+    color: var(--color4); /* Azul claro para hover en enlaces */
+    text-decoration: underline;
+  }
 
 .logo-container {
   flex: 1;
