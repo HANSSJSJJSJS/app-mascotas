@@ -2,19 +2,25 @@
 import { Menu } from "lucide-react"
 import "../../stylos/cssAdmin/Encabezado.css"
 
-const EncabezadoAdmin = () => {
+const EncabezadoAdmin = ({ onToggleMenu, isSidebarOpen, userData }) => {
   return (
-    <header className="encabezado">
-      <div className="boton-menu">
-        <Menu size={20} />
-        <span>MENU</span>
-      </div>
+    <div className={`encabezado-container ${isSidebarOpen ? "sidebar-open" : "sidebar-closed"}`}>
+      <header className="encabezado">
+        <div className="menu-container">
+          <button className="boton-menu" onClick={onToggleMenu}>
+            <Menu size={20} />
+            <span>MENU</span>
+          </button>
+        </div>
 
-      <div className="info-usuario">
-        <span>Admin</span>
-        <small>Administrador</small>
-      </div>
-    </header>
+        <div className="header-controls">
+          <div className="info-usuario">
+            <span>{userData?.username || "Admi"}</span>
+            <small>{userData?.role || "Administrador"}</small>
+          </div>
+        </div>
+      </header>
+    </div>
   )
 }
 

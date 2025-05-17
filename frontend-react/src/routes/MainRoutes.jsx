@@ -17,14 +17,14 @@ const OlvideContrasena = React.lazy(() => import("../componentes/CompFormularios
 const NotFound = React.lazy(() => import("../componentes/CompHome/NotFound"));
 
 // Componentes admin
-const PanelAdmin = React.lazy(() => import("../componentes/CompAdmin/PanelAdmin"));
-const ModuloCitas = React.lazy(() => import("../componentes/CompAdmin/ModuloCitas"));
-const ModuloHorarios = React.lazy(() => import("../componentes/CompAdmin/ModuloHorarios"));
-const ModuloEspecialidades = React.lazy(() => import("../componentes/CompAdmin/ModuloEspecialidades"));
-const ModuloEspecialistas = React.lazy(() => import("../componentes/CompAdmin/ModuloEspecialistas"));
-const TablaMascota = React.lazy(() => import("../componentes/CompAdmin/TablaMascota") )
-const TablaUsuarios = React.lazy(() => import("../componentes/CompAdmin/TablaUsuarios"));
-const HisCli = React.lazy(() => import("../componentes/CompAdmin/HisCli"));
+// const PanelAdmin = React.lazy(() => import("../componentes/CompAdmin/PanelAdmin"));
+// const ModuloCitas = React.lazy(() => import("../componentes/CompAdmin/ModuloCitas"));
+// const ModuloHorarios = React.lazy(() => import("../componentes/CompAdmin/ModuloHorarios"));
+// const ModuloEspecialidades = React.lazy(() => import("../componentes/CompAdmin/ModuloEspecialidades"));
+// const ModuloEspecialistas = React.lazy(() => import("../componentes/CompAdmin/ModuloEspecialistas"));
+// const TablaMascota = React.lazy(() => import("../componentes/CompAdmin/TablaMascota") )
+// const TablaUsuarios = React.lazy(() => import("../componentes/CompAdmin/TablaUsuarios"));
+// const HisCli = React.lazy(() => import("../componentes/CompAdmin/HisCli"));
 
 // Componentes propietario
 const PanelPropietario = React.lazy(() => import("../componentes/CompPropietario/PanelPropietario"));
@@ -81,14 +81,14 @@ const MainRoutes = () => {
       {/* Rutas admin */}
       <Route element={isDevelopment ? <RutasAdmin /> : <RutaProtegida rolPermitido="admin"><RutasAdmin /></RutaProtegida>}>
         <Route path="/PanelAdmin" element={<LayoutAdmin />}>
-          <Route index element={<ModuloCitas />} />
+          {/* <Route index element={<ModuloCitas />} />
           <Route path="TablaCitas" element={<ModuloCitas />} />
           <Route path="usuarios" element={<TablaUsuarios />} />
           <Route path="servicios" element={<ModuloEspecialidades />} />
           <Route path="veterinarios" element={<ModuloEspecialistas />} />
           <Route path="mascotas" element={<TablaMascota />} />
           <Route path="horarios" element={<ModuloHorarios />} />
-          <Route path="historial-clinico" element={<HisCli />} />
+          <Route path="historial-clinico" element={<HisCli />} /> */}
       </Route>
       </Route>
 
@@ -97,7 +97,7 @@ const MainRoutes = () => {
         <Route path="/PanelPropietario" element={<PanelPropietario />}>
           <Route index element={<InicioPropietario />} />
           <Route path="agendar-cita" element={<FormularioCita />} />
-          <Route path="historia-clinica" element={<HisCli />} />
+          {/* <Route path="historia-clinica" element={<HisCli />} /> */}
           <Route path="ActualizarPropietario" element={<ActualizarPropietario />} />
           <Route path="mascota" element={<Mascota />} />
         </Route>

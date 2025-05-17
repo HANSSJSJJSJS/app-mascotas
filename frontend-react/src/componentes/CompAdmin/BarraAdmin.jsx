@@ -1,6 +1,5 @@
 // BarraAdmin.jsx
 import { Link, useLocation } from "react-router-dom"
-import { Menu } from "lucide-react"
 import "../../stylos/cssAdmin/BarraLateral.css"
 
 // Importar iconos directamente
@@ -26,19 +25,6 @@ const BarraLateral = () => {
       {/* Encabezado de la barra lateral */}
       <div className="barra-header">
         <h2>MENU ADMIN</h2>
-      </div>
-
-      {/* Encabezado principal - Ahora está dentro de la barra lateral */}
-      <div className="encabezado-principal">
-        <div className="boton-menu">
-          <Menu size={20} />
-          <span>MENU</span>
-        </div>
-
-        <div className="info-usuario">
-          <span>Admin</span>
-          <small>Administrador</small>
-        </div>
       </div>
 
       <div className="menu-scroll-container">
