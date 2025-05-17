@@ -1,39 +1,22 @@
-// PanelPri.jsx
-import { Outlet } from 'react-router-dom';
-import { useState } from 'react';
-import BarraLateral from './BarraAdmin';
-import Encabezado from './EncabezadoAdmin';
+"use client"
+
+// PanelAdmin.jsx
+import { Outlet } from "react-router-dom"
+import BarraLateral from "./BarraAdmin"
+import "../../stylos/cssAdmin/PanelAdmin.css"
 
 function PanelAdmin() {
-  const [barraLateralAbierta, setBarraLateralAbierta] = useState(true);
-  const [datosUsuario] = useState({
-    nombreUsuario: 'admin',
-    rol: 'Administrador'
-  });
-
-  const alternarBarraLateral = () => {
-    setBarraLateralAbierta(!barraLateralAbierta);
-  };
-
   return (
-    <div className={`panel-principal ${barraLateralAbierta ? '' : 'barra-lateral-colapsada'}`}>
-  
-      <div className={`contenido-principal ${barraLateralAbierta ? '' : 'expandido'}`}>
-        <BarraLateral 
-        onToggleMenu={alternarBarraLateral}
-        menuAbierto={barraLateralAbierta}
-        />
-        <Encabezado 
-          alAlternarMenu={alternarBarraLateral} 
-          datosUsuario={datosUsuario} 
-        />
+    <div className="panel-admin">
+      <BarraLateral />
 
+      <div className="contenido-principal">
         <div className="area-contenido">
           <Outlet />
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default PanelAdmin;
+export default PanelAdmin
