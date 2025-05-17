@@ -6,6 +6,7 @@ body {
   margin: 0;
   padding: 0;
   font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  overflow-x: hidden; /* Previene scroll horizontal no deseado */
 }
 
 /* Container */
@@ -16,45 +17,34 @@ body {
   position: relative;
 }
 
-header {
-  background-color: #ffffff;
-  padding: 15px 20px;
+.module-title {
+  margin-bottom: 20px;
+  padding-bottom: 15px;
   border-bottom: 1px solid #e0e0e0;
-  width: 1200%;
-  position: fixed; /* Fixed en lugar de sticky para que se mantenga en su lugar */
-  top: 7.5em;
-  left: 15.7em; /* Asegurar que el header comienza desde el borde izquierdo */
-  z-index: 100;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Sombra sutil para mejor visual */
 }
 
-/* Contenedor para el header para mantener alineación con container */
-.header-container {
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-header h1 {
+.module-title h1 {
+  color: #495a90;
+  font-size: 1.5rem;
+  font-weight: 600;
   margin: 0;
-  color: #1a2540;
-  font-size: 1.2rem;
-  font-weight: bold;
+  padding: 0;
+  text-align: center;
 }
 
-/* Content card */
+/* Content card - CORREGIDO */
 .content-card {
   background-color: #ffffff;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  margin: 20px 0;
-  padding: 15px;
-  position: relative;
-  left: 8em;
-  top: 13em;
-  justify-content: center;
-  overflow-x: auto; /* For table overflow on small screens */
+  margin: 20px auto;
+  padding: 20px;
+  width: calc(100% - 100px); /* Ajusta el ancho para compensar el left */
+  max-width: 100%;
+  overflow-x: auto;
+  margin-top: 150px;
+  position: relative; /* ¡Esto es clave! */
+  left: 120px;
 }
 
 /* Buttons */
@@ -83,7 +73,7 @@ header h1 {
   background-color: #495a90;
 }
 
-/* Table controls */
+/* Table controls - CORREGIDO */
 .controls-row {
   display: flex;
   flex-direction: column;
@@ -110,9 +100,7 @@ header h1 {
   align-items: center;
   gap: 10px;
   color: #495a90;
-  width: 100%;
-  position: relative;
-  left: 35em;
+  margin-left: auto; /* Alineación a la derecha */
 }
 
 .search-box label {
@@ -128,12 +116,12 @@ header h1 {
   max-width: 300px;
 }
 
-/* Table styles */
+/* Table styles - CORREGIDO */
 table {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 20px;
-  min-width: 600px; 
+  min-width: 100%; /* Ajustado para evitar overflow */
 }
 
 table th {
@@ -151,7 +139,7 @@ table td {
   color: #5c5f6b;
 }
 
-th,td{
+th, td {
   border: 1px solid #e0e0e0;
   padding: 10px;
   text-align: left;
@@ -334,13 +322,13 @@ th,td{
   }
   
   .content-card {
-    padding: 20px;
+    padding: 25px;
   }
 }
 
 @media (max-width: 767px) {
-  header h1 {
-    font-size: 1.2rem;
+  .module-title h1 {
+    font-size: 1.3rem;
   }
   
   .action-btn {
@@ -355,20 +343,36 @@ th,td{
   .btn {
     padding: 8px 15px;
   }
+
+  table {
+    font-size: 0.9em;
+  }
+
+  th, td {
+    padding: 8px;
+  }
 }
 
 @media (max-width: 480px) {
-  header {
-    padding: 10px 15px;
+  .module-title h1 {
+    font-size: 1.2rem;
   }
   
-  .estado-badge {
-    padding: 3px 8px;
-    font-size: 0.8em;
+  .button-group {
+    justify-content: center;
   }
   
-  table th, 
-  table td {
-    padding: 8px;
+  .search-box {
+    margin-left: 0;
+    width: 100%;
+    justify-content: flex-end;
+  }
+  
+  .search-box input {
+    max-width: 200px;
+  }
+  
+  .page-btn {
+    padding: 4px 8px;
   }
 }

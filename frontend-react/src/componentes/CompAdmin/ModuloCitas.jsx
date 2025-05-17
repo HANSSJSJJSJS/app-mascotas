@@ -149,11 +149,7 @@ const ModuloCitas = () => {
   };
 
   return (
-    <div className="container">
-      <header>
-        <h1>MODULO DE REGISTROS DE CITAS</h1>
-      </header>
-      
+    <div className="container">  
       {/* Modal Form for New Appointment */}
       {showForm && (
         <div className="modal-overlay">
@@ -241,6 +237,9 @@ const ModuloCitas = () => {
       )}
 
       <div className="content-card">
+        <div className="module-title">
+          <h1>Registro de Citas Médicas</h1>
+        </div>
         <div className="button-group">
           <button className="btn btn-primary" onClick={handleNewCitaClick}>
             Nuevo
