@@ -1,297 +1,288 @@
-import { Calendar, FileText, PawPrint, Activity, Pill } from "lucide-react"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+// InicioVet.jsx
+import { Calendar, Clock, FileText, PawPrint, Plus, Activity, Pill, ChevronRight } from 'lucide-react'
+import { Link } from "react-router-dom"
+import "../../stylos/cssVet/InicioVet.css"
+import "../../stylos/cssVet/Card.css"
 
-export default function Dashboard() {
+export default function InicioVet() {
   return (
-    <div className="flex h-screen bg-blue-50">
-      {/* Barra lateral */}
-      <div className="w-64 bg-indigo-800 text-white flex flex-col">
-        <div className="p-4 font-bold text-lg border-b border-indigo-700 flex items-center">
-          <PawPrint className="mr-2 h-6 w-6" />
-          <span>VETCLINIC</span>
+    // Eliminamos el div con clase "flex h-screen bg-blue-50" y el div "flex-1 overflow-auto"
+    // También eliminamos el header que está duplicando el EncabezadoVeterinario
+    <>
+      {/* Contenido del Dashboard */}
+      <div className="max-w-7xl mx-auto">
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold text-gray-800">Bienvenido, Dr. Carlos</h1>
+          <p className="text-gray-600">Aquí tienes un resumen de tu día</p>
         </div>
-        <div className="p-4 border-b border-indigo-700">
-          <div className="text-sm text-indigo-200">Veterinario</div>
-          <div className="font-medium">Dr. Carlos Rodríguez</div>
-        </div>
-        <nav className="flex-1 pt-4">
-          <Link href="/" className="flex items-center px-4 py-3 bg-indigo-900 text-white hover:bg-indigo-700">
-            <Activity className="mr-3 h-5 w-5" />
-            Dashboard
-          </Link>
-          <Link href="/agenda" className="flex items-center px-4 py-3 text-white hover:bg-indigo-700">
-            <Calendar className="mr-3 h-5 w-5" />
-            Agenda
-          </Link>
-          <Link href="/pacientes" className="flex items-center px-4 py-3 text-white hover:bg-indigo-700">
-            <PawPrint className="mr-3 h-5 w-5" />
-            Pacientes
-          </Link>
-          <Link href="/consulta" className="flex items-center px-4 py-3 text-white hover:bg-indigo-700">
-            <FileText className="mr-3 h-5 w-5" />
-            Consultas
-          </Link>
-          <Link href="/historial" className="flex items-center px-4 py-3 text-white hover:bg-indigo-700">
-            <FileText className="mr-3 h-5 w-5" />
-            Historiales
-          </Link>
-          <Link href="/inventario" className="flex items-center px-4 py-3 text-white hover:bg-indigo-700">
-            <Pill className="mr-3 h-5 w-5" />
-            Inventario
-          </Link>
-        </nav>
-        <div className="p-4 border-t border-indigo-700">
-          <Button variant="outline" className="w-full bg-indigo-700 hover:bg-indigo-600 text-white border-indigo-600">
-            Cerrar sesión
-          </Button>
-        </div>
-      </div>
 
-      {/* Contenido principal */}
-      <div className="flex-1 overflow-auto">
-        {/* Cabecera */}
-        <header className="bg-white shadow-sm p-4">
-          <div className="max-w-7xl mx-auto flex justify-between items-center">
-            <h1 className="text-2xl font-bold text-gray-800">Dashboard</h1>
-            <div className="flex items-center space-x-4">
-              <div className="bg-blue-100 text-blue-800 px-3 py-1 rounded-md flex items-center">
-                <Calendar className="h-4 w-4 mr-1" />
-                <span>Lunes, 12 de mayo de 2025</span>
+        {/* Tarjetas de resumen */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div className="card summary-card">
+            <div className="card-content">
+              <div className="flex items-center">
+                <div className="summary-icon-container blue">
+                  <Calendar className="h-6 w-6" />
+                </div>
+                <div>
+                  <div className="summary-label">Citas hoy</div>
+                  <div className="summary-value">8</div>
+                </div>
               </div>
             </div>
           </div>
-        </header>
 
-        {/* Contenido del Dashboard */}
-        <main className="p-6">
-          <div className="max-w-7xl mx-auto">
-            {/* Tarjetas de resumen */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-gray-500">Citas hoy</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-bold">8</div>
-                  <p className="text-xs text-green-600 mt-1">+2 desde ayer</p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-gray-500">Pacientes totales</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-bold">247</div>
-                  <p className="text-xs text-green-600 mt-1">+12 este mes</p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-gray-500">Consultas pendientes</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-bold">3</div>
-                  <p className="text-xs text-blue-600 mt-1">Próxima en 15 min</p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-gray-500">Vacunas programadas</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-bold">5</div>
-                  <p className="text-xs text-orange-600 mt-1">Para esta semana</p>
-                </CardContent>
-              </Card>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Citas del día */}
-              <div className="lg:col-span-2">
-                <Card>
-                  <CardHeader className="pb-3">
-                    <div className="flex justify-between items-center">
-                      <CardTitle>Citas del día</CardTitle>
-                      <Button variant="outline" size="sm" className="h-8">
-                        Ver todas
-                      </Button>
-                    </div>
-                    <CardDescription>12 de mayo, 2025</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <div className="bg-blue-50 p-3 rounded-lg border-l-4 border-blue-500 flex justify-between items-center">
-                        <div>
-                          <div className="font-medium">09:00 - Max (Labrador)</div>
-                          <div className="text-sm text-gray-500">Vacunación anual</div>
-                          <div className="text-sm text-gray-500">Propietario: Juan Pérez</div>
-                        </div>
-                        <Button size="sm" className="bg-green-600 hover:bg-green-700">
-                          Atender
-                        </Button>
-                      </div>
-
-                      <div className="bg-blue-50 p-3 rounded-lg border-l-4 border-blue-500 flex justify-between items-center">
-                        <div>
-                          <div className="font-medium">10:30 - Luna (Siamés)</div>
-                          <div className="text-sm text-gray-500">Control rutinario</div>
-                          <div className="text-sm text-gray-500">Propietario: María González</div>
-                        </div>
-                        <Button size="sm" className="bg-green-600 hover:bg-green-700">
-                          Atender
-                        </Button>
-                      </div>
-
-                      <div className="bg-blue-50 p-3 rounded-lg border-l-4 border-blue-500 flex justify-between items-center">
-                        <div>
-                          <div className="font-medium">11:45 - Rocky (Bulldog)</div>
-                          <div className="text-sm text-gray-500">Problema dermatológico</div>
-                          <div className="text-sm text-gray-500">Propietario: Ana Martínez</div>
-                        </div>
-                        <Button size="sm" className="bg-green-600 hover:bg-green-700">
-                          Atender
-                        </Button>
-                      </div>
-
-                      <div className="bg-gray-50 p-3 rounded-lg border-l-4 border-gray-300 flex justify-between items-center">
-                        <div>
-                          <div className="font-medium">14:15 - Coco (Poodle)</div>
-                          <div className="text-sm text-gray-500">Limpieza dental</div>
-                          <div className="text-sm text-gray-500">Propietario: Roberto Sánchez</div>
-                        </div>
-                        <Button size="sm" variant="outline">
-                          Pendiente
-                        </Button>
-                      </div>
-
-                      <div className="bg-gray-50 p-3 rounded-lg border-l-4 border-gray-300 flex justify-between items-center">
-                        <div>
-                          <div className="font-medium">16:00 - Simba (Maine Coon)</div>
-                          <div className="text-sm text-gray-500">Vacunación</div>
-                          <div className="text-sm text-gray-500">Propietario: Carmen López</div>
-                        </div>
-                        <Button size="sm" variant="outline">
-                          Pendiente
-                        </Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+          <div className="card summary-card">
+            <div className="card-content">
+              <div className="flex items-center">
+                <div className="summary-icon-container green">
+                  <PawPrint className="h-6 w-6" />
+                </div>
+                <div>
+                  <div className="summary-label">Pacientes totales</div>
+                  <div className="summary-value">142</div>
+                </div>
               </div>
-
-              {/* Pacientes recientes */}
-              <div>
-                <Card className="h-full">
-                  <CardHeader>
-                    <CardTitle>Pacientes recientes</CardTitle>
-                    <CardDescription>Últimos pacientes atendidos</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <div className="flex items-center">
-                        <div className="bg-blue-100 p-2 rounded-full mr-3">
-                          <PawPrint className="h-5 w-5 text-blue-600" />
-                        </div>
-                        <div className="flex-1">
-                          <div className="font-medium">Max (Labrador)</div>
-                          <div className="text-sm text-gray-500">Vacunación - 10/05/2025</div>
-                        </div>
-                        <Button variant="ghost" size="sm" className="text-blue-600">
-                          Ver
-                        </Button>
-                      </div>
-
-                      <div className="flex items-center">
-                        <div className="bg-blue-100 p-2 rounded-full mr-3">
-                          <PawPrint className="h-5 w-5 text-blue-600" />
-                        </div>
-                        <div className="flex-1">
-                          <div className="font-medium">Milo (Beagle)</div>
-                          <div className="text-sm text-gray-500">Cirugía - 09/05/2025</div>
-                        </div>
-                        <Button variant="ghost" size="sm" className="text-blue-600">
-                          Ver
-                        </Button>
-                      </div>
-
-                      <div className="flex items-center">
-                        <div className="bg-blue-100 p-2 rounded-full mr-3">
-                          <PawPrint className="h-5 w-5 text-blue-600" />
-                        </div>
-                        <div className="flex-1">
-                          <div className="font-medium">Luna (Siamés)</div>
-                          <div className="text-sm text-gray-500">Control - 08/05/2025</div>
-                        </div>
-                        <Button variant="ghost" size="sm" className="text-blue-600">
-                          Ver
-                        </Button>
-                      </div>
-
-                      <div className="flex items-center">
-                        <div className="bg-blue-100 p-2 rounded-full mr-3">
-                          <PawPrint className="h-5 w-5 text-blue-600" />
-                        </div>
-                        <div className="flex-1">
-                          <div className="font-medium">Toby (Golden)</div>
-                          <div className="text-sm text-gray-500">Emergencia - 07/05/2025</div>
-                        </div>
-                        <Button variant="ghost" size="sm" className="text-blue-600">
-                          Ver
-                        </Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
-
-            {/* Accesos rápidos */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-6">
-              <Link
-                href="/consulta/nueva"
-                className="bg-white rounded-lg shadow-sm p-6 text-center hover:shadow-md transition-shadow border border-gray-100"
-              >
-                <div className="bg-blue-100 rounded-full p-3 w-12 h-12 mx-auto mb-3 flex items-center justify-center">
-                  <FileText className="h-6 w-6 text-blue-600" />
-                </div>
-                <div className="text-blue-600 font-medium">Nueva consulta</div>
-              </Link>
-
-              <Link
-                href="/agenda"
-                className="bg-white rounded-lg shadow-sm p-6 text-center hover:shadow-md transition-shadow border border-gray-100"
-              >
-                <div className="bg-purple-100 rounded-full p-3 w-12 h-12 mx-auto mb-3 flex items-center justify-center">
-                  <Calendar className="h-6 w-6 text-purple-600" />
-                </div>
-                <div className="text-purple-600 font-medium">Agenda</div>
-              </Link>
-
-              <Link
-                href="/pacientes/nuevo"
-                className="bg-white rounded-lg shadow-sm p-6 text-center hover:shadow-md transition-shadow border border-gray-100"
-              >
-                <div className="bg-green-100 rounded-full p-3 w-12 h-12 mx-auto mb-3 flex items-center justify-center">
-                  <PawPrint className="h-6 w-6 text-green-600" />
-                </div>
-                <div className="text-green-600 font-medium">Nuevo paciente</div>
-              </Link>
-
-              <Link
-                href="/inventario"
-                className="bg-white rounded-lg shadow-sm p-6 text-center hover:shadow-md transition-shadow border border-gray-100"
-              >
-                <div className="bg-amber-100 rounded-full p-3 w-12 h-12 mx-auto mb-3 flex items-center justify-center">
-                  <Pill className="h-6 w-6 text-amber-600" />
-                </div>
-                <div className="text-amber-600 font-medium">Inventario</div>
-              </Link>
             </div>
           </div>
-        </main>
+
+          <div className="card summary-card">
+            <div className="card-content">
+              <div className="flex items-center">
+                <div className="summary-icon-container purple">
+                  <FileText className="h-6 w-6" />
+                </div>
+                <div>
+                  <div className="summary-label">Consultas pendientes</div>
+                  <div className="summary-value">3</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="card summary-card">
+            <div className="card-content">
+              <div className="flex items-center">
+                <div className="summary-icon-container yellow">
+                  <Pill className="h-6 w-6" />
+                </div>
+                <div>
+                  <div className="summary-label">Medicamentos bajos</div>
+                  <div className="summary-value">5</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Citas de hoy */}
+          <div className="lg:col-span-2">
+            <div className="card">
+              <div className="card-header">
+                <h3 className="card-title">Citas de hoy</h3>
+                <Link to="/agenda" className="link-text">
+                  Ver todas <ChevronRight className="h-4 w-4" />
+                </Link>
+              </div>
+              <div className="card-content">
+                <div className="space-y-4">
+                  <div className="appointment-card blue">
+                    <div className="flex justify-between">
+                      <div className="flex items-start">
+                        <div className="appointment-icon-container blue">
+                          <Clock className="h-4 w-4" />
+                        </div>
+                        <div>
+                          <div className="appointment-title">09:00 - Max (Labrador)</div>
+                          <div className="appointment-text">Vacunación anual</div>
+                          <div className="appointment-text">Propietario: Juan Pérez</div>
+                        </div>
+                      </div>
+                      <div className="flex space-x-2">
+                        <button className="btn btn-sm btn-success">
+                          Atender
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="appointment-card green">
+                    <div className="flex justify-between">
+                      <div className="flex items-start">
+                        <div className="appointment-icon-container green">
+                          <Clock className="h-4 w-4" />
+                        </div>
+                        <div>
+                          <div className="appointment-title">11:00 - Luna (Siamés)</div>
+                          <div className="appointment-text">Control rutinario</div>
+                          <div className="appointment-text">Propietario: María González</div>
+                        </div>
+                      </div>
+                      <div className="flex space-x-2">
+                        <button className="btn btn-sm btn-success">
+                          Atender
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="appointment-card gray">
+                    <div className="flex justify-between">
+                      <div className="flex items-start">
+                        <div className="appointment-icon-container gray">
+                          <Clock className="h-4 w-4" />
+                        </div>
+                        <div>
+                          <div className="appointment-title">15:00 - Rocky (Bulldog)</div>
+                          <div className="appointment-text">Seguimiento dermatológico</div>
+                          <div className="appointment-text">Propietario: Ana Martínez</div>
+                        </div>
+                      </div>
+                      <div className="flex space-x-2">
+                        <button className="btn btn-sm btn-success">
+                          Atender
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="appointment-card gray">
+                    <div className="flex justify-between">
+                      <div className="flex items-start">
+                        <div className="appointment-icon-container gray">
+                          <Clock className="h-4 w-4" />
+                        </div>
+                        <div>
+                          <div className="appointment-title">17:00 - Coco (Poodle)</div>
+                          <div className="appointment-text">Limpieza dental</div>
+                          <div className="appointment-text">Propietario: Roberto Sánchez</div>
+                        </div>
+                      </div>
+                      <div className="flex space-x-2">
+                        <button className="btn btn-sm btn-success">
+                          Atender
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Pacientes recientes */}
+          <div className="lg:col-span-1">
+            <div className="card">
+              <div className="card-header">
+                <h3 className="card-title">Pacientes recientes</h3>
+                <Link to="/pacientes" className="link-text">
+                  Ver todos <ChevronRight className="h-4 w-4" />
+                </Link>
+              </div>
+              <div className="card-content">
+                <div className="space-y-4">
+                  <div className="patient-item">
+                    <div className="patient-icon-container">
+                      <PawPrint className="h-5 w-5" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="patient-name">Max</div>
+                      <div className="patient-info">Labrador, 3 años</div>
+                    </div>
+                    <Link to="/historial/1" className="patient-link">
+                      Historial
+                    </Link>
+                  </div>
+
+                  <div className="patient-item">
+                    <div className="patient-icon-container">
+                      <PawPrint className="h-5 w-5" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="patient-name">Luna</div>
+                      <div className="patient-info">Siamés, 2 años</div>
+                    </div>
+                    <Link to="/historial/2" className="patient-link">
+                      Historial
+                    </Link>
+                  </div>
+
+                  <div className="patient-item">
+                    <div className="patient-icon-container">
+                      <PawPrint className="h-5 w-5" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="patient-name">Rocky</div>
+                      <div className="patient-info">Bulldog, 4 años</div>
+                    </div>
+                    <Link to="/historial/3" className="patient-link">
+                      Historial
+                    </Link>
+                  </div>
+
+                  <div className="patient-item">
+                    <div className="patient-icon-container">
+                      <PawPrint className="h-5 w-5" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="patient-name">Coco</div>
+                      <div className="patient-info">Poodle, 5 años</div>
+                    </div>
+                    <Link to="/historial/4" className="patient-link">
+                      Historial
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Accesos rápidos */}
+        <div className="mt-6">
+          <h2 className="text-xl font-bold text-gray-800 mb-4">Accesos rápidos</h2>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <Link to="/consulta/nueva" className="quick-access-card">
+              <div className="quick-access-icon-container blue">
+                <FileText className="h-6 w-6" />
+              </div>
+              <div className="quick-access-title">Nueva consulta</div>
+            </Link>
+            <Link to="/agenda/nueva" className="quick-access-card">
+              <div className="quick-access-icon-container green">
+                <Calendar className="h-6 w-6" />
+              </div>
+              <div className="quick-access-title">Agendar cita</div>
+            </Link>
+            <Link to="/pacientes/nuevo" className="quick-access-card">
+              <div className="quick-access-icon-container purple">
+                <Plus className="h-6 w-6" />
+              </div>
+              <div className="quick-access-title">Nuevo paciente</div>
+            </Link>
+            <Link to="/reportes" className="quick-access-card">
+              <div className="quick-access-icon-container yellow">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z"
+                  />
+                </svg>
+              </div>
+              <div className="quick-access-title">Reportes</div>
+            </Link>
+          </div>
+        </div>
       </div>
-    </div>
+    </>
   )
 }
