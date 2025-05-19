@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import TablaCitas from './TablaCitas';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import '../../stylos/cssAdmin/ModuloCitas.css';
-import { exportarExcel } from '../../funcionalidades/expExcel';
-import { exportarPDF } from '../../funcionalidades/expPDF';
 
 const ModuloCitas = () => {
   const citasData = [
@@ -26,7 +28,7 @@ const ModuloCitas = () => {
       horaInicio: '13:45',
       estado: 'pendiente'
     },
-  ]
+  ];
 
   const [citas, setCitas] = useState(citasData);
   const [filteredCitas, setFilteredCitas] = useState(citasData);
@@ -45,11 +47,71 @@ const ModuloCitas = () => {
     estado: 'pendiente'
   });
 
-  //Filtros de paginas citas
+  // Función para exportar a Excel
+  const handleExportExcel = () => {
+    const excelData = filteredCitas.map(cita => ({
+      'ID': cita.id,
+      'Paciente': cita.paciente,
+      'Descripción': cita.descripcion,
+      'Especialista': cita.especialista,
+      'Especialidad': cita.especialidad,
+      'Fecha': cita.fecha,
+      'Hora': cita.horaInicio,
+      'Estado': cita.estado
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(excelData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Citas');
+
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    
+    saveAs(blob, 'Citas_Medicas.xlsx');
+  };
+
+  // Función para exportar a PDF
+  const handleExportPDF = () => {
+    const doc = new jsPDF();
+    
+    doc.text('Lista de Citas Médicas', 14, 15);
+    
+    const tableData = filteredCitas.map(cita => [
+      cita.id,
+      cita.paciente,
+      cita.descripcion.substring(0, 30) + (cita.descripcion.length > 30 ? '...' : ''),
+      cita.especialista,
+      cita.especialidad,
+      cita.fecha,
+      cita.horaInicio,
+      cita.estado
+    ]);
+    
+    autoTable(doc, {
+      head: [['ID', 'Paciente', 'Descripción', 'Especialista', 'Especialidad', 'Fecha', 'Hora', 'Estado']],
+      body: tableData,
+      startY: 20,
+      styles: {
+        fontSize: 8,
+        cellPadding: 2
+      },
+      headStyles: {
+        fillColor: [41, 128, 185],
+        textColor: 255,
+        fontStyle: 'bold'
+      },
+      columnStyles: {
+        2: { cellWidth: 30 }
+      }
+    });
+    
+    doc.save('Citas_Medicas.pdf');
+  };
+
+  // Filtros de paginas citas
   useEffect(() => {
     let result = citas;
     
-    // Filter by search term
     if (search) {
       const searchTerm = search.toLowerCase();
       result = result.filter(cita => 
@@ -61,7 +123,7 @@ const ModuloCitas = () => {
     }
     
     setFilteredCitas(result);
-    setCurrentPage(1); // Reset to first page when filtering
+    setCurrentPage(1);
   }, [search, citas]);
 
   // Get current page records
@@ -69,23 +131,13 @@ const ModuloCitas = () => {
   const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
   const currentRecords = filteredCitas.slice(indexOfFirstRecord, indexOfLastRecord);
   const totalPages = Math.ceil(filteredCitas.length / recordsPerPage);
-
-  // Handlers
-  const handleExportExcel = () => {
-    exportarExcel(filteredCitas, 'Citas_Medicas');
-  };
-
-  const handleExportPDF = () => {
-    exportarPDF(filteredCitas, 'Citas_Medicas');
-  };
-
   const handleSearchChange = (e) => {
     setSearch(e.target.value);
   };
 
   const handleRecordsPerPageChange = (e) => {
     setRecordsPerPage(Number(e.target.value));
-    setCurrentPage(1); // Reset to first page when changing records per page
+    setCurrentPage(1);
   };
 
   const handleNewCitaClick = () => {
@@ -240,18 +292,7 @@ const ModuloCitas = () => {
         <div className="module-title">
           <h1>Registro de Citas Médicas</h1>
         </div>
-        <div className="button-group">
-          <button className="btn btn-primary" onClick={handleNewCitaClick}>
-            Nuevo
-          </button>
-          <button className="btn btn-primary" onClick={handleExportExcel}>
-            Excel
-          </button>
-          <button className="btn btn-primary" onClick={handleExportPDF}>
-            PDF
-          </button>
-        </div>
-        
+
         <div className="controls-row">
           <div className="show-entries">
             <span>Mostrar</span>
@@ -268,6 +309,18 @@ const ModuloCitas = () => {
             <span>registros</span>
           </div>
           
+          <div className="export-buttons">
+            <button className="btn-new" onClick={handleNewCitaClick}>
+              <i className="fa fa-plus"></i> Nuevo
+            </button>
+            <button className="btn-excel" onClick={handleExportExcel}>
+              <i className="fa fa-file-excel-o"></i> Excel
+            </button>
+            <button className="btn-pdf" onClick={handleExportPDF}>
+              <i className="fa fa-file-pdf-o"></i> PDF
+            </button>
+          </div>
+
           <div className="search-box">
             <span>Buscar:</span>
             <input 
@@ -280,7 +333,6 @@ const ModuloCitas = () => {
           </div>
         </div>
         
-        {/* Tabla de citas */}
         <TablaCitas 
           citas={currentRecords} 
           onAccept={handleAcceptCita}
@@ -288,7 +340,6 @@ const ModuloCitas = () => {
           onDelete={handleDeleteCita}
         />
         
-        {/* Pagination */}
         {filteredCitas.length > 0 && (
           <div className="pagination">
             <div className="page-info">

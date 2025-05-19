@@ -479,4 +479,4 @@ function HisCli() {
   )
 }
 
-export default HisCli
+export default HisCli;

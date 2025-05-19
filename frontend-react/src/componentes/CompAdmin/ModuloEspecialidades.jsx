@@ -1,295 +1,360 @@
-import React, { useState, useEffect, useRef } from 'react';
-import '../../stylos/cssAdmin/ModEspecialidades.css';
-import { exportarExcel } from '../../funcionalidades/expExcel';
-import { exportarPDF } from '../../funcionalidades/expPDF';
+import { useState, useEffect } from 'react';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
+import '../../stylos/cssAdmin/ModuloEspecialistas.css';
 
-function ModuloEspecialidades() {
-  // Datos iniciales de especialidades
-  const especialidadesIniciales = [
-    { id: 1, nombre: 'Oftalmología' },
-    { id: 2, nombre: 'Ginecología y Obstetricia' },
-    { id: 3, nombre: 'Ortopedia' },
-  ];
+const especialistasIniciales = [
+  {
+    id: 1,
+    nombre: "Dr. Carlos Sánchez",
+    especialidad: "Oftalmología",
+    telefono: "934524223",
+    nacionalidad: "Colombia",
+    correo: "adsa@gmail.com"
+  },
+  {
+    id: 2,
+    nombre: "Dr. Juan Pérez",
+    especialidad: "Cardiología",
+    telefono: "934524275",
+    nacionalidad: "Colombia",
+    correo: "juan@gmail.com"
+  },
+  {
+    id: 3,
+    nombre: "Dra. María Rodríguez",
+    especialidad: "Dermatología",
+    telefono: "993473765",
+    nacionalidad: "Colombia",
+    correo: "maria@gmail.com"
+  },
+];
 
+export default function ModuloEspecialistas() {
   // Estados
-  const [especialidades, setEspecialidades] = useState(especialidadesIniciales);
-  const [busqueda, setBusqueda] = useState('');
+  const [especialistas, setEspecialistas] = useState(especialistasIniciales);
   const [registrosPorPagina, setRegistrosPorPagina] = useState(10);
   const [paginaActual, setPaginaActual] = useState(1);
-  const [especialidadEditando, setEspecialidadEditando] = useState(null);
-  const [nuevaEspecialidad, setNuevaEspecialidad] = useState({ nombre: '' });
+  const [busqueda, setBusqueda] = useState("");
   const [mostrarModal, setMostrarModal] = useState(false);
-  const [modoEdicion, setModoEdicion] = useState(false);
-  const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false);
-  const [idParaEliminar, setIdParaEliminar] = useState(null);
+  const [especialistaEditando, setEspecialistaEditando] = useState(null);
+  const [nuevoEspecialista, setNuevoEspecialista] = useState({
+    nombre: "",
+    especialidad: "",
+    telefono: "",
+    nacionalidad: "Colombiana",
+    correo: ""
+  });
   const [error, setError] = useState('');
-  
-  const modalRef = useRef(null);
-  const nombreInputRef = useRef(null);
 
-  // Efecto para manejar el foco en el modal
-  useEffect(() => {
-    if (mostrarModal && nombreInputRef.current) {
-      nombreInputRef.current.focus();
-    }
-  }, [mostrarModal]);
+  // Función para exportar a Excel
+  const exportarExcel = () => {
+    const excelData = especialistasFiltrados.map(esp => ({
+      'ID': esp.id,
+      'Nombre': esp.nombre,
+      'Especialidad': esp.especialidad,
+      'Teléfono': esp.telefono,
+      'Nacionalidad': esp.nacionalidad,
+      'Correo': esp.correo
+    }));
 
-  // Efecto para cerrar el modal al hacer clic fuera
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (modalRef.current && !modalRef.current.contains(event.target)) {
-        cerrarModal();
+    const worksheet = XLSX.utils.json_to_sheet(excelData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Especialistas');
+
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    
+    saveAs(blob, 'Especialistas.xlsx');
+  };
+
+  // Función para exportar a PDF
+  const exportarPDF = () => {
+    const doc = new jsPDF();
+    
+    doc.text('Lista de Especialistas', 14, 15);
+    
+    const tableData = especialistasFiltrados.map(esp => [
+      esp.id,
+      esp.nombre,
+      esp.especialidad,
+      esp.telefono,
+      esp.nacionalidad,
+      esp.correo
+    ]);
+    
+    autoTable(doc, {
+      head: [['ID', 'Nombre', 'Especialidad', 'Teléfono', 'Nacionalidad', 'Correo']],
+      body: tableData,
+      startY: 20,
+      styles: {
+        fontSize: 8,
+        cellPadding: 2
+      },
+      headStyles: {
+        fillColor: [41, 128, 185],
+        textColor: 255,
+        fontStyle: 'bold'
+      },
+      columnStyles: {
+        1: { cellWidth: 30 }, // Ancho para nombre
+        2: { cellWidth: 25 }  // Ancho para especialidad
       }
-    }
+    });
     
-    if (mostrarModal) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-    
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [mostrarModal]);
+    doc.save('Especialistas.pdf');
+  };
 
-  // Filtrar especialidades según la búsqueda
-  const especialidadesFiltradas = especialidades.filter(esp => 
-    esp.nombre.toLowerCase().includes(busqueda.toLowerCase())
+  // Filtrar especialistas según la búsqueda
+  const especialistasFiltrados = especialistas.filter(especialista => 
+    Object.values(especialista).some(valor => 
+      valor.toString().toLowerCase().includes(busqueda.toLowerCase())
+    )
   );
 
-  // Calcular índices para paginación
-  const indexUltimo = paginaActual * registrosPorPagina;
-  const indexPrimero = indexUltimo - registrosPorPagina;
-  const especialidadesActuales = especialidadesFiltradas.slice(indexPrimero, indexUltimo);
-  const totalPaginas = Math.ceil(especialidadesFiltradas.length / registrosPorPagina);
+  // Calcular índices para la paginación
+  const indexUltimoRegistro = paginaActual * registrosPorPagina;
+  const indexPrimerRegistro = indexUltimoRegistro - registrosPorPagina;
+  const especialistasActuales = especialistasFiltrados.slice(indexPrimerRegistro, indexUltimoRegistro);
+  const totalPaginas = Math.ceil(especialistasFiltrados.length / registrosPorPagina);
 
-  // Crear array de números de página
-  const numeroPaginas = [];
-  for (let i = 1; i <= totalPaginas; i++) {
-    numeroPaginas.push(i);
-  }
-
-  // Cambiar página
+  // Función para cambiar de página
   const cambiarPagina = (numeroPagina) => {
-    setPaginaActual(numeroPagina);
-  };
-
-  // Ir a página anterior
-  const paginaAnterior = () => {
-    if (paginaActual > 1) {
-      setPaginaActual(paginaActual - 1);
+    if (numeroPagina > 0 && numeroPagina <= totalPaginas) {
+      setPaginaActual(numeroPagina);
     }
   };
 
-  // Ir a página siguiente
-  const paginaSiguiente = () => {
-    if (paginaActual < totalPaginas) {
-      setPaginaActual(paginaActual + 1);
-    }
-  };
-
-  // Manejar cambio en registros por página
-  const cambiarRegistrosPorPagina = (e) => {
-    setRegistrosPorPagina(parseInt(e.target.value));
-    setPaginaActual(1);
-  };
-
-  // Manejar búsqueda
+  // Función para manejar la búsqueda
   const manejarBusqueda = (e) => {
     setBusqueda(e.target.value);
-    setPaginaActual(1);
+    setPaginaActual(1); // Regresar a la primera página al buscar
   };
 
-  // Eliminar especialidad con confirmación
-  const iniciarEliminarEspecialidad = (id) => {
-    setIdParaEliminar(id);
-    setMostrarConfirmacion(true);
-  };
-
-  const confirmarEliminarEspecialidad = () => {
-    const nuevasEspecialidades = especialidades.filter(esp => esp.id !== idParaEliminar);
-    setEspecialidades(nuevasEspecialidades);
-    setMostrarConfirmacion(false);
-    // Si estamos en una página que ya no existe después de eliminar, volvemos a la anterior
-    if (especialidadesActuales.length === 1 && paginaActual > 1) {
-      setPaginaActual(paginaActual - 1);
+  // Función para eliminar un especialista
+  const eliminarEspecialista = (id) => {
+    if (window.confirm('¿Está seguro de que desea eliminar este especialista?')) {
+      setEspecialistas(especialistas.filter(esp => esp.id !== id));
     }
   };
 
-  const cancelarEliminarEspecialidad = () => {
-    setMostrarConfirmacion(false);
-    setIdParaEliminar(null);
-  };
-
-  // Preparar para agregar nueva especialidad
-  const prepararNuevaEspecialidad = () => {
-    setModoEdicion(false);
-    setNuevaEspecialidad({ nombre: '' });
-    setError('');
-    setMostrarModal(true);
-  };
-  
   // Función para abrir el modal de edición
-  const abrirModalEdicion = (especialidad) => {
-    setModoEdicion(true);
-    setEspecialidadEditando(especialidad);
-    setNuevaEspecialidad({...especialidad});
+  const abrirModalEdicion = (especialista) => {
+    setEspecialistaEditando(especialista);
+    setNuevoEspecialista({...especialista});
     setError('');
     setMostrarModal(true);
   };
 
-  // Cerrar modal
-  const cerrarModal = () => {
-    setMostrarModal(false);
-    setEspecialidadEditando(null);
-    setNuevaEspecialidad({ nombre: '' });
-    setError('');
-  };
-
-  // Manejar cambio en el formulario
-  const handleInputChange = (e) => {
-    setNuevaEspecialidad({
-      ...nuevaEspecialidad,
-      [e.target.name]: e.target.value
+  // Función para abrir el modal de nuevo especialista
+  const abrirModalNuevo = () => {
+    setEspecialistaEditando(null);
+    setNuevoEspecialista({
+      nombre: "",
+      especialidad: "",
+      telefono: "",
+      nacionalidad: "Colombiana",
+      correo: ""
     });
+    setError('');
+    setMostrarModal(true);
   };
 
-  // Validar el formulario
+  // Función para manejar cambios en el formulario
+  const manejarCambioInput = (e) => {
+    const { name, value } = e.target;
+    setNuevoEspecialista(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  // Validar formulario
   const validarFormulario = () => {
-    if (!nuevaEspecialidad.nombre || nuevaEspecialidad.nombre.trim() === '') {
-      setError('El nombre de la especialidad es obligatorio');
+    if (!nuevoEspecialista.nombre.trim()) {
+      setError('El nombre es obligatorio');
       return false;
     }
-
-    // Verificar si ya existe la especialidad (ignorando la que estamos editando)
-    const nombreExiste = especialidades.some(
-      esp => esp.nombre.toLowerCase() === nuevaEspecialidad.nombre.toLowerCase() && 
-      (!modoEdicion || (modoEdicion && esp.id !== especialidadEditando.id))
-    );
-
-    if (nombreExiste) {
-      setError('Esta especialidad ya existe');
+    if (!nuevoEspecialista.especialidad.trim()) {
+      setError('La especialidad es obligatoria');
       return false;
     }
-
+    if (!nuevoEspecialista.telefono.trim()) {
+      setError('El teléfono es obligatorio');
+      return false;
+    }
+    if (!nuevoEspecialista.correo.trim()) {
+      setError('El correo es obligatorio');
+      return false;
+    }
+    if (!nuevoEspecialista.correo.includes('@')) {
+      setError('Ingrese un correo válido');
+      return false;
+    }
+    
+    setError('');
     return true;
   };
 
-  // Guardar especialidad (nueva o editada)
-  const guardarEspecialidad = (e) => {
+  // Función para guardar un especialista (nuevo o editado)
+  const guardarEspecialista = (e) => {
     e.preventDefault();
     
     if (!validarFormulario()) {
       return;
     }
 
-    if (modoEdicion) {
-      // Actualizar especialidad existente
-      const especialidadesActualizadas = especialidades.map(esp => 
-        esp.id === especialidadEditando.id ? { ...esp, ...nuevaEspecialidad } : esp
-      );
-      setEspecialidades(especialidadesActualizadas);
+    if (especialistaEditando) {
+      // Actualizar especialista existente
+      setEspecialistas(especialistas.map(esp => 
+        esp.id === especialistaEditando.id ? {...nuevoEspecialista, id: esp.id} : esp
+      ));
     } else {
-      // Agregar nueva especialidad
-      const especialidadConId = {
-        ...nuevaEspecialidad,
-        id: especialidades.length > 0 ? Math.max(...especialidades.map(e => e.id)) + 1 : 1
-      };
-      setEspecialidades([...especialidades, especialidadConId]);
+      // Añadir nuevo especialista
+      const nuevoId = especialistas.length > 0 ? Math.max(...especialistas.map(esp => esp.id)) + 1 : 1;
+      setEspecialistas([...especialistas, {...nuevoEspecialista, id: nuevoId}]);
+    }
+    setMostrarModal(false);
+  };
+
+  // Generar números de página con límite de 5
+  const getNumerosPagina = () => {
+    const paginas = [];
+    const paginasTotales = Math.ceil(especialistasFiltrados.length / registrosPorPagina);
+    let inicio = 1;
+    let fin = paginasTotales;
+
+    if (paginasTotales > 5) {
+      if (paginaActual <= 3) {
+        fin = 5;
+      } else if (paginaActual >= paginasTotales - 2) {
+        inicio = paginasTotales - 4;
+      } else {
+        inicio = paginaActual - 2;
+        fin = paginaActual + 2;
+      }
     }
 
-    cerrarModal();
+    for (let i = inicio; i <= fin; i++) {
+      paginas.push(i);
+    }
+
+    return paginas;
   };
-  
+
   return (
-    <div className="modulo-especialidades">
+    <div className="modulo-especialistas">
       <header className="modulo-header">
-        <h1>MÓDULO DE REGISTROS DE ESPECIALIDADES</h1>
+        <h1>MODULO DE REGISTROS DE ESPECIALISTAS</h1>
       </header>
       
       <main className="modulo-main">
-        <div className="tabla-especialidades-container">
+        <div className="tabla-especialistas-container">
           {/* Sección de controles */}
           <section className="controls">
-            <button type="button" className="btn btn-nuevo" onClick={prepararNuevaEspecialidad}>
-              Nuevo
-            </button>
-            <button type="button" className="btn btn-excel" onClick={exportarExcel}>
-              Excel
-            </button>
-            <button type="button" className="btn btn-pdf" onClick={exportarPDF}>
-              PDF
-            </button>
-          </section>
-
-          {/* Sección de filtros */}
-          <section className="filters">
-            <div className="show-entries">
-              <label htmlFor="show-entries">Mostrar</label>
-              <select 
-                id="show-entries" 
-                value={registrosPorPagina} 
-                onChange={cambiarRegistrosPorPagina}
+            <div className="controls-left">
+              <button 
+                type="button" 
+                className="btn btn-nuevo" 
+                onClick={abrirModalNuevo}
               >
-                <option value="10">10</option>
-                <option value="25">25</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-              </select>
-              <span>registros</span>
+                <i className="fa fa-plus"></i> Nuevo Especialista
+              </button>
             </div>
+            
+            <div className="controls-right">
+              <div className="show-entries">
+                <label htmlFor="show-entries">Mostrar</label>
+                <select 
+                  id="show-entries" 
+                  value={registrosPorPagina} 
+                  onChange={(e) => {
+                    setRegistrosPorPagina(Number(e.target.value));
+                    setPaginaActual(1);
+                  }}
+                >
+                  <option value="5">5</option>
+                  <option value="10">10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                </select>
+                <span>registros</span>
+              </div>
 
-            <div className="search-box">
-              <label htmlFor="search">Buscar:</label>
-              <input 
-                type="search" 
-                id="search" 
-                value={busqueda} 
-                onChange={manejarBusqueda} 
-                placeholder="Buscar especialidad..."
-              />
+              <div className="search-box">
+                <input 
+                  type="search" 
+                  value={busqueda} 
+                  onChange={manejarBusqueda}
+                  placeholder="Buscar especialista..."
+                />
+                <i className="fa fa-search"></i>
+              </div>
             </div>
           </section>
 
-          {/* Tabla de especialidades */}
+          {/* Sección de exportación */}
+          <section className="export-buttons">
+            <button className="btn btn-excel" onClick={exportarExcel}>
+              <i className="fa fa-file-excel-o"></i> Excel
+            </button>
+            <button className="btn btn-pdf" onClick={exportarPDF}>
+              <i className="fa fa-file-pdf-o"></i> PDF
+            </button>
+          </section>
+
+          {/* Tabla de especialistas */}
           <section className="table-container">
             <table className="data-table">
               <thead>
                 <tr>
                   <th className="column-id">#</th>
-                  <th className="column-nombre">ESPECIALIDAD</th>
+                  <th className="column-nombre">ESPECIALISTA</th>
+                  <th className="column-especialidad">ESPECIALIDAD</th>
+                  <th className="column-telefono">TELÉFONO</th>
+                  <th className="column-nacionalidad">NACIONALIDAD</th>
+                  <th className="column-correo">CORREO</th>
                   <th className="column-acciones">ACCIONES</th>
                 </tr>
               </thead>
               <tbody>
-                {especialidadesActuales.length > 0 ? (
-                  especialidadesActuales.map((especialidad) => (
-                    <tr key={especialidad.id}>
-                      <td>{especialidad.id}</td>
-                      <td>{especialidad.nombre}</td>
+                {especialistasActuales.length > 0 ? (
+                  especialistasActuales.map((especialista) => (
+                    <tr key={especialista.id}>
+                      <td>{especialista.id}</td>
+                      <td>{especialista.nombre}</td>
+                      <td>{especialista.especialidad}</td>
+                      <td>{especialista.telefono}</td>
+                      <td>{especialista.nacionalidad}</td>
+                      <td>{especialista.correo}</td>
                       <td>
-                      <div className="actions">
-                        <button 
-                          className="action-btn edit" 
-                          onClick={() => abrirModalEdicion(especialidad)}
-                          aria-label="Editar"
-                        >
-                          ✏️
-                        </button>
-                        <button 
-                          className="action-btn delete" 
-                          onClick={() => iniciarEliminarEspecialidad(especialidad.id)}
-                          aria-label="Eliminar"
-                        >
-                          🗑️
-                        </button>
-                      </div>
+                        <div className="actions">
+                          <button 
+                            className="action-btn edit" 
+                            onClick={() => abrirModalEdicion(especialista)}
+                            aria-label="Editar"
+                            title="Editar"
+                          >
+                            <i className="fa fa-edit"></i>
+                          </button>
+                          <button 
+                            className="action-btn delete" 
+                            onClick={() => eliminarEspecialista(especialista.id)}
+                            aria-label="Eliminar"
+                            title="Eliminar"
+                          >
+                            <i className="fa fa-trash"></i>
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="3" className="no-records">
-                      {busqueda ? 'No se encontraron especialidades con ese término' : 'No hay especialidades registradas'}
+                    <td colSpan="7" className="no-records">
+                      {busqueda ? 'No se encontraron especialistas con ese término' : 'No hay especialistas registrados'}
                     </td>
                   </tr>
                 )}
@@ -300,21 +365,21 @@ function ModuloEspecialidades() {
           {/* Paginación */}
           <section className="pagination">
             <p className="page-info">
-              {especialidadesFiltradas.length === 0 
+              {especialistasFiltrados.length === 0 
                 ? 'No hay registros para mostrar' 
-                : `Mostrando del ${indexPrimero + 1} al ${Math.min(indexUltimo, especialidadesFiltradas.length)} de un total de ${especialidadesFiltradas.length} registros`
+                : `Mostrando del ${indexPrimerRegistro + 1} al ${Math.min(indexUltimoRegistro, especialistasFiltrados.length)} de un total de ${especialistasFiltrados.length} registros`
               }
             </p>
             <div className="page-controls">
               <button 
                 className="page-button" 
-                onClick={paginaAnterior} 
+                onClick={() => cambiarPagina(paginaActual - 1)} 
                 disabled={paginaActual === 1 || totalPaginas === 0}
               >
-                Anterior
+                <i className="fa fa-chevron-left"></i> Anterior
               </button>
               
-              {numeroPaginas.map(numero => (
+              {getNumerosPagina().map(numero => (
                 <button 
                   key={numero}
                   className={`page-button ${paginaActual === numero ? 'active' : ''}`}
@@ -326,79 +391,103 @@ function ModuloEspecialidades() {
               
               <button 
                 className="page-button" 
-                onClick={paginaSiguiente} 
+                onClick={() => cambiarPagina(paginaActual + 1)} 
                 disabled={paginaActual === totalPaginas || totalPaginas === 0}
               >
-                Siguiente
+                Siguiente <i className="fa fa-chevron-right"></i>
               </button>
             </div>
           </section>
         </div>
       </main>
 
-      {/* Modal para agregar/editar especialidad */}
+      {/* Modal para crear/editar especialistas */}
       {mostrarModal && (
         <div className="modal-overlay">
-          <div className="modal-container" ref={modalRef}>
+          <div className="modal-container">
             <div className="modal-header">
-              <h2>{modoEdicion ? 'Editar Especialidad' : 'Nueva Especialidad'}</h2>
-              <button className="modal-close" onClick={cerrarModal} aria-label="Cerrar">
+              <h2>{especialistaEditando ? 'Editar Especialista' : 'Nuevo Especialista'}</h2>
+              <button className="modal-close" onClick={() => setMostrarModal(false)} aria-label="Cerrar">
+                <i className="fa fa-times"></i>
               </button>
             </div>
             
-            <form onSubmit={guardarEspecialidad} className="modal-form">
+            <form onSubmit={guardarEspecialista} className="modal-form">
               <div className="form-group">
-                <label htmlFor="nombre">Nombre de la especialidad:</label>
-                <input
-                  type="text"
-                  id="nombre"
-                  name="nombre"
-                  value={nuevaEspecialidad.nombre || ''}
-                  onChange={handleInputChange}
-                  ref={nombreInputRef}
-                  placeholder="Ingrese el nombre de la especialidad"
-                  className={error ? 'input-error' : ''}
-                  autoComplete="off"
+                <label htmlFor="nombre">Nombre:</label>
+                <input 
+                  type="text" 
+                  id="nombre" 
+                  name="nombre" 
+                  value={nuevoEspecialista.nombre} 
+                  onChange={manejarCambioInput}
+                  required
                 />
-                {error && <p className="error-message">{error}</p>}
+              </div>
+              <div className="form-group">
+                <label htmlFor="especialidad">Especialidad:</label>
+                <input 
+                  type="text" 
+                  id="especialidad" 
+                  name="especialidad" 
+                  value={nuevoEspecialista.especialidad} 
+                  onChange={manejarCambioInput}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="telefono">Teléfono:</label>
+                <input 
+                  type="text" 
+                  id="telefono" 
+                  name="telefono" 
+                  value={nuevoEspecialista.telefono} 
+                  onChange={manejarCambioInput}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="nacionalidad">Nacionalidad:</label>
+                <select
+                  id="nacionalidad" 
+                  name="nacionalidad" 
+                  value={nuevoEspecialista.nacionalidad} 
+                  onChange={manejarCambioInput}
+                  required
+                >
+                  <option value="Colombiana">Colombiana</option>
+                  <option value="Peruana">Peruana</option>
+                  <option value="Mexicana">Mexicana</option>
+                  <option value="Argentina">Argentina</option>
+                  <option value="Chilena">Chilena</option>
+                </select>
+              </div>
+              <div className="form-group">
+                <label htmlFor="correo">Correo:</label>
+                <input 
+                  type="email" 
+                  id="correo" 
+                  name="correo" 
+                  value={nuevoEspecialista.correo} 
+                  onChange={manejarCambioInput}
+                  required
+                />
               </div>
               
+              {error && <p className="error-message">{error}</p>}
+              
               <div className="modal-actions">
-                <button type="button" className="btn btn-cancelar" onClick={cerrarModal}>
-                  Cancelar
+                <button type="button" className="btn btn-cancelar" onClick={() => setMostrarModal(false)}>
+                  <i className="fa fa-times"></i> Cancelar
                 </button>
                 <button type="submit" className="btn btn-guardar">
-                  {modoEdicion ? 'Actualizar' : 'Guardar'}
+                  <i className="fa fa-save"></i> Guardar
                 </button>
               </div>
             </form>
           </div>
         </div>
       )}
-
-      {/* Modal de confirmación para eliminar */}
-      {mostrarConfirmacion && (
-        <div className="modal-overlay">
-          <div className="modal-container modal-confirmacion" ref={modalRef}>
-            <div className="modal-header">
-              <h2>Confirmar eliminación</h2>
-              <button className="modal-close" onClick={cancelarEliminarEspecialidad} aria-label="Cerrar">
-              </button>
-            </div>
-            
-            <div className="modal-body">
-              <p>¿Está seguro de que desea eliminar esta especialidad?</p>
-              <p>Esta acción no se puede deshacer.</p>
-            </div>
-            
-              <button type="button" className="btn btn-eliminar" onClick={confirmarEliminarEspecialidad}>
-                Eliminar
-              </button>
-            </div>
-          </div>
-      )}
     </div>
   );
 }
-
-export default ModuloEspecialidades;

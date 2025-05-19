@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import FormUsuarios from './FormUsuarios';
-import { exportarExcel } from '../../funcionalidades/expExcel';
-import { exportarPDF } from '../../funcionalidades/expPDF';
 import '../../stylos/cssAdmin/TablaUsuarios.css';
 
 
@@ -108,15 +106,6 @@ const TablaUsuarios = () => {
     setPaginaActual(Math.max(1, Math.min(pagina, totalPaginas)));
   };
 
-  // Exportación
-  const handleExportarExcel = () => {
-    exportarExcel(usuariosFiltrados, 'usuarios');
-  };
-
-  const handleExportarPDF = () => {
-    exportarPDF(usuariosFiltrados, 'usuarios');
-  };
-
   return (
     <div className="container">
       {mostrarFormulario && (
@@ -126,6 +115,7 @@ const TablaUsuarios = () => {
           onCancelar={handleCancelar}
         />
       )}
+      
 
       <div className="content-card">
         <div className="button-group">
@@ -138,12 +128,6 @@ const TablaUsuarios = () => {
             }}
           >
             Nuevo
-          </button>
-          <button className="btn btn-primary" onClick={handleExportarExcel}>
-            Excel
-          </button>
-          <button className="btn btn-primary" onClick={handleExportarPDF}>
-            PDF
           </button>
         </div>
         

@@ -24,4 +24,4 @@ const EncabezadoAdmin = ({ onToggleMenu, isSidebarOpen, userData }) => {
   )
 }
 
-export default EncabezadoAdmin
+export default EncabezadoAdmin;

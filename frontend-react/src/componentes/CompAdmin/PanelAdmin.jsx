@@ -62,4 +62,4 @@ const PanelAdmin = () => {
   )
 }
 
-export default PanelAdmin
+export default PanelAdmin;
