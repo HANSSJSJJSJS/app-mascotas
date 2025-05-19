@@ -1,0 +1,34 @@
+/* PanelVeterinario.css */
+:root {
+  --color1: #000000;
+  --color2: #1a2540;
+  --color3: #495a90;
+  --color4: #8196eb;
+  --color5: #c2d8ff;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #f8fafc;
+}
+
+.content-wrapper {
+  position: relative;
+  min-height: calc(100vh - 70px);
+  background-color: #f8fafc;
+}
+
+.content-area {
+  background-color: #f8fafc;
+  min-height: calc(100vh - 70px);
+  border-radius: 8px;
+}
+
+@media (max-width: 1024px) {
+  .content-wrapper {
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+}

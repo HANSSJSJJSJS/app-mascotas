@@ -5,6 +5,9 @@ import RutaProtegida from "./RutaProtegida";
 import LayoutPublico from "../componentes/layouts/LayoutPublico";
 import LayoutAdmin from "../componentes/layouts/LayoutAdmin";
 import LayoutPropietario from "../componentes/layouts/LayoutPropietario";
+import LayoutVet from "../componentes/layouts/LayoutVet";
+import Loading from "../componentes/index/Loading";
+
 
 // Componentes públicos
 const Home = React.lazy(() => import("../componentes/index/Home"));
@@ -33,7 +36,15 @@ const FormularioCita = React.lazy(() => import("../componentes/CompFormularios/F
 const ActualizarPropietario = React.lazy(() => import("../componentes/CompPropietario/ActualizarPropietario"));
 const Mascota = React.lazy(() => import("../componentes/CompPropietario/Mascota"));
 
-const Loading = () => <div className="loading-spinner">Cargando...</div>;
+// Componentes veterinario
+const PanelVet = React.lazy(() => import("../componentes/CompVet/PanelVet"))
+const InicioVet = React.lazy(() => import("../componentes/CompVet/InicioVet"));
+const AgendaVet = React.lazy(() => import("../componentes/CompVet/AgendaVet"));
+const HisVet = React.lazy(() => import("../componentes/CompAdmin/HisCli"));
+const Consultas = React.lazy(() => import("../componentes/CompVet/Consultas"));
+const NuevaConsulta = React.lazy(() => import("../componentes/CompVet/NuevaConsulta"));
+const Pacientes = React.lazy(() => import("../componentes/CompVet/Pacientes"));
+
 
 const MainRoutes = () => {
   const isDevelopment = process.env.NODE_ENV === 'development';
@@ -62,6 +73,14 @@ const MainRoutes = () => {
     </React.Suspense>
   );
 
+    const RutasVet = () => (
+    <React.Suspense fallback={<Loading />}>
+      <LayoutVet>
+        <Outlet />
+      </LayoutVet>
+    </React.Suspense>
+  );
+
   return (
     <Routes>
       {/* Redirección por defecto */}
@@ -80,7 +99,7 @@ const MainRoutes = () => {
 
       {/* Rutas admin */}
       <Route element={isDevelopment ? <RutasAdmin /> : <RutaProtegida rolPermitido="admin"><RutasAdmin /></RutaProtegida>}>
-        <Route path="/PanelAdmin" element={<LayoutAdmin />}>
+        <Route path="/PanelAdmin" element={<PanelAdmin />}>
           <Route index element={<ModuloCitas />} />
           <Route path="TablaCitas" element={<ModuloCitas />} />
           <Route path="usuarios" element={<TablaUsuarios />} />
@@ -102,6 +121,18 @@ const MainRoutes = () => {
           <Route path="mascota" element={<Mascota />} />
         </Route>
       </Route>
+
+      {/* Rutas veterinario */}
+    <Route element={isDevelopment ? <RutasVet /> : <RutaProtegida rolPermitido="veterinario"><RutasVet /></RutaProtegida>}>
+      <Route path="/PanelVet" element={<PanelVet />}>
+        <Route index element={<InicioVet />} />
+        <Route path="nueva-consulta" element={<NuevaConsulta />} />
+        <Route path="agenda" element={<AgendaVet />} />
+        <Route path="consultas" element={<Consultas />} />
+        <Route path="historial-clinico" element={<HisVet />} />
+        <Route path="pacientes" element={<Pacientes />} />
+      </Route>
+    </Route>
 
       {/* Página 404 - Not Found */}
       <Route path="*" element={<NotFound />} />

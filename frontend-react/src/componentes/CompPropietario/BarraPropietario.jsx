@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import { Home, Calendar, User, Bone, X } from "lucide-react"
 import { Link, useLocation } from "react-router-dom"

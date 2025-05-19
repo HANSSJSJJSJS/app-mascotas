@@ -1,132 +1,320 @@
-import { Calendar, FileText, PawPrint, Plus, Activity, Pill, ChevronLeft, ChevronRight } from "lucide-react"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Calendar, FileText, PawPrint, Plus, Activity, Pill, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Link } from "react-router-dom"
+import "../../stylos/cssVet/BaseVet.css"
+import "../../stylos/cssVet/AgendaVet.css"
+import { useState } from "react"
 
-export default function AgendaPage() {
+export default function AgendaVet() {
+  const [activeTab, setActiveTab] = useState("dia")
+
   return (
-    <div className="flex h-screen bg-blue-50">
+    <div className="vet-container">
       {/* Barra lateral */}
-      <div className="w-64 bg-indigo-800 text-white flex flex-col">
-        <div className="p-4 font-bold text-lg border-b border-indigo-700 flex items-center">
-          <PawPrint className="mr-2 h-6 w-6" />
+      <div className="sidebar">
+        <div className="sidebar-header">
+          <PawPrint className="sidebar-logo" />
           <span>VETCLINIC</span>
         </div>
-        <div className="p-4 border-b border-indigo-700">
-          <div className="text-sm text-indigo-200">Veterinario</div>
-          <div className="font-medium">Dr. Carlos Rodríguez</div>
+        <div className="sidebar-user">
+          <div className="sidebar-user-role">Veterinario</div>
+          <div className="sidebar-user-name">Dr. Carlos Rodríguez</div>
         </div>
-        <nav className="flex-1 pt-4">
-          <Link 
-            href="/" 
-            className="flex items-center px-4 py-3 text-white hover:bg-indigo-700"
-          >
-            <Activity className="mr-3 h-5 w-5" />
-            Dashboard
+        <nav className="sidebar-nav">
+          <Link to="/" className="sidebar-link">
+            <Activity className="sidebar-icon" />
+            <span>Dashboard</span>
           </Link>
-          <Link 
-            href="/agenda" 
-            className="flex items-center px-4 py-3 bg-indigo-900 text-white hover:bg-indigo-700"
-          >
-            <Calendar className="mr-3 h-5 w-5" />
-            Agenda
+          <Link to="/agenda" className="sidebar-link active">
+            <Calendar className="sidebar-icon" />
+            <span>Agenda</span>
           </Link>
-          <Link 
-            href="/pacientes" 
-            className="flex items-center px-4 py-3 text-white hover:bg-indigo-700"
-          >
-            <PawPrint className="mr-3 h-5 w-5" />
-            Pacientes
+          <Link to="/pacientes" className="sidebar-link">
+            <PawPrint className="sidebar-icon" />
+            <span>Pacientes</span>
           </Link>
-          <Link 
-            href="/consulta" 
-            className="flex items-center px-4 py-3 text-white hover:bg-indigo-700"
-          >
-            <FileText className="mr-3 h-5 w-5" />
-            Consultas
+          <Link to="/consulta" className="sidebar-link">
+            <FileText className="sidebar-icon" />
+            <span>Consultas</span>
           </Link>
-          <Link 
-            href="/historial" 
-            className="flex items-center px-4 py-3 text-white hover:bg-indigo-700"
-          >
-            <FileText className="mr-3 h-5 w-5" />
-            Historiales
+          <Link to="/historial" className="sidebar-link">
+            <FileText className="sidebar-icon" />
+            <span>Historiales</span>
           </Link>
-          <Link 
-            href="/inventario" 
-            className="flex items-center px-4 py-3 text-white hover:bg-indigo-700"
-          >
-            <Pill className="mr-3 h-5 w-5" />
-            Inventario
+          <Link to="/inventario" className="sidebar-link">
+            <Pill className="sidebar-icon" />
+            <span>Inventario</span>
           </Link>
         </nav>
-        <div className="p-4 border-t border-indigo-700">
-          <Button variant="outline" className="w-full bg-indigo-700 hover:bg-indigo-600 text-white border-indigo-600">
+        <div className="sidebar-footer">
+          <button className="logout-button">
             Cerrar sesión
-          </Button>
+          </button>
         </div>
       </div>
 
       {/* Contenido principal */}
-      <div className="flex-1 overflow-auto">
+      <div className="main-content">
         {/* Cabecera */}
-        <header className="bg-white shadow-sm p-4">
-          <div className="max-w-7xl mx-auto flex justify-between items-center">
-            <h1 className="text-2xl font-bold text-gray-800">Agenda</h1>
-            <div className="flex items-center space-x-4">
-              <Link href="/consulta/nueva">
-                <Button className="bg-indigo-600 hover:bg-indigo-700">
-                  <Plus className="h-4 w-4 mr-2" />
-                  Nueva cita
-                </Button>
+        <header className="header">
+          <div className="header-container">
+            <h1 className="page-title">Agenda</h1>
+            <div className="header-actions">
+              <Link to="/consulta/nueva" className="btn btn-primary">
+                <Plus className="btn-icon" />
+                Nueva cita
               </Link>
             </div>
           </div>
         </header>
 
         {/* Contenido de Agenda */}
-        <main className="p-6">
-          <div className="max-w-7xl mx-auto">
-            <Tabs defaultValue="dia" className="w-full">
-              <div className="flex justify-between items-center mb-4">
-                <TabsList>
-                  <TabsTrigger value="dia">Día</TabsTrigger>
-                  <TabsTrigger value="semana">Semana</TabsTrigger>
-                  <TabsTrigger value="mes">Mes</TabsTrigger>
-                </TabsList>
-                <div className="flex items-center space-x-4">
-                  <Button variant="outline" size="sm">
+        <main className="content">
+          <div className="content-container">
+            <div className="tabs">
+              <div className="tabs-header">
+                <div className="tabs-list">
+                  <button 
+                    className={`tab-button ${activeTab === "dia" ? "active" : ""}`}
+                    onClick={() => setActiveTab("dia")}
+                  >
+                    Día
+                  </button>
+                  <button 
+                    className={`tab-button ${activeTab === "semana" ? "active" : ""}`}
+                    onClick={() => setActiveTab("semana")}
+                  >
+                    Semana
+                  </button>
+                  <button 
+                    className={`tab-button ${activeTab === "mes" ? "active" : ""}`}
+                    onClick={() => setActiveTab("mes")}
+                  >
+                    Mes
+                  </button>
+                </div>
+                <div className="date-navigation">
+                  <button className="btn btn-outline btn-sm">
                     <ChevronLeft className="h-4 w-4" />
-                  </Button>
-                  <div className="font-medium">12 de mayo, 2025</div>
-                  <Button variant="outline" size="sm">
+                  </button>
+                  <div className="current-date">12 de mayo, 2025</div>
+                  <button className="btn btn-outline btn-sm">
                     <ChevronRight className="h-4 w-4" />
-                  </Button>
-                  <Button variant="outline" size="sm">Hoy</Button>
+                  </button>
+                  <button className="btn btn-outline btn-sm">
+                    Hoy
+                  </button>
                 </div>
               </div>
-              
-              <TabsContent value="dia">
-                <Card>
-                  <CardContent className="p-0">
-                    <div className="grid grid-cols-1 divide-y">
-                      <div className="flex p-4">
-                        <div className="w-16 text-center">
-                          <div className="font-medium">09:00</div>
-                        </div>
-                        <div className="flex-1 ml-4">
-                          <div className="bg-blue-50 p-3 rounded-lg border-l-4 border-blue-500">
-                            <div className="font-medium">Max (Labrador)</div>
-                            <div className="text-sm text-gray-500">Vacunación anual</div>
-                            <div className="text-sm text-gray-500">Propietario: Juan Pérez</div>
+
+              <div className="tab-content">
+                {activeTab === "dia" && (
+                  <div className="card">
+                    <div className="day-schedule">
+                      <div className="time-slot">
+                        <div className="time-label">09:00</div>
+                        <div className="appointment-container">
+                          <div className="appointment blue">
+                            <div className="appointment-title">Max (Labrador)</div>
+                            <div className="appointment-detail">Vacunación anual</div>
+                            <div className="appointment-detail">Propietario: Juan Pérez</div>
                           </div>
                         </div>
                       </div>
-                      
-                      <div className="flex p-4">
-                        <div className="w-16 text-center">
-                          <div className="font-medium">10:00</div>
+
+                      <div className="time-slot">
+                        <div className="time-label">10:00</div>
+                        <div className="appointment-container"></div>
+                      </div>
+
+                      <div className="time-slot">
+                        <div className="time-label">11:00</div>
+                        <div className="appointment-container">
+                          <div className="appointment green">
+                            <div className="appointment-title">Luna (Siamés)</div>
+                            <div className="appointment-detail">Control rutinario</div>
+                            <div className="appointment-detail">Propietario: María González</div>
+                          </div>
                         </div>
-                        <div className="flex-1 ml-4"></div>
-                \
+                      </div>
+
+                      <div className="time-slot">
+                        <div className="time-label">12:00</div>
+                        <div className="appointment-container"></div>
+                      </div>
+
+                      <div className="time-slot">
+                        <div className="time-label">13:00</div>
+                        <div className="appointment-container"></div>
+                      </div>
+
+                      <div className="time-slot">
+                        <div className="time-label">14:00</div>
+                        <div className="appointment-container"></div>
+                      </div>
+
+                      <div className="time-slot">
+                        <div className="time-label">15:00</div>
+                        <div className="appointment-container">
+                          <div className="appointment purple">
+                            <div className="appointment-title">Rocky (Bulldog)</div>
+                            <div className="appointment-detail">Seguimiento dermatológico</div>
+                            <div className="appointment-detail">Propietario: Ana Martínez</div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="time-slot">
+                        <div className="time-label">16:00</div>
+                        <div className="appointment-container"></div>
+                      </div>
+
+                      <div className="time-slot">
+                        <div className="time-label">17:00</div>
+                        <div className="appointment-container">
+                          <div className="appointment yellow">
+                            <div className="appointment-title">Coco (Poodle)</div>
+                            <div className="appointment-detail">Limpieza dental</div>
+                            <div className="appointment-detail">Propietario: Roberto Sánchez</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === "semana" && (
+                  <div className="card">
+                    <div className="card-content">
+                      <div className="week-schedule">
+                        <table className="schedule-table">
+                          <thead>
+                            <tr>
+                              <th>Hora</th>
+                              <th>Lunes</th>
+                              <th>Martes</th>
+                              <th>Miércoles</th>
+                              <th>Jueves</th>
+                              <th>Viernes</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td className="time-cell">09:00</td>
+                              <td className="appointment-cell blue">Max (Labrador)</td>
+                              <td></td>
+                              <td></td>
+                              <td className="appointment-cell green">Simba (Persa)</td>
+                              <td></td>
+                            </tr>
+                            <tr>
+                              <td className="time-cell">10:00</td>
+                              <td></td>
+                              <td className="appointment-cell purple">Toby (Beagle)</td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                            </tr>
+                            <tr>
+                              <td className="time-cell">11:00</td>
+                              <td className="appointment-cell green">Luna (Siamés)</td>
+                              <td></td>
+                              <td className="appointment-cell yellow">Nala (Mestizo)</td>
+                              <td></td>
+                              <td className="appointment-cell blue">Kira (Pastor)</td>
+                            </tr>
+                            <tr>
+                              <td className="time-cell">12:00</td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                            </tr>
+                            <tr>
+                              <td className="time-cell">15:00</td>
+                              <td className="appointment-cell purple">Rocky (Bulldog)</td>
+                              <td></td>
+                              <td></td>
+                              <td className="appointment-cell green">Milo (Gato)</td>
+                              <td></td>
+                            </tr>
+                            <tr>
+                              <td className="time-cell">17:00</td>
+                              <td className="appointment-cell yellow">Coco (Poodle)</td>
+                              <td></td>
+                              <td className="appointment-cell blue">Lucas (Husky)</td>
+                              <td></td>
+                              <td></td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === "mes" && (
+                  <div className="card">
+                    <div className="card-content">
+                      <div className="month-calendar">
+                        <div className="calendar-grid">
+                          <div className="calendar-header">Lun</div>
+                          <div className="calendar-header">Mar</div>
+                          <div className="calendar-header">Mié</div>
+                          <div className="calendar-header">Jue</div>
+                          <div className="calendar-header">Vie</div>
+                          <div className="calendar-header">Sáb</div>
+                          <div className="calendar-header">Dom</div>
+
+                          <div className="calendar-day prev-month">29</div>
+                          <div className="calendar-day prev-month">30</div>
+                          <div className="calendar-day prev-month">1</div>
+                          <div className="calendar-day">2</div>
+                          <div className="calendar-day">3</div>
+                          <div className="calendar-day">4</div>
+                          <div className="calendar-day">5</div>
+
+                          <div className="calendar-day">6</div>
+                          <div className="calendar-day">7</div>
+                          <div className="calendar-day">8</div>
+                          <div className="calendar-day">9</div>
+                          <div className="calendar-day">10</div>
+                          <div className="calendar-day">11</div>
+                          <div className="calendar-day">12</div>
+
+                          <div className="calendar-day current">13</div>
+                          <div className="calendar-day">14</div>
+                          <div className="calendar-day">15</div>
+                          <div className="calendar-day">16</div>
+                          <div className="calendar-day">17</div>
+                          <div className="calendar-day">18</div>
+                          <div className="calendar-day">19</div>
+
+                          <div className="calendar-day">20</div>
+                          <div className="calendar-day">21</div>
+                          <div className="calendar-day">22</div>
+                          <div className="calendar-day">23</div>
+                          <div className="calendar-day">24</div>
+                          <div className="calendar-day">25</div>
+                          <div className="calendar-day">26</div>
+
+                          <div className="calendar-day">27</div>
+                          <div className="calendar-day">28</div>
+                          <div className="calendar-day">29</div>
+                          <div className="calendar-day">30</div>
+                          <div className="calendar-day">31</div>
+                          <div className="calendar-day next-month">1</div>
+                          <div className="calendar-day next-month">2</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  )
+}
