@@ -44,9 +44,6 @@ export default function NavigationDrawer() {
         <nav className="drawer-nav">
           <ul>
             <li>
-              <Link to="/" onClick={toggleDrawer}>Inicio</Link>
-            </li>
-            <li>
               <Link to="/Servicios" onClick={toggleDrawer}>Servicios</Link>
             </li>
             <li>

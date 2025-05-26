@@ -12,9 +12,9 @@ export default function InicioPropietario() {
   const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
 
   return (
-    <div className="flex min-h-screen bg-[var(--color5)]/10">
+    <div className="min-h-screen bg-white"> {/* Fondo blanco */}
       {/* Main content */}
-      <main className="flex-1">
+      <main className="flex-1 max-w-6xl mx-auto px-4 py-6"> {/* Centrado con margen automático y padding */}
         <div className="page-content">
           {/* Encabezado de bienvenida */}
           <div className="welcome-header">
@@ -118,32 +118,6 @@ export default function InicioPropietario() {
                       <button className="action-button">Confirmar</button>
                     </div>
                   </div>
-                </div>
-              </div>
-
-              {/* Accesos rápidos */}
-              <div className="dashboard-section">
-                <h3 className="section-title">Accesos rápidos</h3>
-                <div className="quick-links">
-                  <Link to="/agendar-cita" className="quick-link-card">
-                    <Calendar size={24} className="icon" />
-                    <span>Agendar cita</span>
-                  </Link>
-
-                  <Link to="#" className="quick-link-card">
-                    <Clipboard size={24} className="icon" />
-                    <span>Historial clínico</span>
-                  </Link>
-
-                  <Link to="/ActualizarPropietario" className="quick-link-card">
-                    <User size={24} className="icon" />
-                    <span>Mi perfil</span>
-                  </Link>
-
-                  <Link to="#" className="quick-link-card">
-                    <Home size={24} className="icon" />
-                    <span>Ubicación</span>
-                  </Link>
                 </div>
               </div>
             </div>

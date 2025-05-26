@@ -251,48 +251,6 @@ const Servicios = () => {
             ))}
           </div>
         </section>
-
-        {/* Llamado a la acción */}
-        <section className="servicios-llamado animate-on-scroll" style={{ opacity: isVisible[5] ? 1 : 0 }}>
-          <div className="llamado-content">
-            <MdOutlineHealthAndSafety className="llamado-icon" />
-            <h2 className="servicios-subtitulo">¿Listo para cuidar la salud de tu mascota?</h2>
-            <p>Agenda una cita hoy mismo y déjanos cuidar de tu compañero fiel con el mejor servicio veterinario.</p>
-            
-            <div className="botones-accion">
-              <button className="boton-accion">
-                <MdPhone className="boton-icon" /> Contactar
-              </button>
-              <button className="boton-accion secundario">
-                <MdLocationOn className="boton-icon" /> Ver Ubicación
-              </button>
-            </div>
-          </div>
-        </section>
-        
-        {/* Horarios */}
-        <section className="servicios-horarios animate-on-scroll" style={{ opacity: isVisible[6] ? 1 : 0 }}>
-          <h2 className="servicios-subtitulo">Horarios de Atención</h2>
-          
-          <div className="horarios-grid">
-            <div className="horario-dia">
-              <div className="horario-dia-nombre">Lunes a Viernes</div>
-              <div className="horario-dia-horas">8:00 AM - 8:00 PM</div>
-            </div>
-            <div className="horario-dia">
-              <div className="horario-dia-nombre">Sábados</div>
-              <div className="horario-dia-horas">9:00 AM - 6:00 PM</div>
-            </div>
-            <div className="horario-dia">
-              <div className="horario-dia-nombre">Domingos</div>
-              <div className="horario-dia-horas">10:00 AM - 2:00 PM</div>
-            </div>
-            <div className="horario-dia emergencia">
-              <div className="horario-dia-nombre">Emergencias</div>
-              <div className="horario-dia-horas">24/7</div>
-            </div>
-          </div>
-        </section>
       </main>
       
     </div>

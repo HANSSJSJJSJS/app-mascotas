@@ -1,7 +1,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import "../../stylos/cssFormularios/CambioContraseña.css";
-import logo from "../imagenes/logo.png";
+import logo from "../../imagenes/logo.png";
 
 function CambioContraseña() {
     const { register, handleSubmit, watch, formState: { errors } } = useForm();
@@ -16,13 +16,6 @@ function CambioContraseña() {
             <div className="container-contraseña">
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <h1>CAMBIO DE CONTRASEÑA</h1>
-
-                    <label>Contraseña Actual:</label>
-                    <input 
-                        type="password" 
-                        {...register("actualPassword", { required: "La contraseña actual es obligatoria" })}
-                    />
-                    {errors.actualPassword && <p>{errors.actualPassword.message}</p>}
 
                     <label>Nueva Contraseña:</label>
                     <input 

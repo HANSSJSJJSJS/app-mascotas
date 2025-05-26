@@ -17,6 +17,7 @@ const SobreNosotros = React.lazy(() => import("../componentes/CompHome/SobreNoso
 const Login = React.lazy(() => import("../componentes/CompFormularios/Login"));
 const Propietario = React.lazy(() => import("../componentes/CompFormularios/Propietario"));
 const OlvideContrasena = React.lazy(() => import("../componentes/CompFormularios/OlvideContrasena"));
+const CambioContraseña = React.lazy(() => import("../componentes/CompFormularios/CambioContraseña"))
 const NotFound = React.lazy(() => import("../componentes/CompHome/NotFound"));
 
 // Componentes admin
@@ -94,6 +95,7 @@ const MainRoutes = () => {
         <Route path="/SobreNosotros" element={<SobreNosotros />} />
         <Route path="/Propietario" element={<Propietario />} />
         <Route path="/OlvideContrasena" element={<OlvideContrasena />} />
+        <Route path="/CambioContraseña" element={<CambioContraseña />} />
       </Route>
 
       {/* Rutas admin */}

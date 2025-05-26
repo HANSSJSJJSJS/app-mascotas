@@ -42,7 +42,7 @@ const PanelPropietario = () => {
       <div
         className="content-wrapper"
         style={{
-          marginLeft: menuAbierto ? "250px" : "70px",
+          marginLeft: menuAbierto ? "-20vh" : "70px",
           width: menuAbierto ? "calc(100% - 250px)" : "calc(100% - 70px)",
           transition: "margin-left 0.3s ease, width 0.3s ease",
         }}

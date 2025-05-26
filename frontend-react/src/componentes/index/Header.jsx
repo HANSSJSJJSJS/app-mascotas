@@ -24,9 +24,6 @@ const Header = () => {
       <nav className="navbarra">
         <div className="navtext">
           <div className="left-nav desktop-nav">
-            <NavLink to="/Home" className={({ isActive }) => `nav-item nav-link ${isActive ? "active" : ""}`}>
-              Inicio
-            </NavLink>
             <NavLink to="/Servicios" className={({ isActive }) => `nav-item nav-link ${isActive ? "active" : ""}`}>
               Servicios
             </NavLink>
