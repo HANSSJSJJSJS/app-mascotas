@@ -26,12 +26,19 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.3s ease;
 }
+
 
 .barra-header h2 {
   font-size: 14px;
   font-weight: bold;
   margin: 0;
+  transition: all 0.3s ease;
+}
+
+.barra-lateral.colapsado .barra-header h2 {
+  font-size: 12px;
 }
 
 /* Contenedor con desplazamiento */
@@ -97,6 +104,13 @@
   margin-left: 12px;
   font-size: 13px;
   white-space: nowrap;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.barra-lateral.colapsado .text-container {
+  opacity: 0;
+  display: none;
 }
 
 .icon-container {
@@ -118,6 +132,11 @@
   padding: 12px 15px;
   color: white;
   text-decoration: none;
+  transition: background-color 0.2s;
+}
+
+.logout-link:hover {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .barra-lateral.colapsado .logout-link {
@@ -128,6 +147,10 @@
 .logout-link .text-container {
   margin-left: 12px;
   font-size: 13px;
+}
+
+.barra-lateral.colapsado .logout-link .text-container {
+  display: none;
 }
 
 @media screen and (max-width: 768px) {

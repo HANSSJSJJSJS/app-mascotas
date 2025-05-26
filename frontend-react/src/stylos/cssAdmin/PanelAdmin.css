@@ -30,6 +30,7 @@ body {
   min-height: calc(100vh - 70px);
   width: 100%;
   position: relative;
+  margin-top: 70px; /* Altura fija del header */
 }
 
 .page-content {

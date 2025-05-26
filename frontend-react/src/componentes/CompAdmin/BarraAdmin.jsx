@@ -1,11 +1,12 @@
-// BarraAdmin.jsx
+"use client"
+
 import { Link, useLocation } from "react-router-dom"
 import "../../stylos/cssAdmin/BarraLateral.css"
 
 // Importar iconos directamente
 import { Home, Calendar, Users, Briefcase, Stethoscope, Bone, Clock, History, LogOut } from "lucide-react"
 
-const BarraLateral = () => {
+const BarraLateral = ({ onToggleMenu, menuAbierto }) => {
   const location = useLocation()
 
   // Definir los elementos del menú
@@ -21,10 +22,10 @@ const BarraLateral = () => {
   ]
 
   return (
-    <aside className="barra-lateral">
+    <aside className={`barra-lateral ${!menuAbierto ? "colapsado" : ""}`}>
       {/* Encabezado de la barra lateral */}
-      <div className="barra-header">
-        <h2>MENU ADMIN</h2>
+      <div className="barra-header" onClick={onToggleMenu} style={{ cursor: "pointer" }}>
+        <h2>{menuAbierto ? "MENU ADMIN" : "MENU"}</h2>
       </div>
 
       <div className="menu-scroll-container">
@@ -34,7 +35,7 @@ const BarraLateral = () => {
               <li key={index} className={location.pathname === item.path ? "active" : ""}>
                 <Link to={item.path} className="link">
                   <div className="icon-container">{item.icon}</div>
-                  <span className="text-container">{item.text}</span>
+                  {menuAbierto && <span className="text-container">{item.text}</span>}
                 </Link>
               </li>
             ))}
@@ -47,7 +48,7 @@ const BarraLateral = () => {
           <div className="icon-container">
             <LogOut size={18} />
           </div>
-          <span className="text-container">Cerrar Sesión</span>
+          {menuAbierto && <span className="text-container">Cerrar Sesión</span>}
         </Link>
       </div>
     </aside>
