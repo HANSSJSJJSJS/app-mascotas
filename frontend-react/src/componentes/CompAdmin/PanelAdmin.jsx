@@ -1,4 +1,5 @@
-// PanelAdmin.jsx
+"use client"
+
 import { Outlet } from "react-router-dom"
 import { useState, useEffect } from "react"
 import "../../stylos/cssAdmin/PanelAdmin.css"
@@ -36,30 +37,32 @@ const PanelAdmin = () => {
   }
 
   return (
-    <div className="app-container">
-      <BarraLateral onToggleMenu={toggleMenu} menuAbierto={menuAbierto} />
-      <EncabezadoAdmin onToggleMenu={toggleMenu} userData={userData} isSidebarOpen={menuAbierto} />
-      <div
-        className="content-wrapper"
-        style={{
-          marginLeft: menuAbierto ? "250px" : "70px",
-          width: menuAbierto ? "calc(100% - 250px)" : "calc(100% - 70px)",
-          transition: "margin-left 0.3s ease, width 0.3s ease",
-        }}
-      >
+    <div className="admin-panel">
+      <div className="app-container">
+        <BarraLateral onToggleMenu={toggleMenu} menuAbierto={menuAbierto} />
+        <EncabezadoAdmin userData={userData} isSidebarOpen={menuAbierto} />
         <div
-          className="content-area"
+          className="content-wrapper"
           style={{
-            marginTop: "70px",
-            padding: "20px",
-            width: "100%",
+            marginLeft: menuAbierto ? "180px" : "60px",
+            width: menuAbierto ? "calc(100% - 180px)" : "calc(100% - 60px)",
+            transition: "margin-left 0.3s ease, width 0.3s ease",
           }}
         >
-          <Outlet />
+          <div
+            className="content-area"
+            style={{
+              marginTop: "70px",
+              padding: "20px",
+              width: "100%",
+            }}
+          >
+            <Outlet />
+          </div>
         </div>
       </div>
     </div>
   )
 }
 
-export default PanelAdmin;
+export default PanelAdmin

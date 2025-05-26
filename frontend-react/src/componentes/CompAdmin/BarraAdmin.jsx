@@ -1,4 +1,5 @@
-// BarraAdmin.jsx
+"use client"
+
 import { Link, useLocation } from "react-router-dom"
 import { useState } from "react";
 import "../../stylos/cssAdmin/BarraLateral.css"
@@ -6,7 +7,7 @@ import "../../stylos/cssAdmin/BarraLateral.css"
 // Importar iconos directamente
 import { Home, Calendar, Users, Bone, Clock, History, LogOut } from "lucide-react"
 
-const BarraLateral = () => {
+const BarraLateral = ({ onToggleMenu, menuAbierto }) => {
   const location = useLocation()
   const [dropdownOpen, setDropdownOpen] = useState(false)
 
@@ -22,7 +23,7 @@ const BarraLateral = () => {
   const menuItems = [
     { icon: <Home size={18} />, text: "Inicio", path: "/PanelAdmin" },
     { icon: <Calendar size={18} />, text: "Citas", path: "/PanelAdmin/TablaCitas" },
-    { 
+    { |
       icon: <Users size={18} />, 
       text: "Usuarios", 
       path: "/PanelAdmin/usuarios",
@@ -38,16 +39,17 @@ const BarraLateral = () => {
   ]
 
   return (
-    <aside className="barra-lateral">
+    <aside className={`barra-lateral ${!menuAbierto ? "colapsado" : ""}`}>
       {/* Encabezado de la barra lateral */}
-      <div className="barra-header">
-        <h2>MENU ADMIN</h2>
+      <div className="barra-header" onClick={onToggleMenu} style={{ cursor: "pointer" }}>
+        <h2>{menuAbierto ? "MENU ADMIN" : "MENU"}</h2>
       </div>
 
       <div className="menu-scroll-container">
         <nav>
           <ul className="menu-lateral">
             {menuItems.map((item, index) => (
+<<<<<<< HEAD
               <li 
                 key={index} 
                 className={`${location.pathname === item.path ? "active" : ""} ${item.dropdown ? "has-dropdown" : ""}`}
@@ -78,6 +80,13 @@ const BarraLateral = () => {
                     <span className="text-container">{item.text}</span>
                   </Link>
                 )}
+=======
+              <li key={index} className={location.pathname === item.path ? "active" : ""}>
+                <Link to={item.path} className="link">
+                  <div className="icon-container">{item.icon}</div>
+                  {menuAbierto && <span className="text-container">{item.text}</span>}
+                </Link>
+>>>>>>> 78b55353a6adac822fa0abd3bc0493f31550c568
               </li>
             ))}
           </ul>
@@ -89,7 +98,7 @@ const BarraLateral = () => {
           <div className="icon-container">
             <LogOut size={18} />
           </div>
-          <span className="text-container">Cerrar Sesión</span>
+          {menuAbierto && <span className="text-container">Cerrar Sesión</span>}
         </Link>
       </div>
     </aside>

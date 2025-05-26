@@ -1,21 +1,24 @@
 "use client"
-import { Menu } from "lucide-react"
+import { User } from "lucide-react"
 import "../../stylos/cssAdmin/Encabezado.css"
 
-const EncabezadoAdmin = ({ onToggleMenu, isSidebarOpen, userData }) => {
+const EncabezadoAdmin = ({ userData, isSidebarOpen }) => {
   return (
     <div className={`encabezado-container ${isSidebarOpen ? "sidebar-open" : "sidebar-closed"}`}>
-      <header className="encabezado">
-        <div className="menu-container">
-          <button className="boton-menu" onClick={onToggleMenu}>
-            <Menu size={20} />
-            <span>MENU</span>
-          </button>
+      <header className="encabezado-1">
+        <div className="welcome-container">
+          <div className="welcome-content">
+            <User size={24} className="welcome-icon" />
+            <div className="welcome-text">
+              <span className="welcome-title">Bienvenido Administrador</span>
+              <small className="welcome-subtitle">Panel de Control</small>
+            </div>
+          </div>
         </div>
 
         <div className="header-controls">
           <div className="info-usuario">
-            <span>{userData?.username || "Admi"}</span>
+            <span>{userData?.username || "Admin"}</span>
             <small>{userData?.role || "Administrador"}</small>
           </div>
         </div>
@@ -24,4 +27,4 @@ const EncabezadoAdmin = ({ onToggleMenu, isSidebarOpen, userData }) => {
   )
 }
 
-export default EncabezadoAdmin;
+export default EncabezadoAdmin
