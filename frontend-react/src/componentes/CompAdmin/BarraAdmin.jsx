@@ -1,20 +1,37 @@
 // BarraAdmin.jsx
 import { Link, useLocation } from "react-router-dom"
+import { useState } from "react";
 import "../../stylos/cssAdmin/BarraLateral.css"
 
 // Importar iconos directamente
-import { Home, Calendar, Users, Briefcase, Stethoscope, Bone, Clock, History, LogOut } from "lucide-react"
+import { Home, Calendar, Users, Bone, Clock, History, LogOut } from "lucide-react"
 
 const BarraLateral = () => {
   const location = useLocation()
+  const [dropdownOpen, setDropdownOpen] = useState(false)
+
+  const handleMouseEnter = () => {
+    setDropdownOpen(true)
+  }
+
+  const handleMouseLeave = () => {
+    setDropdownOpen(false)
+  }
 
   // Definir los elementos del menú
   const menuItems = [
     { icon: <Home size={18} />, text: "Inicio", path: "/PanelAdmin" },
     { icon: <Calendar size={18} />, text: "Citas", path: "/PanelAdmin/TablaCitas" },
-    { icon: <Users size={18} />, text: "Usuarios", path: "/PanelAdmin/usuarios" },
-    { icon: <Briefcase size={18} />, text: "Servicios", path: "/PanelAdmin/servicios" },
-    { icon: <Stethoscope size={18} />, text: "Veterinarios", path: "/PanelAdmin/veterinarios" },
+    { 
+      icon: <Users size={18} />, 
+      text: "Usuarios", 
+      path: "/PanelAdmin/usuarios",
+      dropdown: true,
+      dropdownItems: [
+        { text: "Clientes", path: "/clientes" },
+        { text: "Veterinarios", path: "/PanelAdmin/" },
+        { text: "Administradores", path: "/PanelAdmin/administradores" }]
+    },
     { icon: <Bone size={18} />, text: "Mascotas", path: "/PanelAdmin/mascotas" },
     { icon: <Clock size={18} />, text: "Horarios", path: "/PanelAdmin/horarios" },
     { icon: <History size={18} />, text: "Historial Clínico", path: "/PanelAdmin/historial-clinico" },
@@ -31,11 +48,36 @@ const BarraLateral = () => {
         <nav>
           <ul className="menu-lateral">
             {menuItems.map((item, index) => (
-              <li key={index} className={location.pathname === item.path ? "active" : ""}>
-                <Link to={item.path} className="link">
-                  <div className="icon-container">{item.icon}</div>
-                  <span className="text-container">{item.text}</span>
-                </Link>
+              <li 
+                key={index} 
+                className={`${location.pathname === item.path ? "active" : ""} ${item.dropdown ? "has-dropdown" : ""}`}
+              >
+                {item.dropdown ? (
+                  <div 
+                    className={`dropdown-menu ${dropdownOpen ? "active" : ""}`}
+                    onMouseEnter={handleMouseEnter}
+                    onMouseLeave={handleMouseLeave}
+                  >
+                    <Link to={item.path} className="link dropdown-toggle">
+                      <div className="icon-container">{item.icon}</div>
+                      <span className="text-container">{item.text}</span>
+                    </Link>
+                    <ul className={`dropdown-content ${dropdownOpen ? "show" : ""}`}>
+                      {item.dropdownItems.map((dropdownItem, i) => (
+                        <li key={i}>
+                          <Link to={dropdownItem.path}>
+                            <span>{dropdownItem.text}</span>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : (
+                  <Link to={item.path} className="link">
+                    <div className="icon-container">{item.icon}</div>
+                    <span className="text-container">{item.text}</span>
+                  </Link>
+                )}
               </li>
             ))}
           </ul>

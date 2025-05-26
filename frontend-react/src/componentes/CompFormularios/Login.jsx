@@ -53,7 +53,7 @@ const Login = () => {
       });
 
       // Redirigir al home después del mensaje de éxito
-      navigate("/home");
+      navigate("/PanelPropietario");
 
       // Limpiar campos
       setEmail("");

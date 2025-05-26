@@ -10,9 +10,9 @@ const PanelPropietario = () => {
   const [isMobile, setIsMobile] = useState(false)
 
   const [userData] = useState({
-    username: "Juan Pérez",
+    username: "Propietario",
     role: "Propietario",
-    email: "juan@example.com",
+    email: "propietario.com",
   })
 
   useEffect(() => {

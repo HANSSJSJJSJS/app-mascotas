@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import '../../stylos/cssAdmin/ModuloEspecialistas.css';
 
 const especialistasIniciales = [
@@ -28,8 +28,7 @@ const especialistasIniciales = [
   },
 ];
 
-export default function App() {
-  // Estados
+export default function ModuloEspecialistas() {
   const [especialistas, setEspecialistas] = useState(especialistasIniciales);
   const [registrosPorPagina, setRegistrosPorPagina] = useState(10);
   const [paginaActual, setPaginaActual] = useState(1);
@@ -40,7 +39,7 @@ export default function App() {
     nombre: "",
     especialidad: "",
     telefono: "",
-    nacionalidad: "Colombiana",
+    nacionalidad: "Colombia",
     correo: ""
   });
 
@@ -67,7 +66,7 @@ export default function App() {
   // Función para manejar la búsqueda
   const manejarBusqueda = (e) => {
     setBusqueda(e.target.value);
-    setPaginaActual(1); // Regresar a la primera página al buscar
+    setPaginaActual(1);
   };
 
   // Función para eliminar un especialista
@@ -91,7 +90,7 @@ export default function App() {
       nombre: "",
       especialidad: "",
       telefono: "",
-      nacionalidad: "Peruana",
+      nacionalidad: "Colombia",
       correo: ""
     });
     setMostrarModal(true);
@@ -106,59 +105,61 @@ export default function App() {
     }));
   };
 
-  // Función para guardar un especialista (nuevo o editado)
-  const guardarEspecialista = (e) => {
-    e.preventDefault();
-    
+  // Función para guardar un especialista
+  const guardarEspecialista = () => {
+    if (!nuevoEspecialista.nombre || !nuevoEspecialista.especialidad || 
+        !nuevoEspecialista.telefono || !nuevoEspecialista.nacionalidad || 
+        !nuevoEspecialista.correo) {
+      alert('Por favor complete todos los campos');
+      return;
+    }
+
     if (especialistaEditando) {
-      // Actualizar especialista existente
       setEspecialistas(especialistas.map(esp => 
         esp.id === especialistaEditando.id ? {...nuevoEspecialista, id: esp.id} : esp
       ));
     } else {
-      // Añadir nuevo especialista
       const nuevoId = especialistas.length > 0 ? Math.max(...especialistas.map(esp => esp.id)) + 1 : 1;
       setEspecialistas([...especialistas, {...nuevoEspecialista, id: nuevoId}]);
     }
     setMostrarModal(false);
   };
 
-  // Función para exportar a Excel
+  const cerrarModal = () => {
+    setMostrarModal(false);
+  };
+
   const exportarExcel = () => {
-    // En una aplicación real, aquí iría la lógica para crear y descargar un archivo Excel
     alert('Funcionalidad para exportar a Excel implementada');
   };
 
-  // Función para exportar a PDF
   const exportarPDF = () => {
-    // En una aplicación real, aquí iría la lógica para crear y descargar un archivo PDF
     alert('Funcionalidad para exportar a PDF implementada');
   };
 
   return (
     <div className="contenedor-especialistas">
-      <header>
-        <h1>MODULO DE REGISTROS DE ESPECIALISTA</h1>
-      </header>
-      
-      <main>
-        <section className="actions">
-          <button onClick={abrirModalNuevo}>Nuevo</button>
-          <button onClick={exportarExcel}>Excel</button>
-          <button onClick={exportarPDF}>PDF</button>
-        </section>
-        
-        <section className="table-controls">
-          <div className="records-display">
-            <label htmlFor="show-records">Mostrar</label>
-            <select 
-              id="show-records" 
-              value={registrosPorPagina} 
+      {/* Header */}
+      <div className="header-section">
+        <h1>Administración de Especialistas</h1>
+        <button className="btn-nuevo" onClick={abrirModalNuevo}>
+          Nuevo Especialista
+        </button>
+      </div>
+
+      {/* Controls */}
+      <div className="controls-section">
+        <div className="controls-left">
+          <div className="registros-selector">
+            <span>Mostrar</span>
+            <select
+              value={registrosPorPagina}
               onChange={(e) => {
                 setRegistrosPorPagina(Number(e.target.value));
                 setPaginaActual(1);
               }}
             >
+              <option value={5}>5</option>
               <option value={10}>10</option>
               <option value={25}>25</option>
               <option value={50}>50</option>
@@ -166,168 +167,176 @@ export default function App() {
             </select>
             <span>registros</span>
           </div>
-          
-          <div className="search-box">
-            <label htmlFor="search">Buscar:</label>
-            <input 
-              type="text" 
-              id="search" 
-              value={busqueda} 
-              onChange={manejarBusqueda}
-            />
-          </div>
-        </section>
-        
-        <section className="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>ESPECIALISTA</th>
-                <th>ESPECIALIDAD</th>
-                <th>TELÉFONO</th>
-                <th>NACIONALIDAD</th>
-                <th>CORREO</th>
-                <th>ACCIONES</th>
-              </tr>
-            </thead>
-            <tbody>
-              {especialistasActuales.map((especialista) => (
-                <tr key={especialista.id}>
-                  <td>{especialista.id}</td>
-                  <td>{especialista.nombre}</td>
-                  <td>{especialista.especialidad}</td>
-                  <td>{especialista.telefono}</td>
-                  <td>{especialista.nacionalidad}</td>
-                  <td>{especialista.correo}</td>
-                  <td>
-                    <div className="action-icons">
-                      <a href="#" onClick={(e) => {
-                        e.preventDefault();
-                        abrirModalEdicion(especialista);
-                      }} aria-label="Editar">✏️</a>
-                      <a href="#" onClick={(e) => {
-                        e.preventDefault();
-                        eliminarEspecialista(especialista.id);
-                      }} aria-label="Eliminar">🗑️</a>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </section>
-        
-        <footer className="pagination">
-          <p>
-            Mostrando del {indexPrimerRegistro + 1} al {
-              Math.min(indexUltimoRegistro, especialistasFiltrados.length)
-            } de total {especialistasFiltrados.length} registros
-          </p>
-          <nav className="page-buttons">
-            <a 
-              href="#" 
-              className="page-button" 
-              onClick={(e) => {
-                e.preventDefault();
-                cambiarPagina(paginaActual - 1);
-              }}
-            >
-              Anterior
-            </a>
-            {Array.from({ length: totalPaginas }, (_, i) => (
-              <a 
-                key={i + 1}
-                href="#" 
-                className={`page-button ${paginaActual === i + 1 ? 'active' : ''}`}
-                onClick={(e) => {
-                  e.preventDefault();
-                  cambiarPagina(i + 1);
-                }}
-              >
-                {i + 1}
-              </a>
-            ))}
-            <a 
-              href="#" 
-              className="page-button" 
-              onClick={(e) => {
-                e.preventDefault();
-                cambiarPagina(paginaActual + 1);
-              }}
-            >
-              Siguiente
-            </a>
-          </nav>
-        </footer>
-      </main>
 
-      {/* Modal para crear/editar especialistas */}
+          <div className="export-buttons">
+            <button className="btn-excel" onClick={exportarExcel}>
+              Excel
+            </button>
+            <button className="btn-pdf" onClick={exportarPDF}>
+              PDF
+            </button>
+          </div>
+        </div>
+
+        <div className="controls-right">
+          <input
+            type="text"
+            className="search-input"
+            placeholder="Buscar especialistas..."
+            value={busqueda}
+            onChange={manejarBusqueda}
+          />
+        </div>
+      </div>
+
+      {/* Table */}
+      <div className="table-container">
+        <table className="especialistas-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>ESPECIALISTA</th>
+              <th>ESPECIALIDAD</th>
+              <th>TELÉFONO</th>
+              <th>NACIONALIDAD</th>
+              <th>CORREO</th>
+              <th>ACCIONES</th>
+            </tr>
+          </thead>
+          <tbody>
+            {especialistasActuales.map((especialista, index) => (
+              <tr key={especialista.id} className={index % 2 === 0 ? 'row-even' : 'row-odd'}>
+                <td>{especialista.id}</td>
+                <td>{especialista.nombre}</td>
+                <td>{especialista.especialidad}</td>
+                <td>{especialista.telefono}</td>
+                <td>{especialista.nacionalidad}</td>
+                <td>{especialista.correo}</td>
+                <td>
+                  <div className="action-buttons">
+                    <button
+                      className="btn-edit"
+                      onClick={() => abrirModalEdicion(especialista)}
+                      title="Editar"
+                    >
+                      ✏️
+                    </button>
+                    <button
+                      className="btn-delete"
+                      onClick={() => eliminarEspecialista(especialista.id)}
+                      title="Eliminar"
+                    >
+                      🗑️
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Pagination */}
+      <div className="pagination-section">
+        <p className="pagination-info">
+          Mostrando del {indexPrimerRegistro + 1} al {Math.min(indexUltimoRegistro, especialistasFiltrados.length)} de un total de {especialistasFiltrados.length} registros
+        </p>
+
+        <div className="pagination-controls">
+          <button
+            className={`pagination-btn ${paginaActual === 1 ? 'disabled' : ''}`}
+            onClick={() => cambiarPagina(paginaActual - 1)}
+            disabled={paginaActual === 1}
+          >
+            Anterior
+          </button>
+
+          {Array.from({ length: totalPaginas }, (_, i) => (
+            <button
+              key={i + 1}
+              className={`pagination-btn ${paginaActual === i + 1 ? 'active' : ''}`}
+              onClick={() => cambiarPagina(i + 1)}
+            >
+              {i + 1}
+            </button>
+          ))}
+
+          <button
+            className={`pagination-btn ${paginaActual === totalPaginas ? 'disabled' : ''}`}
+            onClick={() => cambiarPagina(paginaActual + 1)}
+            disabled={paginaActual === totalPaginas}
+          >
+            Siguiente
+          </button>
+        </div>
+      </div>
+
+      {/* Modal */}
       {mostrarModal && (
         <div className="modal-backdrop">
-          <div className="modal">
+          <div className="modal-content">
             <h2>{especialistaEditando ? 'Editar Especialista' : 'Nuevo Especialista'}</h2>
-            <form onSubmit={guardarEspecialista}>
+
+            <div className="form-container">
               <div className="form-group">
-                <label htmlFor="nombre">Nombre:</label>
-                <input 
-                  type="text" 
-                  id="nombre" 
-                  name="nombre" 
-                  value={nuevoEspecialista.nombre} 
+                <label>Nombre:</label>
+                <input
+                  type="text"
+                  name="nombre"
+                  value={nuevoEspecialista.nombre}
                   onChange={manejarCambioInput}
-                  required
                 />
               </div>
+
               <div className="form-group">
-                <label htmlFor="especialidad">Especialidad:</label>
-                <input 
-                  type="text" 
-                  id="especialidad" 
-                  name="especialidad" 
-                  value={nuevoEspecialista.especialidad} 
+                <label>Especialidad:</label>
+                <input
+                  type="text"
+                  name="especialidad"
+                  value={nuevoEspecialista.especialidad}
                   onChange={manejarCambioInput}
-                  required
                 />
               </div>
+
               <div className="form-group">
-                <label htmlFor="telefono">Teléfono:</label>
-                <input 
-                  type="text" 
-                  id="telefono" 
-                  name="telefono" 
-                  value={nuevoEspecialista.telefono} 
+                <label>Teléfono:</label>
+                <input
+                  type="text"
+                  name="telefono"
+                  value={nuevoEspecialista.telefono}
                   onChange={manejarCambioInput}
-                  required
                 />
               </div>
+
               <div className="form-group">
-                <label htmlFor="nacionalidad">Nacionalidad:</label>
-                <input 
-                  type="text" 
-                  id="nacionalidad" 
-                  name="nacionalidad" 
-                  value={nuevoEspecialista.nacionalidad} 
+                <label>Nacionalidad:</label>
+                <input
+                  type="text"
+                  name="nacionalidad"
+                  value={nuevoEspecialista.nacionalidad}
                   onChange={manejarCambioInput}
-                  required
                 />
               </div>
+
               <div className="form-group">
-                <label htmlFor="correo">Correo:</label>
-                <input 
-                  type="email" 
-                  id="correo" 
-                  name="correo" 
-                  value={nuevoEspecialista.correo} 
+                <label>Correo:</label>
+                <input
+                  type="email"
+                  name="correo"
+                  value={nuevoEspecialista.correo}
                   onChange={manejarCambioInput}
-                  required
                 />
               </div>
+
               <div className="modal-buttons">
-                <button type="submit">Cancelar</button>
-                <button type="submit">Guardar</button>
+                <button className="btn-cancel" onClick={cerrarModal}>
+                  Cancelar
+                </button>
+                <button className="btn-save" onClick={guardarEspecialista}>
+                  Guardar
+                </button>
               </div>
-            </form>
+            </div>
           </div>
         </div>
       )}

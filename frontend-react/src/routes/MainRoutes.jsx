@@ -23,7 +23,6 @@ const NotFound = React.lazy(() => import("../componentes/CompHome/NotFound"));
 const PanelAdmin = React.lazy(() => import("../componentes/CompAdmin/PanelAdmin"));
 const ModuloCitas = React.lazy(() => import("../componentes/CompAdmin/ModuloCitas"));
 const ModuloHorarios = React.lazy(() => import("../componentes/CompAdmin/ModuloHorarios"));
-const ModuloEspecialidades = React.lazy(() => import("../componentes/CompAdmin/ModuloEspecialidades"));
 const ModuloEspecialistas = React.lazy(() => import("../componentes/CompAdmin/ModuloEspecialistas"));
 const TablaMascota = React.lazy(() => import("../componentes/CompAdmin/TablaMascota") )
 const TablaUsuarios = React.lazy(() => import("../componentes/CompAdmin/TablaUsuarios"));
@@ -103,7 +102,6 @@ const MainRoutes = () => {
           <Route index element={<ModuloCitas />} />
           <Route path="TablaCitas" element={<ModuloCitas />} />
           <Route path="usuarios" element={<TablaUsuarios />} />
-          <Route path="servicios" element={<ModuloEspecialidades />} />
           <Route path="veterinarios" element={<ModuloEspecialistas />} />
           <Route path="mascotas" element={<TablaMascota />} />
           <Route path="horarios" element={<ModuloHorarios />} />
