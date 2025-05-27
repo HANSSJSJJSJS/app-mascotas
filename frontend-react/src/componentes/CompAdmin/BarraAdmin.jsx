@@ -1,5 +1,3 @@
-"use client"
-
 import { Link, useLocation } from "react-router-dom"
 import { useState } from "react";
 import "../../stylos/cssAdmin/BarraLateral.css"
@@ -23,7 +21,7 @@ const BarraLateral = ({ onToggleMenu, menuAbierto }) => {
   const menuItems = [
     { icon: <Home size={18} />, text: "Inicio", path: "/PanelAdmin" },
     { icon: <Calendar size={18} />, text: "Citas", path: "/PanelAdmin/TablaCitas" },
-    { |
+    { 
       icon: <Users size={18} />, 
       text: "Usuarios", 
       path: "/PanelAdmin/usuarios",
@@ -31,7 +29,8 @@ const BarraLateral = ({ onToggleMenu, menuAbierto }) => {
       dropdownItems: [
         { text: "Clientes", path: "/clientes" },
         { text: "Veterinarios", path: "/PanelAdmin/" },
-        { text: "Administradores", path: "/PanelAdmin/administradores" }]
+        { text: "Administradores", path: "/PanelAdmin/administradores" }
+      ]
     },
     { icon: <Bone size={18} />, text: "Mascotas", path: "/PanelAdmin/mascotas" },
     { icon: <Clock size={18} />, text: "Horarios", path: "/PanelAdmin/horarios" },
@@ -49,30 +48,29 @@ const BarraLateral = ({ onToggleMenu, menuAbierto }) => {
         <nav>
           <ul className="menu-lateral">
             {menuItems.map((item, index) => (
-<<<<<<< HEAD
               <li 
                 key={index} 
                 className={`${location.pathname === item.path ? "active" : ""} ${item.dropdown ? "has-dropdown" : ""}`}
+                onMouseEnter={item.dropdown ? handleMouseEnter : undefined}
+                onMouseLeave={item.dropdown ? handleMouseLeave : undefined}
               >
                 {item.dropdown ? (
-                  <div 
-                    className={`dropdown-menu ${dropdownOpen ? "active" : ""}`}
-                    onMouseEnter={handleMouseEnter}
-                    onMouseLeave={handleMouseLeave}
-                  >
+                  <div className={`dropdown-menu ${dropdownOpen ? "active" : ""}`}>
                     <Link to={item.path} className="link dropdown-toggle">
                       <div className="icon-container">{item.icon}</div>
                       <span className="text-container">{item.text}</span>
                     </Link>
-                    <ul className={`dropdown-content ${dropdownOpen ? "show" : ""}`}>
-                      {item.dropdownItems.map((dropdownItem, i) => (
-                        <li key={i}>
-                          <Link to={dropdownItem.path}>
-                            <span>{dropdownItem.text}</span>
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
+                    {dropdownOpen && (
+                      <ul className="dropdown-content">
+                        {item.dropdownItems.map((dropdownItem, i) => (
+                          <li key={i}>
+                            <Link to={dropdownItem.path}>
+                              <span>{dropdownItem.text}</span>
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
                   </div>
                 ) : (
                   <Link to={item.path} className="link">
@@ -80,13 +78,6 @@ const BarraLateral = ({ onToggleMenu, menuAbierto }) => {
                     <span className="text-container">{item.text}</span>
                   </Link>
                 )}
-=======
-              <li key={index} className={location.pathname === item.path ? "active" : ""}>
-                <Link to={item.path} className="link">
-                  <div className="icon-container">{item.icon}</div>
-                  {menuAbierto && <span className="text-container">{item.text}</span>}
-                </Link>
->>>>>>> 78b55353a6adac822fa0abd3bc0493f31550c568
               </li>
             ))}
           </ul>

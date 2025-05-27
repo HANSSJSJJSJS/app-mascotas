@@ -1,7 +1,5 @@
-
 body {
-  background-color: #f8f9fa!important;
-
+  background-color: #f8f9fa !important;
 }
 
 .container {
@@ -20,6 +18,7 @@ body {
   flex-direction: row; /* Para que el logo quede a la derecha */
   gap: 30px;
 }
+
 /* Formulario */
 form {
   width: 100%;
@@ -43,16 +42,25 @@ label {
   font-weight: 500;
 }
 
+/* Contenedor para input y botón de mostrar contraseña */
+.password-input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
 input {
   width: calc(100% - 16px);
   padding: 8px;
-  margin-bottom: 15px;
+  padding-right: 40px; /* Espacio para el botón */
   border: 2px solid transparent;
   border-radius: 6px;
   font-size: 14px;
   background: #f0f0f0;
   outline: none;
   transition: all 0.3s ease-in-out;
+  flex: 1;
 }
 
 input:hover {
@@ -65,7 +73,27 @@ input:focus {
   box-shadow: 0 0 8px rgba(129, 150, 235, 0.5);
 }
 
-button {
+/* Botón para mostrar/ocultar contraseña */
+.toggle-password-btn {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #666;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.3s ease;
+  z-index: 1;
+}
+
+.toggle-password-btn:hover {
+  color: #495a90;
+}
+
+button[type="submit"] {
   background-color: #8196eb;
   color: white;
   padding: 8px;
@@ -78,7 +106,7 @@ button {
   margin-top: 10px;
 }
 
-button:hover {
+button[type="submit"]:hover {
   background-color: #5a78d1;
   transform: scale(1.05);
 }
@@ -112,7 +140,8 @@ p {
 
 /* Animación de rebote */
 @keyframes bounce {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
   50% {
@@ -139,7 +168,7 @@ p {
     width: 250px; /* Ajuste para móvil */
   }
 
-  button {
+  button[type="submit"] {
     width: 100%;
     margin-bottom: 10px;
   }
