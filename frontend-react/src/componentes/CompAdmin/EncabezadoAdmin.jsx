@@ -1,4 +1,3 @@
-"use client"
 import { User, LogOut } from "lucide-react"
 import "../../stylos/cssAdmin/Encabezado.css"
 import { Link } from "react-router-dom"

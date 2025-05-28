@@ -114,34 +114,6 @@ export default function Mascota() {
       <div className="content-mascota">
         {activeTab === "informacion" ? (
           <form onSubmit={handleSubmit(onSubmit)} className="form-mascota">
-            <div className="imagen-perfil-container">
-              <div className="imagen-perfil">
-                {imagenPreview ? (
-                  <img src={imagenPreview || "/placeholder.svg"} alt="Foto de la mascota" className="preview-imagen" />
-                ) : (
-                  <div className="placeholder-imagen">
-                    <span>Foto de la mascota</span>
-                  </div>
-                )}
-                <label htmlFor="imagen-mascota" className="boton-subir-imagen">
-                  <Upload className="icon" />
-                  Subir imagen
-                </label>
-                <input
-                  type="file"
-                  id="imagen-mascota"
-                  accept="image/*"
-                  onChange={handleImagenChange}
-                  className="input-file"
-                />
-              </div>
-              <div className="info-propietario">
-                <h3>Propietario</h3>
-                <p><strong>Nombre:</strong> {mascotaEjemplo.propietario.nombre}</p>
-                <p><strong>Teléfono:</strong> {mascotaEjemplo.propietario.telefono}</p>
-                <p><strong>Email:</strong> {mascotaEjemplo.propietario.email}</p>
-              </div>
-            </div>
 
             <div className="form-grid-mascota">
               <div className="form-group">
