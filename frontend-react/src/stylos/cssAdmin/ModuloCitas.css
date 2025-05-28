@@ -5,16 +5,34 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  overflow-x: hidden; /* Previene scroll horizontal no deseado */
+  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  overflow-x: hidden;
 }
 
-/* Container */
+/* Container principal - con tus ajustes */
 .container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 15px;
-  position: relative;
+  padding: 20px 40px;
+  margin-top: -50px; 
+  margin-left: 100px; 
+  transition: margin-left 0.3s ease;
+  min-height: calc(100vh - 20px);
+}
+
+/* Cuando la barra está colapsada */
+.container.sidebar-collapsed {
+  margin-left: 60px; /* Ajustado proporcionalmente */
+}
+
+/* En móviles */
+@media screen and (max-width: 768px) {
+  .container {
+    margin-left: 0;
+    margin-top: -30px; /* Ajustado proporcionalmente */
+    padding: 15px;
+  }
+  .container.sidebar-collapsed {
+    margin-left: 0;
+  }
 }
 
 .module-title {
@@ -37,17 +55,12 @@ body {
   background-color: #ffffff;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  margin: 20px auto;
+  margin: 0 auto;
   padding: 20px;
-  width: calc(100% - 100px); /* Ajusta el ancho para compensar el left */
   max-width: 100%;
-  overflow-x: auto;
-  margin-top: 150px;
-  position: relative; /* ¡Esto es clave! */
-  left: 120px;
 }
 
-/* Buttons */
+/* Buttons - colores con tu paleta */
 .export-buttons {
   display: flex;
   flex-wrap: wrap;
@@ -55,7 +68,9 @@ body {
   margin-bottom: 20px;
 }
 
-.btn-new, .btn-excel, .btn-pdf  {
+.btn-new,
+.btn-excel,
+.btn-pdf {
   padding: 8px 20px;
   border: none;
   border-radius: 5px;
@@ -64,33 +79,36 @@ body {
   transition: background-color 0.2s;
 }
 
+/* Botón Nuevo - usando color4 (#8196eb) */
 .btn-new {
   background-color: #8196eb;
+  color: white;
 }
 
 .btn-new:hover {
   background-color: #495a90;
 }
 
-/* Estilo para el botón Excel - verde */
+/* Botón Excel - usando color3 (#495a90) */
 .btn-excel {
-  background-color: #4CAF50;
+  background-color: #495a90;
+  color: white;
 }
 
 .btn-excel:hover {
-  background-color: #3e8e41;
+  background-color: #1a2540;
 }
 
-/* Estilo para el botón PDF - rojo */
+/* Botón PDF - usando color2 (#1a2540) */
 .btn-pdf {
-  background-color: #f44336;
+  background-color: #1a2540;
+  color: white;
 }
 
 .btn-pdf:hover {
-  background-color: #d32f2f;
+  background-color: #000000;
 }
 
-/* Tu estilo original para btn-primary si también quieres mantenerlo */
 .btn-primary {
   background-color: #8196eb;
   color: white;
@@ -100,7 +118,7 @@ body {
   background-color: #495a90;
 }
 
-/* Table controls*/
+/* Table controls */
 .controls-row {
   display: flex;
   flex-direction: column;
@@ -127,7 +145,7 @@ body {
   align-items: center;
   gap: 10px;
   color: #495a90;
-  margin-left: auto; /* Alineación a la derecha */
+  margin-left: auto;
 }
 
 .search-box label {
@@ -143,12 +161,11 @@ body {
   max-width: 300px;
 }
 
-/* Table styles*/
+/* Table styles */
 table {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 20px;
-  min-width: 100%; /* Ajustado para evitar overflow */
 }
 
 table th {
@@ -164,11 +181,12 @@ table td {
   padding: 12px;
   border-bottom: 1px solid #e0e0e0;
   color: #5c5f6b;
+  vertical-align: middle; /* Alinea verticalmente el contenido */
 }
 
-th, td {
+th,
+td {
   border: 1px solid #e0e0e0;
-  padding: 10px;
   text-align: left;
 }
 
@@ -187,30 +205,98 @@ th, td {
   color: #c62828;
 }
 
-/* Action buttons */
+/* Action buttons - ARREGLADO para que estén en línea */
+.action-buttons {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+  align-items: center; /* Alinea verticalmente */
+  flex-wrap: nowrap; /* NO permite que se envuelvan */
+  min-width: 120px; /* Ancho mínimo para la columna */
+}
+
 .action-btn {
-  margin: 2px;
-  padding: 4px 8px;
+  padding: 6px 8px;
   border-radius: 4px;
   font-size: 0.85em;
   cursor: pointer;
   border: none;
   white-space: nowrap;
+  transition: all 0.2s ease;
+  flex-shrink: 0; /* No se encoge */
+  min-width: 28px; /* Ancho mínimo */
+  height: 28px; /* Altura fija */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
+/* Botón Aceptar - usando color4 (#8196eb) */
+.accept-btn {
+  background-color: #8196eb;
+  color: white;
+}
+
+.accept-btn:hover {
+  background-color: #495a90;
+  transform: scale(1.05);
+}
+
+/* Botón Cancelar - usando color3 (#495a90) */
+.cancel-btn {
+  background-color: #495a90;
+  color: white;
+}
+
+.cancel-btn:hover {
+  background-color: #1a2540;
+  transform: scale(1.05);
+}
+
+/* Botón Eliminar - usando color2 (#1a2540) */
+.delete-btn {
+  background-color: #1a2540;
+  color: white;
+}
+
+.delete-btn:hover {
+  background-color: #000000;
+  transform: scale(1.05);
+}
+
+/* Mantener compatibilidad con nombres antiguos */
 .aceptar-btn {
-  background-color: #a5d6a7;
-  color: #2e7d32;
+  background-color: #8196eb;
+  color: white;
+}
+
+.aceptar-btn:hover {
+  background-color: #495a90;
 }
 
 .cancelar-btn {
-  background-color: #ef9a9a;
-  color: #c62828;
+  background-color: #495a90;
+  color: white;
+}
+
+.cancelar-btn:hover {
+  background-color: #1a2540;
 }
 
 .eliminar-btn {
-  background-color: #495a90;
+  background-color: #1a2540;
   color: white;
+}
+
+.eliminar-btn:hover {
+  background-color: #000000;
+}
+
+/* Asegurar que la columna de acciones tenga ancho suficiente */
+table th:nth-child(9),
+table td:nth-child(9) {
+  width: 140px; /* Ancho fijo para la columna de acciones */
+  min-width: 140px;
 }
 
 /* Pagination */
@@ -318,7 +404,9 @@ th, td {
   flex-wrap: wrap;
 }
 
-.btn-cancel, .btn-save {
+/* Botones del modal - usando tu paleta */
+.btn-cancel,
+.btn-save {
   padding: 10px 20px;
   border: none;
   border-radius: 6px;
@@ -335,46 +423,38 @@ th, td {
   box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
 }
 
-/* Estilo para el botón Guardar */
+/* Botón Guardar - usando color4 (#8196eb) */
 .btn-save {
-  background-color: #3949ab;
+  background-color: #8196eb;
   color: white;
-  border-left: 4px solid #303f9f;
 }
 
 .btn-save:hover {
-  background-color: #303f9f;
+  background-color: #495a90;
   transform: translateY(-2px);
-  box-shadow: 0 5px 8px rgba(57, 73, 171, 0.3);
+  box-shadow: 0 5px 8px rgba(129, 150, 235, 0.3);
 }
 
 .btn-save:active {
   transform: translateY(1px);
-  box-shadow: 0 2px 3px rgba(57, 73, 171, 0.3);
+  box-shadow: 0 2px 3px rgba(129, 150, 235, 0.3);
 }
 
-/* Estilo para el botón Cancelar */
+/* Botón Cancelar - usando color3 (#495a90) */
 .btn-cancel {
-  background-color: #757575;
+  background-color: #495a90;
   color: white;
-  border-left: 4px solid #616161;
 }
 
 .btn-cancel:hover {
-  background-color: #616161;
+  background-color: #1a2540;
   transform: translateY(-2px);
-  box-shadow: 0 5px 8px rgba(117, 117, 117, 0.3);
+  box-shadow: 0 5px 8px rgba(73, 90, 144, 0.3);
 }
 
 .btn-cancel:active {
   transform: translateY(1px);
-  box-shadow: 0 2px 3px rgba(117, 117, 117, 0.3);
-}
-
-/* Agregar iconos si deseas */
-.btn-save i, .btn-cancel i {
-  margin-right: 8px;
-  font-size: 16px;
+  box-shadow: 0 2px 3px rgba(73, 90, 144, 0.3);
 }
 
 .no-results {
@@ -391,14 +471,25 @@ th, td {
     justify-content: space-between;
     align-items: center;
   }
-  
+
   .pagination {
     flex-direction: row;
     justify-content: space-between;
   }
-  
+
   .content-card {
     padding: 25px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .container {
+    margin-left: 90px; /* Ajustado proporcionalmente a tu cambio */
+    padding: 20px 30px;
+  }
+
+  .container.sidebar-collapsed {
+    margin-left: 50px; /* Ajustado proporcionalmente */
   }
 }
 
@@ -406,16 +497,18 @@ th, td {
   .module-title h1 {
     font-size: 1.3rem;
   }
-  
+
   .action-btn {
-    padding: 3px 6px;
+    padding: 4px 6px;
     font-size: 0.8em;
+    min-width: 24px;
+    height: 24px;
   }
-  
+
   .form-buttons {
     justify-content: center;
   }
-  
+
   .btn {
     padding: 8px 15px;
   }
@@ -424,31 +517,58 @@ th, td {
     font-size: 0.9em;
   }
 
-  th, td {
+  th,
+  td {
     padding: 8px;
+  }
+
+  /* En móvil, reducir el ancho de la columna de acciones */
+  table th:nth-child(9),
+  table td:nth-child(9) {
+    width: 100px;
+    min-width: 100px;
   }
 }
 
 @media (max-width: 480px) {
+  .container {
+    padding: 15px;
+    margin-top: -20px; /* Ajustado proporcionalmente */
+  }
+
   .module-title h1 {
     font-size: 1.2rem;
   }
-  
-  .button-group {
+
+  .export-buttons {
     justify-content: center;
   }
-  
+
   .search-box {
     margin-left: 0;
     width: 100%;
     justify-content: flex-end;
   }
-  
+
   .search-box input {
     max-width: 200px;
   }
-  
+
   .page-btn {
     padding: 4px 8px;
+  }
+
+  .action-btn {
+    padding: 3px 5px;
+    font-size: 0.75em;
+    min-width: 20px;
+    height: 20px;
+  }
+
+  /* En móvil muy pequeño, reducir más la columna de acciones */
+  table th:nth-child(9),
+  table td:nth-child(9) {
+    width: 80px;
+    min-width: 80px;
   }
 }

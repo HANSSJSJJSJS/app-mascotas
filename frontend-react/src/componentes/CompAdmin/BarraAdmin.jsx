@@ -21,9 +21,9 @@ const BarraLateral = ({ onToggleMenu, menuAbierto }) => {
 
   // Definir los elementos del menú
   const menuItems = [
-    { icon: <Home size={18} />, text: "Inicio", path: "/PanelAdmin" },
+    { icon: <Home size={18} />, text: "Inicio", path: "/PanelAdmin/TarjetaEstadistica" },
     { icon: <Calendar size={18} />, text: "Citas", path: "/PanelAdmin/TablaCitas" },
-    { |
+    {
       icon: <Users size={18} />, 
       text: "Usuarios", 
       path: "/PanelAdmin/usuarios",
@@ -49,7 +49,6 @@ const BarraLateral = ({ onToggleMenu, menuAbierto }) => {
         <nav>
           <ul className="menu-lateral">
             {menuItems.map((item, index) => (
-<<<<<<< HEAD
               <li 
                 key={index} 
                 className={`${location.pathname === item.path ? "active" : ""} ${item.dropdown ? "has-dropdown" : ""}`}
@@ -77,30 +76,16 @@ const BarraLateral = ({ onToggleMenu, menuAbierto }) => {
                 ) : (
                   <Link to={item.path} className="link">
                     <div className="icon-container">{item.icon}</div>
-                    <span className="text-container">{item.text}</span>
+                    {menuAbierto && <span className="text-container">{item.text}</span>}
                   </Link>
                 )}
-=======
-              <li key={index} className={location.pathname === item.path ? "active" : ""}>
-                <Link to={item.path} className="link">
-                  <div className="icon-container">{item.icon}</div>
-                  {menuAbierto && <span className="text-container">{item.text}</span>}
-                </Link>
->>>>>>> 78b55353a6adac822fa0abd3bc0493f31550c568
               </li>
             ))}
           </ul>
         </nav>
       </div>
 
-      <div className="barra-footer">
-        <Link to="/logout" className="logout-link">
-          <div className="icon-container">
-            <LogOut size={18} />
-          </div>
-          {menuAbierto && <span className="text-container">Cerrar Sesión</span>}
-        </Link>
-      </div>
+      
     </aside>
   )
 }
