@@ -1,21 +1,21 @@
-import { Link, useLocation } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
-import "../../stylos/cssAdmin/BarraLateral.css"
+import "../../stylos/cssAdmin/BarraLateral.css";
 
 // Importar iconos directamente
-import { Home, Calendar, Users, Bone, Clock, History, LogOut } from "lucide-react"
+import { Home, Calendar, Users, Bone, Clock, History, LogOut, PawPrint } from "lucide-react";
 
-const BarraLateral = ({ onToggleMenu, menuAbierto }) => {
-  const location = useLocation()
-  const [dropdownOpen, setDropdownOpen] = useState(false)
+const BarraLateral = ({ onToggleMenu, menuAbierto, isMobile }) => {
+  const location = useLocation();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const handleMouseEnter = () => {
-    setDropdownOpen(true)
-  }
+    setDropdownOpen(true);
+  };
 
   const handleMouseLeave = () => {
-    setDropdownOpen(false)
-  }
+    setDropdownOpen(false);
+  };
 
   // Definir los elementos del menú
   const menuItems = [
@@ -35,13 +35,20 @@ const BarraLateral = ({ onToggleMenu, menuAbierto }) => {
     { icon: <Bone size={18} />, text: "Mascotas", path: "/PanelAdmin/mascotas" },
     { icon: <Clock size={18} />, text: "Horarios", path: "/PanelAdmin/horarios" },
     { icon: <History size={18} />, text: "Historial Clínico", path: "/PanelAdmin/historial-clinico" },
-  ]
+  ];
 
   return (
     <aside className={`barra-lateral ${!menuAbierto ? "colapsado" : ""}`}>
-      {/* Encabezado de la barra lateral */}
-      <div className="barra-header" onClick={onToggleMenu} style={{ cursor: "pointer" }}>
-        <h2>{menuAbierto ? "MENU ADMIN" : "MENU"}</h2>
+      {/* Encabezado de la barra lateral con logo */}
+      <div
+        className="barra-header"
+        onClick={!isMobile ? onToggleMenu : undefined}
+        style={{ cursor: !isMobile ? "pointer" : "default" }}
+      >
+        <div className="logo-container">
+          <PawPrint size={24} className="logo-icon" />
+          {menuAbierto && <span className="logo-text">PET MOYBE</span>}
+        </div>
       </div>
 
       <div className="menu-scroll-container">
@@ -93,7 +100,7 @@ const BarraLateral = ({ onToggleMenu, menuAbierto }) => {
         </Link>
       </div>
     </aside>
-  )
-}
+  );
+};
 
-export default BarraLateral
+export default BarraLateral;
