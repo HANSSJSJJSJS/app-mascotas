@@ -5,7 +5,7 @@ async function encryptPasswords() {
     const db = await mysql.createConnection({
         host: 'localhost',
         user: 'root',
-        password: '12345678',
+        password: '12345679',
         database: 'mascotas_db'
     });
 

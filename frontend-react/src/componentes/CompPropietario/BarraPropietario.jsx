@@ -64,7 +64,7 @@ const BarraPropietario = ({ onToggleMenu, menuAbierto }) => {
 
       {/* Footer con logout */}
       <div className="barra-footer">
-        <Link to="/logout" className="logout-link">
+        <Link to="/Home" className="logout-link">
           <div className="icon-container">
             <LogOut size={18} />
           </div>

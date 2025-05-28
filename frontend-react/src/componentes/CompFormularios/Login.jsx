@@ -1,16 +1,49 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
 import '../../stylos/cssFormularios/Login.css';
 import logo from "../../imagenes/logo.png";
 
+
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
+  const [attempts, setAttempts] = useState(0);
+  const [isBlocked, setIsBlocked] = useState(false);
+  const [blockTime, setBlockTime] = useState(0);
   const navigate = useNavigate();
+
+  // Verificar bloqueo al cargar el componente
+  useEffect(() => {
+    const savedBlockTime = localStorage.getItem('blockTime');
+    const savedAttempts = localStorage.getItem('loginAttempts');
+    
+    if (savedBlockTime && Date.now() < parseInt(savedBlockTime)) {
+      setIsBlocked(true);
+      setBlockTime(parseInt(savedBlockTime));
+    }
+    
+    if (savedAttempts) {
+      setAttempts(parseInt(savedAttempts));
+    }
+  }, []);
+
+  // Temporizador para desbloquear
+  useEffect(() => {
+    if (isBlocked) {
+      const timer = setTimeout(() => {
+        setIsBlocked(false);
+        setAttempts(0);
+        localStorage.removeItem('blockTime');
+        localStorage.removeItem('loginAttempts');
+      }, blockTime - Date.now());
+
+      return () => clearTimeout(timer);
+    }
+  }, [isBlocked, blockTime]);
 
   const validateForm = () => {
     const newErrors = {};
@@ -30,7 +63,7 @@ const Login = () => {
       newErrors.password = "Debe contener al menos una letra mayúscula";
     } else if (!/[0-9]/.test(password)) {
       newErrors.password = "Debe contener al menos un número";
-    } else if (!/[!@#$%^&*(),.?\":{}|<>]/.test(password)) {
+    } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
       newErrors.password = "Debe contener al menos un carácter especial";
     }
 
@@ -40,10 +73,26 @@ const Login = () => {
 
   const onSubmit = async () => {
     try {
-      const response = await axios.post("http://localhost:5000/login", {
+      if (isBlocked) {
+        const remainingTime = Math.ceil((blockTime - Date.now()) / 1000 / 60);
+        await Swal.fire({
+          icon: "error",
+          title: "Cuenta bloqueada",
+          text: `Demasiados intentos fallidos. Intente nuevamente en ${remainingTime} minutos.`,
+          confirmButtonColor: "#d33",
+        });
+        return;
+      }
+
+      const response = await axios.post("http://localhost:3000/login", {
         email,
         password,
       });
+
+      // Resetear intentos si el login es exitoso
+      setAttempts(0);
+      localStorage.removeItem('loginAttempts');
+      localStorage.removeItem('blockTime');
 
       await Swal.fire({
         icon: "success",
@@ -52,19 +101,37 @@ const Login = () => {
         confirmButtonColor: "#3085d6",
       });
 
-      // Redirigir al home después del mensaje de éxito
       navigate("/PanelPropietario");
-
-      // Limpiar campos
       setEmail("");
       setPassword("");
     } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Error al iniciar sesión",
-        text: error.response?.data?.message || "Ocurrió un error en el servidor",
-        confirmButtonColor: "#d33",
-      });
+      const newAttempts = attempts + 1;
+      setAttempts(newAttempts);
+      localStorage.setItem('loginAttempts', newAttempts.toString());
+
+      if (newAttempts >= 3) {
+        const blockDuration = 30 * 60 * 1000; // 30 minutos en milisegundos
+        const newBlockTime = Date.now() + blockDuration;
+        
+        setIsBlocked(true);
+        setBlockTime(newBlockTime);
+        localStorage.setItem('blockTime', newBlockTime.toString());
+
+        await Swal.fire({
+          icon: "error",
+          title: "Cuenta bloqueada",
+          text: "Demasiados intentos fallidos. Su cuenta ha sido bloqueada por 30 minutos.",
+          confirmButtonColor: "#d33",
+        });
+      } else {
+        await Swal.fire({
+          icon: "error",
+          title: "Error al iniciar sesión",
+          text: error.response?.data?.message || 
+                `Credenciales incorrectas. Intentos restantes: ${3 - newAttempts}`,
+          confirmButtonColor: "#d33",
+        });
+      }
     }
   };
 
@@ -96,6 +163,7 @@ const Login = () => {
                   setErrors((prev) => ({ ...prev, email: "" }));
                 }}
                 required
+                disabled={isBlocked}
               />
               {errors.email && <p className="error-message">{errors.email}</p>}
             </div>
@@ -114,11 +182,13 @@ const Login = () => {
                     setErrors((prev) => ({ ...prev, password: "" }));
                   }}
                   required
+                  disabled={isBlocked}
                 />
                 <button 
                   type="button" 
                   className="password-toggle"
                   onClick={() => setShowPassword(!showPassword)}
+                  disabled={isBlocked}
                 >
                   <i className={`bi ${showPassword ? "bi-eye-slash-fill" : "bi-eye-fill"}`}></i>
                 </button>
@@ -130,7 +200,13 @@ const Login = () => {
             </div>
 
             <div>
-              <button type="submit" className="btn">INICIAR SESIÓN</button>
+              <button 
+                type="submit" 
+                className="btn"
+                disabled={isBlocked}
+              >
+                {isBlocked ? "CUENTA BLOQUEADA" : "INICIAR SESIÓN"}
+              </button>
               <p>
                 ¿No tienes una cuenta?{' '}
                 <a href="/Propietario" className="link">
