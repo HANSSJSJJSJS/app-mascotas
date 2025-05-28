@@ -1,5 +1,5 @@
 .barra-lateral {
-  width: 180px;
+  width: 250px; 
   height: 100vh;
   background-color: #3f339942;
   color: white;
@@ -126,32 +126,7 @@
   flex-shrink: 0;
 }
 
-.logout-link {
-  display: flex;
-  align-items: center;
-  padding: 12px 15px;
-  color: white;
-  text-decoration: none;
-  transition: background-color 0.2s;
-}
 
-.logout-link:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-.barra-lateral.colapsado .logout-link {
-  justify-content: center;
-  padding: 12px 0;
-}
-
-.logout-link .text-container {
-  margin-left: 12px;
-  font-size: 13px;
-}
-
-.barra-lateral.colapsado .logout-link .text-container {
-  display: none;
-}
 
 @media screen and (max-width: 768px) {
   .barra-lateral {

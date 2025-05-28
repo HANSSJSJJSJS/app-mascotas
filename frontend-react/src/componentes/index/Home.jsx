@@ -24,6 +24,8 @@ import Carousel from "bootstrap/js/dist/carousel"
 import Header from "../index/Header"
 import { Emergencia } from "./Emergencia"
 import "../../stylos/cssIndex/Emergencia.css"
+import CookieBanner from "../index/CookieBanner"
+
 
 // Import images
 import imgAbout from "../../imagenes/about.png"
@@ -112,6 +114,7 @@ export default function Home() {
   return (
     <main className="main-content">
       <Header />
+      <CookieBanner />
 
       {/* Hero Section */}
       <div id="heroCarousel" className="carousel slide carousel-fade" data-bs-ride="carousel">

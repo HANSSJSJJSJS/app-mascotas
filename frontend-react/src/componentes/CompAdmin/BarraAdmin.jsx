@@ -21,7 +21,7 @@ const BarraLateral = ({ onToggleMenu, menuAbierto, isMobile }) => {
   const menuItems = [
     { icon: <Home size={18} />, text: "Inicio", path: "/PanelAdmin" },
     { icon: <Calendar size={18} />, text: "Citas", path: "/PanelAdmin/TablaCitas" },
-    { 
+    {
       icon: <Users size={18} />, 
       text: "Usuarios", 
       path: "/PanelAdmin/usuarios",
@@ -29,8 +29,7 @@ const BarraLateral = ({ onToggleMenu, menuAbierto, isMobile }) => {
       dropdownItems: [
         { text: "Clientes", path: "/clientes" },
         { text: "Veterinarios", path: "/PanelAdmin/" },
-        { text: "Administradores", path: "/PanelAdmin/administradores" }
-      ]
+        { text: "Administradores", path: "/PanelAdmin/administradores" }]
     },
     { icon: <Bone size={18} />, text: "Mascotas", path: "/PanelAdmin/mascotas" },
     { icon: <Clock size={18} />, text: "Horarios", path: "/PanelAdmin/horarios" },
@@ -58,31 +57,31 @@ const BarraLateral = ({ onToggleMenu, menuAbierto, isMobile }) => {
               <li 
                 key={index} 
                 className={`${location.pathname === item.path ? "active" : ""} ${item.dropdown ? "has-dropdown" : ""}`}
-                onMouseEnter={item.dropdown ? handleMouseEnter : undefined}
-                onMouseLeave={item.dropdown ? handleMouseLeave : undefined}
               >
                 {item.dropdown ? (
-                  <div className={`dropdown-menu ${dropdownOpen ? "active" : ""}`}>
+                  <div 
+                    className={`dropdown-menu ${dropdownOpen ? "active" : ""}`}
+                    onMouseEnter={handleMouseEnter}
+                    onMouseLeave={handleMouseLeave}
+                  >
                     <Link to={item.path} className="link dropdown-toggle">
                       <div className="icon-container">{item.icon}</div>
                       <span className="text-container">{item.text}</span>
                     </Link>
-                    {dropdownOpen && (
-                      <ul className="dropdown-content">
-                        {item.dropdownItems.map((dropdownItem, i) => (
-                          <li key={i}>
-                            <Link to={dropdownItem.path}>
-                              <span>{dropdownItem.text}</span>
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
+                    <ul className={`dropdown-content ${dropdownOpen ? "show" : ""}`}>
+                      {item.dropdownItems.map((dropdownItem, i) => (
+                        <li key={i}>
+                          <Link to={dropdownItem.path}>
+                            <span>{dropdownItem.text}</span>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
                 ) : (
                   <Link to={item.path} className="link">
                     <div className="icon-container">{item.icon}</div>
-                    <span className="text-container">{item.text}</span>
+                    {menuAbierto && <span className="text-container">{item.text}</span>}
                   </Link>
                 )}
               </li>
@@ -91,16 +90,10 @@ const BarraLateral = ({ onToggleMenu, menuAbierto, isMobile }) => {
         </nav>
       </div>
 
-      <div className="barra-footer">
-        <Link to="/logout" className="logout-link">
-          <div className="icon-container">
-            <LogOut size={18} />
-          </div>
-          {menuAbierto && <span className="text-container">Cerrar Sesión</span>}
-        </Link>
-      </div>
+      
     </aside>
   );
 };
 
 export default BarraLateral;
+

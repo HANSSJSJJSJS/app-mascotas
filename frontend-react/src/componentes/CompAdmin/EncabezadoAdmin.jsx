@@ -1,6 +1,6 @@
-"use client"
-import { User } from "lucide-react"
+import { User, LogOut } from "lucide-react"
 import "../../stylos/cssAdmin/Encabezado.css"
+import { Link } from "react-router-dom"
 
 const EncabezadoAdmin = ({ userData, isSidebarOpen }) => {
   return (
@@ -17,10 +17,10 @@ const EncabezadoAdmin = ({ userData, isSidebarOpen }) => {
         </div>
 
         <div className="header-controls">
-          <div className="info-usuario">
-            <span>{userData?.username || "Admin"}</span>
-            <small>{userData?.role || "Administrador"}</small>
-          </div>
+          <Link to="/Home" className="user-logout-btn">
+            <LogOut size={18} className="logout-icon" />
+            <span>Cerrar Sesión</span>
+          </Link>
         </div>
       </header>
     </div>

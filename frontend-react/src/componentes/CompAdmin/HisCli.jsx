@@ -3,9 +3,8 @@
 import { useState, useRef } from "react"
 import "../../stylos/cssAdmin/HisCli.css"
 import { obtenerFechaHoraActual, guardarDatos, validarCamposObligatorios } from "../../funcionalidades/FHisCli"
-import logo from "../../imagenes/logo.png";
 
-function HisCli() {
+function HisCli({ isSidebarOpen = true }) {
   const [datosFormulario, setDatosFormulario] = useState({
     codigo: "Pendiente",
     hora: "",
@@ -25,7 +24,7 @@ function HisCli() {
     motivoConsulta: "",
   })
 
-  const [mensaje, setMensaje] = useState("")
+  const [notification, setNotification] = useState({ show: false, message: "", type: "" })
   const printFrameRef = useRef(null)
 
   const manejarCambio = (e) => {
@@ -34,6 +33,13 @@ function HisCli() {
       ...estadoPrevio,
       [name]: value,
     }))
+  }
+
+  const mostrarNotificacion = (message, type = "success") => {
+    setNotification({ show: true, message, type })
+    setTimeout(() => {
+      setNotification({ show: false, message: "", type: "" })
+    }, 3000)
   }
 
   const manejarGuardar = () => {
@@ -49,11 +55,9 @@ function HisCli() {
 
     if (validacion.valido) {
       const resultado = guardarDatos(datosActualizados)
-      setMensaje(resultado.mensaje)
-      setTimeout(() => setMensaje(""), 3000)
+      mostrarNotificacion(resultado.mensaje)
     } else {
-      setMensaje(validacion.mensaje)
-      setTimeout(() => setMensaje(""), 3000)
+      mostrarNotificacion(validacion.mensaje, "error")
     }
   }
 
@@ -76,6 +80,7 @@ function HisCli() {
       color: "",
       motivoConsulta: "",
     })
+    mostrarNotificacion("Formulario limpiado correctamente")
   }
 
   const manejarImprimir = () => {
@@ -108,31 +113,28 @@ function HisCli() {
             padding: 0;
           }
           .print-header {
-            background-color: #657cd3;
+            background-color: #8196eb;
             color: white;
-            padding: 20px;
+            padding: 30px;
             text-align: center;
           }
           .print-header h1 {
             margin: 0;
-            font-size: 24px;
+            font-size: 28px;
             text-transform: uppercase;
+            font-weight: 600;
           }
           .print-header p {
-            margin: 5px 0 0;
-            font-size: 14px;
-          }
-          .print-logo {
-            width: 80px;
-            height: auto;
-            margin-bottom: 10px;
+            margin: 8px 0 0;
+            font-size: 16px;
+            opacity: 0.9;
           }
           .print-section {
             padding: 20px;
             border-bottom: 1px solid #eee;
           }
           .print-section h2 {
-            color: #3f3399;
+            color: #000000;
             margin: 0 0 15px 0;
             font-size: 18px;
           }
@@ -151,10 +153,10 @@ function HisCli() {
             font-weight: bold;
             margin-bottom: 5px;
             display: block;
-            color: #495a90;
+            color: #1a2540;
           }
           .print-value {
-            border: 1px solid #8196eb;
+            border: 1px solid #c2d8ff;
             padding: 8px;
             border-radius: 4px;
             min-height: 20px;
@@ -178,7 +180,6 @@ function HisCli() {
       <body>
         <div class="print-container">
           <div class="print-header">
-            <img src="${logo}" class="print-logo" alt="Logo" />
             <h1>HISTORIA CLÍNICA VETERINARIA</h1>
             <p>Registro médico completo de su mascota</p>
           </div>
@@ -270,213 +271,217 @@ function HisCli() {
         </div>
         
         <script>
-          // Auto print when loaded
           window.onload = function() {
             window.print();
-            // Optional: Close after printing
-            // window.onfocus = function() { window.close(); }
           }
         </script>
       </body>
       </html>
     `
 
-    // Escribe el contenido en la nueva ventana y activa la impresión
     printWindow.document.open()
     printWindow.document.write(printContent)
     printWindow.document.close()
   }
 
   return (
-    <main className="contenedor">
-      <header>
-        <div className="titulo">
-          <div className="logo-container">
-            <img src={logo || "/placeholder.svg"} alt="Logo" />
-          </div>
-          <div>
-            <h1>HISTORIA CLÍNICA VETERINARIA</h1>
-            <p>Registro médico completo de su mascota</p>
+    <div className={`historia-main ${!isSidebarOpen ? "sidebar-collapsed" : ""}`}>
+      <div className="historia-container">
+        {/* Header */}
+        <div className="page-header">
+          <div className="header-content">
+            <div className="title-section">
+              <h1>Historia Clínica Veterinaria</h1>
+              <p>Registro médico completo de su mascota</p>
+            </div>
           </div>
         </div>
-      </header>
 
-      <form id="formularioHistoriaClinica">
-        <section>
-          <h2>Datos del Propietario</h2>
-          <div className="fila">
-            <div className="campo">
-              <label>Nombre completo</label>
-              <input
-                type="text"
-                name="nombrePropietario"
-                value={datosFormulario.nombrePropietario}
-                onChange={manejarCambio}
-                placeholder="Nombre del propietario"
-              />
+        {/* Formulario */}
+        <form className="historia-form">
+          {/* Datos del Propietario */}
+          <section className="form-section">
+            <h2>Datos del Propietario</h2>
+            <div className="form-grid">
+              <div className="form-row">
+                <div className="form-field">
+                  <label>Nombre completo</label>
+                  <input
+                    type="text"
+                    name="nombrePropietario"
+                    value={datosFormulario.nombrePropietario}
+                    onChange={manejarCambio}
+                    placeholder="Nombre del propietario"
+                  />
+                </div>
+                <div className="form-field">
+                  <label>Número de identidad</label>
+                  <input
+                    type="text"
+                    name="identidad"
+                    value={datosFormulario.identidad}
+                    onChange={manejarCambio}
+                    placeholder="Documento de identidad"
+                  />
+                </div>
+              </div>
+
+              <div className="form-field full-width">
+                <label>Dirección</label>
+                <input
+                  type="text"
+                  name="direccion"
+                  value={datosFormulario.direccion}
+                  onChange={manejarCambio}
+                  placeholder="Dirección completa"
+                />
+              </div>
+
+              <div className="form-row">
+                <div className="form-field">
+                  <label>Teléfono principal</label>
+                  <input
+                    type="tel"
+                    name="celular1"
+                    value={datosFormulario.celular1}
+                    onChange={manejarCambio}
+                    placeholder="Número de contacto principal"
+                  />
+                </div>
+                <div className="form-field">
+                  <label>Teléfono alternativo</label>
+                  <input
+                    type="tel"
+                    name="celular2"
+                    value={datosFormulario.celular2}
+                    onChange={manejarCambio}
+                    placeholder="Número de contacto alternativo"
+                  />
+                </div>
+              </div>
             </div>
-            <div className="campo">
-              <label>Número de identidad</label>
-              <input
-                type="text"
-                name="identidad"
-                value={datosFormulario.identidad}
-                onChange={manejarCambio}
-                placeholder="Documento de identidad"
-              />
+          </section>
+
+          {/* Datos de la Mascota */}
+          <section className="form-section">
+            <h2>Datos de la Mascota</h2>
+            <div className="form-grid">
+              <div className="form-row">
+                <div className="form-field">
+                  <label>Nombre</label>
+                  <input
+                    type="text"
+                    name="nombreMascota"
+                    value={datosFormulario.nombreMascota}
+                    onChange={manejarCambio}
+                    placeholder="Nombre de la mascota"
+                  />
+                </div>
+                <div className="form-field">
+                  <label>Especie</label>
+                  <select name="especie" value={datosFormulario.especie} onChange={manejarCambio}>
+                    <option value="">Seleccionar especie</option>
+                    <option value="Canino">Canino</option>
+                    <option value="Felino">Felino</option>
+                    <option value="Ave">Ave</option>
+                    <option value="Otro">Otro</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-field">
+                  <label>Raza</label>
+                  <input
+                    type="text"
+                    name="raza"
+                    value={datosFormulario.raza}
+                    onChange={manejarCambio}
+                    placeholder="Raza de la mascota"
+                  />
+                </div>
+                <div className="form-field">
+                  <label>Sexo</label>
+                  <select name="sexo" value={datosFormulario.sexo} onChange={manejarCambio}>
+                    <option value="">Seleccionar sexo</option>
+                    <option value="Macho">Macho</option>
+                    <option value="Hembra">Hembra</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-field">
+                  <label>Fecha de Nacimiento</label>
+                  <input
+                    type="date"
+                    name="fechaNacimiento"
+                    value={datosFormulario.fechaNacimiento}
+                    onChange={manejarCambio}
+                  />
+                </div>
+                <div className="form-field">
+                  <label>Peso (kg)</label>
+                  <input
+                    type="number"
+                    name="peso"
+                    value={datosFormulario.peso}
+                    onChange={manejarCambio}
+                    step="0.1"
+                    placeholder="Peso en kg"
+                  />
+                </div>
+              </div>
+
+              <div className="form-field full-width">
+                <label>Color</label>
+                <input
+                  type="text"
+                  name="color"
+                  value={datosFormulario.color}
+                  onChange={manejarCambio}
+                  placeholder="Color del pelaje"
+                />
+              </div>
+            </div>
+          </section>
+
+          {/* Anamnesis */}
+          <section className="form-section">
+            <h2>Anamnesis</h2>
+            <div className="form-grid">
+              <div className="form-field full-width">
+                <label>Motivo de consulta</label>
+                <textarea
+                  name="motivoConsulta"
+                  value={datosFormulario.motivoConsulta}
+                  onChange={manejarCambio}
+                  rows="4"
+                  placeholder="Describa el motivo de la consulta y los síntomas observados"
+                ></textarea>
+              </div>
+            </div>
+          </section>
+
+          {/* Botones */}
+          <div className="form-actions">
+            <div className="actions-content">
+              <button type="button" onClick={manejarLimpiar} className="btn-secondary">
+                Limpiar
+              </button>
+              <button type="button" onClick={manejarGuardar} className="btn-primary">
+                Guardar Historia Clínica
+              </button>
+              <button type="button" onClick={manejarImprimir} className="btn-secondary">
+                Imprimir
+              </button>
+              {notification.show && <div className={`status-message ${notification.type}`}>{notification.message}</div>}
             </div>
           </div>
-          <div className="campo">
-            <label>Dirección</label>
-            <input
-              type="text"
-              name="direccion"
-              value={datosFormulario.direccion}
-              onChange={manejarCambio}
-              placeholder="Dirección completa"
-            />
-          </div>
-          <div className="fila">
-            <div className="campo">
-              <label>Teléfono principal</label>
-              <input
-                type="tel"
-                name="celular1"
-                value={datosFormulario.celular1}
-                onChange={manejarCambio}
-                placeholder="Número de contacto principal"
-              />
-            </div>
-            <div className="campo">
-              <label>Teléfono alternativo</label>
-              <input
-                type="tel"
-                name="celular2"
-                value={datosFormulario.celular2}
-                onChange={manejarCambio}
-                placeholder="Número de contacto alternativo"
-              />
-            </div>
-          </div>
-        </section>
-
-        <section>
-          <h2>Datos de la Mascota</h2>
-          <div className="fila">
-            <div className="campo">
-              <label>Nombre</label>
-              <input
-                type="text"
-                name="nombreMascota"
-                value={datosFormulario.nombreMascota}
-                onChange={manejarCambio}
-                placeholder="Nombre de la mascota"
-              />
-            </div>
-            <div className="campo">
-              <label>Especie</label>
-              <select name="especie" value={datosFormulario.especie} onChange={manejarCambio}>
-                <option value="">Seleccionar especie</option>
-                <option value="Canino">Canino</option>
-                <option value="Felino">Felino</option>
-                <option value="Ave">Ave</option>
-                <option value="Otro">Otro</option>
-              </select>
-            </div>
-          </div>
-          <div className="fila">
-            <div className="campo">
-              <label>Raza</label>
-              <input
-                type="text"
-                name="raza"
-                value={datosFormulario.raza}
-                onChange={manejarCambio}
-                placeholder="Raza de la mascota"
-              />
-            </div>
-            <div className="campo">
-              <label>Sexo</label>
-              <select name="sexo" value={datosFormulario.sexo} onChange={manejarCambio}>
-                <option value="">Seleccionar sexo</option>
-                <option value="Macho">Macho</option>
-                <option value="Hembra">Hembra</option>
-              </select>
-            </div>
-          </div>
-          <div className="fila">
-            <div className="campo">
-              <label>Fecha de Nacimiento</label>
-              <input
-                type="date"
-                name="fechaNacimiento"
-                value={datosFormulario.fechaNacimiento}
-                onChange={manejarCambio}
-              />
-            </div>
-            <div className="campo">
-              <label>Peso (kg)</label>
-              <input
-                type="number"
-                name="peso"
-                value={datosFormulario.peso}
-                onChange={manejarCambio}
-                step="0.1"
-                placeholder="Peso en kg"
-              />
-            </div>
-          </div>
-          <div className="campo">
-            <label>Color</label>
-            <input
-              type="text"
-              name="color"
-              value={datosFormulario.color}
-              onChange={manejarCambio}
-              placeholder="Color del pelaje"
-            />
-          </div>
-        </section>
-
-        <section>
-          <h2>Anamnesis</h2>
-          <div className="campo">
-            <label>Motivo de consulta</label>
-            <textarea
-              name="motivoConsulta"
-              value={datosFormulario.motivoConsulta}
-              onChange={manejarCambio}
-              rows="4"
-              placeholder="Describa el motivo de la consulta y los síntomas observados"
-            ></textarea>
-          </div>
-        </section>
-
-        <div className="botones">
-          <button type="button" onClick={manejarLimpiar}>
-            Limpiar
-          </button>
-
-          <button type="button" onClick={manejarGuardar}>
-            Guardar Historia Clínica
-
-          </button>
-        
-          <button type="button" onClick={manejarImprimir}>
-            Imprimir
-          </button>
-          
-        </div>
-      </form>
-
-      {mensaje && (
-        <div id="mensaje" className={mensaje.includes("correctamente") ? "exito" : "error"}>
-          {mensaje}
-        </div>
-      )}
-
-    </main>
+        </form>
+      </div>
+    </div>
   )
 }
 
-export default HisCli;
+export default HisCli

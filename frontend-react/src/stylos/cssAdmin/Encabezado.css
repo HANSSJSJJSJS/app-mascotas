@@ -1,19 +1,20 @@
 .encabezado-container {
-  position: fixed;
-  top: 0;
-  right: 0;
   z-index: 1001;
-  transition: all 0.3s ease;
+  position: fixed;
+  isolation: isolate;
 }
 
 .encabezado-container.sidebar-open {
   left: 250px;
   width: calc(100% - 250px);
+  right: 0;
+
 }
 
 .encabezado-container.sidebar-closed {
   left: 60px;
   width: calc(100% - 60px);
+  
 }
 
 .encabezado-1 {
@@ -23,11 +24,13 @@
   padding: 10px 40px;
   background-color: white;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
   height: 70px;
   width: 100%;
-  position: relative;
   margin: 0;
   border: none;
+  z-index: 1;
+
 }
 
 .welcome-container {
@@ -230,5 +233,55 @@
 
   .info-usuario small {
     font-size: 11px;
+  }
+}
+
+/* --- Botón de Cerrar Sesión --- */
+.user-logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background-color: #1A2540; /* Fondo oscuro */
+  color: #C2D8FF; /* Texto claro */
+  border: 1px solid #495A90; /* Borde azul */
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.user-logout-btn:hover {
+  background-color: #495A90; /* Azul más claro al pasar el mouse */
+  color: white;
+  box-shadow: 0 2px 8px rgba(129, 150, 235, 0.3); /* Sombra suave */
+}
+
+.user-logout-btn:active {
+  transform: translateY(1px);
+}
+
+.logout-icon {
+  color: #C2D8FF; /* Icono en tono claro */
+  transition: transform 0.3s ease;
+}
+
+.user-logout-btn:hover .logout-icon {
+  transform: rotate(15deg); /* Giro sutil del icono */
+}
+
+/* Responsive: Solo icono en móviles */
+@media (max-width: 768px) {
+  .user-logout-btn span {
+    display: none;
+  }
+  .user-logout-btn {
+    padding: 8px;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    justify-content: center;
   }
 }
