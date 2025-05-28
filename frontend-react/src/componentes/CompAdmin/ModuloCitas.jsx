@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import TablaCitas from "./TablaCitas"
 import * as XLSX from "xlsx"
