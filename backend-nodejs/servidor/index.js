@@ -13,7 +13,7 @@ const dbConfig = {
   user: "root",
   password: "12345678",
   database: "mascotas_db",
-  port: 3309,
+  port: 3306,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,

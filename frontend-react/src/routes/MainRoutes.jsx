@@ -7,7 +7,7 @@ import LayoutAdmin from "../componentes/layouts/LayoutAdmin";
 import LayoutPropietario from "../componentes/layouts/LayoutPropietario";
 import LayoutVet from "../componentes/layouts/LayoutVet";
 import Loading from "../componentes/index/Loading";
-
+import useCerrarSesionAlRetroceder from "../funcionalidades/CerrarSesion";
 
 // Componentes públicos
 const Home = React.lazy(() => import("../componentes/index/Home"));
@@ -22,12 +22,15 @@ const NotFound = React.lazy(() => import("../componentes/CompHome/NotFound"));
 
 // Componentes admin
 const PanelAdmin = React.lazy(() => import("../componentes/CompAdmin/PanelAdmin"));
+const TarjetaEstadistica = React.lazy(() => import("../componentes/CompAdmin/TarjetaEstadistica"));
 const ModuloCitas = React.lazy(() => import("../componentes/CompAdmin/ModuloCitas"));
 const ModuloHorarios = React.lazy(() => import("../componentes/CompAdmin/ModuloHorarios"));
-const ModuloEspecialistas = React.lazy(() => import("../componentes/CompAdmin/ModuloEspecialistas"));
-const TablaMascota = React.lazy(() => import("../componentes/CompAdmin/TablaMascota") )
+const ModuloAdministradores = React.lazy(() => import("../componentes/CompAdmin/ModuloAdministradores"));
+const TablaMascotas = React.lazy(() => import("../componentes/CompAdmin/TablaMascotas"));
 const TablaUsuarios = React.lazy(() => import("../componentes/CompAdmin/TablaUsuarios"));
 const HisCli = React.lazy(() => import("../componentes/CompAdmin/HisCli"));
+const Clientes = React.lazy(() => import("../componentes/CompAdmin/Clientes"));
+const Veterinarios = React.lazy(() => import("../componentes/CompAdmin/Veterinarios"));
 
 // Componentes propietario
 const PanelPropietario = React.lazy(() => import("../componentes/CompPropietario/PanelPropietario"));
@@ -45,8 +48,10 @@ const Consultas = React.lazy(() => import("../componentes/CompVet/Consultas"));
 const NuevaConsulta = React.lazy(() => import("../componentes/CompVet/NuevaConsulta"));
 const Pacientes = React.lazy(() => import("../componentes/CompVet/Pacientes"));
 
-
 const MainRoutes = () => {
+  // ✅ USAR EL HOOK PARA CERRAR SESIÓN AL RETROCEDER
+  useCerrarSesionAlRetroceder();
+  
   const isDevelopment = process.env.NODE_ENV === 'development';
 
   const RutasPublicas = () => (
@@ -73,7 +78,7 @@ const MainRoutes = () => {
     </React.Suspense>
   );
 
-    const RutasVet = () => (
+  const RutasVet = () => (
     <React.Suspense fallback={<Loading />}>
       <LayoutVet>
         <Outlet />
@@ -103,12 +108,15 @@ const MainRoutes = () => {
         <Route path="/PanelAdmin" element={<PanelAdmin />}>
           <Route index element={<ModuloCitas />} />
           <Route path="TablaCitas" element={<ModuloCitas />} />
+          <Route path="inicio" element={<TarjetaEstadistica />} />
           <Route path="usuarios" element={<TablaUsuarios />} />
-          <Route path="veterinarios" element={<ModuloEspecialistas />} />
-          <Route path="mascotas" element={<TablaMascota />} />
+          <Route path="administradores" element={<ModuloAdministradores />} />
+          <Route path="mascotas" element={<TablaMascotas />} />
           <Route path="horarios" element={<ModuloHorarios />} />
           <Route path="historial-clinico" element={<HisCli />} />
-      </Route>
+          <Route path="clientes" element={<Clientes />} />
+          <Route path="veterinarios" element={<Veterinarios />} />
+        </Route>
       </Route>
 
       {/* Rutas propietario */}
@@ -123,16 +131,16 @@ const MainRoutes = () => {
       </Route>
 
       {/* Rutas veterinario */}
-    <Route element={isDevelopment ? <RutasVet /> : <RutaProtegida rolPermitido="veterinario"><RutasVet /></RutaProtegida>}>
-      <Route path="/PanelVet" element={<PanelVet />}>
-        <Route index element={<InicioVet />} />
-        <Route path="nueva-consulta" element={<NuevaConsulta />} />
-        <Route path="agenda" element={<AgendaVet />} />
-        <Route path="consultas" element={<Consultas />} />
-        <Route path="historial-clinico" element={<HisVet />} />
-        <Route path="pacientes" element={<Pacientes />} />
+      <Route element={isDevelopment ? <RutasVet /> : <RutaProtegida rolPermitido="veterinario"><RutasVet /></RutaProtegida>}>
+        <Route path="/PanelVet" element={<PanelVet />}>
+          <Route index element={<InicioVet />} />
+          <Route path="nueva-consulta" element={<NuevaConsulta />} />
+          <Route path="agenda" element={<AgendaVet />} />
+          <Route path="consultas" element={<Consultas />} />
+          <Route path="historial-clinico" element={<HisVet />} />
+          <Route path="pacientes" element={<Pacientes />} />
+        </Route>
       </Route>
-    </Route>
 
       {/* Página 404 - Not Found */}
       <Route path="*" element={<NotFound />} />

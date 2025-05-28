@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import '../../stylos/cssAdmin/ModuloEspecialistas.css';
+import '../../stylos/cssAdmin/ModuloAdministradores.css';
 
 const especialistasIniciales = [
   {

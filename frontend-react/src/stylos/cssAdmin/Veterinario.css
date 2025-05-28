@@ -1,0 +1,133 @@
+/* Estilos generales */
+.content-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.page-title {
+  font-size: 24px;
+  color: #2c3e50;
+  margin: 0;
+}
+
+/* Controles del encabezado */
+.header-controls {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ced4da;
+  border-radius: 20px;
+  padding: 5px 15px;
+  background-color: white;
+}
+
+.search-icon {
+  margin-right: 8px;
+  color: #6c757d;
+}
+
+.search-input {
+  border: none;
+  outline: none;
+  font-size: 14px;
+  min-width: 200px;
+}
+
+.filter-select {
+  padding: 8px 15px;
+  border-radius: 20px;
+  border: 1px solid #ced4da;
+  background-color: white;
+  cursor: pointer;
+}
+
+/* Estilos de la tabla */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #e9ecef;
+}
+
+th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #495057;
+}
+
+/* Estilos específicos */
+.vet-photo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.vet-name {
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.specialty {
+  font-style: italic;
+  color: #6c757d;
+}
+
+.contact-info {
+  color: #495057;
+  font-size: 14px;
+}
+
+/* Botones de acción */
+.action-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.action-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 5px 8px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.edit-btn {
+  color: #3498db;
+}
+
+.edit-btn:hover {
+  background-color: #e3f2fd;
+}
+
+.delete-btn {
+  color: #e74c3c;
+}
+
+.delete-btn:hover {
+  background-color: #fde8e8;
+}
