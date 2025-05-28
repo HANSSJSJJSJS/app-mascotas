@@ -21,7 +21,7 @@ const BarraLateral = ({ onToggleMenu, menuAbierto }) => {
 
   // Definir los elementos del menú
   const menuItems = [
-    { icon: <Home size={18} />, text: "Inicio", path: "/PanelAdmin/TarjetaEstadistica" },
+    { icon: <Home size={18} />, text: "Inicio", path: "/PanelAdmin" },
     { icon: <Calendar size={18} />, text: "Citas", path: "/PanelAdmin/TablaCitas" },
     {
       icon: <Users size={18} />, 
