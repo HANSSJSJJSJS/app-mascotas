@@ -13,7 +13,7 @@ body {
 /* Container principal */
 .historia-main {
   padding: 32px 40px;
-  margin-top: -50px;
+  margin-top: 20px;
   margin-left: 100px;
   transition: margin-left 0.3s ease;
   min-height: calc(100vh - 20px);

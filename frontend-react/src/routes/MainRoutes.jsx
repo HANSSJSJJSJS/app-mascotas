@@ -25,7 +25,6 @@ const PanelAdmin = React.lazy(() => import("../componentes/CompAdmin/PanelAdmin"
 const TarjetaEstadistica = React.lazy(() => import("../componentes/CompAdmin/TarjetaEstadistica"));
 const ModuloCitas = React.lazy(() => import("../componentes/CompAdmin/ModuloCitas"));
 const ModuloHorarios = React.lazy(() => import("../componentes/CompAdmin/ModuloHorarios"));
-const ModuloAdministradores = React.lazy(() => import("../componentes/CompAdmin/ModuloAdministradores"));
 const TablaMascotas = React.lazy(() => import("../componentes/CompAdmin/TablaMascotas"));
 const TablaUsuarios = React.lazy(() => import("../componentes/CompAdmin/TablaUsuarios"));
 const HisCli = React.lazy(() => import("../componentes/CompAdmin/HisCli"));
@@ -104,20 +103,20 @@ const MainRoutes = () => {
       </Route>
 
       {/* Rutas admin */}
-      <Route element={isDevelopment ? <RutasAdmin /> : <RutaProtegida rolPermitido="admin"><RutasAdmin /></RutaProtegida>}>
+      {/* <Route element={isDevelopment ? <RutasAdmin /> : <RutaProtegida rolPermitido="admin"><RutasAdmin /></RutaProtegida>}> */}
+        <Route element={<RutasPublicas />} />
         <Route path="/PanelAdmin" element={<PanelAdmin />}>
           <Route index element={<ModuloCitas />} />
           <Route path="TablaCitas" element={<ModuloCitas />} />
-          <Route path="inicio" element={<TarjetaEstadistica />} />
+          <Route path="TarjetaEstadistica" element={<TarjetaEstadistica />} />
           <Route path="usuarios" element={<TablaUsuarios />} />
-          <Route path="administradores" element={<ModuloAdministradores />} />
+          <Route path="TablaUsuarios" element={<TablaUsuarios />} />
           <Route path="mascotas" element={<TablaMascotas />} />
           <Route path="horarios" element={<ModuloHorarios />} />
           <Route path="historial-clinico" element={<HisCli />} />
           <Route path="clientes" element={<Clientes />} />
           <Route path="veterinarios" element={<Veterinarios />} />
         </Route>
-      </Route>
 
       {/* Rutas propietario */}
       <Route element={isDevelopment ? <RutasPropietario /> : <RutaProtegida rolPermitido="propietario"><RutasPropietario /></RutaProtegida>}>

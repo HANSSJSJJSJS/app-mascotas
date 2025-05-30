@@ -32,7 +32,8 @@ FOREIGN KEY (id_tipo) REFERENCES tipo_persona(id_tipo)
 );
 
 CREATE TABLE administradores (
-id_usuario INT PRIMARY KEY NOT NULL,
+id_us
+uario INT PRIMARY KEY NOT NULL,
 cargo VARCHAR(100) NOT NULL,
 fecha_ingreso DATE NOT NULL,
 FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario)

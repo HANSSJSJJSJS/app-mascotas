@@ -7,6 +7,7 @@ function App() {
     <div className="app">
       <AuthProvider>
         <MainRoutes />
+        {/* <ModuloAdministradores /> */}
       </AuthProvider>
     </div>
   );

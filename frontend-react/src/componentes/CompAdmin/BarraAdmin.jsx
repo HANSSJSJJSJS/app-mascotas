@@ -19,18 +19,18 @@ const BarraLateral = ({ onToggleMenu, menuAbierto, isMobile }) => {
 
   // Definir los elementos del menú
   const menuItems = [
-    { icon: <Home size={18} />, text: "Inicio", path: "/PanelAdmin/inicio" },
+    { icon: <Home size={18} />, text: "Inicio", path: "/PanelAdmin/TarjetaEstadistica" },
     { icon: <Calendar size={18} />, text: "Citas", path: "/PanelAdmin/TablaCitas" },
     {
       icon: <Users size={18} />, 
-      text: "Usuarios", 
+      text: "Usuarios",  
       dropdown: true,
       dropdownItems: [
         { text: "Clientes", path: "/PanelAdmin/clientes" },
         { text: "Veterinarios", path: "/PanelAdmin/veterinarios" },
-        { text: "Administradores", path: "/PanelAdmin/ModuloAdministradores" }]
+        { text: "Administradores", path: "/PanelAdmin/TablaUsuarios" }]
     },
-    { icon: <Bone size={18} />, text: "Mascotas", path: "/PanelAdmin/TablaMascotas" },
+    { icon: <Bone size={18} />, text: "Mascotas", path: "/PanelAdmin/mascotas" },
     { icon: <Clock size={18} />, text: "Horarios", path: "/PanelAdmin/horarios" },
     { icon: <History size={18} />, text: "Historial Clínico", path: "/PanelAdmin/historial-clinico" },
   ];

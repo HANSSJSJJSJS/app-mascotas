@@ -9,9 +9,9 @@ app.use(cors())
 
 // Configuración de la conexión a MySQL
 const dbConfig = {
-  host: "127.0.0.1",
+  host: "localhost",
   user: "root",
-  password: "123456789",
+  password: "12345678",
   database: "mascotas_db",
   port: 3306,
   waitForConnections: true,
