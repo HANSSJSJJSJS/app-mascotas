@@ -22,6 +22,138 @@ const dbConfig = {
 // Crear pool de conexiones
 const pool = mysql.createPool(dbConfig)
 
+// Endpoint para obtener datos del usuario (agregar a tu servidor)
+app.get("/api/usuario/:id", async (req, res) => {
+  try {
+    const { id } = req.params
+
+    const [users] = await pool.query(
+      `
+      SELECT 
+        u.*,
+        r.rol,
+        tp.tipo as tipo_persona
+      FROM usuarios u 
+      LEFT JOIN rol r ON u.id_rol = r.id_rol 
+      LEFT JOIN tipo_persona tp ON u.id_tipo = tp.id_tipo 
+      WHERE u.id_usuario = ?
+    `,
+      [id],
+    )
+
+    if (users.length === 0) {
+      return res.status(404).json({ success: false, message: "Usuario no encontrado" })
+    }
+
+    const user = users[0]
+
+    // Verificar si es propietario
+    if (user.id_rol === 3) {
+      const [propietario] = await pool.query("SELECT * FROM propietarios WHERE id_usuario = ?", [id])
+
+      if (propietario.length > 0) {
+        user.esPropietario = true
+      }
+    }
+
+    res.json(user)
+  } catch (error) {
+    console.error("Error al obtener usuario:", error)
+    res.status(500).json({ success: false, message: "Error en el servidor" })
+  }
+})
+
+// Endpoint para obtener mascotas del propietario
+app.get("/api/propietario/:id/mascotas", async (req, res) => {
+  try {
+    const { id } = req.params
+
+    const [mascotas] = await pool.query("SELECT * FROM mascotas WHERE id_usuario = ?", [id])
+
+    res.json(mascotas)
+  } catch (error) {
+    console.error("Error al obtener mascotas:", error)
+    res.status(500).json({ success: false, message: "Error en el servidor" })
+  }
+})
+
+// Endpoint para obtener citas del propietario
+app.get("/api/propietario/:id/citas", async (req, res) => {
+  try {
+    const { id } = req.params
+
+    const [citas] = await pool.query(
+      `
+      SELECT 
+        c.*,
+        m.nombre as nombre_mascota,
+        s.nombre as nombre_servicio,
+        CONCAT(u.nombre, ' ', u.apellido) as nombre_veterinario
+      FROM citas c
+      LEFT JOIN mascotas m ON c.codigo_mascota = m.codigo
+      LEFT JOIN servicios s ON c.id_servicio = s.codigo
+      LEFT JOIN usuarios u ON c.id_veterinario = u.id_usuario
+      WHERE c.id_usuario = ?
+      ORDER BY c.fecha DESC, c.hora DESC
+    `,
+      [id],
+    )
+
+    res.json(citas)
+  } catch (error) {
+    console.error("Error al obtener citas:", error)
+    res.status(500).json({ success: false, message: "Error en el servidor" })
+  }
+})
+
+// Endpoint para actualizar datos del usuario
+app.put("/api/usuario/:id", async (req, res) => {
+  try {
+    const { id } = req.params
+    const { tipo_documento, numeroid, genero, fecha_nacimiento, nombre, apellido, telefono, ciudad, direccion, email } =
+      req.body
+
+    const [result] = await pool.query(
+      `
+      UPDATE usuarios SET
+        tipo_documento = ?,
+        numeroid = ?,
+        genero = ?,
+        fecha_nacimiento = ?,
+        nombre = ?,
+        apellido = ?,
+        telefono = ?,
+        ciudad = ?,
+        direccion = ?,
+        email = ?
+      WHERE id_usuario = ?
+    `,
+      [tipo_documento, numeroid, genero, fecha_nacimiento, nombre, apellido, telefono, ciudad, direccion, email, id],
+    )
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ success: false, message: "Usuario no encontrado" })
+    }
+
+    res.json({ success: true, message: "Datos actualizados correctamente" })
+  } catch (error) {
+    console.error("Error al actualizar usuario:", error)
+    res.status(500).json({ success: false, message: "Error en el servidor" })
+  }
+})
+
+// Endpoint para logout (opcional)
+app.post("/logout", async (req, res) => {
+  try {
+    // Aquí puedes agregar lógica adicional como invalidar tokens si los usas
+    res.json({ success: true, message: "Sesión cerrada correctamente" })
+  } catch (error) {
+    console.error("Error en logout:", error)
+    res.status(500).json({ success: false, message: "Error en el servidor" })
+  }
+})
+
+
 // Función para probar la conexión a la base de datos
 async function testDatabaseConnection() {
   let connection
