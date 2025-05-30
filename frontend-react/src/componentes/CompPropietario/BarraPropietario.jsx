@@ -1,10 +1,11 @@
+"use client"
 
 import { useState, useEffect } from "react"
 import { Home, Calendar, User, Bone, X, LogOut, PawPrint } from "lucide-react"
 import { Link, useLocation } from "react-router-dom"
 import "../../stylos/cssPropietario/BarraPropietario.css"
 
-const BarraPropietario = ({ onToggleMenu, menuAbierto }) => {
+const BarraPropietario = ({ onToggleMenu, menuAbierto, onLogout }) => {
   const [isMobile, setIsMobile] = useState(false)
   const location = useLocation()
 
@@ -24,6 +25,12 @@ const BarraPropietario = ({ onToggleMenu, menuAbierto }) => {
     window.addEventListener("resize", checkIfMobile)
     return () => window.removeEventListener("resize", checkIfMobile)
   }, [])
+
+  const handleLogout = () => {
+    if (window.confirm("¿Estás seguro de que quieres cerrar sesión?")) {
+      onLogout()
+    }
+  }
 
   return (
     <aside className={`barra-lateral ${isMobile ? "mobile" : ""} ${!menuAbierto ? "colapsado" : ""}`}>
@@ -64,12 +71,26 @@ const BarraPropietario = ({ onToggleMenu, menuAbierto }) => {
 
       {/* Footer con logout */}
       <div className="barra-footer">
-        <Link to="/Home" className="logout-link">
+        <button
+          onClick={handleLogout}
+          className="logout-link"
+          style={{
+            background: "none",
+            border: "none",
+            color: "inherit",
+            cursor: "pointer",
+            width: "100%",
+            display: "flex",
+            alignItems: "center",
+            padding: "10px",
+            textDecoration: "none",
+          }}
+        >
           <div className="icon-container">
             <LogOut size={18} />
           </div>
           {menuAbierto && <span className="text-container">Cerrar Sesión</span>}
-        </Link>
+        </button>
       </div>
     </aside>
   )

@@ -23,12 +23,16 @@ export default function ActualizarPropietario() {
   const [imagenPreview, setImagenPreview] = useState(null)
   const [imagenFile, setImagenFile] = useState(null)
 
+  const propietario = JSON.parse(localStorage.getItem("userData"));
+
+  console.log(propietario)
+
   const propietarioEjemplo = {
-    nombre: "Juan",
-    apellido: "Pérez",
-    telefono: "555-123-4567",
-    email: "juan.perez@ejemplo.com",
-    direccion: "Calle Principal 123, Ciudad",
+    nombre: propietario.nombre,
+    apellido: propietario.apellido,
+    telefono: propietario.telefono,
+    email: propietario.email,
+    direccion: propietario.direccion,
     notas: "Cliente desde 2020",
     mascotas: [
       {
