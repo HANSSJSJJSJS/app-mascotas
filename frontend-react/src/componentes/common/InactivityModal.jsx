@@ -1,14 +1,19 @@
 import React from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import '../common/InactivityModal';
 
 const InactivityModal = () => {
-  const { showInactivityWarning, setShowInactivityWarning } = useAuth();
+  const { showInactivityWarning, setShowInactivityWarning, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleContinue = () => {
     setShowInactivityWarning(false);
-    // Cualquier interacción reiniciará los timers automáticamente
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate('/Login');
   };
 
   if (!showInactivityWarning) return null;
@@ -17,9 +22,14 @@ const InactivityModal = () => {
     <div className="inactivity-modal-overlay">
       <div className="inactivity-modal">
         <h3>¿Sigues ahí?</h3>
-        <p>Tu sesión está a punto de cerrarse por inactividad.</p>
+        <p>Tu sesión se cerrará automáticamente en 5 minutos por inactividad.</p>
         <div className="modal-actions">
-          <button onClick={handleContinue}>Continuar</button>
+          <button className="continue-btn" onClick={handleContinue}>
+            Continuar sesión
+          </button>
+          <button className="logout-btn" onClick={handleLogout}>
+            Cerrar sesión
+          </button>
         </div>
       </div>
     </div>

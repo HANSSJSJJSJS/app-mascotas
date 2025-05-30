@@ -1,13 +1,15 @@
-// src/App.js
 import React from 'react';
 import MainRoutes from './routes/MainRoutes';
+import { AuthProvider } from './context/AuthContext';
 
 function App() {
   return (
     <div className="app">
-      <MainRoutes />
+      <AuthProvider>
+        <MainRoutes />
+      </AuthProvider>
     </div>
   );
 }
 
-export default App; // Esto es crucial
+export default App;

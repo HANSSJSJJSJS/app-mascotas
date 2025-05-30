@@ -1,4 +1,4 @@
-import React,{useEffect} from 'react';
+import React, { useEffect } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import BarraAdmin from '../CompAdmin/BarraAdmin';
 import EncabezadoAdmin from '../CompAdmin/EncabezadoAdmin';
@@ -13,7 +13,7 @@ const LayoutAdmin = () => {
     if (!usuario) {
       navigate('/Login');
     }
-  }, [usuario]);
+  }, [usuario, navigate]);
 
   return (
     <div className="app-container admin-layout">

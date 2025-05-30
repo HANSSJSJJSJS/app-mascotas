@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 
 const AuthContext = createContext();
 
@@ -26,21 +26,27 @@ export const AuthProvider = ({ children }) => {
     resetTimers();
   };
 
-  const logout = () => {
+  const logout = useCallback(() => {
     setUsuario(null);
     localStorage.removeItem('usuario');
     localStorage.setItem('logout-event', Date.now());
     clearTimers();
-  };
+  }, []);
 
-  const resetTimers = () => {
+  const clearTimers = () => {
     clearTimeout(inactivityTimer);
     clearTimeout(warningTimer);
+  };
+
+  const resetTimers = useCallback(() => {
+    clearTimers();
     setShowInactivityWarning(false);
     
-    // Tiempos para pruebas (10s advertencia, 20s logout)
-    const WARNING_TIME = 10000; // 10 segundos
-    const LOGOUT_TIME = 20000;  // 20 segundos
+    if (!usuario) return;
+
+    // Tiempos de inactividad (5 min para advertencia, 10 min para logout)
+    const WARNING_TIME = 5 * 60 * 1000; // 5 minutos
+    const LOGOUT_TIME = 10 * 60 * 1000; // 10 minutos
 
     warningTimer = setTimeout(() => {
       setShowInactivityWarning(true);
@@ -49,18 +55,13 @@ export const AuthProvider = ({ children }) => {
     inactivityTimer = setTimeout(() => {
       logout();
     }, LOGOUT_TIME);
-  };
+  }, [usuario, logout]);
 
-  const clearTimers = () => {
-    clearTimeout(inactivityTimer);
-    clearTimeout(warningTimer);
-  };
-
-  const handleActivity = () => {
+  const handleActivity = useCallback(() => {
     if (usuario) {
       resetTimers();
     }
-  };
+  }, [usuario, resetTimers]);
 
   useEffect(() => {
     const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'];
@@ -88,7 +89,7 @@ export const AuthProvider = ({ children }) => {
       });
       window.removeEventListener('storage', handleStorageChange);
     };
-  }, [usuario]);
+  }, [usuario, handleActivity, logout, resetTimers]);
 
   return (
     <AuthContext.Provider value={{ 

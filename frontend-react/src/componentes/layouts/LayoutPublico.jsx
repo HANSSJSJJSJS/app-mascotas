@@ -1,12 +1,15 @@
 import React from 'react';
+import { Outlet } from 'react-router-dom';
 import Header from '../index/Header';
 import Footer from '../index/Footer';
 
-const LayoutPublico = ({ children }) => {
+const LayoutPublico = () => {
   return (
     <div className="layout-publico">
       <Header />
-      <main>{children}</main>
+      <main>
+        <Outlet />
+      </main>
       <Footer />
     </div>
   );

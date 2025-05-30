@@ -1,0 +1,77 @@
+.inactivity-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    backdrop-filter: blur(2px);
+  }
+  
+  .inactivity-modal {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 10px;
+    max-width: 450px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    animation: fadeIn 0.3s ease-out;
+  }
+  
+  .inactivity-modal h3 {
+    margin-top: 0;
+    color: #2c3e50;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .inactivity-modal p {
+    color: #555;
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+  }
+  
+  .modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  
+  .continue-btn, .logout-btn {
+    padding: 0.7rem 1.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border: none;
+    font-size: 1rem;
+  }
+  
+  .continue-btn {
+    background-color: #3498db;
+    color: white;
+  }
+  
+  .continue-btn:hover {
+    background-color: #2980b9;
+  }
+  
+  .logout-btn {
+    background-color: #e74c3c;
+    color: white;
+  }
+  
+  .logout-btn:hover {
+    background-color: #c0392b;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }

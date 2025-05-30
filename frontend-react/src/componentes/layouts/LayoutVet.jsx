@@ -1,15 +1,32 @@
-import React from 'react';
-import Header from '../index/Header';
-import Footer from '../index/Footer';
+import React, { useEffect } from 'react';
+import { Outlet, useNavigate } from 'react-router-dom';
+import BarraVet from '../CompVet/BarraVet';
+import EncabezadoVet from '../CompVet/EncabezadoVet';
+import { useAuth } from '../../context/AuthContext';
+import InactivityModal from '../common/InactivityModal';
 
-const LayoutPublico = ({ children }) => {
+const LayoutVet = () => {
+  const { usuario } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!usuario) {
+      navigate('/Login');
+    }
+  }, [usuario, navigate]);
+
   return (
-    <div className="layout-publico">
-      <Header />
-      <main>{children}</main>
-      <Footer />
+    <div className="app-container vet-layout">
+      <BarraVet />
+      <div className="content-wrapper">
+        <EncabezadoVet />
+        <div className="content-area">
+          <Outlet />
+        </div>
+      </div>
+      <InactivityModal />
     </div>
   );
 };
 
-export default LayoutPublico;
+export default LayoutVet;
