@@ -4,16 +4,13 @@ import { useState, useEffect } from "react"
 import "../../stylos/cssPropietario/PanelPropietario.css"
 import BarraPropietario from "./BarraPropietario"
 import EncabezadoPropietario from "./EncabezadoPropietario"
+import { useLocation } from 'react-router-dom';
 
 const PanelPropietario = () => {
   const [menuAbierto, setMenuAbierto] = useState(true)
-  const [isMobile, setIsMobile] = useState(false)
+  const [isMobile, setIsMobile] = useState(false) 
 
-  const [userData] = useState({
-    username: "Propietario",
-    role: "Propietario",
-    email: "propietario.com",
-  })
+  const userData = JSON.parse(localStorage.getItem("userData"));
 
   useEffect(() => {
     const checkIfMobile = () => {

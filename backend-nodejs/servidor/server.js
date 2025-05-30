@@ -1,160 +1,220 @@
-const express = require("express");
-const mysql = require("mysql2/promise");
-const cors = require("cors");
-const bcrypt = require("bcrypt");
-const { body, validationResult } = require("express-validator");
-const morgan = require("morgan");
-const helmet = require("helmet");
-const rateLimit = require("express-rate-limit");
-const app = express();
+const express = require("express")
+const mysql = require("mysql2/promise")
+const cors = require("cors")
+const bcrypt = require("bcrypt")
 
-// Configuración de seguridad y middleware
-require('dotenv').config();
+const app = express()
+app.use(express.json())
+app.use(cors())
 
-// Verificar variables de entorno críticas
-const requiredEnvVars = ['DB_HOST', 'DB_USER', 'DB_PASSWORD', 'DB_NAME', 'PORT'];
-requiredEnvVars.forEach(env => {
-  if (!process.env[env]) {
-    console.error(`❌ Falta la variable de entorno requerida: ${env}`);
-    process.exit(1);
-  }
-});
-
-// Configuración de conexión a MySQL
+// Configuración de la conexión a MySQL
 const dbConfig = {
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  port: process.env.DB_PORT || 3306,
+  host: "127.0.0.1",
+  user: "root",
+  password: "123456789",
+  database: "mascotas_db",
+  port: 3306,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
-};
+}
 
-// Middlewares
-app.use(helmet());
-app.use(morgan('dev'));
-app.use(express.json({ limit: '10kb' }));
-app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
-  methods: ['GET', 'POST'],
-  allowedHeaders: ['Content-Type']
-}));
+// Crear pool de conexiones
+const pool = mysql.createPool(dbConfig)
 
-// Limitar peticiones
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 100 // límite de peticiones
-});
-app.use('/login', limiter);
-app.use('/registro', limiter);
+// Endpoint para obtener datos del usuario (agregar a tu servidor)
+app.get("/api/usuario/:id", async (req, res) => {
+  try {
+    const { id } = req.params
 
-// Pool de conexiones MySQL
-const pool = mysql.createPool(dbConfig);
+    const [users] = await pool.query(
+      `
+      SELECT 
+        u.*,
+        r.rol,
+        tp.tipo as tipo_persona
+      FROM usuarios u 
+      LEFT JOIN rol r ON u.id_rol = r.id_rol 
+      LEFT JOIN tipo_persona tp ON u.id_tipo = tp.id_tipo 
+      WHERE u.id_usuario = ?
+    `,
+      [id],
+    )
+
+    if (users.length === 0) {
+      return res.status(404).json({ success: false, message: "Usuario no encontrado" })
+    }
+
+    const user = users[0]
+
+    // Verificar si es propietario
+    if (user.id_rol === 3) {
+      const [propietario] = await pool.query("SELECT * FROM propietarios WHERE id_usuario = ?", [id])
+
+      if (propietario.length > 0) {
+        user.esPropietario = true
+      }
+    }
+
+    res.json(user)
+  } catch (error) {
+    console.error("Error al obtener usuario:", error)
+    res.status(500).json({ success: false, message: "Error en el servidor" })
+  }
+})
+
+// Endpoint para obtener mascotas del propietario
+app.get("/api/propietario/:id/mascotas", async (req, res) => {
+  try {
+    const { id } = req.params
+
+    const [mascotas] = await pool.query("SELECT * FROM mascotas WHERE id_usuario = ?", [id])
+
+    res.json(mascotas)
+  } catch (error) {
+    console.error("Error al obtener mascotas:", error)
+    res.status(500).json({ success: false, message: "Error en el servidor" })
+  }
+})
+
+// Endpoint para obtener citas del propietario
+app.get("/api/propietario/:id/citas", async (req, res) => {
+  try {
+    const { id } = req.params
+
+    const [citas] = await pool.query(
+      `
+      SELECT 
+        c.*,
+        m.nombre as nombre_mascota,
+        s.nombre as nombre_servicio,
+        CONCAT(u.nombre, ' ', u.apellido) as nombre_veterinario
+      FROM citas c
+      LEFT JOIN mascotas m ON c.codigo_mascota = m.codigo
+      LEFT JOIN servicios s ON c.id_servicio = s.codigo
+      LEFT JOIN usuarios u ON c.id_veterinario = u.id_usuario
+      WHERE c.id_usuario = ?
+      ORDER BY c.fecha DESC, c.hora DESC
+    `,
+      [id],
+    )
+
+    res.json(citas)
+  } catch (error) {
+    console.error("Error al obtener citas:", error)
+    res.status(500).json({ success: false, message: "Error en el servidor" })
+  }
+})
+
+// Endpoint para actualizar datos del usuario
+app.put("/api/usuario/:id", async (req, res) => {
+  try {
+    const { id } = req.params
+    const { tipo_documento, numeroid, genero, fecha_nacimiento, nombre, apellido, telefono, ciudad, direccion, email } =
+      req.body
+
+    const [result] = await pool.query(
+      `
+      UPDATE usuarios SET
+        tipo_documento = ?,
+        numeroid = ?,
+        genero = ?,
+        fecha_nacimiento = ?,
+        nombre = ?,
+        apellido = ?,
+        telefono = ?,
+        ciudad = ?,
+        direccion = ?,
+        email = ?
+      WHERE id_usuario = ?
+    `,
+      [tipo_documento, numeroid, genero, fecha_nacimiento, nombre, apellido, telefono, ciudad, direccion, email, id],
+    )
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ success: false, message: "Usuario no encontrado" })
+    }
+
+    res.json({ success: true, message: "Datos actualizados correctamente" })
+  } catch (error) {
+    console.error("Error al actualizar usuario:", error)
+    res.status(500).json({ success: false, message: "Error en el servidor" })
+  }
+})
+
+// Endpoint para logout (opcional)
+app.post("/logout", async (req, res) => {
+  try {
+    // Aquí puedes agregar lógica adicional como invalidar tokens si los usas
+    res.json({ success: true, message: "Sesión cerrada correctamente" })
+  } catch (error) {
+    console.error("Error en logout:", error)
+    res.status(500).json({ success: false, message: "Error en el servidor" })
+  }
+})
+
 
 // Función para probar la conexión a la base de datos
 async function testDatabaseConnection() {
-  let connection;
+  let connection
   try {
-    connection = await pool.getConnection();
-    console.log("✅ Conexión a la base de datos establecida correctamente");
+    connection = await pool.getConnection()
+    console.log("✅ Conexión a la base de datos establecida correctamente")
 
-    const [tables] = await connection.query("SHOW TABLES");
-    console.log("📊 Tablas disponibles:", tables.map(t => Object.values(t)[0]).join(", "));
+    // Verificar si las tablas existen
+    const [tables] = await connection.query("SHOW TABLES")
+    console.log("Tablas en la base de datos:", tables.map((t) => Object.values(t)[0]).join(", "))
 
-    return true;
+    // Verificar si hay datos en las tablas rol y tipo_persona
+    const [roles] = await connection.query("SELECT * FROM rol")
+    console.log("Roles disponibles:", roles.length)
+
+    const [tipos] = await connection.query("SELECT * FROM tipo_persona")
+    console.log("Tipos de persona disponibles:", tipos.length)
+
+    return true
   } catch (error) {
-    console.error("❌ Error al conectar a la base de datos:", error.message);
-    return false;
+    console.error("❌ Error al conectar a la base de datos:", error)
+    return false
   } finally {
-    if (connection) connection.release();
+    if (connection) connection.release()
   }
 }
 
-// Validadores para las rutas
-const validateLogin = [
-  body('email').isEmail().normalizeEmail(),
-  body('password').isLength({ min: 8 })
-];
-
-const validateRegister = [
-  body('tipoDocumento').isIn(['CC', 'CE', 'PP']),
-  body('numeroId').isNumeric().isLength({ min: 6, max: 10 }),
-  body('genero').isIn(['Mujer', 'Hombre', 'No identificado']),
-  body('fechaNacimiento').isISO8601(),
-  body('nombre').isString().isLength({ min: 3, max: 30 }),
-  body('apellido').isString().isLength({ min: 3, max: 30 }),
-  body('telefono').isMobilePhone(),
-  body('ciudad').isString().isLength({ min: 3, max: 30 }),
-  body('direccion').isString().isLength({ min: 3, max: 50 }),
-  body('email').isEmail().normalizeEmail(),
-  body('password').isStrongPassword({
-    minLength: 8,
-    minLowercase: 1,
-    minUppercase: 1,
-    minNumbers: 1,
-    minSymbols: 1
-  })
-];
-
 // Ruta de login
-app.post("/login", validateLogin, async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-
+app.post("/login", async (req, res) => {
   try {
-    const { email, password } = req.body;
-    const [users] = await pool.query("SELECT * FROM usuarios WHERE email = ?", [email]);
+    const { email, password } = req.body
+
+    const [users] = await pool.query("SELECT * FROM usuarios WHERE email = ?", [email])
 
     if (users.length === 0) {
-      return res.status(401).json({ 
-        success: false, 
-        message: "Credenciales incorrectas" 
-      });
+      return res.status(401).json({ success: false, message: "Credenciales incorrectas" })
     }
 
-    const user = users[0];
-    const passwordMatch = await bcrypt.compare(password, user.password_hash);
+    const user = users[0]
+    const passwordMatch = await bcrypt.compare(password, user.password_hash)
 
-    if (!passwordMatch) {
-      return res.status(401).json({ 
-        success: false, 
-        message: "Credenciales incorrectas" 
-      });
+    if (passwordMatch) {
+      res.json({ success: true, message: "Inicio de sesión exitoso", user })
+    } else {
+      res.status(401).json({ success: false, message: "Credenciales incorrectas" })
     }
-
-    // Eliminar información sensible antes de responder
-    delete user.password_hash;
-    
-    res.json({ 
-      success: true, 
-      message: "Inicio de sesión exitoso", 
-      user 
-    });
-
   } catch (error) {
-    console.error("Error en el login:", error);
-    res.status(500).json({ 
-      success: false, 
-      message: "Error en el servidor" 
-    });
+    console.error("Error en el login:", error)
+    res.status(500).json({ success: false, message: "Error en el servidor" })
   }
-});
+})
 
 // Ruta de registro de propietarios
-app.post("/registro", validateRegister, async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-
-  let connection;
+app.post("/registro", async (req, res) => {
+  let connection
   try {
-    connection = await pool.getConnection();
-    await connection.beginTransaction();
+    console.log("📝 Iniciando registro de propietario")
+    // No logueamos los datos recibidos para evitar exponer información sensible
+
+    connection = await pool.getConnection()
+    console.log("✅ Conexión obtenida")
 
     const {
       tipoDocumento,
@@ -168,132 +228,175 @@ app.post("/registro", validateRegister, async (req, res) => {
       direccion,
       email,
       password,
-    } = req.body;
+    } = req.body
 
-    // Verificar email y documento único
-    const [emailExists] = await connection.query(
-      "SELECT 1 FROM usuarios WHERE email = ?", 
-      [email]
-    );
-    
-    if (emailExists.length > 0) {
-      await connection.rollback();
-      return res.status(400).json({ 
-        success: false, 
-        message: "El email ya está registrado" 
-      });
+    // Verificar si el email ya existe
+    console.log("Verificando si el email ya existe")
+    const [emailResults] = await connection.query("SELECT * FROM usuarios WHERE email = ?", [email])
+    if (emailResults.length > 0) {
+      console.log("❌ Email ya registrado")
+      return res.status(400).json({ success: false, message: "El email ya está registrado" })
     }
+    console.log("✅ Email disponible")
 
-    const [docExists] = await connection.query(
-      "SELECT 1 FROM usuarios WHERE numeroid = ?", 
-      [numeroId]
-    );
-    
-    if (docExists.length > 0) {
-      await connection.rollback();
-      return res.status(400).json({ 
-        success: false, 
-        message: "El número de documento ya está registrado" 
-      });
+    // Verificar si el documento ya existe
+    console.log("Verificando si el documento ya existe")
+    const [docResults] = await connection.query("SELECT * FROM usuarios WHERE numeroid = ?", [numeroId])
+    if (docResults.length > 0) {
+      console.log("❌ Número de documento ya registrado")
+      return res.status(400).json({ success: false, message: "El número de documento ya está registrado" })
     }
+    console.log("✅ Documento disponible")
 
-    // Encriptar contraseña
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // Encriptar la contraseña
+    console.log("Encriptando contraseña")
+    const hashedPassword = await bcrypt.hash(password, 10)
+    console.log("✅ Contraseña encriptada")
 
-    // Insertar usuario
-    const [userResult] = await connection.query(
-      `INSERT INTO usuarios (
-        tipo_documento, numeroid, genero, fecha_nacimiento, 
-        nombre, apellido, telefono, ciudad, direccion, 
-        email, password_hash, id_rol, id_tipo
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [
-        tipoDocumento, numeroId, genero, fechaNacimiento,
-        nombre, apellido, telefono, ciudad, direccion,
-        email, hashedPassword, 3, 1 // 3 = Propietario, 1 = tipo propietario
+    // Iniciar transacción
+    console.log("Iniciando transacción")
+    await connection.beginTransaction()
+    console.log("✅ Transacción iniciada")
+
+    try {
+      // Insertar en la tabla usuarios
+      console.log("Insertando en la tabla usuarios")
+      const insertUserQuery = `
+        INSERT INTO usuarios (
+          tipo_documento, 
+          numeroid, 
+          genero, 
+          fecha_nacimiento, 
+          nombre, 
+          apellido, 
+          telefono, 
+          ciudad, 
+          direccion, 
+          email, 
+          password_hash,
+          id_rol,
+          id_tipo
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `
+
+      const userValues = [
+        tipoDocumento,
+        numeroId,
+        genero,
+        fechaNacimiento,
+        nombre,
+        apellido,
+        telefono,
+        ciudad,
+        direccion,
+        email,
+        hashedPassword,
+        3, // id_rol = 3 (Propietario)
+        1, // id_tipo = 1 (propietario)
       ]
-    );
 
-    // Insertar propietario
-    await connection.query(
-      "INSERT INTO propietarios (id_usuario) VALUES (?)",
-      [userResult.insertId]
-    );
+      // No logueamos los valores para evitar exponer información sensible
+      console.log("Ejecutando query de inserción de usuario")
 
-    await connection.commit();
+      const [userResult] = await connection.query(insertUserQuery, userValues)
 
-    res.json({
-      success: true,
-      message: "Propietario registrado exitosamente",
-      userId: userResult.insertId
-    });
+      console.log("✅ Usuario insertado con ID:", userResult.insertId)
 
+      const userId = userResult.insertId
+
+      // Insertar en la tabla propietarios
+      console.log("Insertando en la tabla propietarios con id_usuario:", userId)
+      const insertPropietarioQuery = "INSERT INTO propietarios (id_usuario) VALUES (?)"
+      await connection.query(insertPropietarioQuery, [userId])
+      console.log("✅ Propietario insertado")
+
+      // Confirmar transacción
+      console.log("Confirmando transacción")
+      await connection.commit()
+      console.log("✅ Transacción confirmada")
+
+      // Verificar que el usuario se haya insertado correctamente
+      console.log("Verificando que el usuario se haya insertado correctamente")
+      const [userCheck] = await connection.query("SELECT id_usuario FROM usuarios WHERE id_usuario = ?", [userId])
+      console.log(
+        "Resultado de la verificación:",
+        userCheck.length > 0 ? "Usuario encontrado" : "Usuario no encontrado",
+      )
+
+      if (userCheck.length === 0) {
+        console.log("❌ El usuario no se insertó correctamente a pesar de que la transacción fue exitosa")
+        return res.status(500).json({
+          success: false,
+          message: "Error en el servidor: El usuario no se insertó correctamente",
+        })
+      }
+
+      console.log("✅ Registro completado exitosamente")
+      res.json({
+        success: true,
+        message: "Propietario registrado exitosamente",
+        user: { id: userId, email, rol: "Propietario" },
+      })
+    } catch (error) {
+      // Revertir transacción en caso de error
+      console.log("❌ Error durante la transacción:", error.message)
+      await connection.rollback()
+      console.log("✅ Transacción revertida")
+      throw error
+    }
   } catch (error) {
-    if (connection) await connection.rollback();
-    
-    console.error("Error en el registro:", error);
+    console.error("❌ Error en el registro:", error.message)
 
-    let message = "Error en el servidor al registrar el propietario";
+    // Verificar si es un error de restricción de clave foránea
     if (error.code === "ER_NO_REFERENCED_ROW_2") {
-      message = "Error: Falta una referencia en otra tabla";
-    } else if (error.code === "ER_CHECK_CONSTRAINT_VIOLATED") {
-      message = "Error: Valor no cumple con las restricciones";
+      return res.status(500).json({
+        success: false,
+        message: "Error: No se pudo crear el registro porque falta una referencia en otra tabla",
+        error: error.message,
+      })
     }
 
-    res.status(500).json({ 
-      success: false, 
-      message,
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
-    });
+    // Verificar si es un error de restricción de verificación (CHECK)
+    if (error.code === "ER_CHECK_CONSTRAINT_VIOLATED") {
+      return res.status(500).json({
+        success: false,
+        message: "Error: Uno de los valores no cumple con las restricciones de la base de datos",
+        error: error.message,
+      })
+    }
 
+    res.status(500).json({
+      success: false,
+      message: "Error en el servidor al registrar el propietario",
+      error: error.message,
+    })
   } finally {
-    if (connection) connection.release();
+    if (connection) {
+      connection.release()
+      console.log("✅ Conexión liberada")
+    }
   }
-});
+})
 
-// Ruta de estado del servidor
+// Ruta para verificar el estado del servidor y la base de datos
 app.get("/health", async (req, res) => {
-  try {
-    const dbConnected = await testDatabaseConnection();
-    res.json({
-      status: "running",
-      database: dbConnected ? "connected" : "disconnected",
-      timestamp: new Date().toISOString(),
-      environment: process.env.NODE_ENV || 'development'
-    });
-  } catch (error) {
-    res.status(500).json({ 
-      status: "error",
-      error: "Health check failed" 
-    });
-  }
-});
+  const dbConnected = await testDatabaseConnection()
 
-// Manejo de errores centralizado
-app.use((err, req, res, next) => {
-  console.error('Error no manejado:', err);
-  res.status(500).json({ 
-    success: false, 
-    message: 'Error interno del servidor' 
-  });
-});
+  res.json({
+    server: "running",
+    database: dbConnected ? "connected" : "disconnected",
+    timestamp: new Date().toISOString(),
+  })
+})
 
 // Iniciar servidor
-const PORT = process.env.PORT || 3000;
-const startServer = async () => {
-  try {
-    const dbOk = await testDatabaseConnection();
-    if (!dbOk) throw new Error('No se pudo conectar a la base de datos');
+const PORT = process.env.PORT || 3001
+app.listen(PORT, async () => {
+  console.log(`Servidor corriendo en el puerto ${PORT}`)
 
-    app.listen(PORT, () => {
-      console.log(`\n🚀 Servidor corriendo en http://localhost:${PORT}`);
-      console.log(`📊 Base de datos: ${dbOk ? 'CONECTADA' : 'DESCONECTADA'}`);
-      console.log(`🌍 Entorno: ${process.env.NODE_ENV || 'development'}\n`);
-    });
-  } catch (error) {
-    console.error('❌ Error al iniciar servidor:', error.message);
-    process.exit(1);
-  }
-};
+  // Probar la conexión a la base de datos al iniciar
+  await testDatabaseConnection()
+})
 
-startServer();
+// Ejecutar este script para ver si funciona
+console.log("Servidor iniciado correctamente")

@@ -1,22 +1,80 @@
-import { Bell, Calendar, Clipboard, PawPrint, User, Home, Clock, ChevronRight, CalendarIcon, ClockIcon } from 'lucide-react'
-import { Link } from 'react-router-dom';
-import "../../stylos/cssPropietario/InicioPropietario.css"
+import { useEffect, useState } from 'react';
+import {
+  Bell, Calendar, PawPrint, Clock, ChevronRight, CalendarIcon, ClockIcon
+} from 'lucide-react';
+import axios from 'axios';
+import "../../stylos/cssPropietario/InicioPropietario.css";
 
 export default function InicioPropietario() {
-  // Obtener la fecha actual para mostrarla en el encabezado
-  const today = new Date();
-  const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-  const formattedDate = today.toLocaleDateString('es-ES', options);
-  const hours = today.getHours();
-  const minutes = today.getMinutes();
-  const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+  const [mascotas, setMascotas] = useState([]);
+  const [formattedDate, setFormattedDate] = useState('');
+  const [formattedTime, setFormattedTime] = useState('');
+  const [citas, setCitas] = useState([]);
+  const [recordatoriosPendientes, setRecordatoriosPendientes] = useState(0);
+
+  useEffect(() => {
+    // Formatear fecha y hora
+    const today = new Date();
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    setFormattedDate(today.toLocaleDateString('es-ES', options));
+    const hours = today.getHours();
+    const minutes = today.getMinutes();
+    setFormattedTime(`${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`);
+
+    // Obtener mascotas del usuario
+    const fetchMascotas = async () => {
+      try {
+        const usuarioActual = JSON.parse(localStorage.getItem("userData"));
+        console.log(usuarioActual)
+        if (!usuarioActual?.id_usuario) {
+          console.error("ID de usuario no disponible");
+          return;
+        }
+
+        const response = await axios.get(
+          `http://localhost:3001/api/propietario/${usuarioActual.id_usuario}/mascotas`
+        );
+        setMascotas(response.data);
+      } catch (error) {
+        console.error("Error al obtener mascotas:", error);
+      }
+    };
+
+    const fetchCitas = async() => {
+      try {
+        const usuarioActual = JSON.parse(localStorage.getItem("userData"));
+        console.log(usuarioActual)
+        if (!usuarioActual?.id_usuario) {
+          console.error("ID de usuario no disponible");
+          return;
+        }
+
+        const response = await axios.get(
+          `http://localhost:3001/api/propietario/${usuarioActual.id_usuario}/citas`
+        );
+
+        const citasObtenidas = response.data;
+        setCitas(citasObtenidas);
+        console.log(citasObtenidas)
+
+        // Contar solo las pendientes
+        const pendientes = citasObtenidas.filter(cita => cita.estado === "PENDIENTE").length;
+        setRecordatoriosPendientes(pendientes);
+
+      } catch (error) {
+        console.error("Error al obtener mascotas:", error);
+      }   
+    };
+
+    fetchMascotas();
+    fetchCitas();
+  }, []);
 
   return (
-    <div className="min-h-screen bg-white"> {/* Fondo blanco */}
-      {/* Main content */}
-      <main className="flex-1 max-w-6xl mx-auto px-4 py-6"> {/* Centrado con margen automático y padding */}
+    <div className="min-h-screen bg-white">
+      <main className="flex-1 max-w-6xl mx-auto px-4 py-6">
         <div className="page-content">
-          {/* Encabezado de bienvenida */}
+          {/* Encabezado */}
           <div className="welcome-header">
             <div>
               <h2 className="welcome-title">Bienvenido a Moybe</h2>
@@ -31,182 +89,119 @@ export default function InicioPropietario() {
             </div>
           </div>
 
-          {/* Dashboard content */}
-          <div className="dashboard-grid">
-            <div>
-              {/* Resumen */}
-              <div className="dashboard-section">
-                <h3 className="section-title">Resumen</h3>
-                <div className="stats-container">
-                  <div className="stat-card">
-                    <div className="stat-icon">
-                      <PawPrint size={18} />
-                    </div>
-                    <div className="stat-info">
-                      <h3>Mascotas</h3>
-                      <div className="stat-value">2</div>
-                    </div>
-                  </div>
-
-                  <div className="stat-card">
-                    <div className="stat-icon">
-                      <Calendar size={18} />
-                    </div>
-                    <div className="stat-info">
-                      <h3>Próximas citas</h3>
-                      <div className="stat-value">2</div>
-                    </div>
-                  </div>
-
-                  <div className="stat-card">
-                    <div className="stat-icon">
-                      <Bell size={18} />
-                    </div>
-                    <div className="stat-info">
-                      <h3>Recordatorios</h3>
-                      <div className="stat-value">2</div>
-                    </div>
-                  </div>
+          {/* Sección de resumen */}
+          <div className="dashboard-section">
+            <h3 className="section-title">Resumen</h3>
+            <div className="stats-container">
+              <div className="stat-card">
+                <div className="stat-icon">
+                  <PawPrint size={18} />
+                </div>
+                <div className="stat-info">
+                  <h3>Mascotas</h3>
+                  <div className="stat-value">{mascotas.length}</div>
                 </div>
               </div>
-
-              {/* Próximas citas */}
-              <div className="dashboard-section">
-                <div className="section-header">
-                  <h3 className="section-title">Próximas citas</h3>
-                  <button className="view-all-button">
-                    Ver todas <ChevronRight size={16} />
-                  </button>
+              <div className="stat-card">
+                <div className="stat-icon">
+                  <Calendar size={18} />
                 </div>
-                <div className="appointments-container">
-                  <div className="appointment-card today">
-                    <div className="appointment-icon">
-                      <Calendar size={18} />
-                    </div>
-                    <div className="appointment-details">
-                      <h3>Vacunación - Max</h3>
-                      <div className="appointment-date">
-                        <CalendarIcon size={14} className="mini-icon" />
-                        <span>miércoles, 14 de junio de 2023</span>
-                      </div>
-                      <div className="appointment-time">
-                        <ClockIcon size={14} className="mini-icon" />
-                        <span>10:30 - Dr. García</span>
-                      </div>
-                    </div>
-                    <div className="appointment-actions">
-                      <button className="action-button">Confirmar</button>
-                    </div>
-                  </div>
-
-                  <div className="appointment-card">
-                    <div className="appointment-icon">
-                      <Calendar size={18} />
-                    </div>
-                    <div className="appointment-details">
-                      <h3>Control - Luna</h3>
-                      <div className="appointment-date">
-                        <CalendarIcon size={14} className="mini-icon" />
-                        <span>miércoles, 21 de junio de 2023</span>
-                      </div>
-                      <div className="appointment-time">
-                        <ClockIcon size={14} className="mini-icon" />
-                        <span>15:00 - Dra. Rodríguez</span>
-                      </div>
-                    </div>
-                    <div className="appointment-actions">
-                      <button className="action-button">Confirmar</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div>
-              {/* Mis mascotas */}
-              <div className="dashboard-section">
-                <div className="section-header">
-                  <h3 className="section-title">Mis mascotas</h3>
-                  <button className="view-all-button">
-                    Ver todas <ChevronRight size={16} />
-                  </button>
-                </div>
-                <div className="pets-container">
-                  <div className="pet-card">
-                    <div className="pet-image-container">
-                      <PawPrint size={20} className="text-white" />
-                    </div>
-                    <div className="pet-details">
-                      <h4 className="pet-name">Max</h4>
-                      <p className="pet-breed">Perro - Labrador</p>
-                      <p className="pet-age">3 años</p>
-                    </div>
-                    <button className="pet-details-button">
-                      Ver ficha <ChevronRight size={16} />
-                    </button>
-                  </div>
-
-                  <div className="pet-card">
-                    <div className="pet-image-container">
-                      <PawPrint size={20} className="text-white" />
-                    </div>
-                    <div className="pet-details">
-                      <h4 className="pet-name">Luna</h4>
-                      <p className="pet-breed">Gato - Siamés</p>
-                      <p className="pet-age">2 años</p>
-                    </div>
-                    <button className="pet-details-button">
-                      Ver ficha <ChevronRight size={16} />
-                    </button>
-                  </div>
-
-                  <div className="add-pet-card">
-                    <span className="add-icon">+</span>
-                    <span>Agregar mascota</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Recordatorios */}
-              <div className="dashboard-section">
-                <div className="section-header">
-                  <h3 className="section-title">Recordatorios</h3>
-                  <button className="view-all-button">
-                    Ver todos <ChevronRight size={16} />
-                  </button>
-                </div>
-                <div className="reminders-container">
-                  <div className="reminder-card today">
-                    <div className="reminder-icon">
-                      <Bell size={18} />
-                    </div>
-                    <div className="reminder-details">
-                      <h4 className="reminder-text">Desparasitación de Max</h4>
-                      <div className="reminder-date">
-                        <CalendarIcon size={14} className="mini-icon" />
-                        <span>viernes, 9 de junio de 2023</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="reminder-card">
-                    <div className="reminder-icon">
-                      <Bell size={18} />
-                    </div>
-                    <div className="reminder-details">
-                      <h4 className="reminder-text">Comprar alimento para Luna</h4>
-                      <div className="reminder-date">
-                        <CalendarIcon size={14} className="mini-icon" />
-                        <span>miércoles, 7 de junio de 2023</span>
-                      </div>
-                    </div>
-                  </div>
+                <div className="stat-info">
+                  <h3>Próximas citas</h3>
+                  <div className="stat-value">{citas.length}</div> {/* Reemplazar con data real */}
                 </div>
               </div>
             </div>
           </div>
+
+          {/* Mis mascotas */}
+          <div className="dashboard-section">
+            <div className="section-header">
+              <h3 className="section-title">Mis mascotas</h3>
+              <button className="view-all-button">
+                Ver todas <ChevronRight size={16} />
+              </button>
+            </div>
+            <div className="pets-container">
+              {mascotas.map((mascota, index) => (
+                <div key={index} className="pet-card">
+                  <div className="pet-image-container">
+                    <PawPrint size={20} className="text-white" />
+                  </div>
+                  <div className="pet-details">
+                    <h4 className="pet-name">{mascota.nombre}</h4>
+                    <p className="pet-breed">{mascota.especie} - {mascota.raza}</p>
+                    <p className="pet-age">{mascota.edad} años</p>
+                  </div>
+                  <button className="pet-details-button">
+                    Ver ficha <ChevronRight size={16} />
+                  </button>
+                </div>
+              ))}
+
+              {/* Card para agregar mascota */}
+              <div className="add-pet-card">
+                <span className="add-icon">+</span>
+                <span>Agregar mascota</span>
+              </div>
+            </div>
+          </div>
+
+{/* Próximas citas dinámicas (pendientes y dentro de 3 días) */}
+<div className="dashboard-section">
+  <div className="section-header">
+    <h3 className="section-title">Próximas citas</h3>
+  </div>
+  <div className="appointments-container">
+    {citas && citas.length > 0 ? (
+      citas
+        .filter(cita => {
+          if (cita.estado !== "PENDIENTE") return false;
+
+          const hoy = new Date();
+          const fechaCita = new Date(cita.fecha);
+          // Calcular diferencia en días
+          const diffTime = fechaCita - hoy;
+          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+          return diffDays >= 0 && diffDays <= 4; //Dias antes de proxima cita esto es configurable
+        })
+        .map((cita, index) => (
+          <div className="appointment-card today" key={index}>
+            <div className="appointment-icon">
+              <Calendar size={18} />
+            </div>
+            <div className="appointment-details">
+              <h3>{cita.tipo} - {cita.nombre_mascota}</h3>
+              <div className="appointment-date">
+                <CalendarIcon size={14} className="mini-icon" />
+                <span>
+                  {new Date(cita.fecha).toLocaleDateString("es-ES", {
+                    weekday: "long",
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </span>
+              </div>
+              <div className="appointment-time">
+                <ClockIcon size={14} className="mini-icon" />
+                <span>{cita.hora} - {cita.veterinario}</span>
+              </div>
+            </div>
+            <div className="appointment-actions">
+              <button className="action-button">Confirmar</button>
+            </div>
+          </div>
+        ))
+    ) : (
+      <p>No hay citas próximas pendientes.</p>
+    )}
+  </div>
+</div>
+
         </div>
       </main>
     </div>
-  )
+  );
 }

@@ -1,3 +1,4 @@
+import 'bootstrap-icons/font/bootstrap-icons.css';
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -5,45 +6,48 @@ import Swal from "sweetalert2";
 import '../../stylos/cssFormularios/Login.css';
 import logo from "../../imagenes/logo.png";
 
-
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
-  const [attempts, setAttempts] = useState(0);
   const [isBlocked, setIsBlocked] = useState(false);
-  const [blockTime, setBlockTime] = useState(0);
+  const [remainingTime, setRemainingTime] = useState(0); // Definido correctamente aquí
   const navigate = useNavigate();
 
-  // Verificar bloqueo al cargar el componente
-  useEffect(() => {
-    const savedBlockTime = localStorage.getItem('blockTime');
-    const savedAttempts = localStorage.getItem('loginAttempts');
-    
-    if (savedBlockTime && Date.now() < parseInt(savedBlockTime)) {
-      setIsBlocked(true);
-      setBlockTime(parseInt(savedBlockTime));
-    }
-    
-    if (savedAttempts) {
-      setAttempts(parseInt(savedAttempts));
-    }
-  }, []);
+  // Verificar bloqueo al cargar el componente o cambiar email
+useEffect(() => {
+  const blockedEmails = JSON.parse(localStorage.getItem('blockedEmails')) || {};
+  const currentEmailBlock = blockedEmails[email];
+  
+  if (currentEmailBlock && Date.now() < currentEmailBlock.blockTime) {
+    setIsBlocked(true);
+    // Asegurar que el tiempo máximo de bloqueo sea 30 segundos
+    const timeLeft = Math.min(
+      30, 
+      Math.ceil((currentEmailBlock.blockTime - Date.now()) / 1000)
+    );
+    setRemainingTime(timeLeft);
+  } else {
+    setIsBlocked(false);
+  }
+}, [email]);
 
-  // Temporizador para desbloquear
+  // Temporizador para desbloquear (ahora en segundos)
   useEffect(() => {
-    if (isBlocked) {
-      const timer = setTimeout(() => {
-        setIsBlocked(false);
-        setAttempts(0);
-        localStorage.removeItem('blockTime');
-        localStorage.removeItem('loginAttempts');
-      }, blockTime - Date.now());
-
-      return () => clearTimeout(timer);
+    let interval;
+    if (isBlocked && remainingTime > 0) {
+      interval = setInterval(() => {
+        setRemainingTime(prev => prev - 1);
+      }, 1000);
+    } else if (remainingTime === 0 && isBlocked) {
+      setIsBlocked(false);
+      const blockedEmails = JSON.parse(localStorage.getItem('blockedEmails')) || {};
+      delete blockedEmails[email];
+      localStorage.setItem('blockedEmails', JSON.stringify(blockedEmails));
     }
-  }, [isBlocked, blockTime]);
+    return () => clearInterval(interval);
+  }, [isBlocked, remainingTime, email]);
 
   const validateForm = () => {
     const newErrors = {};
@@ -74,25 +78,24 @@ const Login = () => {
   const onSubmit = async () => {
     try {
       if (isBlocked) {
-        const remainingTime = Math.ceil((blockTime - Date.now()) / 1000 / 60);
         await Swal.fire({
           icon: "error",
           title: "Cuenta bloqueada",
-          text: `Demasiados intentos fallidos. Intente nuevamente en ${remainingTime} minutos.`,
+          text: `Demasiados intentos fallidos. Intente nuevamente en ${remainingTime} segundos.`,
           confirmButtonColor: "#d33",
         });
         return;
       }
 
-      const response = await axios.post("http://localhost:3000/login", {
+      const response = await axios.post("http://localhost:3001/login", {
         email,
         password,
       });
 
-      // Resetear intentos si el login es exitoso
-      setAttempts(0);
-      localStorage.removeItem('loginAttempts');
-      localStorage.removeItem('blockTime');
+      // Resetear intentos si el login es exitoso para este email
+      const blockedEmails = JSON.parse(localStorage.getItem('blockedEmails')) || {};
+      delete blockedEmails[email];
+      localStorage.setItem('blockedEmails', JSON.stringify(blockedEmails));
 
       await Swal.fire({
         icon: "success",
@@ -101,29 +104,43 @@ const Login = () => {
         confirmButtonColor: "#3085d6",
       });
 
+      localStorage.setItem("userData", JSON.stringify(response.data.user));
+
       navigate("/PanelPropietario");
+
       setEmail("");
       setPassword("");
     } catch (error) {
-      const newAttempts = attempts + 1;
-      setAttempts(newAttempts);
-      localStorage.setItem('loginAttempts', newAttempts.toString());
+      const blockedEmails = JSON.parse(localStorage.getItem('blockedEmails')) || {};
+      const currentAttempts = blockedEmails[email]?.attempts || 0;
+      const newAttempts = currentAttempts + 1;
 
       if (newAttempts >= 3) {
-        const blockDuration = 30 * 60 * 1000; // 30 minutos en milisegundos
+        const blockDuration = 30 * 1000; // 30 segundos exactos
         const newBlockTime = Date.now() + blockDuration;
-        
+
+        blockedEmails[email] = {
+          attempts: newAttempts,
+          blockTime: newBlockTime
+        };
+      
+        localStorage.setItem('blockedEmails', JSON.stringify(blockedEmails));
         setIsBlocked(true);
-        setBlockTime(newBlockTime);
-        localStorage.setItem('blockTime', newBlockTime.toString());
+        setRemainingTime(30); // Establecer exactamente 30 segundos
 
         await Swal.fire({
           icon: "error",
           title: "Cuenta bloqueada",
-          text: "Demasiados intentos fallidos. Su cuenta ha sido bloqueada por 30 minutos.",
+          text: `Demasiados intentos fallidos. Su cuenta ha sido bloqueada por 30 segundos.`,
           confirmButtonColor: "#d33",
         });
       } else {
+        blockedEmails[email] = {
+          attempts: newAttempts,
+          blockTime: blockedEmails[email]?.blockTime || 0
+        };
+        localStorage.setItem('blockedEmails', JSON.stringify(blockedEmails));
+
         await Swal.fire({
           icon: "error",
           title: "Error al iniciar sesión",
@@ -205,7 +222,7 @@ const Login = () => {
                 className="btn"
                 disabled={isBlocked}
               >
-                {isBlocked ? "CUENTA BLOQUEADA" : "INICIAR SESIÓN"}
+                {isBlocked ? `CUENTA BLOQUEADA (${remainingTime}s)` : "INICIAR SESIÓN"}
               </button>
               <p>
                 ¿No tienes una cuenta?{' '}

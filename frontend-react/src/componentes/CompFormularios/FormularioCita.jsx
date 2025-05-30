@@ -20,12 +20,8 @@ function FormularioCita() {
     { id: 1, nombre: "Max", tipo: "Perro", raza: "Labrador", edad: 3 },
     { id: 2, nombre: "Luna", tipo: "Gato", raza: "Siamés", edad: 2 },
   ])
-  const [usuarioActual] = useState({
-    id: 1,
-    nombre: "Juan Pérez",
-    telefono: "123456789",
-    email: "juan@example.com",
-  })
+
+  const usuarioActual = JSON.parse(localStorage.getItem("userData"));
 
   const servicios = [
     {
