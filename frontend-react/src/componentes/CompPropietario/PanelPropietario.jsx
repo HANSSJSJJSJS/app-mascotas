@@ -5,6 +5,7 @@ import "../../stylos/cssPropietario/PanelPropietario.css"
 import BarraPropietario from "./BarraPropietario"
 import EncabezadoPropietario from "./EncabezadoPropietario"
 import { useLocation } from 'react-router-dom';
+import LayoutPropietario from "../layouts/LayoutPropietario"
 
 const PanelPropietario = () => {
   const [menuAbierto, setMenuAbierto] = useState(true)

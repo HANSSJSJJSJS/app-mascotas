@@ -11,7 +11,7 @@ app.use(cors())
 const dbConfig = {
   host: "localhost",
   user: "root",
-  password: "12345678",
+  password: "123456789",
   database: "mascotas_db",
   port: 3306,
   waitForConnections: true,
@@ -67,13 +67,12 @@ app.get("/api/usuario/:id", async (req, res) => {
 app.get("/api/propietario/:id/mascotas", async (req, res) => {
   try {
     const { id } = req.params
-
-    const [mascotas] = await pool.query("SELECT * FROM mascotas WHERE id_usuario = ?", [id])
+    const [mascotas] = await pool.query("SELECT * FROM mascotas WHERE id_pro = ?", [id])
 
     res.json(mascotas)
   } catch (error) {
     console.error("Error al obtener mascotas:", error)
-    res.status(500).json({ success: false, message: "Error en el servidor" })
+    res.status(500).json({ success: false, message: "Error en el servidor mascotas" })
   }
 })
 
@@ -86,15 +85,15 @@ app.get("/api/propietario/:id/citas", async (req, res) => {
       `
       SELECT 
         c.*,
-        m.nombre as nombre_mascota,
-        s.nombre as nombre_servicio,
+        m.nom_mas as nombre_mascota,
+        s.nom_ser as nombre_servicio,
         CONCAT(u.nombre, ' ', u.apellido) as nombre_veterinario
       FROM citas c
-      LEFT JOIN mascotas m ON c.codigo_mascota = m.codigo
-      LEFT JOIN servicios s ON c.id_servicio = s.codigo
-      LEFT JOIN usuarios u ON c.id_veterinario = u.id_usuario
-      WHERE c.id_usuario = ?
-      ORDER BY c.fecha DESC, c.hora DESC
+      LEFT JOIN mascotas m ON c.cod_cit = m.cod_mas
+      LEFT JOIN servicios s ON c.cod_cit = s.cod_ser
+      LEFT JOIN usuarios u ON c.id_vet = u.id_usuario
+      WHERE c.id_pro = ?
+      ORDER BY c.fech_cit DESC, c.hora DESC
     `,
       [id],
     )
@@ -184,27 +183,36 @@ async function testDatabaseConnection() {
 // Ruta de login
 app.post("/login", async (req, res) => {
   try {
-    const { email, password } = req.body
+    const { email, password } = req.body;
+    console.log("Intento de login con email:", email);
 
-    const [users] = await pool.query("SELECT * FROM usuarios WHERE email = ?", [email])
+    const [users] = await pool.query("SELECT * FROM usuarios WHERE email = ?", [email]);
+    console.log("Resultados de la consulta:", users);
 
     if (users.length === 0) {
-      return res.status(401).json({ success: false, message: "Credenciales incorrectas" })
+      console.log("Email no encontrado");
+      return res.status(401).json({ success: false, message: "Credenciales incorrectas" });
     }
 
-    const user = users[0]
-    const passwordMatch = await bcrypt.compare(password, user.password_hash)
+    const user = users[0];
+    console.log("Usuario encontrado. Hash almacenado:", user.password_hash);
+    
+    // Comparación de contraseña con logging
+    const passwordMatch = await bcrypt.compare(password, user.password_hash);
+    console.log("Resultado de bcrypt.compare:", passwordMatch);
 
     if (passwordMatch) {
-      res.json({ success: true, message: "Inicio de sesión exitoso", user })
+      console.log("Contraseña válida");
+      res.json({ success: true, message: "Inicio de sesión exitoso", user });
     } else {
-      res.status(401).json({ success: false, message: "Credenciales incorrectas" })
+      console.log("Contraseña inválida");
+      res.status(401).json({ success: false, message: "Credenciales incorrectas" });
     }
   } catch (error) {
-    console.error("Error en el login:", error)
-    res.status(500).json({ success: false, message: "Error en el servidor" })
+    console.error("Error completo en el login:", error);
+    res.status(500).json({ success: false, message: "Error en el servidor" });
   }
-})
+});
 
 // Ruta de registro de propietarios
 app.post("/registro", async (req, res) => {
@@ -306,7 +314,7 @@ app.post("/registro", async (req, res) => {
 
       // Insertar en la tabla propietarios
       console.log("Insertando en la tabla propietarios con id_usuario:", userId)
-      const insertPropietarioQuery = "INSERT INTO propietarios (id_usuario) VALUES (?)"
+      const insertPropietarioQuery = "INSERT INTO propietarios (id_pro) VALUES (?)"
       await connection.query(insertPropietarioQuery, [userId])
       console.log("✅ Propietario insertado")
 

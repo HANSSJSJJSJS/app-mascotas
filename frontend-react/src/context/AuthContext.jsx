@@ -4,6 +4,7 @@ const AuthContext = createContext();
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
+  debugger;
   if (!context) {
     throw new Error('useAuth debe usarse dentro de un AuthProvider');
   }
@@ -12,7 +13,7 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
   const [usuario, setUsuario] = useState(() => {
-    const usuarioGuardado = localStorage.getItem('usuario');
+    const usuarioGuardado = localStorage.getItem('userData');
     return usuarioGuardado ? JSON.parse(usuarioGuardado) : null;
   });
 

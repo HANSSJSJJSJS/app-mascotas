@@ -5,6 +5,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import '../../stylos/cssFormularios/Login.css';
 import logo from "../../imagenes/logo.png";
+import MascotaForm from "../CompFormularios/MascotaForm"
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -105,11 +106,11 @@ useEffect(() => {
       });
 
       localStorage.setItem("userData", JSON.stringify(response.data.user));
-
+      debugger;
       navigate("/PanelPropietario");
-
       setEmail("");
       setPassword("");
+
     } catch (error) {
       const blockedEmails = JSON.parse(localStorage.getItem('blockedEmails')) || {};
       const currentAttempts = blockedEmails[email]?.attempts || 0;
