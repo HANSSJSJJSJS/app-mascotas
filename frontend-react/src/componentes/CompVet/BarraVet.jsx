@@ -1,20 +1,17 @@
 import { useState, useEffect } from "react"
-import { Activity, Calendar, FileText, PawPrint, Pill, User, X } from 'lucide-react'
+import { Calendar, FileText, PawPrint, Pill, Stethoscope, User, X } from 'lucide-react'
 import { Link, useLocation } from "react-router-dom"
-import "../../stylos/cssVet/BarraVet.css"
+import "../../stylos/cssVet/BarraVet.css";
 
 const BarraVet = ({ onToggleMenu, menuAbierto }) => {
   const [isMobile, setIsMobile] = useState(false)
   const location = useLocation()
 
   const menuItems = [
-    { icon: Activity, text: "", path: "/PanelVeterinario" },
-    { icon: Calendar, text: "Agenda", path: "/PanelVeterinario/agenda" },
-    { icon: PawPrint, text: "Pacientes", path: "/PanelVeterinario/pacientes" },
-    { icon: FileText, text: "Consultas", path: "/PanelVeterinario/consultas" },
-    { icon: FileText, text: "Historiales", path: "/PanelVeterinario/historiales" },
-    { icon: Pill, text: "Inventario", path: "/PanelVeterinario/inventario" },
-    { icon: User, text: "Perfil", path: "/PanelVeterinario/perfil" },
+    { icon: Stethoscope, text: "Inicio", path: "/PanelVet/InicioVet" },
+    { icon: PawPrint, text: "Mascotas", path: "/PanelVet/mascotas" },
+    {icon: Calendar, text: "Citas", path: "/PanelVet/gestion-citas" },
+    { icon: FileText, text: "Historial Clínico", path: "/PanelVet/historiales" }
   ]
 
   useEffect(() => {
@@ -36,7 +33,7 @@ const BarraVet = ({ onToggleMenu, menuAbierto }) => {
 
       <div className="barra-header">
         <PawPrint className="logo-icon" />
-        <h2 className={menuAbierto ? "" : "hidden"}>VETCLINIC</h2>
+        <h2 className={menuAbierto ? "" : "hidden"}>PET MOYBE</h2>
       </div>
       
       <div className="vet-info">
@@ -57,13 +54,9 @@ const BarraVet = ({ onToggleMenu, menuAbierto }) => {
         </ul>
       </nav>
 
-      <div className="barra-footer">
-        <button className="logout-btn">
-          {menuAbierto ? "Cerrar sesión" : <X size={20} />}
-        </button>
-      </div>
+
     </aside>
   )
 }
 
-export default BarraVet
+export default BarraVet;

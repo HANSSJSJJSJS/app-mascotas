@@ -10,43 +10,36 @@ export default function Consultas() {
       <div className="sidebar">
         <div className="sidebar-header">
           <PawPrint className="sidebar-logo" />
-          <span>VETCLINIC</span>
+          <span>PET MOYBE</span>
         </div>
         <div className="sidebar-user">
           <div className="sidebar-user-role">Veterinario</div>
           <div className="sidebar-user-name">Dr. Carlos Rodríguez</div>
         </div>
         <nav className="sidebar-nav">
-          <Link to="/" className="sidebar-link">
+          <Link to="/inicio" className="sidebar-link">
             <Activity className="sidebar-icon" />
-            Dashboard
+            Inicio
           </Link>
           <Link to="/agenda" className="sidebar-link">
             <Calendar className="sidebar-icon" />
             Agenda
           </Link>
-          <Link to="/pacientes" className="sidebar-link">
+          <Link to="/mascotas" className="sidebar-link">
             <PawPrint className="sidebar-icon" />
-            Pacientes
+            Mascotas
           </Link>
-          <Link to="/consulta" className="sidebar-link active">
-            <FileText className="sidebar-icon" />
-            Consultas
-          </Link>
-          <Link to="/historial" className="sidebar-link">
+          <Link to="/historiales" className="sidebar-link active">
             <FileText className="sidebar-icon" />
             Historiales
           </Link>
-          <Link to="/inventario" className="sidebar-link">
-            <Pill className="sidebar-icon" />
-            Inventario
+          <Link to="/funcionalidades-medicas" className="sidebar-link">
+            <FileText className="sidebar-icon" />
+            Funcionalidades-Medicas
           </Link>
+
         </nav>
-        <div className="sidebar-footer">
-          <button className="logout-button">
-            Cerrar sesión
-          </button>
-        </div>
+
       </div>
 
       {/* Contenido principal */}
