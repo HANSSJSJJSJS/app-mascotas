@@ -1,3 +1,5 @@
+DELIMITER $$
+
 CREATE PROCEDURE CrearMascota(
     IN p_nom_mas VARCHAR(100),
     IN p_especie VARCHAR(100),
@@ -15,44 +17,43 @@ BEGIN
         ROLLBACK;
         RESIGNAL;
     END;
-    
+
     START TRANSACTION;
-    
+
     INSERT INTO mascotas (nom_mas, especie, raza, edad, genero, peso, id_pro, foto)
     VALUES (p_nom_mas, p_especie, p_raza, p_edad, p_genero, p_peso, p_id_pro, p_foto);
-    
+
     SET p_cod_mas = LAST_INSERT_ID();
-    
+
     COMMIT;
-END
+END$$
 
 
 CREATE PROCEDURE ObtenerMascotas()
 BEGIN
-    SELECT m.*, u.nom_mas AS nombre_propietario, u.apellido AS apellido_propietario
+    SELECT m.*, u.nombre AS nombre_propietario, u.apellido AS apellido_propietario
     FROM mascotas m
     JOIN propietarios p ON m.id_pro = p.id_pro
     JOIN usuarios u ON p.id_pro = u.id_usuario;
-END
+END$$
 
 CREATE PROCEDURE ObtenerMascotasPorPropietario(
     IN p_id_pro INT
 )
 BEGIN
-    SELECT * FROM mascotas WHERE id_pro= p_id_pro;
-END
-
+    SELECT * FROM mascotas WHERE id_pro = p_id_pro;
+END$$
 
 CREATE PROCEDURE ObtenerMascotaPorCodigo(
-    IN p_cod_mas  INT
+    IN p_cod_mas INT
 )
 BEGIN
-    SELECT m.*, u.nom_mas AS nombre_propietario, u.apellido AS apellido_propietario
+    SELECT m.*, u.nombre AS nombre_propietario, u.apellido AS apellido_propietario
     FROM mascotas m
     JOIN propietarios p ON m.id_pro = p.id_pro
     JOIN usuarios u ON p.id_pro = u.id_usuario
-    WHERE m.cod_mas  = p_cod_mas ;
-END
+    WHERE m.cod_mas = p_cod_mas;
+END$$
 
 CREATE PROCEDURE ActualizarMascota(
     IN p_cod_mas  INT,
@@ -75,12 +76,14 @@ BEGIN
         peso = p_peso,
         id_pro = p_id_pro,
         foto = p_foto
-    WHERE cod_mas  = p_cod_mas ;
-END
+    WHERE cod_mas = p_cod_mas;
+END$$
 
 CREATE PROCEDURE EliminarMascota(
     IN p_cod_mas INT
 )
 BEGIN
     DELETE FROM mascotas WHERE cod_mas = p_cod_mas;
-END
+END$$
+
+DELIMITER ;

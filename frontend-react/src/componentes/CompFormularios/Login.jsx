@@ -88,7 +88,7 @@ useEffect(() => {
         return;
       }
 
-      const response = await axios.post("http://localhost:3001/login", {
+      const response = await axios.post("http://localhost:3000/login", {
         email,
         password,
       });

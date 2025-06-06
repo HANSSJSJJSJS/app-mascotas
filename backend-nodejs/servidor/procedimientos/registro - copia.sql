@@ -14,9 +14,6 @@ CREATE PROCEDURE InsertarUsuarioYPropietario (
   IN p_id_rol INT
 )
 BEGIN
-  -- Declaraciones primero
-  DECLARE v_id_usuario INT;
-
   -- Insertar en la tabla usuarios sin id_usuario (AUTO_INCREMENT)
   INSERT INTO usuarios (
     tipo_documento, nombre, apellido, ciudad, direccion, telefono, 
@@ -27,13 +24,14 @@ BEGIN
   );
 
   -- Obtener el id_usuario generado
+  DECLARE v_id_usuario INT;
   SET v_id_usuario = LAST_INSERT_ID();
 
   -- Insertar en propietarios solo si el rol es 3 (propietario)
   IF p_id_rol = 3 THEN
     INSERT INTO propietarios (id_pro) VALUES (v_id_usuario);
   END IF;
-
+  
 END$$
 
 DELIMITER ;

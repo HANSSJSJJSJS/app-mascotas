@@ -66,7 +66,7 @@ function Propietario() {
 
       // Verificar la conexión al servidor antes de enviar los datos
       try {
-        const healthCheck = await axios.get("http://localhost:3001/health", {
+        const healthCheck = await axios.get("http://localhost:3000/health", {
           timeout: 5000,
         });
 
@@ -78,7 +78,7 @@ function Propietario() {
         throw new Error("No se pudo conectar con el servidor. Verifica que esté en ejecución.")
       }
 
-      const response = await axios.post("http://localhost:3001/registro", userData, {
+      const response = await axios.post("http://localhost:3000/registro", userData, {
         timeout: 10000, // 10 segundos de timeout
       })
 

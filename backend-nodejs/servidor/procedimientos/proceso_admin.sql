@@ -1,5 +1,6 @@
 DELIMITER $$
 
+-- Crear administrador
 CREATE PROCEDURE CrearAdministrador(
     IN p_id_admin INT,
     IN p_cargo VARCHAR(100),
@@ -9,8 +10,6 @@ BEGIN
     INSERT INTO administradores (id_admin, cargo, fecha_ingreso)
     VALUES (p_id_admin, p_cargo, p_fecha_ingreso);
 END$$
-
-DELIMITER ;
 
 -- Obtener todos los administradores
 CREATE PROCEDURE ObtenerAdministradores()

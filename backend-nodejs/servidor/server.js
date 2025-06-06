@@ -11,7 +11,7 @@ app.use(cors())
 const dbConfig = {
   host: "localhost",
   user: "root",
-  password: "123456789",
+  password: "",
   database: "mascotas_db",
   port: 3306,
   waitForConnections: true,
@@ -398,7 +398,7 @@ app.get("/health", async (req, res) => {
 })
 
 // Iniciar servidor
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT || 3000
 app.listen(PORT, async () => {
   console.log(`Servidor corriendo en el puerto ${PORT}`)
 
@@ -408,3 +408,5 @@ app.listen(PORT, async () => {
 
 // Ejecutar este script para ver si funciona
 console.log("Servidor iniciado correctamente")
+
+
