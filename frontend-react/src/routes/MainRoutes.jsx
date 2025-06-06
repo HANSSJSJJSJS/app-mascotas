@@ -3,7 +3,6 @@ import React from "react";
 import { Routes, Route, Navigate, Outlet } from "react-router-dom";
 import RutaProtegida from "./RutaProtegida";
 import LayoutPublico from "../componentes/layouts/LayoutPublico";
-import LayoutAdmin from "../componentes/layouts/LayoutAdmin";
 import LayoutPropietario from "../componentes/layouts/LayoutPropietario";
 import LayoutVet from "../componentes/layouts/LayoutVet";
 import Loading from "../componentes/index/Loading";
@@ -20,16 +19,15 @@ const OlvideContrasena = React.lazy(() => import("../componentes/CompFormularios
 const CambioContraseña = React.lazy(() => import("../componentes/CompFormularios/CambioContraseña"))
 const NotFound = React.lazy(() => import("../componentes/CompHome/NotFound"));
 
-// Componentes admin
-const PanelAdmin = React.lazy(() => import("../componentes/CompAdmin/PanelAdmin"));
-const TarjetaEstadistica = React.lazy(() => import("../componentes/CompAdmin/TarjetaEstadistica"));
-const ModuloCitas = React.lazy(() => import("../componentes/CompAdmin/ModuloCitas"));
-const ModuloHorarios = React.lazy(() => import("../componentes/CompAdmin/ModuloHorarios"));
-const TablaMascotas = React.lazy(() => import("../componentes/CompAdmin/TablaMascotas"));
-const TablaUsuarios = React.lazy(() => import("../componentes/CompAdmin/TablaUsuarios"));
+// NUEVO DASHBOARD DE ADMINISTRADOR
+const AdminDashboard = React.lazy(() => import("../componentes/CompAdmin/AdminDashboard"))
+const DashboardHome = React.lazy(() => import("../componentes/CompAdmin/DashboardHome"))
+const GestionUsuarios = React.lazy(() => import("../componentes/CompAdmin/GestionUsuarios"))
+const GestionRoles = React.lazy(() => import("../componentes/CompAdmin/GestionRoles"))
+const GestionServicios = React.lazy(() => import("../componentes/CompAdmin/GestionServicios"))
+
 const HisCli = React.lazy(() => import("../componentes/CompAdmin/HisCli"));
-const Clientes = React.lazy(() => import("../componentes/CompAdmin/Clientes"));
-const Veterinarios = React.lazy(() => import("../componentes/CompAdmin/Veterinarios"));
+
 
 // Componentes propietario
 const PanelPropietario = React.lazy(() => import("../componentes/CompPropietario/PanelPropietario"));
@@ -62,13 +60,6 @@ const MainRoutes = () => {
     </React.Suspense>
   );
 
-  const RutasAdmin = () => (
-    <React.Suspense fallback={<Loading />}>
-      <LayoutAdmin>
-        <Outlet />
-      </LayoutAdmin>
-    </React.Suspense>
-  );
 
   const RutasPropietario = () => (
     <React.Suspense fallback={<Loading />}>
@@ -102,22 +93,14 @@ const MainRoutes = () => {
         <Route path="/OlvideContrasena" element={<OlvideContrasena />} />
         <Route path="/CambioContraseña" element={<CambioContraseña />} />
       </Route>
-
-      {/* Rutas admin */}
-      {/* <Route element={isDevelopment ? <RutasAdmin /> : <RutaProtegida rolPermitido="admin"><RutasAdmin /></RutaProtegida>}> */}
-        <Route element={<RutasPublicas />} />
-        <Route path="/PanelAdmin" element={<PanelAdmin />}>
-          <Route index element={<ModuloCitas />} />
-          <Route path="TablaCitas" element={<ModuloCitas />} />
-          <Route path="TarjetaEstadistica" element={<TarjetaEstadistica />} />
-          <Route path="usuarios" element={<TablaUsuarios />} />
-          <Route path="TablaUsuarios" element={<TablaUsuarios />} />
-          <Route path="mascotas" element={<TablaMascotas />} />
-          <Route path="horarios" element={<ModuloHorarios />} />
-          <Route path="historial-clinico" element={<HisCli />} />
-          <Route path="clientes" element={<Clientes />} />
-          <Route path="veterinarios" element={<Veterinarios />} />
-        </Route>
+            {/* RUTAS ADMINISTRADOR */}
+      <Route path="/admin" element={<AdminDashboard />}>
+        <Route index element={<DashboardHome />} />
+        <Route path="dashboard" element={<DashboardHome />} />
+        <Route path="usuarios" element={<GestionUsuarios />} />
+        <Route path="roles" element={<GestionRoles />} />
+        <Route path="servicios" element={<GestionServicios />} /> 
+      </Route>
 
       {/* Rutas propietario */}
       <Route element={isDevelopment ? <RutasPropietario /> : <RutaProtegida rolPermitido="propietario"><RutasPropietario /></RutaProtegida>}>
