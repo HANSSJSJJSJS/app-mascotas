@@ -12,6 +12,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
+  const [rol, setRol] = useState("");
   const [isBlocked, setIsBlocked] = useState(false);
   const [remainingTime, setRemainingTime] = useState(0); // Definido correctamente aquí
   const navigate = useNavigate();
@@ -105,9 +106,24 @@ useEffect(() => {
         confirmButtonColor: "#3085d6",
       });
 
-      localStorage.setItem("userData", JSON.stringify(response.data.user));
-      debugger;
-      navigate("/PanelPropietario");
+      const { user } = response.data;
+      setRol(user.id_rol); // Guardamos el rol en el estado si quieres usarlo después
+          
+      localStorage.setItem("userData", JSON.stringify(user));
+          
+      // Navegación inmediata con el rol extraído
+      if (user.id_rol === 1) {
+        navigate("/AdminDashboard");
+      } else if (user.id_rol === 2) {
+        navigate("/PanelVet");
+      } else if (user.id_rol === 3) {
+        navigate("/PanelPropietario");
+      } else {
+        console.error("Rol no reconocido:", user.id_rol);
+      }
+
+
+      // Limpiar campos después de redirigir
       setEmail("");
       setPassword("");
 
