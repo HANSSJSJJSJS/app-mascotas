@@ -1,96 +1,67 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Home, Calendar, User, Bone, X, LogOut, PawPrint } from "lucide-react"
+import { Home, Calendar, User, Bone, X, LogOut, PawPrint } from 'lucide-react'
 import { Link, useLocation } from "react-router-dom"
 import "../../stylos/cssPropietario/BarraPropietario.css"
 
-const BarraPropietario = ({ onToggleMenu, menuAbierto, onLogout }) => {
-  const [isMobile, setIsMobile] = useState(false)
-  const location = useLocation()
+const BarraPropietario = ({ onAlternarMenu, estaMenuAbierto, onCerrarSesion }) => {
+  const [esMobile, setEsMobile] = useState(false)
+  const ubicacionActual = useLocation()
 
   // Definir los elementos del menú con mejor estructura
-  const menuItems = [
-    { icon: <Home size={18} />, text: "Inicio", path: "/PanelPropietario" },
-    { icon: <Calendar size={18} />, text: "Agendar Cita", path: "/PanelPropietario/agendar-cita" },
-    { icon: <User size={18} />, text: "Actualizar Datos", path: "/PanelPropietario/ActualizarPropietario" },
-    { icon: <Bone size={18} />, text: "Mascota", path: "/PanelPropietario/Mascota" },
+  const elementosMenu = [
+    { icono: <Home size={18} />, texto: "Inicio", ruta: "/PanelPropietario" },
+    { icono: <Calendar size={18} />, texto: "Agendar Cita", ruta: "/PanelPropietario/agendar-cita" },
+    { icono: <User size={18} />, texto: "Actualizar Datos", ruta: "/PanelPropietario/ActualizarPropietario" },
+    { icono: <Bone size={18} />, texto: "Mascota", ruta: "/PanelPropietario/Mascota" },
   ]
 
   useEffect(() => {
-    const checkIfMobile = () => {
-      setIsMobile(window.innerWidth < 1024)
+    const verificarSiEsMobile = () => {
+      setEsMobile(window.innerWidth < 1024)
     }
-    checkIfMobile()
-    window.addEventListener("resize", checkIfMobile)
-    return () => window.removeEventListener("resize", checkIfMobile)
+    verificarSiEsMobile()
+    window.addEventListener("resize", verificarSiEsMobile)
+    return () => window.removeEventListener("resize", verificarSiEsMobile)
   }, [])
 
-  const handleLogout = () => {
-    if (window.confirm("¿Estás seguro de que quieres cerrar sesión?")) {
-      onLogout()
-    }
-  }
 
   return (
-    <aside className={`barra-lateral ${isMobile ? "mobile" : ""} ${!menuAbierto ? "colapsado" : ""}`}>
+    <aside className={`barra-navegacion ${esMobile ? "mobile" : ""} ${!estaMenuAbierto ? "colapsada" : ""}`}>
       {/* Botón de cerrar para móvil */}
-      {isMobile && (
-        <button onClick={onToggleMenu} className="close-button">
+      {esMobile && (
+        <button onClick={onAlternarMenu} className="boton-cerrar">
           <X size={20} />
         </button>
       )}
 
       {/* Encabezado de la barra lateral con logo */}
       <div
-        className="barra-header"
-        onClick={!isMobile ? onToggleMenu : undefined}
-        style={{ cursor: !isMobile ? "pointer" : "default" }}
+        className="encabezado-barra"
+        onClick={!esMobile ? onAlternarMenu : undefined}
+        style={{ cursor: !esMobile ? "pointer" : "default" }}
       >
-        <div className="logo-container">
-          <PawPrint size={24} className="logo-icon" />
-          {menuAbierto && <span className="logo-text">PET MOYBE</span>}
+        <div className="contenedor-logo">
+          <PawPrint size={24} className="icono-logo" />
+          {estaMenuAbierto && <span className="texto-logo">PET MOYBE</span>}
         </div>
       </div>
 
       {/* Contenedor con scroll para el menú */}
-      <div className="menu-scroll-container">
+      <div className="contenedor-scroll-menu">
         <nav>
-          <ul className="menu-lateral">
-            {menuItems.map((item, index) => (
-              <li key={index} className={location.pathname === item.path ? "active" : ""}>
-                <Link to={item.path} className="link" onClick={() => isMobile && onToggleMenu()}>
-                  <div className="icon-container">{item.icon}</div>
-                  <span className="text-container">{item.text}</span>
+          <ul className="menu-navegacion">
+            {elementosMenu.map((elemento, indice) => (
+              <li key={indice} className={ubicacionActual.pathname === elemento.ruta ? "activo" : ""}>
+                <Link to={elemento.ruta} className="enlace" onClick={() => esMobile && onAlternarMenu()}>
+                  <div className="contenedor-icono">{elemento.icono}</div>
+                  <span className="contenedor-texto">{elemento.texto}</span>
                 </Link>
               </li>
             ))}
           </ul>
         </nav>
-      </div>
-
-      {/* Footer con logout */}
-      <div className="barra-footer">
-        <button
-          onClick={handleLogout}
-          className="logout-link"
-          style={{
-            background: "none",
-            border: "none",
-            color: "inherit",
-            cursor: "pointer",
-            width: "100%",
-            display: "flex",
-            alignItems: "center",
-            padding: "10px",
-            textDecoration: "none",
-          }}
-        >
-          <div className="icon-container">
-            <LogOut size={18} />
-          </div>
-          {menuAbierto && <span className="text-container">Cerrar Sesión</span>}
-        </button>
       </div>
     </aside>
   )

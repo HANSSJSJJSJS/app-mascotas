@@ -55,7 +55,6 @@ export default function InicioPropietario() {
 
         const citasObtenidas = response.data;
         setCitas(citasObtenidas);
-        console.log(citasObtenidas)
 
         // Contar solo las pendientes
         const pendientes = citasObtenidas.filter(cita => cita.estado === "PENDIENTE").length;

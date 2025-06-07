@@ -1,17 +1,25 @@
+:root {
+  --color1: #000000;
+  --color2: #1a2540;
+  --color3: #495a90;
+  --color4: #8196eb;
+  --color5: #c2d8ff;
+}
+
 /* ENCABEZADO */
 .encabezado-container {
   position: fixed;
   top: 0;
-  left: 250px; /* Ancho del sidebar abierto */
+  left: 250px; /* Ancho del menú abierto */
   width: calc(100% - 250px); /* Ancho restante de la ventana */
   z-index: 90;
   transition: all 0.3s ease;
   background-color: white;
 }
 
-.encabezado-container.sidebar-closed {
-  left: 70px; /* Ancho del sidebar cerrado */
-  width: calc(100% - 70px); /* Ancho restante cuando sidebar está cerrado */
+.encabezado-container.menu-cerrado {
+  left: 70px; /* Ancho del menú cerrado */
+  width: calc(100% - 70px); /* Ancho restante cuando menú está cerrado */
 }
 
 /* ENCABEZADO PRINCIPAL */
@@ -35,7 +43,7 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: #333;
+  color: var(--color3);
   padding: 8px 12px;
   border-radius: 4px;
   transition: background-color 0.2s;
@@ -43,7 +51,7 @@
 }
 
 .boton-menu:hover {
-  background-color: #f5f5f5;
+  background-color: var(--color5);
 }
 
 .boton-menu svg {
@@ -51,31 +59,57 @@
   height: 20px;
 }
 
-/* USUARIO */
-.header-controls {
+/* CONTROLES DE ENCABEZADO */
+.controles-encabezado {
   display: flex;
   align-items: center;
   gap: 15px;
 }
 
+/* USUARIO */
 .info-usuario {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  background-color: #f4f4f4;
+  background-color: var(--color5);
   padding: 5px 20px;
   border-radius: 10px;
 }
 
 .info-usuario span {
   font-weight: 600;
-  color: #3f3399;
+  color: var(--color3);
   font-size: 14px;
 }
 
 .info-usuario small {
   font-size: 12px;
-  color: #666;
+  color: var(--color3);
+}
+
+.email-usuario {
+  font-size: 11px !important;
+  color: var(--color2) !important;
+}
+
+/* BOTÓN CERRAR SESIÓN */
+.boton-cerrar-sesion {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--color4);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 13px;
+}
+
+.boton-cerrar-sesion:hover {
+  background-color: var(--color3);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* RESPONSIVE */
@@ -97,5 +131,9 @@
 
   .info-usuario {
     padding: 5px 10px;
+  }
+  
+  .boton-cerrar-sesion span {
+    display: none;
   }
 }
