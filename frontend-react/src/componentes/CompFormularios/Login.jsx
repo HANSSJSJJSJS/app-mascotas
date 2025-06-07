@@ -113,7 +113,7 @@ useEffect(() => {
           
       // Navegación inmediata con el rol extraído
       if (user.id_rol === 1) {
-        navigate("/AdminDashboard");
+        navigate("/Admin");
       } else if (user.id_rol === 2) {
         navigate("/PanelVet");
       } else if (user.id_rol === 3) {
