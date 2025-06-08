@@ -20,7 +20,7 @@ const pool = mysql.createPool({
 });
 
 // =================================================================
-// ==               RUTA DE VERIFICACIÓN DE ESTADO                ==
+// ==              RUTA DE VERIFICACIÓN DE ESTADO                 ==
 // =================================================================
 app.get("/health", async (req, res) => {
   try {
@@ -34,7 +34,7 @@ app.get("/health", async (req, res) => {
 });
 
 // =================================================================
-// ==            RUTAS PÚBLICAS (Adaptadas y Funcionales)         ==
+// ==           RUTAS PÚBLICAS (Adaptadas y Funcionales)          ==
 // =================================================================
 
 // --- RUTA DE LOGIN ---
@@ -42,11 +42,11 @@ app.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
     console.log(`Intento de login con email: ${email}`);
-
-    const [users] = await pool.query("SELECT * FROM usuarios WHERE email = ?", [email]);
+    // AÑADIDO: Se comprueba también que el usuario esté activo para poder iniciar sesión
+    const [users] = await pool.query("SELECT * FROM usuarios WHERE email = ? AND estado = 1", [email]);
 
     if (users.length === 0) {
-      return res.status(401).json({ success: false, message: "Credenciales incorrectas." });
+      return res.status(401).json({ success: false, message: "Credenciales incorrectas o usuario inactivo." });
     }
 
     const user = users[0];
@@ -71,29 +71,25 @@ app.post("/login", async (req, res) => {
 // --- RUTA DE REGISTRO ---
 app.post('/registro', async (req, res) => {
     try {
-        // CORRECCIÓN FINAL: Se usan los nombres en camelCase que envía el frontend
         const { 
             tipo_documento, numeroId, genero, fechaNacimiento, nombre, 
             apellido, telefono, ciudad, direccion, email, password 
         } = req.body;
 
         const hashedPassword = await bcrypt.hash(password, 10);
-
+        // AÑADIDO: Se inserta el estado por defecto como 1 (Activo)
         const sql = `
             INSERT INTO usuarios (
                 tipo_documento, numeroid, genero, fecha_nacimiento, nombre, 
                 apellido, telefono, ciudad, direccion, email, password_hash,
-                id_rol, id_tipo
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 2, 1)
+                id_rol, id_tipo, estado
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 2, 1, 1)
         `;
-
         const values = [
             tipo_documento, numeroId, genero, fechaNacimiento, nombre,
             apellido, telefono, ciudad, direccion, email, hashedPassword
         ];
-
         await pool.query(sql, values);
-
         res.json({ success: true, message: 'Usuario registrado con éxito' });
     } catch (err) {
         console.error("Error en /registro:", err);
@@ -109,7 +105,7 @@ app.post('/registro', async (req, res) => {
 
 
 // =================================================================
-// ==              RUTAS DEL PANEL DE ADMINISTRADOR               ==
+// ==                 RUTAS DEL PANEL DE ADMINISTRADOR             ==
 // =================================================================
 
 app.get("/api/admin/stats", async (req, res) => {
@@ -128,21 +124,32 @@ app.get("/api/admin/stats", async (req, res) => {
   }
 });
 
+// MODIFICADO: Se seleccionan todos los campos de usuarios (u.*) para tenerlos disponibles en la edición
 app.get("/api/admin/users", async (req, res) => {
   try {
-    const [results] = await pool.query("CALL sp_leer_usuarios()");
-    res.json(results[0]);
+    const sql = `
+        SELECT 
+            u.*,
+            r.rol AS nombre_rol, 
+            tp.tipo AS tipo_persona
+        FROM usuarios u
+        LEFT JOIN rol r ON u.id_rol = r.id_rol
+        LEFT JOIN tipo_persona tp ON u.id_tipo = tp.id_tipo
+        ORDER BY u.id_usuario DESC;
+    `;
+    const [users] = await pool.query(sql);
+    res.json(users);
   } catch (error) {
     console.error("Error en GET /api/admin/users:", error);
     res.status(500).json({ message: "Error al obtener usuarios." });
   }
 });
 
+
 app.post("/api/admin/users", async (req, res) => {
   console.log('Recibida petición para crear usuario:', req.body);
   const connection = await pool.getConnection();
   try {
-    // Para esta ruta, los nombres sí vienen en snake_case desde el formulario del admin
     const {
         nombre, apellido, email, tipo_documento, numeroid, genero, 
         fecha_nacimiento, telefono, ciudad, direccion, 
@@ -150,22 +157,25 @@ app.post("/api/admin/users", async (req, res) => {
     } = req.body;
 
     if (!nombre || !apellido || !email || !contrasena || !id_rol || !id_tipo) {
+        connection.release();
         return res.status(400).json({ success: false, message: "Faltan campos obligatorios." });
-    }
-
-    const [existingUser] = await connection.query("SELECT id_usuario FROM usuarios WHERE email = ?", [email]);
-    if (existingUser.length > 0) {
-        return res.status(400).json({ success: false, message: "El correo electrónico ya está registrado." });
     }
     
     await connection.beginTransaction();
-    const hashedPassword = await bcrypt.hash(contrasena, 10);
 
+    const [existingUser] = await connection.query("SELECT id_usuario FROM usuarios WHERE email = ?", [email]);
+    if (existingUser.length > 0) {
+        await connection.rollback();
+        connection.release();
+        return res.status(409).json({ success: false, message: "El correo electrónico ya está registrado." });
+    }
+    
+    const hashedPassword = await bcrypt.hash(contrasena, 10);
     const query = `
       INSERT INTO usuarios (
         nombre, apellido, email, tipo_documento, numeroid, genero, fecha_nacimiento, 
-        telefono, ciudad, direccion, password_hash, id_rol, id_tipo
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+        telefono, ciudad, direccion, password_hash, id_rol, id_tipo, estado
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)`;
     
     const values = [
         nombre, apellido, email, tipo_documento, numeroid, genero,
@@ -177,11 +187,11 @@ app.post("/api/admin/users", async (req, res) => {
     const userId = result.insertId;
     
     if (parseInt(id_tipo, 10) === 1) {
-        await connection.query('INSERT INTO propietarios (id_pro) VALUES (?)', [userId]);
+        await connection.query('INSERT IGNORE INTO propietarios (id_pro) VALUES (?)', [userId]);
     } else if (parseInt(id_tipo, 10) === 2 || parseInt(id_tipo, 10) === 3) {
-        await connection.query('INSERT INTO veterinarios (id_vet, especialidad, horario) VALUES (?, "General", "N/A")', [userId]);
+        await connection.query('INSERT IGNORE INTO veterinarios (id_vet, especialidad, horario) VALUES (?, "General", "N/A")', [userId]);
     } else if (parseInt(id_tipo, 10) === 4) {
-        await connection.query('INSERT INTO administradores (id_admin, cargo, fecha_ingreso) VALUES (?, "Cargo por definir", CURDATE())', [userId]);
+        await connection.query('INSERT IGNORE INTO administradores (id_admin, cargo, fecha_ingreso) VALUES (?, "Cargo por definir", CURDATE())', [userId]);
     }
 
     await connection.commit();
@@ -197,21 +207,101 @@ app.post("/api/admin/users", async (req, res) => {
 });
 
 
-app.delete("/api/admin/users/:id", async (req, res) => {
+app.put("/api/admin/users/:id", async (req, res) => {
+    const { id } = req.params;
+    const {
+        nombre, apellido, email, tipo_documento, numeroid, genero, 
+        fecha_nacimiento, telefono, ciudad, direccion, 
+        id_rol, id_tipo, contrasena, estado 
+    } = req.body;
+
+    if (!nombre || !apellido || !email || !id_rol || !id_tipo) {
+        return res.status(400).json({ message: "Faltan campos obligatorios." });
+    }
+
     try {
-        const { id } = req.params;
-        await pool.query("CALL sp_eliminar_usuario(?)", [id]);
-        res.json({ message: "Usuario eliminado exitosamente" });
+        let hashedPassword = null;
+        if (contrasena) {
+            hashedPassword = await bcrypt.hash(contrasena, 10);
+        }
+
+        let sql = `
+            UPDATE usuarios SET
+                nombre = ?, apellido = ?, email = ?, tipo_documento = ?, numeroid = ?,
+                genero = ?, fecha_nacimiento = ?, telefono = ?, ciudad = ?, direccion = ?,
+                id_rol = ?, id_tipo = ?, estado = ?
+                ${hashedPassword ? ', password_hash = ?' : ''}
+            WHERE id_usuario = ?`;
+        
+        const values = [
+            nombre, apellido, email, tipo_documento, numeroid, genero,
+            fecha_nacimiento, telefono || null, ciudad, direccion,
+            id_rol, id_tipo, estado,
+        ];
+
+        if (hashedPassword) {
+            values.push(hashedPassword);
+        }
+        values.push(id);
+
+        await pool.query(sql, values.filter(v => v !== undefined));
+        
+        res.json({ success: true, message: 'Usuario actualizado exitosamente' });
+
     } catch (error) {
-        console.error("Error al eliminar usuario:", error);
-        res.status(500).json({ message: "Error al eliminar el usuario." });
+        console.error("Error al actualizar usuario:", error);
+        if (error.code === 'ER_DUP_ENTRY') {
+            return res.status(400).json({ message: 'El correo electrónico o el documento ya pertenecen a otro usuario.' });
+        }
+        res.status(500).json({ message: "Error en el servidor al actualizar el usuario." });
     }
 });
 
+
+// ===== CORRECCIÓN DE LA RUTA DELETE =====
+app.delete("/api/admin/users/:id", async (req, res) => {
+    const { id } = req.params;
+    const connection = await pool.getConnection();
+    try {
+      await connection.beginTransaction();
+  
+      const [users] = await connection.query("SELECT id_tipo FROM usuarios WHERE id_usuario = ?", [id]);
+      if (users.length === 0) {
+        await connection.rollback();
+        connection.release();
+        return res.status(404).json({ message: "Usuario no encontrado." });
+      }
+      const { id_tipo } = users[0];
+  
+      // Se usan los nombres de columna correctos para las tablas hijas
+      if (id_tipo === 1) {
+        await connection.query("DELETE FROM propietarios WHERE id_pro = ?", [id]);
+      } else if (id_tipo === 2 || id_tipo === 3) {
+        await connection.query("DELETE FROM veterinarios WHERE id_vet = ?", [id]);
+      } else if (id_tipo === 4) {
+        await connection.query("DELETE FROM administradores WHERE id_admin = ?", [id]);
+      }
+      
+      await connection.query("DELETE FROM usuarios WHERE id_usuario = ?", [id]);
+  
+      await connection.commit();
+      res.json({ success: true, message: "Usuario eliminado exitosamente" });
+  
+    } catch (error) {
+      if (connection) await connection.rollback();
+      console.error("Error al eliminar usuario:", error);
+      res.status(500).json({ success: false, message: "Error al eliminar el usuario." });
+    } finally {
+      if (connection) connection.release();
+    }
+});
+
+
 app.get("/api/admin/roles", async (req, res) => {
   try {
-    const [results] = await pool.query("CALL sp_leer_roles()");
-    res.json(results[0]);
+    const [roles] = await pool.query("SELECT id_rol, rol FROM rol ORDER BY id_rol");
+    const formattedRoles = roles.map(r => ({ id_rol: r.id_rol, nombre_rol: r.rol }));
+    res.json(formattedRoles);
   } catch (error) {
     console.error("Error en GET /api/admin/roles:", error);
     res.status(500).json({ message: "Error al obtener roles." });
@@ -229,7 +319,7 @@ app.get("/api/admin/person-types", async (req, res) => {
 });
 
 // =================================================================
-// ==                      INICIO DEL SERVIDOR                    ==
+// ==                        INICIO DEL SERVIDOR                    ==
 // =================================================================
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, async () => {

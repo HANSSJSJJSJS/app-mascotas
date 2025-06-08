@@ -31,7 +31,7 @@ const DashboardHome = () => {
     const fetchStats = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('http://localhost:3001/api/admin/stats');
+        const response = await axios.get('http://localhost:5000/api/admin/stats');
         setStats(response.data);
         setError('');
       } catch (err) {
