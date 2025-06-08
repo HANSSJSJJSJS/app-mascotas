@@ -14,7 +14,7 @@ tipo VARCHAR (50) NOT NULL
 
 CREATE TABLE usuarios (
 id_usuario INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-tipo_documento ENUM('CC','CE', 'PP') ,
+tipo_documento ENUM('CC','CE', 'PP'),
 numeroid VARCHAR(50) NOT NULL,
 genero ENUM('Mujer','Hombre','No identificado'),
 fecha_nacimiento DATE NOT NULL,
@@ -27,6 +27,7 @@ email VARCHAR(100) NOT NULL UNIQUE,
 password_hash VARCHAR(255) NOT NULL,
 id_tipo INT NOT NULL,
 id_rol INT NOT NULL,
+estado TINYINT(1) NOT NULL DEFAULT 1,
 FOREIGN KEY (id_rol) REFERENCES rol(id_rol),
 FOREIGN KEY (id_tipo) REFERENCES tipo_persona(id_tipo)
 );
@@ -167,3 +168,6 @@ INSERT INTO citas (fech_cit, hora, cod_ser, id_vet, cod_mas, id_pro, estado, not
 ('2025-06-15', '08:00:00', 5, 2, 3, 1, 'PENDIENTE', 'Requiere cirugía'),
 ('2025-06-18', '11:00:00', 3, 3, 4, 1, 'REALIZADA', ''),
 ('2025-06-20', '13:00:00', 4, 2, 5, 4, 'CANCELADA', 'No asistió');
+
+select * from usuarios;
+

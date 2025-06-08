@@ -34,7 +34,7 @@ app.get("/health", async (req, res) => {
 });
 
 // =================================================================
-// ==           RUTAS PÚBLICAS (Adaptadas y Funcionales)          ==
+// ==            RUTAS PÚBLICAS (Adaptadas y Funcionales)         ==
 // =================================================================
 
 // --- RUTA DE LOGIN ---
@@ -105,7 +105,7 @@ app.post('/registro', async (req, res) => {
 
 
 // =================================================================
-// ==                 RUTAS DEL PANEL DE ADMINISTRADOR             ==
+// ==                RUTAS DEL PANEL DE ADMINISTRADOR             ==
 // =================================================================
 
 app.get("/api/admin/stats", async (req, res) => {
@@ -315,6 +315,231 @@ app.get("/api/admin/person-types", async (req, res) => {
   } catch (error) {
     console.error("Error en GET /api/admin/person-types:", error);
     res.status(500).json({ message: "Error al obtener los tipos de persona." });
+  }
+});
+
+// =================================================================
+// ==              RUTAS DE GESTIÓN DE ROLES (FUNCIONAL)         ==
+// =================================================================
+
+// --- OBTENER TODOS LOS ROLES CON DATOS ADICIONALES (CORREGIDO) ---
+app.get("/api/admin/gestion-roles", async (req, res) => {
+  try {
+    // 1. Obtener todos los usuarios y roles de la base de datos
+    const [users] = await pool.query("SELECT id_rol FROM usuarios");
+    
+    // CORRECCIÓN: Se eliminó la columna "fecha_creacion" de la consulta SQL
+    const [rolesFromDB] = await pool.query("SELECT id_rol, rol FROM rol ORDER BY id_rol ASC");
+
+    // 2. Contar cuántos usuarios tiene cada rol
+    const userCounts = users.reduce((acc, user) => {
+      acc[user.id_rol] = (acc[user.id_rol] || 0) + 1;
+      return acc;
+    }, {});
+
+    // 3. Datos estáticos para mantener tu diseño (descripciones y permisos)
+    const rolesInfo = {
+      'Administrador': {
+        descripcion: "Acceso completo al sistema, gestión de usuarios, roles y configuración general.",
+        permisos: ["Gestionar usuarios", "Gestionar roles", "Ver reportes", "Configurar sistema"],
+        tipo: "administrador",
+      },
+      'Veterinario': {
+        descripcion: "Acceso a gestión de citas, historiales clínicos y consultas médicas.",
+        permisos: ["Gestionar citas", "Ver historiales", "Crear consultas", "Gestionar pacientes"],
+        tipo: "veterinario",
+      },
+      'Propietario': {
+        descripcion: "Acceso limitado para agendar citas y ver información de sus mascotas.",
+        permisos: ["Agendar citas", "Ver mascotas", "Ver historial propio"],
+        tipo: "propietario",
+      }
+    };
+
+    // 4. Combinar los datos de la DB con los datos estáticos y el conteo
+    const rolesCompletos = rolesFromDB.map(rol => {
+      const info = rolesInfo[rol.rol] || {
+          descripcion: 'Rol personalizado sin descripción.',
+          permisos: ['Permisos básicos'],
+          tipo: 'personalizado'
+      };
+      return {
+        id: rol.id_rol,
+        nombre: rol.rol,
+        estado: "Activo",
+        usuariosCount: userCounts[rol.id_rol] || 0,
+        // CORRECCIÓN: Se usa la fecha actual como dato de relleno ya que no existe en la DB
+        fechaCreacion: new Date().toISOString().split('T')[0], 
+        ...info,
+      };
+    });
+
+    res.json(rolesCompletos);
+  } catch (error) {
+    console.error("Error en GET /api/admin/gestion-roles:", error);
+    res.status(500).json({ message: "Error al obtener los roles." });
+  }
+});
+
+
+// --- CREAR UN NUEVO ROL ---
+app.post("/api/admin/gestion-roles", async (req, res) => {
+  try {
+    const { rol } = req.body;
+    if (!rol || rol.trim() === '') {
+      return res.status(400).json({ message: "El nombre del rol es obligatorio." });
+    }
+
+    const [existing] = await pool.query("SELECT id_rol FROM rol WHERE rol = ?", [rol]);
+    if (existing.length > 0) {
+      return res.status(409).json({ message: "Ya existe un rol con ese nombre." });
+    }
+
+    const [result] = await pool.query("INSERT INTO rol (rol) VALUES (?)", [rol]);
+    res.status(201).json({ success: true, message: 'Rol creado exitosamente', insertedId: result.insertId });
+  } catch (error) {
+    console.error("Error en POST /api/admin/gestion-roles:", error);
+    res.status(500).json({ message: "Error en el servidor al crear el rol." });
+  }
+});
+
+// --- ACTUALIZAR UN ROL ---
+app.put("/api/admin/gestion-roles/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { rol } = req.body;
+
+    if (!rol || rol.trim() === '') {
+      return res.status(400).json({ message: "El nombre del rol es obligatorio." });
+    }
+
+    const [existing] = await pool.query("SELECT id_rol FROM rol WHERE rol = ? AND id_rol != ?", [rol, id]);
+    if (existing.length > 0) {
+      return res.status(409).json({ message: "Ya existe otro rol con ese nombre." });
+    }
+
+    const [result] = await pool.query("UPDATE rol SET rol = ? WHERE id_rol = ?", [rol, id]);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Rol no encontrado." });
+    }
+    res.json({ success: true, message: 'Rol actualizado exitosamente' });
+  } catch (error) {
+    console.error("Error en PUT /api/admin/gestion-roles/:id:", error);
+    res.status(500).json({ message: "Error en el servidor al actualizar el rol." });
+  }
+});
+
+// --- ELIMINAR UN ROL ---
+app.delete("/api/admin/gestion-roles/:id", async (req, res) => {
+  const { id } = req.params;
+  const connection = await pool.getConnection();
+
+  try {
+    await connection.beginTransaction();
+
+    const [users] = await connection.query("SELECT COUNT(*) AS count FROM usuarios WHERE id_rol = ?", [id]);
+    if (users[0].count > 0) {
+      await connection.rollback();
+      return res.status(409).json({ message: `No se puede eliminar el rol porque está asignado a ${users[0].count} usuario(s).` });
+    }
+    
+    const [result] = await connection.query("DELETE FROM rol WHERE id_rol = ?", [id]);
+    
+    if (result.affectedRows === 0) {
+      await connection.rollback();
+      return res.status(404).json({ message: "Rol no encontrado." });
+    }
+
+    await connection.commit();
+    res.json({ success: true, message: "Rol eliminado exitosamente" });
+
+  } catch (error) {
+    if (connection) await connection.rollback();
+    console.error("Error al eliminar rol:", error);
+    res.status(500).json({ success: false, message: "Error al eliminar el rol." });
+  } finally {
+    if (connection) connection.release();
+  }
+});
+
+
+// =================================================================
+// ==              RUTAS DE GESTIÓN DE SERVICIOS                 ==
+// =================================================================
+
+// --- OBTENER TODOS LOS SERVICIOS ---
+app.get("/api/admin/servicios", async (req, res) => {
+  try {
+    // Agregamos una columna "estado" y "categoria" para que coincida con tu frontend
+    const [servicios] = await pool.query("SELECT *, 'Activo' as estado, 'Consulta' as categoria FROM servicios ORDER BY cod_ser ASC");
+    res.json(servicios);
+  } catch (error) {
+    console.error("Error en GET /api/admin/servicios:", error);
+    res.status(500).json({ message: "Error al obtener los servicios." });
+  }
+});
+
+// --- CREAR UN NUEVO SERVICIO ---
+app.post("/api/admin/servicios", async (req, res) => {
+  try {
+    const { nom_ser, descrip_ser, precio } = req.body;
+    if (!nom_ser || !precio) {
+      return res.status(400).json({ message: "El nombre y el precio del servicio son obligatorios." });
+    }
+
+    const sql = "INSERT INTO servicios (nom_ser, descrip_ser, precio) VALUES (?, ?, ?)";
+    const [result] = await pool.query(sql, [nom_ser, descrip_ser || null, precio]);
+
+    res.status(201).json({ success: true, message: 'Servicio creado exitosamente', insertedId: result.insertId });
+  } catch (error) {
+    console.error("Error en POST /api/admin/servicios:", error);
+    res.status(500).json({ message: "Error en el servidor al crear el servicio." });
+  }
+});
+
+// --- ACTUALIZAR UN SERVICIO ---
+app.put("/api/admin/servicios/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { nom_ser, descrip_ser, precio } = req.body;
+
+    if (!nom_ser || !precio) {
+        return res.status(400).json({ message: "El nombre y el precio del servicio son obligatorios." });
+    }
+
+    const sql = "UPDATE servicios SET nom_ser = ?, descrip_ser = ?, precio = ? WHERE cod_ser = ?";
+    const [result] = await pool.query(sql, [nom_ser, descrip_ser || null, precio, id]);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Servicio no encontrado." });
+    }
+    res.json({ success: true, message: 'Servicio actualizado exitosamente' });
+  } catch (error) {
+    console.error(`Error en PUT /api/admin/servicios/${req.params.id}:`, error);
+    res.status(500).json({ message: "Error en el servidor al actualizar el servicio." });
+  }
+});
+
+// --- ELIMINAR UN SERVICIO ---
+app.delete("/api/admin/servicios/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const [citas] = await pool.query("SELECT COUNT(*) AS count FROM citas WHERE cod_ser = ?", [id]);
+    if (citas[0].count > 0) {
+      return res.status(409).json({ message: `No se puede eliminar el servicio porque está asignado a ${citas[0].count} cita(s).` });
+    }
+
+    const [result] = await pool.query("DELETE FROM servicios WHERE cod_ser = ?", [id]);
+    
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Servicio no encontrado." });
+    }
+
+    res.json({ success: true, message: "Servicio eliminado exitosamente" });
+  } catch (error) {
+    console.error(`Error en DELETE /api/admin/servicios/${id}:`, error);
+    res.status(500).json({ success: false, message: "Error al eliminar el servicio." });
   }
 });
 
