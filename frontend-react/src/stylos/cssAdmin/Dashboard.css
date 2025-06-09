@@ -468,7 +468,23 @@
   color: var(--gray-600);
 }
 
-/* Responsive para acciones rápidas */
+/* === AÑADIDO: Estilo para el mensaje de error === */
+.error-message {
+  color: #e74c3c;
+  background-color: #fdd;
+  border: 1px solid #e74c3c;
+  padding: 1rem;
+  border-radius: 8px;
+  margin: 0 32px 1.5rem 32px; /* Alineado con el padding de las secciones */
+  text-align: center;
+  max-width: 1200px;
+  box-sizing: border-box;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+/* Responsive para acciones rápidas y otros elementos */
 @media (max-width: 1024px) {
   .quick-actions-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -546,6 +562,10 @@
   .dashboard-card {
     padding: 20px;
     margin-bottom: 30px;
+  }
+  
+  .error-message {
+    margin: 0 20px 1.5rem 20px;
   }
 }
 

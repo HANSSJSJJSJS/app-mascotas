@@ -784,3 +784,146 @@
     font-size: 16px;
   }
 }
+
+/* =================================================================
+==          ESTILOS PERSONALIZADOS PARA SWEETALERT2          ==
+================================================================= */
+
+/* --- Contenedores Base --- */
+.swal-custom-success,
+.swal-custom-warning,
+.swal-custom-error {
+  border-radius: 20px !important;
+  width: 480px !important;
+  padding: 24px !important;
+}
+
+/* --- Títulos y Contenido --- */
+.swal-custom-title {
+  color: #1a2540 !important;
+  font-size: 28px !important;
+  font-weight: 700 !important;
+  padding: 12px 0 0 0 !important;
+  margin: 0 !important;
+}
+
+.swal-custom-html {
+  color: #495a90 !important;
+  font-size: 16px !important;
+  line-height: 1.6 !important;
+  margin-top: 16px !important;
+}
+
+.swal-custom-html strong {
+  color: #1a2540;
+  font-weight: 600;
+}
+
+/* --- Contenedor de Acciones (Botones) --- */
+.swal-custom-actions {
+  gap: 12px !important;
+  margin-top: 24px !important;
+}
+
+
+/* --- Variante ÉXITO --- */
+.swal-custom-success {
+  background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+  border: 2px solid #e5e7eb;
+  box-shadow: 0 10px 40px rgba(129, 150, 235, 0.2);
+}
+
+.swal-custom-success .swal2-success-ring {
+  border-color: rgba(34, 197, 94, 0.4) !important;
+}
+
+/* --- Variante ADVERTENCIA --- */
+.swal-custom-warning {
+  background: #ffffff !important; /* Fondo blanco y limpio */
+  border: 2px solid #8196eb !important; /* Borde con el color de acento azul */
+  box-shadow: 0 10px 40px rgba(129, 150, 235, 0.2) !important; /* Sombra azulada sutil */
+}
+
+/* --- Variante ERROR --- */
+.swal-custom-error {
+    background: linear-gradient(145deg, #ffffff 0%, #fef2f2 100%); /* Rojo muy claro */
+    border: 2px solid #fca5a5;
+    box-shadow: 0 10px 40px rgba(252, 165, 165, 0.2);
+}
+
+/* --- Botones Genéricos --- */
+.swal-custom-confirm-button,
+.swal-custom-delete-button,
+.swal-custom-cancel-button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  padding: 14px 28px !important;
+  border: none !important;
+  border-radius: 12px !important;
+  font-size: 15px !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  margin: 0 !important;
+}
+
+.swal-custom-confirm-button:focus,
+.swal-custom-delete-button:focus,
+.swal-custom-cancel-button:focus {
+    outline: none !important;
+}
+
+/* Botón de Confirmación (Azul) */
+.swal-custom-confirm-button {
+  background: linear-gradient(135deg, #8196eb, #495a90) !important;
+  color: white !important;
+  box-shadow: 0 4px 15px rgba(129, 150, 235, 0.3) !important;
+}
+
+.swal-custom-confirm-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(129, 150, 235, 0.4) !important;
+}
+
+.swal-custom-confirm-button:focus {
+  box-shadow: 0 0 0 4px rgba(129, 150, 235, 0.3) !important;
+}
+
+/* Botón de Eliminación (Estilo Delineado con la paleta oficial) */
+.swal-custom-delete-button {
+  background-color: transparent !important;
+  color: #8196eb !important; /* Color del texto y borde */
+  border: 2px solid #8196eb !important;
+  box-shadow: none !important;
+}
+
+.swal-custom-delete-button:hover {
+  background-color: rgba(129, 152, 235, 0.1) !important; /* Resalte sutil al pasar el mouse */
+  color: #495a90 !important;
+  border-color: #495a90 !important;
+  transform: translateY(-2px);
+}
+
+.swal-custom-delete-button:focus {
+  box-shadow: 0 0 0 4px rgba(129, 152, 235, 0.3) !important;
+}
+
+/* Botón de Cancelación (Gris) */
+.swal-custom-cancel-button {
+  background: #f1f5f9 !important;
+  color: #475569 !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: none !important;
+}
+
+.swal-custom-cancel-button:hover {
+  background: #e2e8f0 !important;
+  border-color: #cbd5e1 !important;
+  transform: translateY(-2px);
+}
+
+.swal-custom-cancel-button:focus {
+  box-shadow: 0 0 0 4px rgba(226, 232, 240, 0.5) !important;
+}

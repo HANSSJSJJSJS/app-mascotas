@@ -1,49 +1,45 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import axios from "axios"
+import Swal from "sweetalert2"
 import { Shield, Users, UserCheck, UserX, Crown, Stethoscope, Heart, Lock, Eye } from "lucide-react"
 import UsuariosPorRol from "./UsuariosPorRol"
 import "../../stylos/cssAdmin/GestionRoles.css"
+import Loading from "../index/Loading"
 
 const GestionRoles = () => {
-  const [searchTerm, setSearchTerm] = useState("")
-  const [vistaActual, setVistaActual] = useState("roles") // "roles" o "usuarios"
+  const [roles, setRoles] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  const [vistaActual, setVistaActual] = useState("roles")
   const [rolSeleccionado, setRolSeleccionado] = useState(null)
 
-  // Datos de roles del sistema
-  const roles = [
-    {
-      id: 1,
-      nombre: "Administrador",
-      descripcion: "Acceso completo al sistema, gestión de usuarios, roles y configuración general",
-      estado: "Activo",
-      usuariosCount: 3,
-      fechaCreacion: "2024-01-01",
-      permisos: ["Gestionar usuarios", "Gestionar roles", "Ver reportes", "Configurar sistema"],
-      tipo: "administrador",
-    },
-    {
-      id: 2,
-      nombre: "Veterinario",
-      descripcion: "Acceso a gestión de citas, historiales clínicos y consultas médicas",
-      estado: "Activo",
-      usuariosCount: 8,
-      fechaCreacion: "2024-01-01",
-      permisos: ["Gestionar citas", "Ver historiales", "Crear consultas", "Gestionar pacientes"],
-      tipo: "veterinario",
-    },
-    {
-      id: 3,
-      nombre: "Propietario",
-      descripcion: "Acceso limitado para agendar citas y ver información de sus mascotas",
-      estado: "Activo",
-      usuariosCount: 156,
-      fechaCreacion: "2024-01-01",
-      permisos: ["Agendar citas", "Ver mascotas", "Ver historial propio"],
-      tipo: "propietario",
-    },
-  ]
+  const fetchRoles = async () => {
+    setLoading(true)
+    setError(null)
+    try {
+      const response = await axios.get("http://localhost:5000/api/admin/gestion-roles")
+      setRoles(Array.isArray(response.data) ? response.data : [])
+    } catch (err) {
+      console.error("Error al cargar los roles:", err)
+      const errorMessage = err.response?.data?.message || "No se pudieron cargar los roles."
+      setError(errorMessage)
+      Swal.fire("Error", errorMessage, "error")
+    } finally {
+      setLoading(false)
+    }
+  }
 
+  useEffect(() => {
+    if (vistaActual === "roles") {
+      fetchRoles()
+    }
+  }, [vistaActual])
+
+  // El buscador funcionará automáticamente con los roles cargados
+  const [searchTerm, setSearchTerm] = useState("")
   const filteredRoles = roles.filter(
     (rol) =>
       rol.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -64,23 +60,23 @@ const GestionRoles = () => {
   }
 
   const handleVerUsuarios = (rol) => {
-    console.log("Ver usuarios del rol:", rol.nombre) // Debug
     setRolSeleccionado(rol)
     setVistaActual("usuarios")
   }
 
   const handleVolverARoles = () => {
-    console.log("Volviendo a roles") // Debug
     setVistaActual("roles")
     setRolSeleccionado(null)
   }
 
-  // Si estamos viendo usuarios de un rol específico
+  if (loading) {
+    return <Loading />
+  }
+
   if (vistaActual === "usuarios" && rolSeleccionado) {
     return <UsuariosPorRol rol={rolSeleccionado} onVolver={handleVolverARoles} />
   }
 
-  // Vista principal de roles
   return (
     <div className="gestion-roles">
       <div className="page-header-compact">
@@ -99,6 +95,7 @@ const GestionRoles = () => {
 
       <div className="roles-container">
         <div className="roles-content">
+          {error && <p className="error-message">{error}</p>}
           <div className="roles-grid">
             {filteredRoles.map((rol) => (
               <div key={rol.id} className={`rol-card ${rol.tipo}`}>

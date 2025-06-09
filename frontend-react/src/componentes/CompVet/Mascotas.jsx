@@ -36,27 +36,26 @@ const GestorMascotas = () => {
       
       // Transformar los datos del backend al formato que espera tu frontend
       const mascotasTransformadas = data.map(mascota => ({
-        id: mascota.cod_mas.toString(),
-        nombre: mascota.nom_mas,
-        tipo: mascota.especie.toLowerCase(),
-        raza: mascota.raza,
-        edad: mascota.edad,
-        peso: mascota.peso,
-        genero: mascota.genero.toLowerCase(),
-        idPropietario: mascota.id_pro.toString(),
-        dueño: `${mascota.nombre_propietario} ${mascota.apellido_propietario}`,
-        telefono: mascota.telefono,
-        email: mascota.email,
-        direccion: mascota.direccion,
-        // Estos campos podrían venir de otras tablas o ser nulos
-        color: '',
-        notas: '',
-        ultimaVisita: '',
-        proximaCita: '',
-        vacunado: false,
-        esterilizado: false,
-        activo: true
-      }));
+  id: mascota.id,
+  nombre: mascota.nombre,
+  tipo: mascota.tipo,
+  raza: mascota.raza,
+  edad: mascota.edad,
+  genero: mascota.genero,
+  peso: mascota.peso,
+  idPropietario: mascota.idPropietario,
+  color: mascota.color,
+  notas: mascota.notas,
+  ultimaVisita: mascota.ultimaVisita,
+  proximaCita: mascota.proximaCita,
+  vacunado: mascota.vacunado,
+  esterilizado: mascota.esterilizado,
+  activo: mascota.activo,
+  dueño: `${mascota.nombre_propietario} ${mascota.apellido_propietario}`,
+  telefono: mascota.telefono,
+  email: mascota.email,
+  direccion: mascota.direccion
+}));
       
       setMascotas(mascotasTransformadas);
     } catch (error) {
@@ -77,24 +76,21 @@ const GestorMascotas = () => {
   
   // Estado para el formulario
   const [formulario, setFormulario] = useState({
-    nombre: '',
-    tipo: '',
-    raza: '',
-    edad: '',
-    peso: '',
-    color: '',
-    dueño: '',
-    telefono: '',
-    email: '',
-    direccion: '',
-    ultimaVisita: '',
-    proximaCita: '',
-    notas: '',
-    vacunado: false,
-    esterilizado: false,
-    activo: true
-  });
-
+  nombre: '',
+  tipo: '',
+  raza: '',
+  edad: '',
+  genero: '',
+  peso: '',
+  idPropietario: '',
+  color: '',
+  notas: '',
+  ultimaVisita: '',
+  proximaCita: '',
+  vacunado: false,
+  esterilizado: false,
+  activo: true
+});
   // Filtrar mascotas
   const mascotasFiltradas = mascotas.filter(mascota => {
     return (

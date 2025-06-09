@@ -382,49 +382,7 @@
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-  
-  .usuario-actions {
-    display: flex;
-    gap: 8px;
-  }
-  
-  .btn-edit,
-  .btn-delete {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    padding: 12px;
-    border: none;
-    border-radius: 10px;
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-  
-  .btn-edit {
-    background: rgba(129, 150, 235, 0.1);
-    color: #8196eb;
-    border: 1px solid rgba(129, 150, 235, 0.2);
-  }
-  
-  .btn-edit:hover {
-    background: rgba(129, 150, 235, 0.2);
-    transform: translateY(-2px);
-  }
-  
-  .btn-delete {
-    background: rgba(239, 68, 68, 0.1);
-    color: #ef4444;
-    border: 1px solid rgba(239, 68, 68, 0.2);
-  }
-  
-  .btn-delete:hover {
-    background: rgba(239, 68, 68, 0.2);
-    transform: translateY(-2px);
-  }
+
   
   /* Responsive */
   @media (max-width: 768px) {

@@ -1,28 +1,23 @@
-"use client"
+// Archivo: Topbar.jsx (VERSIÓN FINAL)
 
-import { Menu, X, Search, User, LogOut } from "lucide-react"
-import "../../stylos/cssAdmin/Topbar.css"
+"use client"
+import { Menu, X, User, LogOut } from "lucide-react"
+import "../../stylos/cssAdmin/Topbar.css" // Asegúrate que esta ruta es correcta
 
 const Topbar = ({
   toggleSidebar,
-  sidebarCollapsed,
+  sidebarCollapsed, // Recibe el estado
   isMobile,
   mobileMenuOpen,
   userData = { name: "Juan Pérez", email: "juan@petmoybe.com" },
 }) => {
   return (
-    <header className="topbar">
+    // El header aplica la clase 'collapsed' a sí mismo para moverse
+    <header className={`topbar ${!isMobile && sidebarCollapsed ? 'collapsed' : ''}`}>
       <div className="topbar-left">
         <button className="menu-toggle" onClick={toggleSidebar}>
           {isMobile && mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
-      </div>
-
-      <div className="topbar-search">
-        <div className="search-container">
-          <Search size={18} className="search-icon" />
-          <input type="text" placeholder="Buscar usuarios, servicios..." className="search-input" />
-        </div>
       </div>
 
       <div className="topbar-right">
@@ -35,7 +30,6 @@ const Topbar = ({
             <p>{userData.name}</p>
           </div>
         </div>
-
         <button className="logout-btn">
           <LogOut size={18} />
           <span>Cerrar Sesión</span>

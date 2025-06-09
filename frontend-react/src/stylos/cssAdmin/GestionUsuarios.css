@@ -137,7 +137,6 @@
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 
-/* BARRA DE BÚSQUEDA COMPLETAMENTE REDISEÑADA PARA MÁXIMA VISIBILIDAD */
 .search-section {
   display: block;
   width: 100%;
@@ -424,7 +423,7 @@
   background: rgba(239, 68, 68, 0.2);
 }
 
-/* Formulario de Registro - ORIGINAL SIN CAMBIOS */
+/* Formulario de Registro */
 .registrar-usuario {
   background: white;
   border-radius: 16px;
@@ -603,67 +602,130 @@
   border-color: #495a90;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .gestion-usuarios {
     padding: 0;
   }
-
   .page-header-compact {
     padding: 32px 20px;
   }
-
   .title-container {
     flex-direction: column;
     text-align: center;
     gap: 16px;
   }
-
   .header-text h1 {
     font-size: 32px;
     white-space: normal;
   }
-
   .header-text p {
     font-size: 16px;
     white-space: normal;
   }
-
   .tabs {
     flex-direction: column;
   }
-
   .tab {
     padding: 12px 16px;
   }
-
   .tab-content {
     margin: 0 16px;
   }
-
   .search-section {
     padding: 16px;
     margin-bottom: 24px;
   }
-
   .search-input {
     height: 48px;
     font-size: 14px;
   }
-
   .usuarios-grid {
     grid-template-columns: 1fr;
   }
-
   .form-grid {
     grid-template-columns: 1fr;
   }
-
   .form-actions {
     flex-direction: column;
   }
-
   .usuario-details {
     grid-template-columns: 1fr;
   }
+}
+
+/* --- Estilos para SweetAlert2 Profesional --- */
+.professional-swal-popup {
+  background: #ffffff !important;
+  border-radius: 20px !important;
+  border-top: 5px solid #8196eb;
+  box-shadow: 0 10px 40px rgba(73, 90, 144, 0.2) !important;
+  padding: 1.5rem !important;
+  width: 450px !important;
+}
+
+.professional-swal-icon.swal2-success {
+  border-color: rgba(129, 150, 235, 0.3) !important;
+  color: #8196eb !important;
+  transform: scale(0.9) translateY(-15px);
+}
+
+.professional-swal-icon.swal2-success .swal2-success-line-tip,
+.professional-swal-icon.swal2-success .swal2-success-line-long {
+  background-color: #8196eb !important;
+}
+
+.professional-swal-title {
+  color: #1a2540 !important;
+  font-weight: 600 !important;
+  font-size: 1.5em !important;
+  padding-top: 1em !important;
+  padding-bottom: 0.5em !important;
+}
+
+.professional-swal-content {
+  color: #495a90 !important;
+  font-size: 1em !important;
+  line-height: 1.6;
+  padding-bottom: 1em !important;
+}
+
+.professional-swal-confirm-button,
+.professional-swal-cancel-button {
+  border: none !important;
+  border-radius: 12px !important;
+  padding: 12px 32px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.professional-swal-confirm-button {
+  background: linear-gradient(135deg, #8196eb, #495a90) !important;
+  color: white !important;
+}
+
+.professional-swal-confirm-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(73, 90, 144, 0.3) !important;
+}
+
+.professional-swal-cancel-button {
+  background-color: #e5e7eb !important;
+  color: #495a90 !important;
+}
+
+.professional-swal-cancel-button:hover {
+  background-color: #d1d5db !important;
+}
+
+/* === AÑADIDO: ESTILOS PARA LOS ERRORES DE VALIDACIÓN === */
+.error-text {
+  color: #c53030; /* Un rojo oscuro para buena legibilidad */
+  font-size: 12px;
+  font-weight: 500;
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
