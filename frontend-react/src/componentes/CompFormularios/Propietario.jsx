@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react"
+import { useState } from "react"
 import { useForm } from "react-hook-form"
 import "react-datepicker/dist/react-datepicker.css"
 import { registerLocale, setDefaultLocale } from "react-datepicker"
@@ -7,7 +7,9 @@ import axios from "axios"
 import Swal from "sweetalert2"
 import "../../stylos/cssFormularios/Propietario.css"
 // Registrar el idioma español para el calendario
-registerLocale("es", es)
+
+
+
 setDefaultLocale("es")
 
 function Propietario() {
@@ -17,7 +19,6 @@ function Propietario() {
   const {
     register,
     handleSubmit,
-    setValue,
     reset,
     watch,
     trigger,
@@ -66,7 +67,7 @@ function Propietario() {
 
       // Verificar la conexión al servidor antes de enviar los datos
       try {
-        const healthCheck = await axios.get("http://localhost:5000/health", {
+        const healthCheck = await axios.get("http://localhost:3001/health", {
           timeout: 5000,
         });
 
@@ -78,7 +79,7 @@ function Propietario() {
         throw new Error("No se pudo conectar con el servidor. Verifica que esté en ejecución.")
       }
 
-      const response = await axios.post("http://localhost:5000/registro", userData, {
+      const response = await axios.post("http://localhost:3001/registro", userData, {
         timeout: 10000, // 10 segundos de timeout
       })
 

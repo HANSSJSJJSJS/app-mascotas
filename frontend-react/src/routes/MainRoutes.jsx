@@ -115,12 +115,11 @@ const MainRoutes = () => {
           <Route path="ActualizarPropietario" element={<ActualizarPropietario />} />
           <Route path="mascota" element={<Mascota />} />
           <Route path="mascota" element={<FormularioMascota />} />
-          
         </Route>
       </Route>
 
       {/* Rutas veterinario */}
-      <Route element={isDevelopment ? <RutasVet /> : <RutaProtegida rolPermitido="veterinario"><RutasVet /></RutaProtegida>}>
+      {/* <Route element={isDevelopment ? <RutasVet /> : <RutaProtegida rolPermitido="veterinario"><RutasVet /></RutaProtegida>}> */}
         <Route path="/PanelVet" element={<PanelVet />}>
           <Route index element={<InicioVet />} />
           <Route path="nueva-consulta" element={<NuevaConsulta />} />
@@ -129,7 +128,7 @@ const MainRoutes = () => {
           <Route path="mascotas" element={<Mascotas />} />
           <Route path="gestion-citas" element={<GestionCitas />} />
         </Route>
-        </Route>
+        {/* </Route> */}
 
       {/* Página 404 - Not Found */}
       <Route path="*" element={<NotFound />} />

@@ -13,7 +13,7 @@ const OlvideContrasena = () => {
 
   // Configuración de EmailJS
   const EMAILJS_CONFIG = {
-    serviceId: "service_4jgao0q",
+    serviceId: "service_fc4gglm",
     templateId: "template_mfv4h2s",
     publicKey: "28rzkwWqZRDIbe7D9",
   }

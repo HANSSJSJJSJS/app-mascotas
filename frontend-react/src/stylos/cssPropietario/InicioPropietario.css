@@ -7,6 +7,12 @@
   --color5: #c2d8ff;
 }
 
+body {
+  font-family: Arial, sans-serif;
+  color: var(--color2);
+  background-color: #f9f9f9 !important;
+}
+
 /* Estilos generales */
 .page-content {
   padding: 1.5rem;
