@@ -40,7 +40,7 @@ const FormularioMascota =React.lazy(() => import("../componentes/CompFormularios
 // Componentes veterinario
 const PanelVet = React.lazy(() => import("../componentes/CompVet/PanelVet"))
 const InicioVet = React.lazy(() => import("../componentes/CompVet/InicioVet"));
-const HisVet = React.lazy(() => import("../componentes/CompAdmin/HisCli"));
+const HistorialClinico = React.lazy(() => import("../componentes/CompVet/HistorialClinico"));
 const Consultas = React.lazy(() => import("../componentes/CompVet/Consultas"));
 const NuevaConsulta = React.lazy(() => import("../componentes/CompVet/NuevaConsulta"));
 const Mascotas = React.lazy(() => import("../componentes/CompVet/Mascotas"));
@@ -122,7 +122,7 @@ const MainRoutes = () => {
           <Route path="InicioVet" element={<InicioVet />} />
           <Route path="nueva-consulta" element={<NuevaConsulta />} />
           <Route path="consultas" element={<Consultas />} />
-          <Route path="historial-clinico" element={<HisVet />} />
+          <Route path="historial-clinico" element={<HistorialClinico />} />
           <Route path="mascotas" element={<Mascotas />} />
           <Route path="gestion-citas" element={<GestionCitas />} />
         </Route>
