@@ -1,6 +1,8 @@
 "use client"
 
 import React, { useState, useEffect } from "react";
+// 1. Importamos el hook para leer los parámetros de la URL.
+import { useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
@@ -12,6 +14,9 @@ import "../../stylos/cssAdmin/GestionUsuarios.css";
 import Loading from '../index/Loading';
 
 const GestionUsuarios = () => {
+  // 2. Inicializamos el hook para poder usarlo.
+  const [searchParams] = useSearchParams();
+
   const [activeTab, setActiveTab] = useState("lista");
   const [searchTerm, setSearchTerm] = useState("");
   const [usuarios, setUsuarios] = useState([]);
@@ -70,6 +75,20 @@ const GestionUsuarios = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  // 3. Añadimos un useEffect que reacciona a los cambios en la URL.
+  useEffect(() => {
+    const tabFromUrl = searchParams.get('tab'); // Leemos el parámetro 'tab'
+    if (tabFromUrl === 'registrar') {
+      // Si la URL dice ?tab=registrar, llamamos a la función que abre el formulario.
+      handleOpenForm(); 
+    } else if (tabFromUrl === 'lista') {
+      // Si la URL dice ?tab=lista, nos aseguramos de mostrar la lista.
+      setActiveTab('lista');
+    }
+    // 4. Este efecto se ejecuta cada vez que los parámetros de la URL cambian.
+  }, [searchParams]);
+
 
   const getNombreCompleto = (usuario) => `${usuario.nombre || ''} ${usuario.apellido || ''}`.trim();
 
@@ -340,14 +359,14 @@ const GestionUsuarios = () => {
           <div className="lista-usuarios">
             <div className="search-section">
                 <div className="search-container">
-                  <Search size={20} className="search-icon" />
-                  <input
-                    type="text"
-                    placeholder="Buscar por ID, nombre o email..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="search-input"
-                  />
+                    <Search size={20} className="search-icon" />
+                    <input
+                      type="text"
+                      placeholder="Buscar por ID, nombre o email..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="search-input"
+                    />
                 </div>
               </div>
             

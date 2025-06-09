@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState, useEffect } from "react";
+import { useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
@@ -9,6 +10,8 @@ import "../../stylos/cssAdmin/GestionServicios.css";
 import Loading from '../index/Loading';
 
 const GestionServicios = () => {
+    const [searchParams] = useSearchParams();
+
     const [activeTab, setActiveTab] = useState("lista");
     const [servicios, setServicios] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -52,6 +55,17 @@ const GestionServicios = () => {
     useEffect(() => {
         fetchServicios();
     }, []);
+
+    useEffect(() => {
+        const tabFromUrl = searchParams.get('tab');
+        if (tabFromUrl === 'registrar') {
+            setActiveTab("registrar");
+            setIsEditing(false);
+            resetForm();
+        } else if (tabFromUrl === 'lista') {
+            setActiveTab('lista');
+        }
+    }, [searchParams]);
 
     const handleInputChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });

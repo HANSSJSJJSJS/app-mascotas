@@ -1,7 +1,7 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
-import Sidebar from '../CompAdmin/Sidebar';
-import Topbar from '../CompAdmin/Topbar';
+import Sidebar from '../../componentes/CompAdmin/Sidebar';
+import Topbar from '../../componentes/CompAdmin/Topbar';
 import '../../stylos/cssAdmin/AdminDashboard.css'; // Asegúrate que esta ruta es correcta
 
 const LayoutAdmin = () => {

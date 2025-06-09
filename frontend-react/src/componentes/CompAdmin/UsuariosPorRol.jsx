@@ -2,13 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
-// Quitamos Swal porque ya no se usa aquí
-// import Swal from 'sweetalert2';
-// import 'sweetalert2/dist/sweetalert2.min.css';
-import {
-    ArrowLeft, Users, Search, Mail, MapPin, Calendar,
-    UserCheck, UserX, Crown, Stethoscope, Heart,
-    // Quitamos los íconos de Edit y Trash2
+import {ArrowLeft, Users, Search, Mail, MapPin, Calendar,UserCheck, UserX, Crown, Stethoscope, Heart,
 } from "lucide-react";
 import "../../stylos/cssAdmin/UsuariosPorRol.css";
 import Loading from '../index/Loading';
@@ -68,7 +62,6 @@ const UsuariosPorRol = ({ rol, onVolver }) => {
 
     const getNombreCompleto = (usuario) => `${usuario.nombre || ''} ${usuario.apellido || ''}`.trim();
 
-    // --- SE HAN QUITADO LAS FUNCIONES handleEditarUsuario y handleEliminarUsuario ---
 
     if (loading) {
         return (

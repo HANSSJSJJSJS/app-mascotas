@@ -93,13 +93,17 @@ const MainRoutes = () => {
         <Route path="/OlvideContrasena" element={<OlvideContrasena />} />
         <Route path="/CambioContraseña" element={<CambioContraseña />} />
       </Route>
-            {/* RUTAS ADMINISTRADOR */}
+      
+      {/* RUTAS ADMINISTRADOR */}
       <Route path="/admin" element={<AdminDashboard />}>
         <Route index element={<DashboardHome />} />
         <Route path="dashboard" element={<DashboardHome />} />
         <Route path="usuarios" element={<GestionUsuarios />} />
         <Route path="roles" element={<GestionRoles />} />
-        <Route path="servicios" element={<GestionServicios />} /> 
+        <Route path="servicios" element={<GestionServicios />} />
+        <Route path="gestion-usuarios" element={<GestionUsuarios />} />
+        <Route path="gestion-roles" element={<GestionRoles />} />
+        <Route path="gestion-servicios" element={<GestionServicios />} /> 
       </Route>
 
       {/* Rutas propietario */}

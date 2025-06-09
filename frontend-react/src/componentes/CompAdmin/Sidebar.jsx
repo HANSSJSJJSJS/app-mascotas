@@ -7,7 +7,7 @@ const Sidebar = ({ collapsed, isMobile, mobileOpen, closeMobileMenu }) => {
   const location = useLocation()
 
   const isActive = (path) => {
-    return location.pathname === path
+    return location.pathname.startsWith(path)
   }
 
   const menuItems = [
@@ -21,23 +21,22 @@ const Sidebar = ({ collapsed, isMobile, mobileOpen, closeMobileMenu }) => {
       id: "usuarios",
       title: "Gestión de Usuarios",
       icon: <Users size={20} />,
-      path: "/admin/usuarios",
+      path: "/admin/gestion-usuarios",
     },
     {
       id: "roles",
       title: "Gestión de Roles",
       icon: <Shield size={20} />,
-      path: "/admin/roles",
+      path: "/admin/gestion-roles",
     },
     {
       id: "servicios",
       title: "Gestión de Servicios",
       icon: <Briefcase size={20} />,
-      path: "/admin/servicios",
+      path: "/admin/gestion-servicios",
     },
   ]
 
-  // Si es móvil y el menú no está abierto, no renderizar el contenido
   if (isMobile && !mobileOpen) {
     return null
   }
@@ -70,6 +69,7 @@ const Sidebar = ({ collapsed, isMobile, mobileOpen, closeMobileMenu }) => {
                     to={item.path}
                     className={`menu-link ${isActive(item.path) ? "active" : ""}`}
                     data-tooltip={collapsed && !isMobile ? item.title : ""}
+                    onClick={isMobile ? closeMobileMenu : null} // Cierra el menú en móvil al hacer clic
                   >
                     <span className="menu-icon">{item.icon}</span>
                     {(!collapsed || isMobile) && <span className="menu-text">{item.title}</span>}
