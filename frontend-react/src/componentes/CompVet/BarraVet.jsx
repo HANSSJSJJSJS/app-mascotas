@@ -8,7 +8,7 @@ const BarraVet = ({ onToggleMenu, menuAbierto }) => {
   const location = useLocation()
 
   const menuItems = [
-    { icon: Stethoscope, text: "Inicio", path: "/PanelVet/InicioVet" },
+    { icon: Stethoscope, text: "Inicio", path: "/PanelVet" },
     { icon: PawPrint, text: "Mascotas", path: "/PanelVet/mascotas" },
     {icon: Calendar, text: "Citas", path: "/PanelVet/gestion-citas" },
     { icon: FileText, text: "Historial Clínico", path: "/PanelVet/historiales" }

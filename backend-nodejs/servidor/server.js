@@ -397,20 +397,89 @@ app.get("/health", async (req, res) => {
   })
 })
 
-// Iniciar servidor
-const PORT = process.env.PORT || 3000
-app.listen(PORT, async () => {
-  console.log(`Servidor corriendo en el puerto ${PORT}`)
+// Ruta para obtener todas las mascotas con información de propietarios
+app.get('/api/mascotas', async (req, res) => {
+  try {
+    const [rows] = await pool.query(`
+      SELECT m.*, u.nombre as nombre_propietario, u.apellido as apellido_propietario, 
+             u.telefono, u.email, u.direccion
+      FROM mascotas m
+      JOIN propietarios p ON m.id_pro = p.id_pro
+      JOIN usuarios u ON p.id_pro = u.id_usuario
+    `);
+    res.json(rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al obtener mascotas' });
+  }
+});
 
-  // Probar la conexión a la base de datos al iniciar
-  await testDatabaseConnection()
-})
+// Ruta para registrar una nueva mascota
+app.post('/api/registromascota', async (req, res) => {
+  try {
+    const { nom_mas, especie, raza, edad, genero, peso, id_pro } = req.body;
+    
+    // Validación básica
+    if (!nom_mas || !id_pro) {
+      return res.status(400).json({ error: 'Nombre y propietario son requeridos' });
+    }
 
-// Ejecutar este script para ver si funciona
-console.log("Servidor iniciado correctamente")
+    const [result] = await pool.query(
+      'INSERT INTO mascotas (nom_mas, especie, raza, edad, genero, peso, id_pro) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      [nom_mas, especie, raza, edad, genero, peso, id_pro]
+    );
+    
+    res.status(201).json({ 
+      id: result.insertId,
+      message: 'Mascota registrada exitosamente'
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al registrar mascota' });
+  }
+});
 
+// Ruta para actualizar una mascota
+app.put('/api/mascotas/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { nom_mas, especie, raza, edad, genero, peso, id_pro } = req.body;
+    
+    await pool.query(
+      'UPDATE mascotas SET nom_mas = ?, especie = ?, raza = ?, edad = ?, genero = ?, peso = ?, id_pro = ? WHERE cod_mas = ?',
+      [nom_mas, especie, raza, edad, genero, peso, id_pro, id]
+    );
+    
+    res.json({ message: 'Mascota actualizada exitosamente' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al actualizar mascota' });
+  }
+});
 
-//Inicio de Veterinario
+// Ruta para eliminar una mascota
+app.delete('/api/mascotas/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    await pool.query('DELETE FROM mascotas WHERE cod_mas = ?', [id]);
+    res.json({ message: 'Mascota eliminada exitosamente' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al eliminar mascota' });
+  }
+});
+
+// Middleware para manejar errores 404 (Rutas no encontradas)
+app.use((req, res) => {
+  res.status(404).json({ error: 'Ruta no encontrada' });
+});
+
+// Middleware para errores generales
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: 'Error interno del servidor' });
+});
+
 
 
 

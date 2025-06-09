@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import "../../stylos/cssVet/Mascotas.css";
 
 const GestorMascotas = () => {
@@ -23,29 +23,54 @@ const GestorMascotas = () => {
       esterilizado: false,
       activo: true
     },
-    {
-      id: "2",
-      nombre: "Luna",
-      tipo: "gato",
-      raza: "Siamés",
-      edad: 2,
-      peso: 4,
-      color: "Blanco y negro",
-      dueño: "María García",
-      telefono: "+34 987 654 321",
-      email: "maria@email.com",
-      direccion: "Avenida Central 456, Barcelona",
-      notas: "Un poco tímida al principio",
-      ultimaVisita: "2024-01-20",
-      proximaCita: "2024-03-01",
-      vacunado: true,
-      esterilizado: true,
-      activo: true
-    }
   ];
 
+  useEffect(() => {
+  const cargarMascotas = async () => {
+    try {
+      const response = await fetch('http://localhost:3001/api/mascotas');
+      if (!response.ok) {
+        throw new Error('Error al cargar mascotas');
+      }
+      const data = await response.json();
+      
+      // Transformar los datos del backend al formato que espera tu frontend
+      const mascotasTransformadas = data.map(mascota => ({
+        id: mascota.cod_mas.toString(),
+        nombre: mascota.nom_mas,
+        tipo: mascota.especie.toLowerCase(),
+        raza: mascota.raza,
+        edad: mascota.edad,
+        peso: mascota.peso,
+        genero: mascota.genero.toLowerCase(),
+        idPropietario: mascota.id_pro.toString(),
+        dueño: `${mascota.nombre_propietario} ${mascota.apellido_propietario}`,
+        telefono: mascota.telefono,
+        email: mascota.email,
+        direccion: mascota.direccion,
+        // Estos campos podrían venir de otras tablas o ser nulos
+        color: '',
+        notas: '',
+        ultimaVisita: '',
+        proximaCita: '',
+        vacunado: false,
+        esterilizado: false,
+        activo: true
+      }));
+      
+      setMascotas(mascotasTransformadas);
+    } catch (error) {
+      console.error("Error al cargar mascotas:", error);
+      // Puedes mantener las mascotas iniciales como fallback
+      setMascotas(mascotasIniciales);
+    }
+  };
+
+  cargarMascotas();
+}, []);
+
   // Estados principales
-  const [mascotas, setMascotas] = useState([mascotasIniciales]);
+  const [mascotas, setMascotas] = useState(mascotasIniciales);
   const [terminoBusqueda, setTerminoBusqueda] = useState('');
   const [mostrarModalAgregar, setMostrarModalAgregar] = useState(false);
   const [mascotaEditando, setMascotaEditando] = useState(null);
@@ -108,24 +133,65 @@ const GestorMascotas = () => {
     resetearFormulario();
   };
 
-  const editarMascota = (e) => {
-    e.preventDefault();
+  const editarMascota = async (e) => {
+  e.preventDefault();
+  try {
+    const response = await fetch(`/api/mascotas/${mascotaEditando.id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        nom_mas: formulario.nombre,
+        especie: formulario.tipo,
+        raza: formulario.raza,
+        edad: parseInt(formulario.edad) || 0,
+        genero: formulario.genero,
+        peso: parseFloat(formulario.peso) || 0,
+        id_pro: formulario.idPropietario
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Error al actualizar mascota');
+    }
+
+    // Actualizar el estado local
     const mascotaActualizada = {
       ...formulario,
       id: mascotaEditando.id,
       edad: parseInt(formulario.edad) || 0,
       peso: parseFloat(formulario.peso) || 0
     };
+    
     setMascotas(mascotas.map(m => m.id === mascotaEditando.id ? mascotaActualizada : m));
     setMascotaEditando(null);
-  };
+    alert('Mascota actualizada exitosamente');
+  } catch (error) {
+    console.error("Error:", error);
+    alert('Error al actualizar la mascota: ' + error.message);
+  }
+};
 
-  const eliminarMascota = (idMascota) => {
-    if (window.confirm('¿Estás seguro de que deseas eliminar esta mascota?')) {
+const eliminarMascota = async (idMascota) => {
+  if (window.confirm('¿Estás seguro de que deseas eliminar esta mascota?')) {
+    try {
+      const response = await fetch(`/api/mascotas/${idMascota}`, {
+        method: 'DELETE'
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al eliminar mascota');
+      }
+
       setMascotas(mascotas.filter(m => m.id !== idMascota));
+      alert('Mascota eliminada exitosamente');
+    } catch (error) {
+      console.error("Error:", error);
+      alert('Error al eliminar la mascota: ' + error.message);
     }
-  };
-
+  }
+};
   const cambiarEstadoMascota = (idMascota, nuevoEstado) => {
     setMascotas(mascotas.map(m => 
       m.id === idMascota ? {...m, activo: nuevoEstado} : m
