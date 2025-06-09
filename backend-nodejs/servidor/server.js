@@ -14,9 +14,9 @@ app.use(cors());
 const pool = mysql.createPool({
   host: "localhost",
   user: "root",
-  password: "12345678", // Tu contraseña
+  password: "", // Tu contraseña
   database: "mascotas_db",
-  port: 3309,          // Tu puerto
+  port: 3306,          // Tu puerto
 });
 
 // =================================================================
@@ -38,35 +38,30 @@ app.get("/health", async (req, res) => {
 // =================================================================
 
 // --- RUTA DE LOGIN ---
+// Ruta de login
 app.post("/login", async (req, res) => {
   try {
-    const { email, password } = req.body;
-    console.log(`Intento de login con email: ${email}`);
-    // AÑADIDO: Se comprueba también que el usuario esté activo para poder iniciar sesión
-    const [users] = await pool.query("SELECT * FROM usuarios WHERE email = ? AND estado = 1", [email]);
+    const { email, password } = req.body
+
+    const [users] = await pool.query("SELECT * FROM usuarios WHERE email = ?", [email])
 
     if (users.length === 0) {
-      return res.status(401).json({ success: false, message: "Credenciales incorrectas o usuario inactivo." });
+      return res.status(401).json({ success: false, message: "Credenciales incorrectas" })
     }
 
-    const user = users[0];
-    const passwordMatch = await bcrypt.compare(password, user.password_hash);
+    const user = users[0]
+    const passwordMatch = await bcrypt.compare(password, user.password_hash)
 
     if (passwordMatch) {
-      const { password_hash, ...userWithoutPassword } = user;
-      res.json({
-        success: true,
-        message: "Inicio de sesión exitoso",
-        user: userWithoutPassword,
-      });
+      res.json({ success: true, message: "Inicio de sesión exitoso", user })
     } else {
-      res.status(401).json({ success: false, message: "Credenciales incorrectas." });
+      res.status(401).json({ success: false, message: "Credenciales incorrectas" })
     }
   } catch (error) {
-    console.error("Error en /login:", error);
-    res.status(500).json({ success: false, message: "Error en el servidor" });
+    console.error("Error en el login:", error)
+    res.status(500).json({ success: false, message: "Error en el servidor" })
   }
-});
+})
 
 // --- RUTA DE REGISTRO ---
 app.post('/registro', async (req, res) => {
@@ -546,7 +541,7 @@ app.delete("/api/admin/servicios/:id", async (req, res) => {
 // =================================================================
 // ==                        INICIO DEL SERVIDOR                    ==
 // =================================================================
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, async () => {
   console.log("-----------------------------------------");
   console.log(`🚀 Servidor corriendo en el puerto ${PORT}`);

@@ -6,14 +6,14 @@ import { useAuth } from '../../context/AuthContext';
 import InactivityModal from '../common/InactivityModal';
 
 const LayoutPropietario = () => {
-  const { usuario } = useAuth();
+  {/*const { usuario } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!usuario) {
       navigate('/Login');
     }
-  }, [usuario, navigate]);
+  }, [usuario, navigate]);*/}
 
   return (
     <div className="app-container propietario-layout">

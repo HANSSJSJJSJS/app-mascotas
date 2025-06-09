@@ -32,7 +32,7 @@ export default function InicioPropietario() {
         }
 
         const response = await axios.get(
-          `http://localhost:3000/api/propietario/${usuarioActual.id_usuario}/mascotas`
+          `http://localhost:3001/api/propietario/${usuarioActual.id_usuario}/mascotas`
         );
         setMascotas(response.data);
       } catch (error) {
@@ -50,7 +50,7 @@ export default function InicioPropietario() {
         }
 
         const response = await axios.get(
-          `http://localhost:3000/api/propietario/${usuarioActual.id_usuario}/citas`
+          `http://localhost:3001/api/propietario/${usuarioActual.id_usuario}/citas`
         );
 
         const citasObtenidas = response.data;
