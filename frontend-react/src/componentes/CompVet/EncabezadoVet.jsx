@@ -1,5 +1,6 @@
 "use client"
-import { Menu, Search, Bell } from 'lucide-react'
+import { Menu, Search, Bell, LogOut } from 'lucide-react'
+import { Link } from "react-router-dom"
 import "../../stylos/cssVet/EncabezadoVet.css"
 
 const EncabezadoVet = ({ onToggleMenu, isSidebarOpen, userData }) => {
@@ -18,15 +19,6 @@ const EncabezadoVet = ({ onToggleMenu, isSidebarOpen, userData }) => {
             <Menu size={20} />
             <span>MENU</span>
           </button>
-          
-          <div className="search-container">
-            <Search size={18} className="search-icon" />
-            <input 
-              type="text" 
-              placeholder="Buscar paciente..." 
-              className="search-input" 
-            />
-          </div>
         </div>
 
         <div className="header-right">
@@ -35,21 +27,18 @@ const EncabezadoVet = ({ onToggleMenu, isSidebarOpen, userData }) => {
             <div className="current-time">{new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}</div>
           </div>
           
-          <div className="notifications">
-            <button className="notification-btn">
-              <Bell size={20} />
-              <span className="notification-badge">3</span>
-            </button>
+          <div className="header-controls">
+            <Link to="/Home" className="user-logout-btn">
+              <LogOut size={18} className="logout-icon" />
+              <span>Cerrar Sesión</span>
+            </Link>
           </div>
           
-          <div className="info-usuario-vet">
-            <span>{userData?.username || "Dr. Carlos Rodríguez"}</span>
-            <small>{userData?.role || "Veterinario"}</small>
-          </div>
+
         </div>
       </header>
     </div>
   )
 }
 
-export default EncabezadoVet
+export default EncabezadoVet;

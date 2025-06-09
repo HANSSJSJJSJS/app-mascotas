@@ -1,3 +1,4 @@
+
 DROP DATABASE mascotas_db;
 CREATE DATABASE IF NOT EXISTS mascotas_db;
 USE mascotas_db;

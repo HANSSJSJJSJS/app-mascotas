@@ -37,43 +37,34 @@ export default function NuevaConsulta() {
       <div className="sidebar">
         <div className="sidebar-header">
           <PawPrint className="sidebar-logo" />
-          <span>VETCLINIC</span>
+          <span>PET MOYBE</span>
         </div>
         <div className="sidebar-user">
           <div className="sidebar-user-role">Veterinario</div>
           <div className="sidebar-user-name">Dr. Carlos Rodríguez</div>
         </div>
         <nav className="sidebar-nav">
-          <Link to="/" className="sidebar-link">
+          <Link to="/inicio" className="sidebar-link">
             <Activity className="sidebar-icon" />
-            <span>Dashboard</span>
+            <span>Inicio</span>
           </Link>
           <Link to="/agenda" className="sidebar-link">
             <Calendar className="sidebar-icon" />
             <span>Agenda</span>
           </Link>
-          <Link to="/pacientes" className="sidebar-link">
+          <Link to="/mascotas" className="sidebar-link">
             <PawPrint className="sidebar-icon" />
-            <span>Pacientes</span>
+            <span>Mascotas</span>
           </Link>
-          <Link to="/consulta" className="sidebar-link active">
-            <FileText className="sidebar-icon" />
-            <span>Consultas</span>
-          </Link>
-          <Link to="/historial" className="sidebar-link">
+          <Link to="/historiales" className="sidebar-link active">
             <FileText className="sidebar-icon" />
             <span>Historiales</span>
           </Link>
-          <Link to="/inventario" className="sidebar-link">
-            <Pill className="sidebar-icon" />
-            <span>Inventario</span>
+          <Link to="/funcionalidades-medicas" className="sidebar-link">
+            <FileText className="sidebar-icon" />
+            <span>Funcionalidades-Medicas</span>
           </Link>
         </nav>
-        <div className="sidebar-footer">
-          <button className="logout-button">
-            Cerrar sesión
-          </button>
-        </div>
       </div>
 
       {/* Contenido principal */}

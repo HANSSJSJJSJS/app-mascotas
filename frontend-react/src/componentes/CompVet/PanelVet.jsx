@@ -62,4 +62,4 @@ const PanelVet = () => {
   )
 }
 
-export default PanelVet
+export default PanelVet;

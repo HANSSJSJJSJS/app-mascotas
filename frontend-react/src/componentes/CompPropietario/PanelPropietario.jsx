@@ -1,47 +1,69 @@
-// PanelPropietario.jsx
 import { Outlet } from "react-router-dom"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import "../../stylos/cssPropietario/PanelPropietario.css"
 import BarraPropietario from "./BarraPropietario"
 import EncabezadoPropietario from "./EncabezadoPropietario"
-import { useLocation } from 'react-router-dom';
-import LayoutPropietario from "../layouts/LayoutPropietario"
+import { useNavigate } from 'react-router-dom'
 
 const PanelPropietario = () => {
-  const [menuAbierto, setMenuAbierto] = useState(true)
-  const [isMobile, setIsMobile] = useState(false) 
+  const [estaMenuAbierto, setEstaMenuAbierto] = useState(true)
+  const [esMobile, setEsMobile] = useState(false) 
+  const navigate = useNavigate()
 
-  const userData = JSON.parse(localStorage.getItem("userData"));
+  const userData = JSON.parse(localStorage.getItem("userData")) || {}
 
   useEffect(() => {
-    const checkIfMobile = () => {
+    const verificarSiEsMobile = () => {
       const mobile = window.innerWidth < 1024
-      setIsMobile(mobile)
+      setEsMobile(mobile)
       if (mobile) {
-        setMenuAbierto(false)
+        setEstaMenuAbierto(false)
       } else {
-        setMenuAbierto(true)
+        setEstaMenuAbierto(true)
       }
     }
 
-    checkIfMobile()
-    window.addEventListener("resize", checkIfMobile)
-    return () => window.removeEventListener("resize", checkIfMobile)
+    verificarSiEsMobile()
+    window.addEventListener("resize", verificarSiEsMobile)
+    return () => window.removeEventListener("resize", verificarSiEsMobile)
   }, [])
 
-  const toggleMenu = () => {
-    setMenuAbierto(!menuAbierto)
-  }
+  const onAlternarMenu = useCallback(() => {
+    console.log('Alternando menú:', !estaMenuAbierto) // Para debug
+    setEstaMenuAbierto(prev => !prev)
+  }, [estaMenuAbierto])
+
+  const onCerrarSesion = useCallback(() => {
+    if (window.confirm("¿Estás seguro de que quieres cerrar sesión?")) {
+      // Limpiar datos del localStorage
+      localStorage.removeItem("userData")
+      localStorage.removeItem("token")
+      
+      // Redirigir al login
+      navigate("/login")
+    }
+  }, [navigate])
 
   return (
     <div className="app-container">
-      <BarraPropietario onToggleMenu={toggleMenu} menuAbierto={menuAbierto} />
-      <EncabezadoPropietario onToggleMenu={toggleMenu} userData={userData} isSidebarOpen={menuAbierto} />
+      <BarraPropietario 
+        onAlternarMenu={onAlternarMenu} 
+        estaMenuAbierto={estaMenuAbierto}
+        onCerrarSesion={onCerrarSesion}
+      />
+      
+      <EncabezadoPropietario 
+        onToggleMenu={onAlternarMenu} 
+        userData={userData} 
+        estaMenuAbierto={estaMenuAbierto}
+        onCerrarSesion={onCerrarSesion}
+      />
+      
       <div
         className="content-wrapper"
         style={{
-          marginLeft: menuAbierto ? "-20vh" : "70px",
-          width: menuAbierto ? "calc(100% - 250px)" : "calc(100% - 70px)",
+          marginLeft: esMobile ? "0" : (estaMenuAbierto ? "250px" : "70px"),
+          width: esMobile ? "100%" : (estaMenuAbierto ? "calc(100% - 250px)" : "calc(100% - 70px)"),
           transition: "margin-left 0.3s ease, width 0.3s ease",
         }}
       >
