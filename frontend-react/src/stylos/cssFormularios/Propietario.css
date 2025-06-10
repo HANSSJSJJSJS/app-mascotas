@@ -581,6 +581,83 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   }
 }
 
+/* Estilos adicionales para la validación de dirección */
+.input-container.validating {
+  position: relative;
+}
+
+.input-container.validating::after {
+  content: "";
+  position: absolute;
+  right: 40px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--color4);
+  border-top: 2px solid transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: translateY(-50%) rotate(0deg);
+  }
+  100% {
+    transform: translateY(-50%) rotate(360deg);
+  }
+}
+
+.info-message {
+  color: var(--color4);
+  font-size: 11px;
+  margin-top: 2px;
+  display: block;
+  font-weight: 500;
+  font-style: italic;
+}
+
+.success-message {
+  color: var(--success-color);
+  font-size: 11px;
+  margin-top: 2px;
+  display: block;
+  font-weight: 500;
+  font-style: italic;
+}
+
+.warning-message {
+  color: var(--warning-color);
+  font-size: 11px;
+  margin-top: 2px;
+  display: block;
+  font-weight: 500;
+  font-style: italic;
+}
+
+.field-validating input,
+.field-validating select {
+  border-color: var(--color4);
+  background-color: #f8f9ff;
+}
+
+/* Mejorar el estilo del select para que coincida con los inputs */
+select {
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23495a90' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+select:focus {
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238196eb' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+}
+
+
 @keyframes pulse {
   0% {
     box-shadow: 0 0 0 0 rgba(73, 90, 144, 0.4);

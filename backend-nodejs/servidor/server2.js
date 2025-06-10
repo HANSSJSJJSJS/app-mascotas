@@ -109,7 +109,7 @@ app.get("/api/propietario/:id/citas", async (req, res) => {
 app.put("/api/usuario/:id", async (req, res) => {
   try {
     const { id } = req.params
-    const { tipo_documento, numeroid, genero, fecha_nacimiento, nombre, apellido, telefono, ciudad, direccion, email } =
+    const { tipo_documento, numeroid, genero, fecha_nacimiento, nombre, apellido, telefono, ciudad, barrio, direccion, email } =
       req.body
 
     const [result] = await pool.query(
@@ -123,11 +123,12 @@ app.put("/api/usuario/:id", async (req, res) => {
         apellido = ?,
         telefono = ?,
         ciudad = ?,
+        barrio = ?,
         direccion = ?,
         email = ?
       WHERE id_usuario = ?
     `,
-      [tipo_documento, numeroid, genero, fecha_nacimiento, nombre, apellido, telefono, ciudad, direccion, email, id],
+      [tipo_documento, numeroid, genero, fecha_nacimiento, nombre, apellido, telefono, ciudad,barrio, direccion, email, id],
     )
 
     if (result.affectedRows === 0) {
@@ -233,6 +234,7 @@ app.post("/registro", async (req, res) => {
       nombre,
       apellido,
       ciudad,
+      barrio,
       direccion,
       email,
       password,
@@ -279,6 +281,7 @@ app.post("/registro", async (req, res) => {
           apellido, 
           telefono, 
           ciudad, 
+          barrio,
           direccion, 
           email, 
           password_hash,
@@ -296,6 +299,7 @@ app.post("/registro", async (req, res) => {
         apellido,
         telefono,
         ciudad,
+        barrio,
         direccion,
         email,
         hashedPassword,

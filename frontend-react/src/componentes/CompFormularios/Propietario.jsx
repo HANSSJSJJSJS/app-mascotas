@@ -1,14 +1,149 @@
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import "react-datepicker/dist/react-datepicker.css"
-import { registerLocale, setDefaultLocale } from "react-datepicker"
-import es from "date-fns/locale/es"
+import { setDefaultLocale } from "react-datepicker"
 import axios from "axios"
 import Swal from "sweetalert2"
 import "../../stylos/cssFormularios/Propietario.css"
+import "../../stylos/cssFormularios/direccion-avanzada.css"
 // Registrar el idioma español para el calendario
 
+// Lista de ciudades colombianas
+const ciudadesColombianas = [
+  { value: "", label: "Seleccione una ciudad" },
+  { value: "bogota", label: "Bogotá D.C." },
+  { value: "soacha", label: "Soacha" },
+]
 
+// Reemplazar la función validarDireccionReal con una versión mejorada:
+
+const validarDireccionReal = async (direccion, ciudad, barrio) => {
+  try {
+    console.log("🔍 Iniciando validación:", { direccion, ciudad, barrio })
+
+    // Validación básica del formato de dirección colombiana más flexible
+    const formatoDireccionValido =
+      /^(calle|carrera|diagonal|transversal|avenida|av|cr|cl|dg|tv|kr|tr|cra|cll)\s*\d+[a-z]?[\s\-#]*\d+[\s-]*\d*/i.test(
+        direccion,
+      )
+
+    if (!formatoDireccionValido) {
+      console.log("❌ Formato de dirección inválido:", direccion)
+      return false
+    }
+
+    const ciudadLabel = ciudadesColombianas.find((c) => c.value === ciudad)?.label || ciudad
+
+    // Normalizar la dirección para mejorar la búsqueda
+    const direccionNormalizada = direccion
+      .toLowerCase()
+      .replace(/\bno\b/g, "#")
+      .replace(/\bno\.\b/g, "#")
+      .replace(/\s+/g, " ")
+      .trim()
+
+    // Intentar múltiples consultas para mejorar las posibilidades de encontrar la dirección
+    const queries = [
+      `${direccionNormalizada}, ${barrio}, ${ciudadLabel}, Colombia`,
+      `${direccionNormalizada}, ${ciudadLabel}, Colombia`,
+      `${direccion}, ${barrio}, ${ciudadLabel}`,
+      `${direccion}, ${ciudadLabel}, Cundinamarca, Colombia`,
+    ]
+
+    console.log("🔍 Queries a probar:", queries)
+
+    // Crear AbortController para manejar timeout manualmente
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 8000) // 8 segundos
+
+    try {
+      for (const query of queries) {
+        console.log("🌐 Probando query:", query)
+
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=3&countrycodes=co&addressdetails=1`,
+          {
+            headers: {
+              "User-Agent": "PropietarioApp/1.0",
+            },
+            signal: controller.signal,
+          },
+        )
+
+        if (response.ok) {
+          const data = await response.json()
+          console.log(`📍 Respuesta para "${query}":`, data)
+
+          if (data && data.length > 0) {
+            // Buscar el mejor resultado
+            const mejorResultado = data.find((resultado) => {
+              const address = resultado.address || {}
+              const displayName = resultado.display_name || ""
+
+              // Verificar que contenga Colombia
+              const contieneColombiaYCiudad =
+                displayName.toLowerCase().includes("colombia") &&
+                (displayName.toLowerCase().includes(ciudadLabel.toLowerCase()) ||
+                  displayName.toLowerCase().includes("cundinamarca") ||
+                  displayName.toLowerCase().includes("soacha"))
+
+              // Verificar que tenga información de dirección específica
+              const tieneInformacionEspecifica =
+                address.house_number || address.road || address.street || resultado.importance > 0.1
+
+              console.log("🔍 Evaluando resultado:", {
+                displayName: displayName.substring(0, 100),
+                contieneColombiaYCiudad,
+                tieneInformacionEspecifica,
+                importance: resultado.importance,
+                address: address,
+              })
+
+              return contieneColombiaYCiudad && tieneInformacionEspecifica
+            })
+
+            if (mejorResultado) {
+              clearTimeout(timeoutId)
+              console.log("✅ Dirección válida encontrada:", mejorResultado)
+              return true
+            }
+          }
+        }
+
+        // Pequeña pausa entre consultas para no sobrecargar la API
+        await new Promise((resolve) => setTimeout(resolve, 200))
+      }
+
+      clearTimeout(timeoutId)
+      console.log("❌ No se encontró una dirección válida en ninguna consulta")
+      return false
+    } catch (fetchError) {
+      clearTimeout(timeoutId)
+      if (fetchError.name === "AbortError") {
+        console.log("⏱️ Timeout en la validación de dirección")
+        return false
+      }
+      throw fetchError
+    }
+  } catch (error) {
+    console.error("❌ Error validando dirección:", error)
+    return false
+  }
+}
+
+// También actualizar la función de debounce para que sea menos agresiva:
+
+const debounce = (func, wait) => {
+  let timeout
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout)
+      func(...args)
+    }
+    clearTimeout(timeout)
+    timeout = setTimeout(later, wait)
+  }
+}
 
 setDefaultLocale("es")
 
@@ -16,19 +151,66 @@ function Propietario() {
   const [currentStep, setCurrentStep] = useState(1)
   const totalSteps = 4
   const [showPassword, setShowPassword] = useState(false)
+  const [validandoDireccion, setValidandoDireccion] = useState(false)
+  const [direccionVerificada, setDireccionVerificada] = useState(false)
   const {
     register,
     handleSubmit,
     reset,
     watch,
     trigger,
+    setError,
+    clearErrors,
     formState: { errors, dirtyFields },
   } = useForm({
     mode: "onChange",
   })
-  
+
   const email = watch("email")
   const password = watch("password")
+  const ciudadSeleccionada = watch("ciudad")
+  const direccionActual = watch("direccion")
+  const barrioActual = watch("barrio")
+
+  // También actualizar la función de debounce para que sea menos agresiva:
+
+  const validarDireccion = debounce(async (direccion, ciudad, barrio) => {
+    if (!direccion || !ciudad || !barrio || direccion.length < 8) {
+      setDireccionVerificada(false)
+      return
+    }
+
+    console.log("🚀 Iniciando validación con debounce:", { direccion, ciudad, barrio })
+    setValidandoDireccion(true)
+    clearErrors("direccion")
+
+    try {
+      const esValida = await validarDireccionReal(direccion, ciudad, barrio)
+
+      if (esValida) {
+        console.log("✅ Dirección verificada exitosamente")
+        setDireccionVerificada(true)
+        clearErrors("direccion")
+      } else {
+        console.log("❌ Dirección no pudo ser verificada")
+        setDireccionVerificada(false)
+        setError("direccion", {
+          type: "manual",
+          message:
+            "No se pudo verificar esta dirección. Intente con un formato más específico o verifique que la dirección exista.",
+        })
+      }
+    } catch (error) {
+      console.error("❌ Error en validación:", error)
+      setDireccionVerificada(false)
+      setError("direccion", {
+        type: "manual",
+        message: "Error al verificar la dirección. Verifique su conexión e intente nuevamente.",
+      })
+    } finally {
+      setValidandoDireccion(false)
+    }
+  }, 1000)
 
   const onSubmit = async (data) => {
     try {
@@ -45,6 +227,7 @@ function Propietario() {
         "apellido",
         "telefono",
         "ciudad",
+        "barrio",
         "direccion",
         "email",
         "password",
@@ -53,6 +236,11 @@ function Propietario() {
       const camposFaltantes = camposRequeridos.filter((campo) => !userData[campo])
       if (camposFaltantes.length > 0) {
         throw new Error(`Faltan campos requeridos: ${camposFaltantes.join(", ")}`)
+      }
+
+      // Verificar que la dirección esté verificada
+      if (!direccionVerificada) {
+        throw new Error("La dirección debe estar verificada antes de continuar")
       }
 
       // Verificar el formato de la fecha
@@ -69,10 +257,10 @@ function Propietario() {
       try {
         const healthCheck = await axios.get("http://localhost:3001/health", {
           timeout: 5000,
-        });
+        })
 
-        debugger;
-                if (!healthCheck.data.database) {
+        debugger
+        if (!healthCheck.data.database) {
           throw new Error("La base de datos no está conectada")
         }
       } catch (healthError) {
@@ -138,7 +326,7 @@ function Propietario() {
         fieldsToValidate = ["nombre", "apellido", "telefono"]
         break
       case 3:
-        fieldsToValidate = ["ciudad", "direccion"]
+        fieldsToValidate = ["ciudad", "barrio", "direccion"]
         break
       case 4:
         fieldsToValidate = ["email", "confirmarEmail", "password", "confirmarPassword"]
@@ -147,6 +335,19 @@ function Propietario() {
 
     // Validar los campos del paso actual
     const isStepValid = await trigger(fieldsToValidate)
+
+    // Validación adicional para el paso 3 (ubicación)
+    if (currentStep === 3) {
+      if (!direccionVerificada) {
+        Swal.fire({
+          icon: "warning",
+          title: "Dirección no verificada",
+          text: "La dirección debe estar verificada antes de continuar. Use el formato correcto: Calle/Carrera + número + # + número",
+          confirmButtonColor: "#495a90",
+        })
+        return
+      }
+    }
 
     if (isStepValid) {
       setCurrentStep((prev) => Math.min(prev + 1, totalSteps))
@@ -174,6 +375,11 @@ function Propietario() {
   // Función para determinar la clase de validación del campo
   const getFieldClass = (fieldName) => {
     if (!dirtyFields[fieldName]) return ""
+    if (fieldName === "direccion") {
+      if (validandoDireccion) return "field-validating"
+      if (direccionVerificada && !errors[fieldName]) return "field-success"
+      if (errors[fieldName] || !direccionVerificada) return "field-error"
+    }
     return errors[fieldName] ? "field-error" : "field-success"
   }
 
@@ -397,23 +603,27 @@ function Propietario() {
           {currentStep === 3 && (
             <div className="form-section">
               <h3 className="section-title">Ubicación</h3>
+
               <div className="form-row">
                 <div className="form-group">
                   <label htmlFor="ciudad">Ciudad</label>
                   <div className={`input-container ${getFieldClass("ciudad")}`}>
-                    <input
-                      type="text"
+                    <select
                       id="ciudad"
                       {...register("ciudad", {
-                        required: { value: true, message: "La ciudad es obligaria" },
-                        minLength: { value: 3, message: "Mínimo 3 caracteres" },
-                        maxLength: { value: 30, message: "Máximo 30 caracteres" },
-                        pattern: {
-                          value: /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/,
-                          message: "Solo letras y espacios",
+                        required: { value: true, message: "La ciudad es obligatoria" },
+                        validate: (value) => value !== "" || "Debe seleccionar una ciudad",
+                        onChange: () => {
+                          setDireccionVerificada(false)
                         },
                       })}
-                    />
+                    >
+                      {ciudadesColombianas.map((ciudad) => (
+                        <option key={ciudad.value} value={ciudad.value}>
+                          {ciudad.label}
+                        </option>
+                      ))}
+                    </select>
                     <span className="input-icon">
                       {dirtyFields.ciudad && !errors.ciudad && "✓"}
                       {errors.ciudad && "!"}
@@ -423,27 +633,71 @@ function Propietario() {
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="direccion">Dirección</label>
-                  <div className={`input-container ${getFieldClass("direccion")}`}>
+                  <label htmlFor="barrio">Barrio</label>
+                  <div className={`input-container ${getFieldClass("barrio")}`}>
                     <input
                       type="text"
-                      id="direccion"
-                      {...register("direccion", {
-                        required: { value: true, message: "La dirección es obligaria" },
+                      id="barrio"
+                      placeholder="Ej: Chapinero, Kennedy, San Mateo, Hogares Soacha"
+                      {...register("barrio", {
+                        required: { value: true, message: "El barrio es obligatorio" },
                         minLength: { value: 3, message: "Mínimo 3 caracteres" },
-                        maxLength: { value: 30, message: "Máximo 30 caracteres" },
+                        maxLength: { value: 50, message: "Máximo 50 caracteres" },
                         pattern: {
-                          value: /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s0-9\-#.]+$/,
-                          message: "Formato de dirección inválido",
+                          value: /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s0-9\-.,]+$/,
+                          message: "Formato de barrio inválido",
+                        },
+                        onChange: () => {
+                          setDireccionVerificada(false)
                         },
                       })}
                     />
                     <span className="input-icon">
-                      {dirtyFields.direccion && !errors.direccion && "✓"}
-                      {errors.direccion && "!"}
+                      {dirtyFields.barrio && !errors.barrio && "✓"}
+                      {errors.barrio && "!"}
+                    </span>
+                  </div>
+                  {errors.barrio && <p className="error-message">{errors.barrio.message}</p>}
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-group" style={{ width: "100%" }}>
+                  <label htmlFor="direccion">Dirección completa</label>
+                  <div className={`input-container ${getFieldClass("direccion")}`}>
+                    <input
+                      type="text"
+                      id="direccion"
+                      placeholder="Ej: Carrera 19 # 5-13 Sur, Calle 13 # 45-67, Transversal 4F # 0-192"
+                      {...register("direccion", {
+                        required: { value: true, message: "La dirección es obligatoria" },
+                        minLength: { value: 8, message: "Mínimo 8 caracteres" },
+                        maxLength: { value: 100, message: "Máximo 100 caracteres" },
+                        pattern: {
+                          value:
+                            /^(calle|carrera|diagonal|transversal|avenida|av|cr|cl|dg|tv|kr|tr|cra|cll)\s*\d+[a-z]?\s*(#|no\.?|-)?\s*\d+[a-z]?\s*[-]?\s*\d*\s*(sur|norte|oriente|occidente|este|oeste)?$/i,
+                          message: "Use formato: Tipo de vía + número + # + número (ej: Carrera 19A # 5-13 Sur)",
+                        },
+                        onChange: (e) => {
+                          setDireccionVerificada(false)
+                          const direccion = e.target.value
+                          if (ciudadSeleccionada && barrioActual && direccion.length >= 8) {
+                            validarDireccion(direccion, ciudadSeleccionada, barrioActual)
+                          }
+                        },
+                      })}
+                    />
+                    <span className="input-icon">
+                      {validandoDireccion && "⏳"}
+                      {!validandoDireccion && direccionVerificada && !errors.direccion && "✓"}
+                      {!validandoDireccion && (!direccionVerificada || errors.direccion) && "!"}
                     </span>
                   </div>
                   {errors.direccion && <p className="error-message">{errors.direccion.message}</p>}
+                  {validandoDireccion && <p className="info-message">🔍 Verificando dirección...</p>}
+                  {!validandoDireccion && direccionVerificada && (
+                    <p className="success-message">✅ Dirección verificada correctamente</p>
+                  )}
                 </div>
               </div>
             </div>
