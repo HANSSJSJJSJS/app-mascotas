@@ -285,9 +285,9 @@ app.post("/registro", async (req, res) => {
           direccion, 
           email, 
           password_hash,
-          id_rol,
-          id_tipo
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          id_tipo,
+          id_rol
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `
 
       const userValues = [
@@ -303,8 +303,8 @@ app.post("/registro", async (req, res) => {
         direccion,
         email,
         hashedPassword,
-        3, // id_rol = 3 (Propietario)
         1, // id_tipo = 1 (propietario)
+        3  // id_rol = 3 (Propietario)
       ]
 
       // No logueamos los valores para evitar exponer información sensible

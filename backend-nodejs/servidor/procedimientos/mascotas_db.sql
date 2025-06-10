@@ -127,13 +127,13 @@ INSERT INTO Rol (id_rol, rol) VALUES
 (2, 'Veterinario'),
 (3, 'Propietario');
 
-INSERT INTO usuarios (tipo_documento, numeroid, genero, fecha_nacimiento, nombre, apellido, telefono, ciudad, direccion, email, password_hash, id_tipo, id_rol)
+INSERT INTO usuarios (tipo_documento, numeroid, genero, fecha_nacimiento, nombre, apellido, telefono, ciudad, barrio, direccion, email, password_hash, id_tipo, id_rol)
 VALUES
-('CC', '1234567890', 'Hombre', '1990-01-01', 'Carlos', 'Ramírez', '3101234567', 'Bogotá', 'Calle 1 #1-1', 'carlos@example.com', 'Hans1986@', 1, 3),
-('CE', '2345678901', 'Mujer', '1985-02-02', 'Ana', 'López', '3112345678', 'Medellín', 'Carrera 2 #2-2', 'ana@example.com', 'Hans1986@', 2, 2),
-('PP', '3456789012', 'Hombre', '1978-03-03', 'Luis', 'García', '3123456789', 'Cali', 'Avenida 3 #3-3', 'luis@example.com', 'Hans1986@', 2, 2),
-('CC', '4567890123', 'Mujer', '1992-04-04', 'María', 'Fernández', '3134567890', 'Barranquilla', 'Calle 4 #4-4', 'maria@example.com', 'Hans1986@', 1, 3),
-('CE', '5678901234', 'No identificado', '1988-05-05', 'Alex', 'Torres', '3145678901', 'Cartagena', 'Carrera 5 #5-5', 'alex@example.com', 'Hans1986@', 4, 1);
+('CC', '1234567890', 'Hombre', '1990-01-01', 'Carlos', 'Ramírez', '3101234567', 'Bogotá', 'Chapinero', 'Calle 1 #1-1', 'carlos@example.com', 'Hans1986@', 1, 3),
+('CE', '2345678901', 'Mujer', '1985-02-02', 'Ana', 'López', '3112345678', 'Medellín', 'El Poblado', 'Carrera 2 #2-2', 'ana@example.com', 'Hans1986@', 2, 2),
+('PP', '3456789012', 'Hombre', '1978-03-03', 'Luis', 'García', '3123456789', 'Cali', 'San Fernando', 'Avenida 3 #3-3', 'luis@example.com', 'Hans1986@', 2, 2),
+('CC', '4567890123', 'Mujer', '1992-04-04', 'María', 'Fernández', '3134567890', 'Barranquilla', 'Alameda', 'Calle 4 #4-4', 'maria@example.com', 'Hans1986@', 1, 3),
+('CE', '5678901234', 'No identificado', '1988-05-05', 'Alex', 'Torres', '3145678901', 'Cartagena', 'Bocagrande', 'Carrera 5 #5-5', 'alex@example.com', 'Hans1986@', 4, 1);
 
 
 INSERT INTO administradores (id_admin, cargo, fecha_ingreso)
