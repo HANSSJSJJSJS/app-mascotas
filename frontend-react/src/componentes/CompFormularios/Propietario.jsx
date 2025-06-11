@@ -17,13 +17,13 @@ const ciudadesColombianas = [
 
 // Reemplazar la función validarDireccionReal con una versión mejorada:
 
-const validarDireccionReal = async (direccion, ciudad, barrio) => {
+const   validarDireccionReal = async (direccion, ciudad, barrio) => {
   try {
     console.log("🔍 Iniciando validación:", { direccion, ciudad, barrio })
 
     // Validación básica del formato de dirección colombiana más flexible
     const formatoDireccionValido =
-      /^(calle|carrera|diagonal|transversal|avenida|av|cr|cl|dg|tv|kr|tr|cra|cll)\s*\d+[a-z]?[\s\-#]*\d+[\s-]*\d*/i.test(
+      /^(calle|carrera|diagonal|transversal|avenida|av|cr|cl|dg|tv|kr|tr|cra|cll)\s*\d+[a-z]*[\s\-#]*\d+[a-z]*[\s-]*\d*[a-z]*/i.test(
         direccion,
       )
 
@@ -675,7 +675,7 @@ function Propietario() {
                         maxLength: { value: 100, message: "Máximo 100 caracteres" },
                         pattern: {
                           value:
-                            /^(calle|carrera|diagonal|transversal|avenida|av|cr|cl|dg|tv|kr|tr|cra|cll)\s*\d+[a-z]?\s*(#|no\.?|-)?\s*\d+[a-z]?\s*[-]?\s*\d*\s*(sur|norte|oriente|occidente|este|oeste)?$/i,
+                            /^(calle|carrera|diagonal|transversal|avenida|av|cr|cl|dg|tv|kr|tr|cra|cll)\s*\d+[a-z]*[\s\-#]*\d+[a-z]*[\s-]*\d*[a-z]*/i,
                           message: "Use formato: Tipo de vía + número + # + número (ej: Carrera 19A # 5-13 Sur)",
                         },
                         onChange: (e) => {
