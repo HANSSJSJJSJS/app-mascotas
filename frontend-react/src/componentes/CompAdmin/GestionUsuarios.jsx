@@ -1,7 +1,6 @@
 "use client"
 
 import React, { useState, useEffect } from "react";
-// 1. Importamos el hook para leer los parámetros de la URL.
 import { useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import Swal from 'sweetalert2';
@@ -14,7 +13,6 @@ import "../../stylos/cssAdmin/GestionUsuarios.css";
 import Loading from '../index/Loading';
 
 const GestionUsuarios = () => {
-  // 2. Inicializamos el hook para poder usarlo.
   const [searchParams] = useSearchParams();
 
   const [activeTab, setActiveTab] = useState("lista");
@@ -28,6 +26,7 @@ const GestionUsuarios = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editingUserId, setEditingUserId] = useState(null);
 
+  // Se incluye 'barrio' en el estado inicial
   const initialFormData = {
     nombre: "",
     apellido: "",
@@ -38,6 +37,7 @@ const GestionUsuarios = () => {
     fechaNacimiento: "",
     telefono: "",
     ciudad: "",
+    barrio: "",
     direccion: "",
     rol: "",
     tipoPersona: "",
@@ -76,17 +76,13 @@ const GestionUsuarios = () => {
     fetchData();
   }, []);
 
-  // 3. Añadimos un useEffect que reacciona a los cambios en la URL.
   useEffect(() => {
-    const tabFromUrl = searchParams.get('tab'); // Leemos el parámetro 'tab'
+    const tabFromUrl = searchParams.get('tab');
     if (tabFromUrl === 'registrar') {
-      // Si la URL dice ?tab=registrar, llamamos a la función que abre el formulario.
       handleOpenForm(); 
     } else if (tabFromUrl === 'lista') {
-      // Si la URL dice ?tab=lista, nos aseguramos de mostrar la lista.
       setActiveTab('lista');
     }
-    // 4. Este efecto se ejecuta cada vez que los parámetros de la URL cambian.
   }, [searchParams]);
 
 
@@ -124,6 +120,24 @@ const GestionUsuarios = () => {
     if (!formData.telefono.trim() || !phoneRegex.test(formData.telefono)) errors.telefono = "El teléfono debe tener de 7 a 10 números.";
     if (!formData.rol) errors.rol = "Debes seleccionar un rol.";
     if (!formData.tipoPersona) errors.tipoPersona = "Debes seleccionar un tipo de persona.";
+    if (!formData.barrio.trim()) errors.barrio = "El barrio es obligatorio.";
+    
+    if (!formData.direccion.trim()) {
+      errors.direccion = "La dirección es obligatoria.";
+    } else if (formData.direccion.trim().length < 5) {
+      errors.direccion = "La dirección es demasiado corta.";
+    } else if (!/^[a-zA-Z0-9\s.,°#-]+$/.test(formData.direccion)) {
+      errors.direccion = "La dirección contiene caracteres no válidos.";
+    } else if (!/\d/.test(formData.direccion)) {
+      errors.direccion = "La dirección debe incluir un número.";
+    } else if (!/[a-zA-Z]/.test(formData.direccion)) {
+      errors.direccion = "La dirección debe incluir texto descriptivo.";
+    } else if (/(.)\1\1\1/.test(formData.direccion)) {
+      errors.direccion = "La dirección contiene caracteres repetidos de forma sospechosa.";
+    } else if (/^\d+$/.test(formData.direccion)) {
+      errors.direccion = "La dirección no puede ser solo números.";
+    }
+
 
     if (!formData.fechaNacimiento) {
       errors.fechaNacimiento = "La fecha de nacimiento es obligatoria.";
@@ -183,6 +197,7 @@ const GestionUsuarios = () => {
         fecha_nacimiento: formData.fechaNacimiento,
         telefono: formData.telefono || null,
         ciudad: formData.ciudad,
+        barrio: formData.barrio,
         direccion: formData.direccion,
         id_rol: parseInt(formData.rol, 10),
         id_tipo: parseInt(formData.tipoPersona, 10),
@@ -201,13 +216,7 @@ const GestionUsuarios = () => {
             title: '¡Usuario Actualizado!', 
             text: 'Los datos se han guardado correctamente.', 
             icon: 'success',
-            customClass: {
-                popup: 'professional-swal-popup',
-                title: 'professional-swal-title',
-                htmlContainer: 'professional-swal-content',
-                confirmButton: 'professional-swal-confirm-button',
-                icon: 'professional-swal-icon'
-            }
+            customClass: { /* ... */ }
         });
       } else {
         await axios.post('http://localhost:5000/api/admin/users', payload);
@@ -215,13 +224,7 @@ const GestionUsuarios = () => {
             title: '¡Registro Exitoso!', 
             text: 'El nuevo usuario ha sido creado.', 
             icon: 'success',
-            customClass: {
-                popup: 'professional-swal-popup',
-                title: 'professional-swal-title',
-                htmlContainer: 'professional-swal-content',
-                confirmButton: 'professional-swal-confirm-button',
-                icon: 'professional-swal-icon'
-            }
+            customClass: { /* ... */ }
         });
       }
       
@@ -236,12 +239,7 @@ const GestionUsuarios = () => {
           icon: 'error', 
           title: 'Error', 
           text: errorMessage,
-          customClass: {
-            popup: 'professional-swal-popup',
-            title: 'professional-swal-title',
-            htmlContainer: 'professional-swal-content',
-            confirmButton: 'professional-swal-confirm-button',
-          }
+          customClass: { /* ... */ }
       });
     } finally {
       setIsSubmitting(false);
@@ -264,6 +262,7 @@ const GestionUsuarios = () => {
         fechaNacimiento: usuario.fecha_nacimiento ? new Date(usuario.fecha_nacimiento).toISOString().split('T')[0] : "",
         telefono: usuario.telefono || "",
         ciudad: usuario.ciudad || "",
+        barrio: usuario.barrio || "", 
         direccion: usuario.direccion || "",
         rol: usuario.id_rol || "",
         tipoPersona: usuario.id_tipo || "",
@@ -281,48 +280,49 @@ const GestionUsuarios = () => {
 
   const handleDelete = async (userId, userName) => {
     const result = await Swal.fire({
-        title: `¿Estás seguro de eliminar a ${userName}?`,
-        text: "Esta acción no se puede revertir.",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Sí, ¡eliminar!',
-        cancelButtonText: 'No, cancelar',
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#495a90',
-        customClass: {
-            popup: 'professional-swal-popup',
-            title: 'professional-swal-title',
-            htmlContainer: 'professional-swal-content',
-            confirmButton: 'professional-swal-confirm-button',
-            cancelButton: 'professional-swal-cancel-button'
+            title: `¿Estás seguro de eliminar a ${userName}?`,
+            text: "Esta acción no se puede revertir.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, ¡eliminar!',
+            cancelButtonText: 'No, cancelar',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#495a90',
+            customClass: {
+                popup: 'professional-swal-popup',
+                title: 'professional-swal-title',
+                htmlContainer: 'professional-swal-content',
+                confirmButton: 'professional-swal-confirm-button',
+                cancelButton: 'professional-swal-cancel-button'
+            }
+        });
+    
+        if (result.isConfirmed) {
+            try {
+                await axios.delete(`http://localhost:5000/api/admin/users/${userId}`);
+                await Swal.fire({
+                    title: '¡Eliminado!',
+                    text: `El usuario ${userName} ha sido eliminado.`,
+                    icon: 'success',
+                    timer: 1500,
+                    showConfirmButton: false,
+                    customClass: {
+                        popup: 'professional-swal-popup',
+                        title: 'professional-swal-title',
+                        htmlContainer: 'professional-swal-content'
+                    }
+                });
+                await fetchData();
+            } catch (err) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: err.response?.data?.message || 'No se pudo eliminar el usuario.',
+                });
+            }
         }
-    });
+    };
 
-    if (result.isConfirmed) {
-        try {
-            await axios.delete(`http://localhost:5000/api/admin/users/${userId}`);
-            await Swal.fire({
-                title: '¡Eliminado!',
-                text: `El usuario ${userName} ha sido eliminado.`,
-                icon: 'success',
-                timer: 1500,
-                showConfirmButton: false,
-                customClass: {
-                    popup: 'professional-swal-popup',
-                    title: 'professional-swal-title',
-                    htmlContainer: 'professional-swal-content'
-                }
-            });
-            await fetchData();
-        } catch (err) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: err.response?.data?.message || 'No se pudo eliminar el usuario.',
-            });
-        }
-    }
-  };
 
   if (loading) {
     return <Loading />;
@@ -331,101 +331,100 @@ const GestionUsuarios = () => {
   return (
     <div className="gestion-usuarios">
       <div className="page-header-compact">
-        <div className="header-content-centered">
-          <div className="title-container">
-            <div className="header-icon"><Users size={32} /></div>
-            <div className="header-text">
-              <h1>Gestión de Usuarios</h1>
-              <p>Administra todos los usuarios del sistema</p>
+          <div className="header-content-centered">
+            <div className="title-container">
+              <div className="header-icon"><Users size={32} /></div>
+              <div className="header-text">
+                <h1>Gestión de Usuarios</h1>
+                <p>Administra todos los usuarios del sistema</p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="tabs-container">
-        <div className="tabs">
-          <button className={`tab ${activeTab === "lista" ? "active" : ""}`} onClick={() => { setActiveTab("lista"); setIsEditing(false); setFormErrors({}) }}>
-            <Eye size={18} /> Lista de Usuarios
-          </button>
-          <button className={`tab ${activeTab === "registrar" ? "active" : ""}`} onClick={() => handleOpenForm()}>
-            {isEditing ? <Edit size={18} /> : <Plus size={18} />}
-            {isEditing ? 'Editando Usuario' : 'Registrar Usuario'}
-          </button>
+        <div className="tabs-container">
+          <div className="tabs">
+            <button className={`tab ${activeTab === "lista" ? "active" : ""}`} onClick={() => { setActiveTab("lista"); setIsEditing(false); setFormErrors({}) }}>
+              <Eye size={18} /> Lista de Usuarios
+            </button>
+            <button className={`tab ${activeTab === "registrar" ? "active" : ""}`} onClick={() => handleOpenForm()}>
+              {isEditing ? <Edit size={18} /> : <Plus size={18} />}
+              {isEditing ? 'Editando Usuario' : 'Registrar Usuario'}
+            </button>
+          </div>
         </div>
-      </div>
+
 
       <div className="tab-content">
         {activeTab === "lista" && (
           <div className="lista-usuarios">
-            <div className="search-section">
-                <div className="search-container">
-                    <Search size={20} className="search-icon" />
-                    <input
-                      type="text"
-                      placeholder="Buscar por ID, nombre o email..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className="search-input"
-                    />
-                </div>
-              </div>
+             <div className="search-section">
+                 <div className="search-container">
+                     <Search size={20} className="search-icon" />
+                     <input
+                       type="text"
+                       placeholder="Buscar por ID, nombre o email..."
+                       value={searchTerm}
+                       onChange={(e) => setSearchTerm(e.target.value)}
+                       className="search-input"
+                     />
+                 </div>
+               </div>
             
-            {error && <p className="error-message" style={{color: 'red', textAlign: 'center'}}>{error}</p>}
-
-            <div className="usuarios-grid">
-              {filteredUsuarios.length > 0 ? filteredUsuarios.map((usuario) => (
-                <div key={usuario.id_usuario} className="usuario-card">
-                  <div className="usuario-header">
-                    <div className={`usuario-avatar ${usuario.nombre_rol?.toLowerCase().replace(/[\s/]/g, '-')}`}>
-                      {(usuario.nombre?.charAt(0) || '')}{(usuario.apellido?.charAt(0) || '')}
-                    </div>
-                    <div className="usuario-info">
-                      <h3>{getNombreCompleto(usuario)}</h3>
-                      <div className="usuario-meta">
-                        <span className="documento-badge">{usuario.tipo_documento}: {usuario.numeroid}</span>
-                        <span className={`rol-badge ${usuario.nombre_rol?.toLowerCase().replace(/[\s/]/g, '-')}`}>{usuario.nombre_rol}</span>
-                      </div>
-                    </div>
-                    <div className={`estado-badge ${usuario.estado === 1 ? 'activo' : 'inactivo'}`}>
-                      {usuario.estado === 1 ? <UserCheck size={16} /> : <XCircle size={16} />}
-                      {usuario.estado === 1 ? 'Activo' : 'Inactivo'}
-                    </div>
-                  </div>
-                  <div className="usuario-details">
-                    <div className="detail-item"><Mail size={16} /><span className="detail-text">{usuario.email}</span></div>
-                    <div className="detail-item"><MapPin size={16} /><span className="detail-text">{usuario.ciudad}</span></div>
-                    <div className="detail-item">
-                      <Calendar size={16} />
-                      <span className="detail-text">Nacimiento: {new Date(usuario.fecha_nacimiento).toLocaleDateString()}</span>
-                    </div>
-                  </div>
-                  <div className="usuario-actions">
-                    <button className="btn-edit" onClick={() => handleOpenForm(usuario)}>
-                      <Edit size={16} /> Editar
-                    </button>
-                    <button className="btn-delete" onClick={() => handleDelete(usuario.id_usuario, getNombreCompleto(usuario))}>
-                      <Trash2 size={16} /> Eliminar
-                    </button>
-                  </div>
-                </div>
-              )) : (
-                <p style={{textAlign: 'center', padding: '2rem', color: '#666'}}>No se encontraron usuarios.</p>
-              )}
-            </div>
-          </div>
+             {error && <p className="error-message" style={{color: 'red', textAlign: 'center'}}>{error}</p>}
+ 
+             <div className="usuarios-grid">
+               {filteredUsuarios.length > 0 ? filteredUsuarios.map((usuario) => (
+                 <div key={usuario.id_usuario} className="usuario-card">
+                   <div className="usuario-header">
+                     <div className={`usuario-avatar ${usuario.nombre_rol?.toLowerCase().replace(/[\s/]/g, '-')}`}>
+                       {(usuario.nombre?.charAt(0) || '')}{(usuario.apellido?.charAt(0) || '')}
+                     </div>
+                     <div className="usuario-info">
+                       <h3>{getNombreCompleto(usuario)}</h3>
+                       <div className="usuario-meta">
+                         <span className="documento-badge">{usuario.tipo_documento}: {usuario.numeroid}</span>
+                         <span className={`rol-badge ${usuario.nombre_rol?.toLowerCase().replace(/[\s/]/g, '-')}`}>{usuario.nombre_rol}</span>
+                       </div>
+                     </div>
+                     <div className={`estado-badge ${usuario.estado === 1 ? 'activo' : 'inactivo'}`}>
+                       {usuario.estado === 1 ? <UserCheck size={16} /> : <XCircle size={16} />}
+                       {usuario.estado === 1 ? 'Activo' : 'Inactivo'}
+                     </div>
+                   </div>
+                   <div className="usuario-details">
+                     <div className="detail-item"><Mail size={16} /><span className="detail-text">{usuario.email}</span></div>
+                     <div className="detail-item"><MapPin size={16} /><span className="detail-text">{usuario.ciudad}</span></div>
+                     <div className="detail-item">
+                       <Calendar size={16} />
+                       <span className="detail-text">Nacimiento: {new Date(usuario.fecha_nacimiento).toLocaleDateString()}</span>
+                     </div>
+                   </div>
+                   <div className="usuario-actions">
+                     <button className="btn-edit" onClick={() => handleOpenForm(usuario)}>
+                       <Edit size={16} /> Editar
+                     </button>
+                     <button className="btn-delete" onClick={() => handleDelete(usuario.id_usuario, getNombreCompleto(usuario))}>
+                       <Trash2 size={16} /> Eliminar
+                     </button>
+                   </div>
+                 </div>
+               )) : (
+                 <p style={{textAlign: 'center', padding: '2rem', color: '#666'}}>No se encontraron usuarios.</p>
+               )}
+             </div>
+           </div>
         )}
 
         {activeTab === "registrar" && (
           <div className="registrar-usuario">
             <div className="form-header">
-              <div className="form-header-icon">{isEditing ? <Edit size={24} /> : <Plus size={24} />}</div>
-              <div className="form-header-text">
-                <h2>{isEditing ? 'Editar Usuario' : 'Registrar Nuevo Usuario'}</h2>
-                <p>{isEditing ? `Modificando datos para: ${formData.nombre} ${formData.apellido}` : 'Completa el formulario para crear un nuevo usuario'}</p>
-              </div>
-            </div>
-            
-            {error && <p className="error-message" style={{color: 'red', textAlign: 'center', padding: '1rem'}}>{error}</p>}
+               <div className="form-header-icon">{isEditing ? <Edit size={24} /> : <Plus size={24} />}</div>
+               <div className="form-header-text">
+                 <h2>{isEditing ? 'Editar Usuario' : 'Registrar Nuevo Usuario'}</h2>
+                 <p>{isEditing ? `Modificando datos para: ${formData.nombre} ${formData.apellido}` : 'Completa el formulario para crear un nuevo usuario'}</p>
+               </div>
+             </div>
             
             <form onSubmit={handleSubmit} className="usuario-form" noValidate>
               <div className="form-container">
@@ -446,7 +445,16 @@ const GestionUsuarios = () => {
                     <div className="form-group"><label>Email</label><input type="email" name="email" value={formData.email} onChange={handleInputChange} required placeholder="ejemplo@correo.com" className="form-input" />{formErrors.email && <p className="error-text"><AlertTriangle size={14}/> {formErrors.email}</p>}</div>
                     <div className="form-group"><label>Teléfono</label><input type="tel" name="telefono" value={formData.telefono} onChange={handleInputChange} placeholder="Número de teléfono" className="form-input" />{formErrors.telefono && <p className="error-text"><AlertTriangle size={14}/> {formErrors.telefono}</p>}</div>
                     <div className="form-group"><label>Ciudad</label><input type="text" name="ciudad" value={formData.ciudad} onChange={handleInputChange} required placeholder="Ciudad de residencia" className="form-input" /></div>
-                    <div className="form-group full-width"><label>Dirección</label><input type="text" name="direccion" value={formData.direccion} onChange={handleInputChange} required placeholder="Dirección completa" className="form-input" /></div>
+                    <div className="form-group">
+                      <label>Barrio</label>
+                      <input type="text" name="barrio" value={formData.barrio} onChange={handleInputChange} required placeholder="Barrio de residencia" className="form-input" />
+                      {formErrors.barrio && <p className="error-text"><AlertTriangle size={14}/> {formErrors.barrio}</p>}
+                    </div>
+                    <div className="form-group">
+                      <label>Dirección</label>
+                      <input type="text" name="direccion" value={formData.direccion} onChange={handleInputChange} required placeholder="Dirección completa" className="form-input" />
+                      {formErrors.direccion && <p className="error-text"><AlertTriangle size={14}/> {formErrors.direccion}</p>}
+                    </div>
                   </div>
                 </div>
                 <div className="form-section">

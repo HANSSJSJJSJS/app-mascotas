@@ -144,6 +144,7 @@
   font-size: 15px;
   transition: all 0.3s ease;
   background: white;
+  color:#495a90
 }
 
 .search-input:focus {
@@ -203,6 +204,7 @@
   cursor: pointer;
   transition: all 0.3s ease;
   min-width: 180px;
+  margin-left: 20px;
 }
 
 .filter-select:focus {
