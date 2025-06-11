@@ -1,41 +1,47 @@
 :root {
-    --color1: #000000;
-    --color2: #1a2540;
-    --color3: #495a90;
-    --color4: #8196eb;
-    --color5: #c2d8ff;
-  }
-  
-  /* Contenedor principal */
-  .historial-clinico-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: white;
-    min-height: 100vh;
-    font-family: 'Segoe UI', sans-serif;
-  }
-  
-  /* Header Section */
-  .header-section {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 30px;
-  }
-  
-  .main-title {
-    font-size: 2rem;
-    font-weight: 800;
-    color: var(--color1);
-    margin: 0;
-  }
-  
-  .subtitle {
-    color: var(--color3);
-    font-size: 1rem;
-    margin-top: 4px;
-  }
+  --color1: #000000;
+  --color2: #1a2540;
+  --color3: #495a90;
+  --color4: #8196eb;
+  --color5: #c2d8ff;
+  --color-gestion-citas: #f5f7fa; /* Color de fondo similar a Gestión de Citas */
+}
+
+/* Contenedor principal modificado */
+.historial-clinico-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: var(--color-gestion-citas); /* Cambiado a nuevo color */
+  min-height: 100vh;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* Header Section - ahora con fondo oscuro como en Gestión de Citas */
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding: 15px 20px;
+  background-color: var(--color2);
+  border-radius: 8px;
+  color: white;
+}
+
+.main-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: white; /* Cambiado a blanco para contraste */
+  margin: 0;
+}
+
+.subtitle {
+  color: var(--color5); /* Cambiado a color más claro */
+  font-size: 1rem;
+  margin-top: 4px;
+}
+
   
   /* Botón Crear Historial */
   .create-button {
