@@ -9,7 +9,6 @@
 /* Contenedor principal */
 .container {
   min-height: 100vh;
-  background: linear-gradient(135deg, var(--color5) 0%, var(--color4) 100%);
   padding: 20px;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }

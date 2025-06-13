@@ -742,13 +742,14 @@ app.delete("/api/admin/gestion-roles/:id", async (req, res) => {
 
 // --- Endpoint para obtener todos los servicios (gestión de servicios) ---
 app.get("/api/admin/servicios", async (req, res) => {
-    try {
-        const [servicios] = await pool.query("SELECT *, 'Activo' as estado, 'Consulta' as categoria FROM servicios ORDER BY cod_ser ASC");
-        res.json(servicios);
-    } catch (error) {
-        console.error("Error en GET /api/admin/servicios:", error);
-        res.status(500).json({ message: "Error al obtener los servicios." });
-    }
+  try {
+    const [servicios] = await pool.query("SELECT * FROM servicios");
+    console.log(servicios); // Inspeccionar los datos
+    res.json(servicios);
+  } catch (error) {
+    console.error("Error al obtener servicios:", error);
+    res.status(500).json({ success: false, message: "Error en el servidor al obtener servicios" });
+  }
 });
 
 // --- Endpoint para crear un nuevo servicio (gestión de servicios) ---
@@ -841,3 +842,31 @@ app.listen(PORT, async () => {
 
 // Ejecutar este script para ver si funciona
 console.log("Servidor iniciado correctamente")
+
+// Endpoint para obtener historiales médicos del propietario
+app.get("/api/propietario/:id/historiales", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const [historiales] = await pool.query(
+      "SELECT * FROM historiales_medicos WHERE cod_mas IN (SELECT cod_mas FROM mascotas WHERE id_pro = ?)",
+      [id]
+    );
+    res.json(historiales);
+  } catch (error) {
+    console.error("Error al obtener historiales médicos:", error);
+    res.status(500).json({ success: false, message: "Error en el servidor al obtener historiales médicos" });
+  }
+});
+
+// Endpoint para obtener veterinarios
+app.get("/api/veterinarios", async (req, res) => {
+  try {
+    const [veterinarios] = await pool.query(
+      "SELECT u.id_usuario, u.nombre, u.apellido, v.especialidad, v.horario FROM veterinarios v JOIN usuarios u ON v.id_vet = u.id_usuario"
+    );
+    res.json(veterinarios);
+  } catch (error) {
+    console.error("Error al obtener veterinarios:", error);
+    res.status(500).json({ success: false, message: "Error en el servidor al obtener veterinarios" });
+  }
+});

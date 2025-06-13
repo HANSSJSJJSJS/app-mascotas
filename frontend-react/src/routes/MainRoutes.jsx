@@ -114,7 +114,7 @@ const MainRoutes = () => {
           <Route path="historia-clinica" element={<HisCli />} />
           <Route path="ActualizarPropietario" element={<ActualizarPropietario />} />
           <Route path="mascota" element={<Mascota />} />
-          <Route path="mascota" element={<FormularioMascota />} />
+          <Route path="mascota-form" element={<FormularioMascota />} />
         </Route>
       </Route>
 
