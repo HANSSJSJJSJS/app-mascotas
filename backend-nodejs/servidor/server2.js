@@ -66,13 +66,32 @@ app.get("/api/usuario/:id", async (req, res) => {
 // Endpoint para obtener mascotas del propietario
 app.get("/api/propietario/:id/mascotas", async (req, res) => {
   try {
-    const { id } = req.params
-    const [mascotas] = await pool.query("SELECT * FROM mascotas WHERE id_pro = ?", [id])
-
-    res.json(mascotas)
+    const { id } = req.params;
+    const [mascotas] = await pool.query(
+      `
+      SELECT 
+        m.cod_mas,
+        m.nom_mas,
+        m.especie,
+        m.raza,
+        m.edad,
+        m.genero,
+        m.peso,
+        m.color,
+        m.notas,
+        m.vacunado,
+        m.esterilizado,
+        m.foto,
+        m.id_pro
+      FROM mascotas m
+      WHERE m.id_pro = ? AND m.activo = true
+      `,
+      [id]
+    );
+    res.json(mascotas);
   } catch (error) {
-    console.error("Error al obtener mascotas:", error)
-    res.status(500).json({ success: false, message: "Error en el servidor mascotas" })
+    console.error("Error al obtener mascotas:", error);
+    res.status(500).json({ success: false, message: "Error en el servidor al obtener mascotas" });
   }
 })
 
@@ -742,13 +761,14 @@ app.delete("/api/admin/gestion-roles/:id", async (req, res) => {
 
 // --- Endpoint para obtener todos los servicios (gestión de servicios) ---
 app.get("/api/admin/servicios", async (req, res) => {
-    try {
-        const [servicios] = await pool.query("SELECT *, 'Activo' as estado, 'Consulta' as categoria FROM servicios ORDER BY cod_ser ASC");
-        res.json(servicios);
-    } catch (error) {
-        console.error("Error en GET /api/admin/servicios:", error);
-        res.status(500).json({ message: "Error al obtener los servicios." });
-    }
+  try {
+    const [servicios] = await pool.query("SELECT * FROM servicios");
+    console.log(servicios); // Inspeccionar los datos
+    res.json(servicios);
+  } catch (error) {
+    console.error("Error al obtener servicios:", error);
+    res.status(500).json({ success: false, message: "Error en el servidor al obtener servicios" });
+  }
 });
 
 // --- Endpoint para crear un nuevo servicio (gestión de servicios) ---
@@ -841,3 +861,182 @@ app.listen(PORT, async () => {
 
 // Ejecutar este script para ver si funciona
 console.log("Servidor iniciado correctamente")
+
+// Endpoint para obtener historiales médicos del propietario
+app.get("/api/propietario/:id/historiales", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const [historiales] = await pool.query(
+      "SELECT * FROM historiales_medicos WHERE cod_mas IN (SELECT cod_mas FROM mascotas WHERE id_pro = ?)",
+      [id]
+    );
+    res.json(historiales);
+  } catch (error) {
+    console.error("Error al obtener historiales médicos:", error);
+    res.status(500).json({ success: false, message: "Error en el servidor al obtener historiales médicos" });
+  }
+});
+
+// Endpoint para obtener veterinarios
+app.get("/api/veterinarios", async (req, res) => {
+  try {
+    const [veterinarios] = await pool.query(
+      "SELECT u.id_usuario, u.nombre, u.apellido, v.especialidad, v.horario FROM veterinarios v JOIN usuarios u ON v.id_vet = u.id_usuario"
+    );
+    res.json(veterinarios);
+  } catch (error) {
+    console.error("Error al obtener veterinarios:", error);
+    res.status(500).json({ success: false, message: "Error en el servidor al obtener veterinarios" });
+  }
+});
+
+// Endpoint para registrar una nueva mascota
+app.post("/api/mascotas", async (req, res) => {
+  let connection;
+  try {
+    console.log("📝 Iniciando registro de mascota");
+    const {
+      nom_mas,
+      especie,
+      raza,
+      edad,
+      genero,
+      peso,
+      color,
+      notas,
+      fecha_nacimiento,
+      vacunado,
+      esterilizado,
+      id_pro,
+      foto,
+    } = req.body;
+
+    // Validar campos requeridos
+    if (!nom_mas || !especie || !raza || !edad || !genero || !peso || !color || !id_pro) {
+      return res.status(400).json({
+        success: false,
+        message: "Faltan campos requeridos para el registro de la mascota",
+      });
+    }
+
+    connection = await pool.getConnection();
+    await connection.beginTransaction();
+
+    const insertMascotaQuery = `
+      INSERT INTO mascotas (
+        nom_mas, 
+        especie, 
+        raza, 
+        edad, 
+        genero, 
+        peso, 
+        color, 
+        notas, 
+        vacunado, 
+        esterilizado, 
+        activo, 
+        id_pro, 
+        foto
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+
+    const mascotaValues = [
+      nom_mas,
+      especie,
+      raza,
+      Number.parseFloat(edad),
+      genero,
+      Number.parseFloat(peso),
+      color,
+      notas || null,
+      vacunado || false,
+      esterilizado || false,
+      true, // activo por defecto
+      Number.parseInt(id_pro),
+      foto || "default.jpg",
+    ];
+
+    const [mascotaResult] = await connection.query(insertMascotaQuery, mascotaValues);
+    await connection.commit();
+
+    res.json({
+      success: true,
+      message: "Mascota registrada exitosamente",
+      mascota: {
+        id: mascotaResult.insertId,
+        nombre: nom_mas,
+        especie: especie,
+        raza: raza,
+      },
+    });
+  } catch (error) {
+    if (connection) await connection.rollback();
+    res.status(500).json({
+      success: false,
+      message: "Error en el servidor al registrar la mascota",
+      error: error.message,
+    });
+  } finally {
+    if (connection) connection.release();
+  }
+});
+
+// Endpoint para obtener todas las mascotas
+app.get("/api/mascotas", async (req, res) => {
+  try {
+    const [mascotas] = await pool.query(`
+      SELECT 
+        m.*,
+        CONCAT(u.nombre, ' ', u.apellido) as nombre_propietario
+      FROM mascotas m
+      LEFT JOIN propietarios p ON m.id_pro = p.id_pro
+      LEFT JOIN usuarios u ON p.id_pro = u.id_usuario
+      WHERE m.activo = true
+      ORDER BY m.cod_mas DESC
+    `);
+
+    res.json(mascotas);
+  } catch (error) {
+    console.error("Error al obtener mascotas:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error en el servidor al obtener mascotas",
+    });
+  }
+});
+
+// Endpoint para obtener una mascota específica
+app.get("/api/mascotas/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const [mascota] = await pool.query(
+      `
+      SELECT 
+        m.*,
+        CONCAT(u.nombre, ' ', u.apellido) as nombre_propietario,
+        u.telefono as telefono_propietario,
+        u.email as email_propietario
+      FROM mascotas m
+      LEFT JOIN propietarios p ON m.id_pro = p.id_pro
+      LEFT JOIN usuarios u ON p.id_pro = u.id_usuario
+      WHERE m.cod_mas = ? AND m.activo = true
+    `,
+      [id],
+    );
+
+    if (mascota.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Mascota no encontrada",
+      });
+    }
+
+    res.json(mascota[0]);
+  } catch (error) {
+    console.error("Error al obtener mascota:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error en el servidor al obtener la mascota",
+    });
+  }
+});

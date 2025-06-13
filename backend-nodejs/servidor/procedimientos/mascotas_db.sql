@@ -1,5 +1,8 @@
+<<<<<<< HEAD
 -- Active: 1749836616522@@127.0.0.1@3306@mascotas_db
 
+=======
+>>>>>>> 92676824a80b3e11dcdebbb065937ed776f7fe65
 DROP DATABASE mascotas_db;
 CREATE DATABASE IF NOT EXISTS mascotas_db;
 USE mascotas_db;
@@ -165,12 +168,14 @@ INSERT INTO historiales_medicos (fech_his, descrip_his, tratamiento, cod_mas) VA
 ('2024-04-05', 'Infección ocular', 'Colirio y seguimiento', 5);
 
 
-INSERT INTO servicios (nom_ser, descrip_ser, precio) VALUES
-('Consulta General', 'Revisión médica general de la mascota', 40000.00),
-('Vacunación', 'Aplicación de vacunas esenciales', 50000.00),
-('Desparasitación', 'Tratamiento contra parásitos', 35000.00),
-('Baño Médico', 'Baño con productos terapéuticos', 45000.00),
-('Cirugía', 'Intervenciones quirúrgicas menores', 150000.00);
+
+INSERT INTO servicios (nom_ser, descrip_ser, precio) VALUES 
+("Consulta veterinaria", "Revisión de cola a cabeza:", 87599.00),
+("Baño y peluquería", "Siempre limpio, nunca inlimpio: Servicio de baño y peluquería para todos los tamaños y todos los tipos de pelo. También puede realizarse un baño medicado de ser necesario para el paciente.", 45000.00),
+("SERVICIO VACUNACION", "¡Mascota vacunada vale por 2! La vacunación en cachorros ayuda a generar anticuerpos contra las principales enfermedades. Para las mascotas mayores de 1 año de edad se realiza un refuerzo anual. Incluye valoración inicial.", 27600.00),
+("Otro servicio", "Otros servicios veterinarios disponibles.", 35000.00),
+("Telemedicina (Virtual)", "Consulta veterinaria virtual desde la comodidad de tu hogar.", 50000.00);
+
 
 INSERT INTO citas (fech_cit, hora, cod_ser, id_vet, cod_mas, id_pro, estado, notas) VALUES
 ('2025-06-10', '09:00:00', 1, 2, 1, 1, 'CONFIRMADA', 'Chequeo inicial'),
@@ -179,4 +184,3 @@ INSERT INTO citas (fech_cit, hora, cod_ser, id_vet, cod_mas, id_pro, estado, not
 ('2025-06-18', '11:00:00', 3, 3, 4, 1, 'REALIZADA', ''),
 ('2025-06-20', '13:00:00', 4, 2, 5, 4, 'CANCELADA', 'No asistió');
 
-select * from usuarios;
