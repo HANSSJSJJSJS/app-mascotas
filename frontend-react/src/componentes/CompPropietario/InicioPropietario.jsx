@@ -271,9 +271,9 @@ export default function InicioPropietario() {
                     <div className="pet-header">
                       <div className="pet-image-container">
                         {mascota.foto ? (
-                          <img src={mascota.foto || "/placeholder.svg"} alt={mascota.nom_mas} className="pet-image" />
+                          <img src={mascota.foto} alt={mascota.nom_mas} className="pet-image" />
                         ) : (
-                          <PawPrint size={20} className="text-white" />
+                          <img src="/placeholder.svg" alt="Imagen predeterminada" className="pet-image" />
                         )}
                       </div>
                       <div className="pet-badges">

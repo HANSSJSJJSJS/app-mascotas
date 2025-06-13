@@ -1,13 +1,29 @@
+"use client"
+
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import axios from "axios"
-import Swal from "sweetalert2"
+import {
+  PawPrint,
+  Upload,
+  User,
+  Heart,
+  Calendar,
+  Weight,
+  Palette,
+  FileText,
+  ArrowLeft,
+  ArrowRight,
+  Check,
+} from "lucide-react"
 import "../../stylos/cssFormularios/MascotaForm.css"
 
 function MascotaForm() {
   const [currentStep, setCurrentStep] = useState(1)
   const totalSteps = 3
   const [imagePreview, setImagePreview] = useState(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
   const {
     register,
     handleSubmit,
@@ -21,43 +37,50 @@ function MascotaForm() {
   })
 
   const onSubmit = async (data) => {
+    setIsSubmitting(true)
     try {
-      // Verificar que todos los campos requeridos estén presentes
-      const camposRequeridos = ["nombre", "especie", "raza", "fechaNacimiento", "genero", "peso", "numeroIdPropietario"]
-
-      const camposFaltantes = camposRequeridos.filter((campo) => !data[campo])
-      if (camposFaltantes.length > 0) {
-        throw new Error(`Faltan campos requeridos: ${camposFaltantes.join(", ")}`)
+      // Obtener el usuario actual del localStorage
+      const usuarioActual = JSON.parse(localStorage.getItem("userData"))
+      if (!usuarioActual?.id_usuario) {
+        throw new Error("No se encontró información del usuario. Por favor, inicie sesión nuevamente.")
       }
 
-      // Verificar la conexión al servidor antes de enviar los datos
-      try {
-        const healthCheck = await axios.get("http://localhost:3001/health", {
-          timeout: 5000,
-        })
+      // Calcular la edad basada en la fecha de nacimiento
+      const fechaNacimiento = new Date(data.fechaNacimiento)
+      const hoy = new Date()
+      const edad = (hoy - fechaNacimiento) / (365.25 * 24 * 60 * 60 * 1000)
 
-        if (!healthCheck.data.database) {
-          throw new Error("La base de datos no está conectada")
-        }
-      } catch (healthError) {
-        throw new Error("No se pudo conectar con el servidor. Verifica que esté en ejecución.")
+      // Preparar los datos para enviar al servidor
+      const mascotaData = {
+        nom_mas: data.nombre,
+        especie: data.especie,
+        raza: data.raza,
+        edad: Number.parseFloat(edad.toFixed(2)),
+        genero: data.genero,
+        peso: Number.parseFloat(data.peso),
+        color: data.color,
+        notas: data.caracteristicas || data.observaciones || null,
+        fecha_nacimiento: data.fechaNacimiento,
+        vacunado: data.vacunado || false,
+        esterilizado: data.esterilizado || false,
+        id_pro: usuarioActual.id_usuario,
+        foto: data.imagen ? "default.jpg" : "default.jpg", // Por ahora usamos una imagen por defecto
       }
 
-      const response = await axios.post("http://localhost:3001/registro-mascota", data, {
+      console.log("Enviando datos de mascota:", mascotaData)
+
+      const response = await axios.post("http://localhost:3001/api/mascotas", mascotaData, {
         timeout: 10000,
       })
 
       if (response.data.success) {
-        Swal.fire({
-          icon: "success",
-          title: "Registro exitoso",
-          text: response.data.message,
-          confirmButtonColor: "#495a90",
-        }).then(() => {
-          reset()
-          setImagePreview(null)
-          setCurrentStep(1)
-        })
+        // Mostrar mensaje de éxito
+        alert("¡Mascota registrada exitosamente!")
+
+        // Resetear el formulario
+        reset()
+        setImagePreview(null)
+        setCurrentStep(1)
       } else {
         throw new Error(response.data.message || "Error en el registro")
       }
@@ -75,12 +98,9 @@ function MascotaForm() {
         console.error("Error en la petición:", errorMessage)
       }
 
-      Swal.fire({
-        icon: "error",
-        title: "Error en el registro",
-        text: errorMessage,
-        confirmButtonColor: "#d33",
-      })
+      alert(`Error: ${errorMessage}`)
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -88,73 +108,51 @@ function MascotaForm() {
   const nextStep = async () => {
     let fieldsToValidate = []
 
-    // Determinar qué campos validar según el paso actual
     switch (currentStep) {
       case 1:
         fieldsToValidate = ["nombre", "especie", "raza", "fechaNacimiento"]
         break
       case 2:
-        fieldsToValidate = ["genero", "peso", "color", "caracteristicas"]
+        fieldsToValidate = ["genero", "peso", "color"]
         break
       case 3:
-        fieldsToValidate = ["numeroIdPropietario"]
+        // En el paso 3 no hay campos obligatorios, solo opcionales
+        fieldsToValidate = []
         break
     }
 
-    // Validar los campos del paso actual
-    const isStepValid = await trigger(fieldsToValidate)
+    const isStepValid = fieldsToValidate.length === 0 || (await trigger(fieldsToValidate))
 
     if (isStepValid) {
       setCurrentStep((prev) => Math.min(prev + 1, totalSteps))
       window.scrollTo(0, 0)
     } else {
-      Swal.fire({
-        icon: "warning",
-        title: "Campos incompletos",
-        text: "Por favor, complete todos los campos requeridos correctamente.",
-        confirmButtonColor: "#495a90",
-      })
+      alert("Por favor, complete todos los campos requeridos correctamente.")
     }
   }
 
-  // Función para volver al paso anterior
   const prevStep = () => {
     setCurrentStep((prev) => Math.max(prev - 1, 1))
     window.scrollTo(0, 0)
   }
 
-  // Calcular el progreso para la barra
   const progress = (currentStep / totalSteps) * 100
 
-  // Función para determinar la clase de validación del campo
   const getFieldClass = (fieldName) => {
     if (!dirtyFields[fieldName]) return ""
     return errors[fieldName] ? "field-error" : "field-success"
   }
 
-  // Función para manejar el cambio de imagen
   const handleImageChange = (event) => {
     const file = event.target.files[0]
     if (file) {
-      // Validar tamaño del archivo (máximo 5MB)
       if (file.size > 5 * 1024 * 1024) {
-        Swal.fire({
-          icon: "error",
-          title: "Archivo muy grande",
-          text: "La imagen debe ser menor a 5MB",
-          confirmButtonColor: "#d33",
-        })
+        alert("La imagen debe ser menor a 5MB")
         return
       }
 
-      // Validar tipo de archivo
       if (!file.type.startsWith("image/")) {
-        Swal.fire({
-          icon: "error",
-          title: "Tipo de archivo inválido",
-          text: "Solo se permiten archivos de imagen",
-          confirmButtonColor: "#d33",
-        })
+        alert("Solo se permiten archivos de imagen")
         return
       }
 
@@ -170,24 +168,31 @@ function MascotaForm() {
   return (
     <div className="container">
       <div className="form-container">
-        <h2 className="form-title">Registro de Mascota</h2>
+        <div className="form-header">
+          <PawPrint className="form-icon" size={32} />
+          <h2 className="form-title">Registro de Mascota</h2>
+          <p className="form-subtitle">Completa la información de tu mascota en 3 sencillos pasos</p>
+        </div>
 
-        {/* Barra de progreso */}
+        {/* Barra de progreso horizontal */}
         <div className="progress-container">
           <div className="progress-bar" style={{ width: `${progress}%` }}></div>
           <div className="progress-steps">
-            {[...Array(totalSteps)].map((_, index) => (
+            {[
+              { number: 1, label: "Información Básica", icon: <PawPrint size={16} /> },
+              { number: 2, label: "Características", icon: <Heart size={16} /> },
+              { number: 3, label: "Información Adicional", icon: <FileText size={16} /> },
+            ].map((step, index) => (
               <div
                 key={index}
                 className={`progress-step ${currentStep > index ? "completed" : ""} ${
                   currentStep === index + 1 ? "active" : ""
                 }`}
               >
-                <div className="step-number">{index + 1}</div>
-                <div className="step-label">
-                  {index === 0 && "Información Básica"}
-                  {index === 1 && "Características"}
-                  {index === 2 && "Propietario"}
+                <div className="step-circle">{currentStep > index + 1 ? <Check size={16} /> : step.icon}</div>
+                <div className="step-info">
+                  <div className="step-number">Paso {step.number}</div>
+                  <div className="step-label">{step.label}</div>
                 </div>
               </div>
             ))}
@@ -198,118 +203,144 @@ function MascotaForm() {
           {/* Paso 1: Información Básica */}
           {currentStep === 1 && (
             <div className="form-section">
-              <h3 className="section-title">Información Básica</h3>
+              <div className="section-header">
+                <h3 className="section-title">
+                  <PawPrint size={24} />
+                  Información Básica
+                </h3>
+                <p className="section-description">Datos principales de tu mascota</p>
+              </div>
 
-              {/* Subida de imagen */}
-              <div className="image-upload-container">
-                <label htmlFor="imagen" className="image-upload-label">
-                  {imagePreview ? (
-                    <img src={imagePreview || "/placeholder.svg"} alt="Vista previa" className="image-preview" />
-                  ) : (
-                    <div className="upload-placeholder">
-                      <span className="upload-icon">📷</span>
-                      <span>Subir Imagen de la Mascota</span>
-                      <span className="upload-hint">Máximo 5MB - JPG, PNG, GIF</span>
+              <div className="form-content">
+                {/* Subida de imagen */}
+                <div className="image-section">
+                  <label htmlFor="imagen" className="image-upload-label">
+                    {imagePreview ? (
+                      <img src={imagePreview || "/placeholder.svg"} alt="Vista previa" className="image-preview" />
+                    ) : (
+                      <div className="upload-placeholder">
+                        <Upload size={32} />
+                        <span className="upload-text">Subir Foto</span>
+                        <span className="upload-hint">JPG, PNG (máx. 5MB)</span>
+                      </div>
+                    )}
+                  </label>
+                  <input
+                    type="file"
+                    id="imagen"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    className="image-upload-input"
+                  />
+                </div>
+
+                <div className="fields-section">
+                  {/* Primera fila - Nombre y Especie */}
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label htmlFor="nombre">
+                        <PawPrint size={16} />
+                        Nombre de la mascota *
+                      </label>
+                      <div className={`input-container ${getFieldClass("nombre")}`}>
+                        <input
+                          type="text"
+                          id="nombre"
+                          placeholder="Ej: Max, Luna, Coco..."
+                          {...register("nombre", {
+                            required: "El nombre es obligatorio",
+                            minLength: { value: 2, message: "Mínimo 2 caracteres" },
+                            maxLength: { value: 30, message: "Máximo 30 caracteres" },
+                            pattern: {
+                              value: /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/,
+                              message: "Solo letras y espacios",
+                            },
+                          })}
+                        />
+                        <span className="input-icon">
+                          {dirtyFields.nombre && !errors.nombre && "✓"}
+                          {errors.nombre && "!"}
+                        </span>
+                      </div>
+                      {errors.nombre && <p className="error-message">{errors.nombre.message}</p>}
                     </div>
-                  )}
-                </label>
-                <input
-                  type="file"
-                  id="imagen"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  className="image-upload-input"
-                />
-              </div>
 
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="nombre">Nombre de la mascota</label>
-                  <div className={`input-container ${getFieldClass("nombre")}`}>
-                    <input
-                      type="text"
-                      id="nombre"
-                      {...register("nombre", {
-                        required: "El nombre es obligatorio",
-                        minLength: { value: 2, message: "Mínimo 2 caracteres" },
-                        maxLength: { value: 30, message: "Máximo 30 caracteres" },
-                        pattern: {
-                          value: /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/,
-                          message: "Solo letras y espacios",
-                        },
-                      })}
-                    />
-                    <span className="input-icon">
-                      {dirtyFields.nombre && !errors.nombre && "✓"}
-                      {errors.nombre && "!"}
-                    </span>
+                    <div className="form-group">
+                      <label htmlFor="especie">
+                        <Heart size={16} />
+                        Especie *
+                      </label>
+                      <div className={`input-container ${getFieldClass("especie")}`}>
+                        <select id="especie" {...register("especie", { required: "La especie es obligatoria" })}>
+                          <option value="">Seleccione una especie</option>
+                          <option value="Perro">🐕 Perro</option>
+                          <option value="Gato">🐱 Gato</option>
+                          <option value="Ave">🐦 Ave</option>
+                          <option value="Conejo">🐰 Conejo</option>
+                          <option value="Hamster">🐹 Hamster</option>
+                          <option value="Otro">🐾 Otro</option>
+                        </select>
+                        <span className="input-icon">
+                          {dirtyFields.especie && !errors.especie && "✓"}
+                          {errors.especie && "!"}
+                        </span>
+                      </div>
+                      {errors.especie && <p className="error-message">{errors.especie.message}</p>}
+                    </div>
                   </div>
-                  {errors.nombre && <p className="error-message">{errors.nombre.message}</p>}
-                </div>
 
-                <div className="form-group">
-                  <label htmlFor="especie">Especie</label>
-                  <div className={`input-container ${getFieldClass("especie")}`}>
-                    <select id="especie" {...register("especie", { required: "La especie es obligatoria" })}>
-                      <option value="">Seleccione una especie</option>
-                      <option value="Perro">Perro</option>
-                      <option value="Gato">Gato</option>
-                      <option value="Ave">Ave</option>
-                      <option value="Conejo">Conejo</option>
-                      <option value="Hamster">Hamster</option>
-                      <option value="Otro">Otro</option>
-                    </select>
-                    <span className="input-icon">
-                      {dirtyFields.especie && !errors.especie && "✓"}
-                      {errors.especie && "!"}
-                    </span>
-                  </div>
-                  {errors.especie && <p className="error-message">{errors.especie.message}</p>}
-                </div>
-              </div>
+                  {/* Segunda fila - Raza y Fecha de nacimiento */}
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label htmlFor="raza">
+                        <FileText size={16} />
+                        Raza *
+                      </label>
+                      <div className={`input-container ${getFieldClass("raza")}`}>
+                        <input
+                          type="text"
+                          id="raza"
+                          placeholder="Ej: Labrador, Persa, Canario..."
+                          {...register("raza", {
+                            required: "La raza es obligatoria",
+                            minLength: { value: 2, message: "Mínimo 2 caracteres" },
+                            maxLength: { value: 50, message: "Máximo 50 caracteres" },
+                          })}
+                        />
+                        <span className="input-icon">
+                          {dirtyFields.raza && !errors.raza && "✓"}
+                          {errors.raza && "!"}
+                        </span>
+                      </div>
+                      {errors.raza && <p className="error-message">{errors.raza.message}</p>}
+                    </div>
 
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="raza">Raza</label>
-                  <div className={`input-container ${getFieldClass("raza")}`}>
-                    <input
-                      type="text"
-                      id="raza"
-                      {...register("raza", {
-                        required: "La raza es obligatoria",
-                        minLength: { value: 2, message: "Mínimo 2 caracteres" },
-                        maxLength: { value: 50, message: "Máximo 50 caracteres" },
-                      })}
-                    />
-                    <span className="input-icon">
-                      {dirtyFields.raza && !errors.raza && "✓"}
-                      {errors.raza && "!"}
-                    </span>
+                    <div className="form-group">
+                      <label htmlFor="fechaNacimiento">
+                        <Calendar size={16} />
+                        Fecha de nacimiento *
+                      </label>
+                      <div className={`input-container ${getFieldClass("fechaNacimiento")}`}>
+                        <input
+                          type="date"
+                          id="fechaNacimiento"
+                          {...register("fechaNacimiento", {
+                            required: "La fecha de nacimiento es obligatoria",
+                            validate: (value) => {
+                              const fechaNacimiento = new Date(value)
+                              const hoy = new Date()
+                              return fechaNacimiento <= hoy || "La fecha no puede ser futura"
+                            },
+                          })}
+                        />
+                        <span className="input-icon">
+                          {dirtyFields.fechaNacimiento && !errors.fechaNacimiento && "✓"}
+                          {errors.fechaNacimiento && "!"}
+                        </span>
+                      </div>
+                      {errors.fechaNacimiento && <p className="error-message">{errors.fechaNacimiento.message}</p>}
+                    </div>
                   </div>
-                  {errors.raza && <p className="error-message">{errors.raza.message}</p>}
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="fechaNacimiento">Fecha de nacimiento</label>
-                  <div className={`input-container ${getFieldClass("fechaNacimiento")}`}>
-                    <input
-                      type="date"
-                      id="fechaNacimiento"
-                      {...register("fechaNacimiento", {
-                        required: "La fecha de nacimiento es obligatoria",
-                        validate: (value) => {
-                          const fechaNacimiento = new Date(value)
-                          const hoy = new Date()
-                          return fechaNacimiento <= hoy || "La fecha no puede ser futura"
-                        },
-                      })}
-                    />
-                    <span className="input-icon">
-                      {dirtyFields.fechaNacimiento && !errors.fechaNacimiento && "✓"}
-                      {errors.fechaNacimiento && "!"}
-                    </span>
-                  </div>
-                  {errors.fechaNacimiento && <p className="error-message">{errors.fechaNacimiento.message}</p>}
                 </div>
               </div>
             </div>
@@ -318,145 +349,199 @@ function MascotaForm() {
           {/* Paso 2: Características */}
           {currentStep === 2 && (
             <div className="form-section">
-              <h3 className="section-title">Características Físicas</h3>
-
-              <div className="form-row">
-                <div className="form-group">
-                  <label>Género</label>
-                  <div className="radio-group">
-                    <div className="radio-option">
-                      <input
-                        value="Hembra"
-                        type="radio"
-                        id="hembra"
-                        {...register("genero", { required: "El género es obligatorio" })}
-                      />
-                      <label htmlFor="hembra">Hembra</label>
-                    </div>
-                    <div className="radio-option">
-                      <input
-                        value="Macho"
-                        type="radio"
-                        id="macho"
-                        {...register("genero", { required: "El género es obligatorio" })}
-                      />
-                      <label htmlFor="macho">Macho</label>
-                    </div>
-                  </div>
-                  {errors.genero && <p className="error-message">{errors.genero.message}</p>}
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="peso">Peso (kg)</label>
-                  <div className={`input-container ${getFieldClass("peso")}`}>
-                    <input
-                      type="number"
-                      id="peso"
-                      step="0.1"
-                      min="0.1"
-                      max="200"
-                      {...register("peso", {
-                        required: "El peso es obligatorio",
-                        min: { value: 0.1, message: "El peso debe ser mayor a 0" },
-                        max: { value: 200, message: "El peso debe ser menor a 200kg" },
-                      })}
-                    />
-                    <span className="input-icon">
-                      {dirtyFields.peso && !errors.peso && "✓"}
-                      {errors.peso && "!"}
-                    </span>
-                  </div>
-                  {errors.peso && <p className="error-message">{errors.peso.message}</p>}
-                </div>
+              <div className="section-header">
+                <h3 className="section-title">
+                  <Heart size={24} />
+                  Características Físicas
+                </h3>
+                <p className="section-description">Detalles físicos de tu mascota</p>
               </div>
 
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="color">Color</label>
-                  <div className={`input-container ${getFieldClass("color")}`}>
-                    <input
-                      type="text"
-                      id="color"
-                      {...register("color", {
-                        required: "El color es obligatorio",
-                        minLength: { value: 3, message: "Mínimo 3 caracteres" },
-                        maxLength: { value: 30, message: "Máximo 30 caracteres" },
-                      })}
-                    />
-                    <span className="input-icon">
-                      {dirtyFields.color && !errors.color && "✓"}
-                      {errors.color && "!"}
-                    </span>
+              <div className="form-content">
+                {/* Primera fila - Género y Peso */}
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>
+                      <User size={16} />
+                      Género *
+                    </label>
+                    <div className="radio-group-horizontal">
+                      <div className="radio-option">
+                        <input
+                          value="Hembra"
+                          type="radio"
+                          id="hembra"
+                          {...register("genero", { required: "El género es obligatorio" })}
+                        />
+                        <label htmlFor="hembra">
+                          <span className="radio-icon">♀</span>
+                          Hembra
+                        </label>
+                      </div>
+                      <div className="radio-option">
+                        <input
+                          value="Macho"
+                          type="radio"
+                          id="macho"
+                          {...register("genero", { required: "El género es obligatorio" })}
+                        />
+                        <label htmlFor="macho">
+                          <span className="radio-icon">♂</span>
+                          Macho
+                        </label>
+                      </div>
+                    </div>
+                    {errors.genero && <p className="error-message">{errors.genero.message}</p>}
                   </div>
-                  {errors.color && <p className="error-message">{errors.color.message}</p>}
-                </div>
-              </div>
 
-              <div className="form-group">
-                <label htmlFor="caracteristicas">Características especiales</label>
-                <div className={`input-container ${getFieldClass("caracteristicas")}`}>
-                  <textarea
-                    id="caracteristicas"
-                    rows="4"
-                    placeholder="Describe características especiales, marcas distintivas, comportamiento, etc."
-                    {...register("caracteristicas", {
-                      maxLength: { value: 500, message: "Máximo 500 caracteres" },
-                    })}
-                  />
-                  <span className="input-icon">
-                    {dirtyFields.caracteristicas && !errors.caracteristicas && "✓"}
-                    {errors.caracteristicas && "!"}
-                  </span>
+                  <div className="form-group">
+                    <label htmlFor="peso">
+                      <Weight size={16} />
+                      Peso (kg) *
+                    </label>
+                    <div className={`input-container ${getFieldClass("peso")}`}>
+                      <input
+                        type="number"
+                        id="peso"
+                        step="0.1"
+                        min="0.1"
+                        max="200"
+                        placeholder="Ej: 5.5"
+                        {...register("peso", {
+                          required: "El peso es obligatorio",
+                          min: { value: 0.1, message: "El peso debe ser mayor a 0" },
+                          max: { value: 200, message: "El peso debe ser menor a 200kg" },
+                        })}
+                      />
+                      <span className="input-icon">
+                        {dirtyFields.peso && !errors.peso && "✓"}
+                        {errors.peso && "!"}
+                      </span>
+                    </div>
+                    {errors.peso && <p className="error-message">{errors.peso.message}</p>}
+                  </div>
                 </div>
-                {errors.caracteristicas && <p className="error-message">{errors.caracteristicas.message}</p>}
+
+                {/* Segunda fila - Color */}
+                <div className="form-row">
+                  <div className="form-group full-width">
+                    <label htmlFor="color">
+                      <Palette size={16} />
+                      Color *
+                    </label>
+                    <div className={`input-container ${getFieldClass("color")}`}>
+                      <input
+                        type="text"
+                        id="color"
+                        placeholder="Ej: Marrón, Negro, Blanco con manchas..."
+                        {...register("color", {
+                          required: "El color es obligatorio",
+                          minLength: { value: 3, message: "Mínimo 3 caracteres" },
+                          maxLength: { value: 30, message: "Máximo 30 caracteres" },
+                        })}
+                      />
+                      <span className="input-icon">
+                        {dirtyFields.color && !errors.color && "✓"}
+                        {errors.color && "!"}
+                      </span>
+                    </div>
+                    {errors.color && <p className="error-message">{errors.color.message}</p>}
+                  </div>
+                </div>
+
+                {/* Tercera fila - Características especiales */}
+                <div className="form-row">
+                  <div className="form-group full-width">
+                    <label htmlFor="caracteristicas">
+                      <FileText size={16} />
+                      Características especiales
+                    </label>
+                    <div className={`input-container ${getFieldClass("caracteristicas")}`}>
+                      <textarea
+                        id="caracteristicas"
+                        rows="3"
+                        placeholder="Describe características especiales, marcas distintivas, comportamiento, etc."
+                        {...register("caracteristicas", {
+                          maxLength: { value: 500, message: "Máximo 500 caracteres" },
+                        })}
+                      />
+                      <span className="input-icon">
+                        {dirtyFields.caracteristicas && !errors.caracteristicas && "✓"}
+                        {errors.caracteristicas && "!"}
+                      </span>
+                    </div>
+                    {errors.caracteristicas && <p className="error-message">{errors.caracteristicas.message}</p>}
+                  </div>
+                </div>
               </div>
             </div>
           )}
 
-          {/* Paso 3: Información del Propietario */}
+          {/* Paso 3: Información Adicional */}
           {currentStep === 3 && (
             <div className="form-section">
-              <h3 className="section-title">Información del Propietario</h3>
-
-              <div className="form-group">
-                <label htmlFor="numeroIdPropietario">Número de documento del propietario</label>
-                <div className={`input-container ${getFieldClass("numeroIdPropietario")}`}>
-                  <input
-                    type="text"
-                    id="numeroIdPropietario"
-                    {...register("numeroIdPropietario", {
-                      required: "El número de documento del propietario es obligatorio",
-                      pattern: { value: /^[0-9]+$/, message: "Solo números" },
-                      maxLength: { value: 10, message: "Máximo 10 dígitos" },
-                      minLength: { value: 6, message: "Mínimo 6 dígitos" },
-                    })}
-                  />
-                  <span className="input-icon">
-                    {dirtyFields.numeroIdPropietario && !errors.numeroIdPropietario && "✓"}
-                    {errors.numeroIdPropietario && "!"}
-                  </span>
-                </div>
-                {errors.numeroIdPropietario && <p className="error-message">{errors.numeroIdPropietario.message}</p>}
-                <p className="field-hint">Este documento debe estar registrado previamente en el sistema</p>
+              <div className="section-header">
+                <h3 className="section-title">
+                  <FileText size={24} />
+                  Información Adicional
+                </h3>
+                <p className="section-description">Información médica y observaciones</p>
               </div>
 
-              <div className="form-group">
-                <label htmlFor="observaciones">Observaciones médicas</label>
-                <div className={`input-container ${getFieldClass("observaciones")}`}>
-                  <textarea
-                    id="observaciones"
-                    rows="4"
-                    placeholder="Alergias, medicamentos, condiciones médicas especiales, etc."
-                    {...register("observaciones", {
-                      maxLength: { value: 1000, message: "Máximo 1000 caracteres" },
-                    })}
-                  />
-                  <span className="input-icon">
-                    {dirtyFields.observaciones && !errors.observaciones && "✓"}
-                    {errors.observaciones && "!"}
-                  </span>
+              <div className="form-content">
+                {/* Primera fila - Estado de salud */}
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Estado de vacunación</label>
+                    <div className="checkbox-group">
+                      <div className="checkbox-option">
+                        <input type="checkbox" id="vacunado" {...register("vacunado")} />
+                        <label htmlFor="vacunado">
+                          <span className="checkbox-icon">💉</span>
+                          Vacunado
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="form-group">
+                    <label>Estado reproductivo</label>
+                    <div className="checkbox-group">
+                      <div className="checkbox-option">
+                        <input type="checkbox" id="esterilizado" {...register("esterilizado")} />
+                        <label htmlFor="esterilizado">
+                          <span className="checkbox-icon">✂️</span>
+                          Esterilizado
+                        </label>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                {errors.observaciones && <p className="error-message">{errors.observaciones.message}</p>}
+
+                {/* Segunda fila - Observaciones médicas */}
+                <div className="form-row">
+                  <div className="form-group full-width">
+                    <label htmlFor="observaciones">
+                      <FileText size={16} />
+                      Observaciones médicas
+                    </label>
+                    <div className={`input-container ${getFieldClass("observaciones")}`}>
+                      <textarea
+                        id="observaciones"
+                        rows="4"
+                        placeholder="Alergias, medicamentos, condiciones médicas especiales, etc."
+                        {...register("observaciones", {
+                          maxLength: { value: 1000, message: "Máximo 1000 caracteres" },
+                        })}
+                      />
+                      <span className="input-icon">
+                        {dirtyFields.observaciones && !errors.observaciones && "✓"}
+                        {errors.observaciones && "!"}
+                      </span>
+                    </div>
+                    {errors.observaciones && <p className="error-message">{errors.observaciones.message}</p>}
+                  </div>
+                </div>
               </div>
             </div>
           )}
@@ -465,17 +550,31 @@ function MascotaForm() {
           <div className="navigation-buttons">
             {currentStep > 1 && (
               <button type="button" className="nav-button back-button" onClick={prevStep}>
-                Volver
+                <ArrowLeft size={16} />
+                Anterior
               </button>
             )}
+
+            <div className="nav-spacer"></div>
 
             {currentStep < totalSteps ? (
               <button type="button" className="nav-button next-button" onClick={nextStep}>
                 Siguiente
+                <ArrowRight size={16} />
               </button>
             ) : (
-              <button type="submit" className="submit-button">
-                Registrar Mascota
+              <button type="submit" className="submit-button" disabled={isSubmitting}>
+                {isSubmitting ? (
+                  <>
+                    <div className="spinner"></div>
+                    Registrando...
+                  </>
+                ) : (
+                  <>
+                    <Check size={16} />
+                    Registrar Mascota
+                  </>
+                )}
               </button>
             )}
           </div>
