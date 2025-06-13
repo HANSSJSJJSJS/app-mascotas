@@ -1,6 +1,6 @@
 "use client"
 import { Link, useLocation } from "react-router-dom"
-import { Home, Users, Shield, Briefcase, PawPrint } from "lucide-react"
+import { Home, Users, Shield, Briefcase, PawPrint, Calendar } from "lucide-react"
 import "../../stylos/cssAdmin/Sidebar.css"
 
 const Sidebar = ({ collapsed, isMobile, mobileOpen, closeMobileMenu }) => {
@@ -28,6 +28,12 @@ const Sidebar = ({ collapsed, isMobile, mobileOpen, closeMobileMenu }) => {
       title: "Gestión de Roles",
       icon: <Shield size={20} />,
       path: "/admin/gestion-roles",
+    },
+    {
+      id: "citas",
+      title: "Gestión de Citas",
+      icon: <Calendar size={20} />,
+      path: "/admin/gestion-citas",
     },
     {
       id: "servicios",

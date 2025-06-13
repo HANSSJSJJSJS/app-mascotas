@@ -25,8 +25,10 @@ const DashboardHome = React.lazy(() => import("../componentes/CompAdmin/Dashboar
 const GestionUsuarios = React.lazy(() => import("../componentes/CompAdmin/GestionUsuarios"))
 const GestionRoles = React.lazy(() => import("../componentes/CompAdmin/GestionRoles"))
 const GestionServicios = React.lazy(() => import("../componentes/CompAdmin/GestionServicios"))
+const GestionCitas = React.lazy(() => import("../componentes/CompAdmin/GestionCitas"));
 
 const HisCli = React.lazy(() => import("../componentes/CompAdmin/HisCli"));
+
 
 
 // Componentes propietario
@@ -43,8 +45,8 @@ const InicioVet = React.lazy(() => import("../componentes/CompVet/InicioVet"));
 const HistorialClinico = React.lazy(() => import("../componentes/CompVet/HistorialClinico"));
 const Consultas = React.lazy(() => import("../componentes/CompVet/Consultas"));
 const NuevaConsulta = React.lazy(() => import("../componentes/CompVet/NuevaConsulta"));
-const Mascotas = React.lazy(() => import("../componentes/CompVet/Mascotas"));
-const GestionCitas = React.lazy(() => import("../componentes/CompVet/GestionCitas"));
+const MascotasVet = React.lazy(() => import("../componentes/CompVet/Mascotas"));
+const GestionCitasVet = React.lazy(() => import("../componentes/CompVet/GestionCitas"));
 
 const MainRoutes = () => {
   // ✅ USAR EL HOOK PARA CERRAR SESIÓN AL RETROCEDER
@@ -101,6 +103,7 @@ const MainRoutes = () => {
         <Route path="usuarios" element={<GestionUsuarios />} />
         <Route path="roles" element={<GestionRoles />} />
         <Route path="servicios" element={<GestionServicios />} />
+        <Route path="gestion-citas" element={<GestionCitas />} />
         <Route path="gestion-usuarios" element={<GestionUsuarios />} />
         <Route path="gestion-roles" element={<GestionRoles />} />
         <Route path="gestion-servicios" element={<GestionServicios />} /> 
@@ -125,8 +128,8 @@ const MainRoutes = () => {
           <Route path="nueva-consulta" element={<NuevaConsulta />} />
           <Route path="consultas" element={<Consultas />} />
           <Route path="historial-clinico" element={<HistorialClinico />} />
-          <Route path="mascotas" element={<Mascotas />} />
-          <Route path="gestion-citas" element={<GestionCitas />} />
+          <Route path="mascotas" element={<MascotasVet />} />
+          <Route path="gestion-citas" element={<GestionCitasVet />} />
         </Route>
         {/* </Route> */}
 

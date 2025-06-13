@@ -268,31 +268,6 @@
   background: linear-gradient(135deg, var(--green) 0%, var(--green-light) 100%);
 }
 
-.stat-trend {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  border-radius: 12px;
-  font-size: 0.75rem;
-  font-weight: 600;
-}
-
-.stat-card.blue .stat-trend {
-  background: var(--blue-lighter);
-  color: var(--blue-dark);
-}
-
-.stat-card.purple .stat-trend {
-  background: var(--purple-lighter);
-  color: var(--purple-dark);
-}
-
-.stat-card.green .stat-trend {
-  background: var(--green-lighter);
-  color: var(--green-dark);
-}
-
 .stat-content h3 {
   font-size: 2.5rem;
   font-weight: 700;
@@ -335,6 +310,7 @@
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 24px;
+  margin-top: 50px;
 }
 
 .card-title h2 {

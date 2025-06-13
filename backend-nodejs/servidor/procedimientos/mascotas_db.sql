@@ -1,4 +1,4 @@
-
+-- Active: 1749836616522@@127.0.0.1@3306@mascotas_db
 
 DROP DATABASE mascotas_db;
 CREATE DATABASE IF NOT EXISTS mascotas_db;

@@ -20,7 +20,7 @@ const GestionRoles = () => {
     setLoading(true)
     setError(null)
     try {
-      const response = await axios.get("http://localhost:5000/api/admin/gestion-roles")
+      const response = await axios.get("http://localhost:3001/api/admin/gestion-roles")
       setRoles(Array.isArray(response.data) ? response.data : [])
     } catch (err) {
       console.error("Error al cargar los roles:", err)

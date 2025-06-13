@@ -19,7 +19,7 @@ const DashboardHome = () => {
     const fetchStats = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('http://localhost:5000/api/admin/stats');
+        const response = await axios.get('http://localhost:3001/api/admin/stats');
         setStats(response.data);
         setError('');
       } catch (err) {
@@ -39,7 +39,6 @@ const DashboardHome = () => {
       value: stats.users,
       icon: <Users size={24} />,
       color: "blue",
-      trend: "+12%",
       subtitle: "vs mes anterior",
     },
     {
@@ -47,7 +46,6 @@ const DashboardHome = () => {
       value: stats.services,
       icon: <Briefcase size={24} />,
       color: "purple",
-      trend: "+5%",
       subtitle: "nuevos servicios",
     },
     {
@@ -55,13 +53,10 @@ const DashboardHome = () => {
       value: stats.roles,
       icon: <Shield size={24} />,
       color: "green",
-      trend: "0%",
       subtitle: "sin cambios",
     },
   ];
 
-  // --- AQUÍ LA CORRECCIÓN ---
-  // Actualizamos las rutas para que coincidan con MainRoutes.jsx
   const quickActions = [
     {
       title: "Registrar Usuario",
@@ -82,7 +77,7 @@ const DashboardHome = () => {
       description: "Nuevo servicio veterinario",
       icon: <Plus size={20} />,
       color: "purple",
-      href: "/admin/gestion-servicios?tab=registrar", // Suponiendo que tienes una lógica similar para servicios
+      href: "/admin/gestion-servicios?tab=registrar", 
     },
   ];
 
@@ -114,10 +109,7 @@ const DashboardHome = () => {
             <div key={index} className={`stat-card ${stat.color}`}>
               <div className="stat-header">
                 <div className="stat-icon">{stat.icon}</div>
-                <div className="stat-trend">
-                  <TrendingUp size={14} />
-                  <span>{stat.trend}</span>
-                </div>
+                
               </div>
               <div className="stat-content">
                 <h3>{stat.value}</h3>

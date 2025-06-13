@@ -34,7 +34,7 @@ const GestionServicios = () => {
         setLoading(true);
         setError(null);
         try {
-            const response = await axios.get('http://localhost:5000/api/admin/servicios');
+            const response = await axios.get('http://localhost:3001/api/admin/servicios');
             const serviciosAdaptados = response.data.map(s => ({
                 ...s,
                 codigo: s.cod_ser,
@@ -110,8 +110,8 @@ const GestionServicios = () => {
         };
 
         const url = isEditing
-            ? `http://localhost:5000/api/admin/servicios/${editingId}`
-            : 'http://localhost:5000/api/admin/servicios';
+            ? `http://localhost:3001/api/admin/servicios/${editingId}`
+            : 'http://localhost:3001/api/admin/servicios';
         const method = isEditing ? 'put' : 'post';
         const actionText = isEditing ? 'actualizado' : 'creado';
 
@@ -177,7 +177,7 @@ const GestionServicios = () => {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
-                    await axios.delete(`http://localhost:5000/api/admin/servicios/${servicio.codigo}`);
+                    await axios.delete(`http://localhost:3001/api/admin/servicios/${servicio.codigo}`);
                     Swal.fire({
                         customClass: {
                             popup: 'swal-custom-success',

@@ -24,7 +24,7 @@ const UsuariosPorRol = ({ rol, onVolver }) => {
             setLoading(true);
             setError(null);
             try {
-                const response = await axios.get('http://localhost:5000/api/admin/users');
+                const response = await axios.get('http://localhost:3001/api/admin/users');
                 if (Array.isArray(response.data)) {
                     const usuariosFiltrados = response.data.filter(user => user.id_rol === rol.id);
                     setUsuarios(usuariosFiltrados);

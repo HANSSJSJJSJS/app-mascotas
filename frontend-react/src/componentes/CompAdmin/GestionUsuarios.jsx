@@ -54,9 +54,9 @@ const GestionUsuarios = () => {
     setError(null);
     try {
       const [usersResponse, rolesResponse, personTypesResponse] = await Promise.all([
-        axios.get('http://localhost:5000/api/admin/users'),
-        axios.get('http://localhost:5000/api/admin/roles'),
-        axios.get('http://localhost:5000/api/admin/person-types')
+        axios.get('http://localhost:3001/api/admin/users'),
+        axios.get('http://localhost:3001/api/admin/roles'),
+        axios.get('http://localhost:3001/api/admin/person-types')
       ]);
 
       setUsuarios(Array.isArray(usersResponse.data) ? usersResponse.data : []);
@@ -211,7 +211,7 @@ const GestionUsuarios = () => {
     
     try {
       if (isEditing) {
-        await axios.put(`http://localhost:5000/api/admin/users/${editingUserId}`, payload);
+        await axios.put(`http://localhost:3001/api/admin/users/${editingUserId}`, payload);
         Swal.fire({ 
             title: '¡Usuario Actualizado!', 
             text: 'Los datos se han guardado correctamente.', 
@@ -219,7 +219,7 @@ const GestionUsuarios = () => {
             customClass: { /* ... */ }
         });
       } else {
-        await axios.post('http://localhost:5000/api/admin/users', payload);
+        await axios.post('http://localhost:3001/api/admin/users', payload);
         Swal.fire({ 
             title: '¡Registro Exitoso!', 
             text: 'El nuevo usuario ha sido creado.', 
@@ -299,7 +299,7 @@ const GestionUsuarios = () => {
     
         if (result.isConfirmed) {
             try {
-                await axios.delete(`http://localhost:5000/api/admin/users/${userId}`);
+                await axios.delete(`http://localhost:3001/api/admin/users/${userId}`);
                 await Swal.fire({
                     title: '¡Eliminado!',
                     text: `El usuario ${userName} ha sido eliminado.`,
