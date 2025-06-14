@@ -1,9 +1,6 @@
-<<<<<<< HEAD
--- Active: 1749836616522@@127.0.0.1@3306@mascotas_db
 
-=======
->>>>>>> 92676824a80b3e11dcdebbb065937ed776f7fe65
 DROP DATABASE mascotas_db;
+
 CREATE DATABASE IF NOT EXISTS mascotas_db;
 USE mascotas_db;
 

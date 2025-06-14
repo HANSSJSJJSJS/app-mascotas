@@ -2,6 +2,9 @@ const express = require("express")
 const mysql = require("mysql2/promise")
 const cors = require("cors")
 const bcrypt = require("bcrypt")
+const multer = require("multer")
+const path = require("path")
+const fs = require("fs")
 
 const app = express()
 app.use(express.json())
@@ -21,6 +24,63 @@ const dbConfig = {
 
 // Crear pool de conexiones
 const pool = mysql.createPool(dbConfig)
+
+// Configuración de Multer para la carga de imágenes en carpeta /uploads/mascotas
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const uploadPath = path.join(__dirname, "../uploads/mascotas")
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true })
+    }
+    cb(null, uploadPath)
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9)
+    cb(null, "mascota-" + uniqueSuffix + path.extname(file.originalname))
+  },
+})
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith("image/")) {
+    cb(null, true)
+  } else {
+    cb(new Error("Solo se permiten archivos de imagen"), false)
+  }
+}
+const upload = multer({
+  storage: storage,
+  fileFilter: fileFilter,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+})
+
+// Middleware para servir imágenes
+app.use("/uploads", express.static(path.join(__dirname, "../uploads")))
+
+// Endpoint para subir imagen individual (opcional, útil para pruebas)
+app.post("/api/upload-imagen", upload.single("imagen"), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: "No se recibió ningún archivo" })
+    }
+    res.json({
+      success: true,
+      message: "Imagen subida exitosamente",
+      filename: req.file.filename,
+      url: `/uploads/mascotas/${req.file.filename}`,
+    })
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Error en el servidor al subir la imagen", error: error.message })
+  }
+})
+
+// Endpoint para servir imagen individual
+app.get("/api/imagen/:filename", (req, res) => {
+  const { filename } = req.params
+  const imagePath = path.join(__dirname, "../uploads/mascotas", filename)
+  if (!fs.existsSync(imagePath)) {
+    return res.status(404).json({ success: false, message: "Imagen no encontrada" })
+  }
+  res.sendFile(imagePath)
+})
 
 // Endpoint para obtener datos del usuario (agregar a tu servidor)
 app.get("/api/usuario/:id", async (req, res) => {
@@ -891,7 +951,7 @@ app.get("/api/veterinarios", async (req, res) => {
 });
 
 // Endpoint para registrar una nueva mascota
-app.post("/api/mascotas", async (req, res) => {
+app.post("/api/mascotas", upload.single("foto"), async (req, res) => {
   let connection;
   try {
     console.log("📝 Iniciando registro de mascota");
@@ -918,6 +978,9 @@ app.post("/api/mascotas", async (req, res) => {
         message: "Faltan campos requeridos para el registro de la mascota",
       });
     }
+
+    // Obtener nombre de la imagen subida
+    const fotoMascota = req.file ? req.file.filename : "default.jpg";
 
     connection = await pool.getConnection();
     await connection.beginTransaction();
@@ -953,7 +1016,7 @@ app.post("/api/mascotas", async (req, res) => {
       esterilizado || false,
       true, // activo por defecto
       Number.parseInt(id_pro),
-      foto || "default.jpg",
+      fotoMascota,
     ];
 
     const [mascotaResult] = await connection.query(insertMascotaQuery, mascotaValues);
@@ -1039,4 +1102,32 @@ app.get("/api/mascotas/:id", async (req, res) => {
       message: "Error en el servidor al obtener la mascota",
     });
   }
+});
+
+// Middleware de manejo de errores para multer
+app.use((error, req, res, next) => {
+  if (error instanceof multer.MulterError) {
+    if (error.code === "LIMIT_FILE_SIZE") {
+      return res.status(400).json({
+        success: false,
+        message: "El archivo es demasiado grande. Máximo 5MB permitido.",
+      });
+    }
+    if (error.code === "LIMIT_UNEXPECTED_FILE") {
+      return res.status(400).json({
+        success: false,
+        message: "Campo de archivo inesperado.",
+      });
+    }
+  }
+  if (error.message === "Solo se permiten archivos de imagen") {
+    return res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+  res.status(500).json({
+    success: false,
+    message: "Error interno del servidor",
+  });
 });

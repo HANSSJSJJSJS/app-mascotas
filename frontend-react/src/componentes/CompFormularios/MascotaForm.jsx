@@ -39,38 +39,30 @@ function MascotaForm() {
   const onSubmit = async (data) => {
     setIsSubmitting(true)
     try {
-      // Obtener el usuario actual del localStorage
       const usuarioActual = JSON.parse(localStorage.getItem("userData"))
-      if (!usuarioActual?.id_usuario) {
-        throw new Error("No se encontró información del usuario. Por favor, inicie sesión nuevamente.")
-      }
+      if (!usuarioActual?.id_usuario) throw new Error("No se encontró información del usuario.")
 
+      const formData = new FormData()
+      formData.append("nom_mas", data.nombre)
+      formData.append("especie", data.especie)
+      formData.append("raza", data.raza)
       // Calcular la edad basada en la fecha de nacimiento
       const fechaNacimiento = new Date(data.fechaNacimiento)
       const hoy = new Date()
       const edad = (hoy - fechaNacimiento) / (365.25 * 24 * 60 * 60 * 1000)
+      formData.append("edad", Number.parseFloat(edad.toFixed(2)))
+      formData.append("genero", data.genero)
+      formData.append("peso", Number.parseFloat(data.peso))
+      formData.append("color", data.color)
+      formData.append("notas", data.caracteristicas || data.observaciones || null)
+      formData.append("fecha_nacimiento", data.fechaNacimiento)
+      formData.append("vacunado", data.vacunado || false)
+      formData.append("esterilizado", data.esterilizado || false)
+      formData.append("id_pro", usuarioActual.id_usuario)
+      formData.append("foto", data.imagen) // El campo debe llamarse "foto"
 
-      // Preparar los datos para enviar al servidor
-      const mascotaData = {
-        nom_mas: data.nombre,
-        especie: data.especie,
-        raza: data.raza,
-        edad: Number.parseFloat(edad.toFixed(2)),
-        genero: data.genero,
-        peso: Number.parseFloat(data.peso),
-        color: data.color,
-        notas: data.caracteristicas || data.observaciones || null,
-        fecha_nacimiento: data.fechaNacimiento,
-        vacunado: data.vacunado || false,
-        esterilizado: data.esterilizado || false,
-        id_pro: usuarioActual.id_usuario,
-        foto: data.imagen ? "default.jpg" : "default.jpg", // Por ahora usamos una imagen por defecto
-      }
-
-      console.log("Enviando datos de mascota:", mascotaData)
-
-      const response = await axios.post("http://localhost:3001/api/mascotas", mascotaData, {
-        timeout: 10000,
+      const response = await axios.post("http://localhost:3001/api/mascotas", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
       })
 
       if (response.data.success) {
@@ -116,8 +108,8 @@ function MascotaForm() {
         fieldsToValidate = ["genero", "peso", "color"]
         break
       case 3:
-        // En el paso 3 no hay campos obligatorios, solo opcionales
-        fieldsToValidate = []
+        // Ahora el paso 3 es obligatorio: observaciones debe ser requerido
+        fieldsToValidate = ["observaciones"]
         break
     }
 
@@ -163,6 +155,10 @@ function MascotaForm() {
       }
       reader.readAsDataURL(file)
     }
+  }
+
+  function getImageUrl(foto) {
+    return foto ? `http://localhost:3001/uploads/mascotas/${foto}` : "/placeholder.svg";
   }
 
   return (
@@ -523,7 +519,7 @@ function MascotaForm() {
                   <div className="form-group full-width">
                     <label htmlFor="observaciones">
                       <FileText size={16} />
-                      Observaciones médicas
+                      Observaciones médicas *
                     </label>
                     <div className={`input-container ${getFieldClass("observaciones")}`}>
                       <textarea
@@ -531,6 +527,7 @@ function MascotaForm() {
                         rows="4"
                         placeholder="Alergias, medicamentos, condiciones médicas especiales, etc."
                         {...register("observaciones", {
+                          required: "Las observaciones son obligatorias",
                           maxLength: { value: 1000, message: "Máximo 1000 caracteres" },
                         })}
                       />

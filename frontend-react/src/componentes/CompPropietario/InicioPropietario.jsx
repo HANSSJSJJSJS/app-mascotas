@@ -159,6 +159,12 @@ export default function InicioPropietario() {
     })
     .slice(0, 3)
 
+  // Utilidad para obtener la URL de la imagen de la mascota
+  function getImageUrl(foto) {
+    if (!foto || foto === "default.jpg") return "/placeholder.svg";
+    return `http://localhost:3001/uploads/mascotas/${foto}`;
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <main className="flex-1 max-w-7xl mx-auto px-4 py-6">
@@ -270,11 +276,14 @@ export default function InicioPropietario() {
                   <div key={index} className="pet-card">
                     <div className="pet-header">
                       <div className="pet-image-container">
-                        {mascota.foto ? (
-                          <img src={mascota.foto} alt={mascota.nom_mas} className="pet-image" />
-                        ) : (
-                          <img src="/placeholder.svg" alt="Imagen predeterminada" className="pet-image" />
-                        )}
+                        <img
+                          src={getImageUrl(mascota.foto)}
+                          alt={mascota.nom_mas}
+                          className="pet-image"
+                          onError={(e) => {
+                            e.target.src = "/placeholder.svg?height=200&width=200";
+                          }}
+                        />
                       </div>
                       <div className="pet-badges">
                         {mascota.vacunado && (
