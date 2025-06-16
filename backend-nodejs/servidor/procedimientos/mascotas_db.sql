@@ -115,6 +115,17 @@ CREATE TABLE citas (
   FOREIGN KEY (cod_mas) REFERENCES mascotas(cod_mas)
 );
 
+CREATE TABLE IF NOT EXISTS citas_audit (
+    audit_id INT AUTO_INCREMENT PRIMARY KEY,
+    cod_cit INT,
+    accion VARCHAR(10) NOT NULL, -- 'INSERT', 'UPDATE', 'DELETE'
+    campo_modificado VARCHAR(100),
+    valor_anterior TEXT,
+    valor_nuevo TEXT,
+    usuario_db VARCHAR(100), -- El usuario de la base de datos que realizó la acción
+    fecha_modificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 
 INSERT INTO tipo_persona (id_tipo, tipo) VALUES
 (1, 'Invitado/Tutor'),
@@ -181,3 +192,6 @@ INSERT INTO citas (fech_cit, hora, cod_ser, id_vet, cod_mas, id_pro, estado, not
 ('2025-06-18', '11:00:00', 3, 3, 4, 1, 'REALIZADA', ''),
 ('2025-06-20', '13:00:00', 4, 2, 5, 4, 'CANCELADA', 'No asistió');
 
+
+select * from citas_audit;
+select * from citas;

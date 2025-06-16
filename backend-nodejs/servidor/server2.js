@@ -898,6 +898,133 @@ app.delete("/api/admin/servicios/:id", async (req, res) => {
 // ==           FIN DE RUTAS DEL PANEL DE ADMINISTRADOR           ==
 // =================================================================
 
+// =================================================================
+// ==                    GESTIÓN DE CITAS                         ==
+// =================================================================
+
+// --- Endpoint para OBTENER TODAS las citas (para la tabla principal)---
+app.get("/api/admin/citas", async (req, res) => {
+  try {
+    const [citas] = await pool.query("CALL Admin_MostrarTodasCitas()");
+    // Los resultados de un CALL a un procedimiento que hace SELECT vienen en un array anidado.
+    res.json(citas[0]); 
+  } catch (error) {
+    console.error("Error en GET /api/admin/citas:", error);
+    res.status(500).json({ message: "Error al obtener las citas." });
+  }
+});
+
+// --- Endpoint para OBTENER DATOS para los formularios (selects) ---
+app.get("/api/admin/citas-data", async (req, res) => {
+  try {
+    // Este procedimiento devuelve 4 resultados (uno por cada SELECT)
+    const [results] = await pool.query("CALL Admin_ObtenerDatosFormularioCitas()");
+    
+    // Asignamos cada resultado a su respectiva variable
+    const [propietarios, mascotas, veterinarios, servicios] = results;
+    
+    res.json({ propietarios, mascotas, veterinarios, servicios });
+  } catch (error) {
+    console.error("Error en GET /api/admin/citas-data:", error);
+    res.status(500).json({ message: "Error al obtener datos para formularios de citas." });
+  }
+});
+
+// --- Endpoint para CREAR una nueva cita ---
+app.post("/api/admin/citas", async (req, res) => {
+  try {
+    const { fech_cit, hora, cod_ser, id_vet, cod_mas, id_pro, estado, notas } = req.body;
+    
+    if (!fech_cit || !hora || !cod_ser || !id_vet || !cod_mas || !id_pro || !estado) {
+      return res.status(400).json({ message: "Todos los campos son obligatorios, excepto las notas." });
+    }
+    
+    const [result] = await pool.query(
+      "CALL Admin_InsertarCita(?, ?, ?, ?, ?, ?, ?, ?)", 
+      [fech_cit, hora, cod_ser, id_vet, cod_mas, id_pro, estado, notas || null]
+    );
+    
+    // El ID del nuevo registro también viene en el resultado del CALL
+    const insertedId = result[0][0].cod_cit;
+    res.status(201).json({ success: true, message: 'Cita creada exitosamente', insertedId });
+
+  } catch (error) {
+    console.error("Error en POST /api/admin/citas:", error);
+    res.status(500).json({ message: "Error en el servidor al crear la cita." });
+  }
+});
+
+// --- Endpoint para ACTUALIZAR una cita ---
+app.put("/api/admin/citas/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { fech_cit, hora, cod_ser, id_vet, cod_mas, id_pro, estado, notas } = req.body;
+
+    if (!fech_cit || !hora || !cod_ser || !id_vet || !cod_mas || !id_pro || !estado) {
+      return res.status(400).json({ message: "Todos los campos son obligatorios, excepto las notas." });
+    }
+
+    const [result] = await pool.query(
+      "CALL Admin_ActualizarCita(?, ?, ?, ?, ?, ?, ?, ?, ?)", 
+      [id, fech_cit, hora, cod_ser, id_vet, cod_mas, id_pro, estado, notas || null]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Cita no encontrada." });
+    }
+    res.json({ success: true, message: 'Cita actualizada exitosamente' });
+
+  } catch (error) {
+    console.error(`Error en PUT /api/admin/citas/${req.params.id}:`, error);
+    res.status(500).json({ message: "Error en el servidor al actualizar la cita." });
+  }
+});
+
+// --- Endpoint para ELIMINAR una cita ---
+app.delete("/api/admin/citas/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const [result] = await pool.query("CALL Admin_EliminarCita(?)", [id]);
+    
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Cita no encontrada." });
+    }
+    res.json({ success: true, message: "Cita eliminada exitosamente" });
+
+  } catch (error) {
+    console.error(`Error en DELETE /api/admin/citas/${req.params.id}:`, error);
+    res.status(500).json({ message: "Error al eliminar la cita." });
+  }
+});
+
+// --- Endpoint para OBTENER las estadísticas de citas (KPIs) --- 
+app.get("/api/admin/citas/stats", async (req, res) => {
+  try {
+    const [stats] = await pool.query("CALL Admin_ObtenerEstadisticasCitas()");
+    // El resultado es una sola fila con todas las estadísticas
+    res.json(stats[0][0]);
+  } catch (error) {
+    console.error("Error en GET /api/admin/citas/stats:", error);
+    res.status(500).json({ message: "Error al obtener estadísticas de citas." });
+  }
+
+// --- Endpoint para OBTENER la auditoría de una cita específica ---
+app.get("/api/admin/citas/audit/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const [auditLog] = await pool.query("CALL Admin_MostrarAuditoriaCita(?)", [id]);
+    res.json(auditLog[0]);
+  } catch (error) {
+    console.error(`Error en GET /api/admin/citas/audit/${req.params.id}:`, error);
+    res.status(500).json({ message: "Error al obtener el historial de auditoría." });
+  }
+});
+});
+
+// =================================================================
+// ==           FIN DE RUTAS DE GESTION DE CITAS           ==
+// =================================================================
+
 
 // Ruta para verificar el estado del servidor y la base de datos
 app.get("/health", async (req, res) => {
