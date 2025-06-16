@@ -168,7 +168,7 @@ export default function InicioPropietario() {
   return (
     <div className="min-h-screen bg-gray-50">
       <main className="flex-1 max-w-7xl mx-auto px-4 py-6">
-        <div className="page-content">
+        <div className="container-index">
           {/* Encabezado con información del usuario */}
           <div className="welcome-header">
             <div>
@@ -239,10 +239,6 @@ export default function InicioPropietario() {
                 <Plus size={18} />
                 <span>Nueva mascota</span>
               </button>
-              <button className="quick-action-button" onClick={() => navigate('/PanelPropietario/historia-clinica')}>
-                <Clipboard size={18} />
-                <span>Historial médico</span>
-              </button>
               <button className="quick-action-button" onClick={() => navigate('/PanelPropietario/ActualizarPropietario')}>
                 <User size={18} />
                 <span>Mi perfil</span>
@@ -304,7 +300,7 @@ export default function InicioPropietario() {
                         {mascota.especie} - {mascota.raza}
                       </p>
                       <p className="pet-age">
-                        {mascota.edad} años • {mascota.genero}
+                        {Math.floor(mascota.edad)} años • {mascota.genero}
                       </p>
                       <p className="pet-weight">{mascota.peso} kg</p>
                       {mascota.ultima_visita && (
@@ -314,10 +310,9 @@ export default function InicioPropietario() {
                       )}
                     </div>
                     <div className="pet-actions">
-                      <button className="pet-action-button primary">
-                        Ver ficha <ChevronRight size={16} />
+                      <button className="pet-action-button secondary" onClick={() => navigate('/PanelPropietario/agendar-cita')}>
+                        Agendar cita
                       </button>
-                      <button className="pet-action-button secondary">Agendar cita</button>
                     </div>
                   </div>
                 ))
@@ -407,44 +402,6 @@ export default function InicioPropietario() {
             </div>
           </div>
 
-          {/* Historial médico reciente */}
-          <div className="dashboard-section">
-            <div className="section-header">
-              <h3 className="section-title">Historial médico reciente</h3>
-              <button className="view-all-button">
-                Ver todo <ChevronRight size={16} />
-              </button>
-            </div>
-            <div className="medical-history-container">
-              {ultimosHistoriales.length > 0 ? (
-                ultimosHistoriales.map((historial, index) => (
-                  <div className="medical-record-card" key={index}>
-                    <div className="medical-record-icon">
-                      <Clipboard size={18} />
-                    </div>
-                    <div className="medical-record-details">
-                      <div className="medical-record-header">
-                        <h3>{historial.mascota_nombre || "Consulta médica"}</h3>
-                        <span className="medical-record-date">{new Date(historial.fech_his).toLocaleDateString()}</span>
-                      </div>
-                      <p className="medical-record-description">{historial.descrip_his || "Sin descripción"}</p>
-                      {historial.tratamiento && (
-                        <div className="medical-record-treatment">
-                          <strong>Tratamiento:</strong> {historial.tratamiento}
-                        </div>
-                      )}
-                    </div>
-                    <button className="medical-record-button">
-                      Ver detalles <ChevronRight size={16} />
-                    </button>
-                  </div>
-                ))
-              ) : (
-                <p className="no-results">No hay historiales médicos recientes.</p>
-              )}
-            </div>
-          </div>
-
           {/* Servicios disponibles */}
           <div className="dashboard-section">
             <div className="section-header">
@@ -456,7 +413,9 @@ export default function InicioPropietario() {
                   <div className="service-card" key={index}>
                     <h4 className="service-name">{servicio.nom_ser}</h4>
                     <p className="service-description">{servicio.descrip_ser || "Sin descripción"}</p>
-                    <div className="service-price">${Number(servicio.precio).toFixed(2)}</div> {/* Convertir precio a número */}
+                    <div className="service-price">
+                      ${new Intl.NumberFormat("es-CO", { style: "decimal" }).format(servicio.precio)}
+                    </div>
                     <button className="service-button">Agendar</button>
                   </div>
                 ))

@@ -28,7 +28,7 @@
 body {
   font-family: "Inter", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   color: var(--color2);
-  background: linear-gradient(135deg, var(--color-light-bg) 0%, var(--color5) 100%);
+  background-color: var(--color-light-accent) !important;
   margin: 0;
   padding: 0;
 }
