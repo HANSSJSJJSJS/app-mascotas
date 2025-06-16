@@ -1,10 +1,9 @@
 /* Variables de colores */
 :root {
-  --color1: #000000;
-  --color2: #1a2540;
-  --color3: #495a90;
-  --color4: #8196eb;
-  --color5: #c2d8ff;
+  --color-primary: #495a90;
+  --color-secondary: #8196eb;
+  --color-background: #f5f7ff;
+  --color-text: #1a2540;
 
   /* Colores adicionales para estados */
   --color-success: #4caf50;
@@ -17,17 +16,26 @@
   --color-light-card: #ffffff;
   --color-light-accent: #e8efff;
 }
-
 body {
   font-family: Arial, sans-serif;
-  color: var(--color2);
-  background-color: var(--color-light-bg) !important;
+  color: var(--color-text);
+  background-color: var(--color-light-accent) !important;
+  margin: 0;
+  padding: 0;
 }
+
+
 
 /* Estilos generales */
 .page-content {
   padding: 1.5rem;
   margin: 0 auto;
+}
+
+.container-index {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
 }
 
 /* Encabezado de bienvenida */
@@ -77,6 +85,9 @@ body {
   padding: 1.25rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .section-title {
@@ -167,9 +178,10 @@ body {
 
 /* Acciones rápidas */
 .quick-actions {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
+  display: flex;
+  justify-content: center; /* Centrar horizontalmente */
+  align-items: center; /* Centrar verticalmente */
+  gap: 2rem; /* Espaciado entre botones */
 }
 
 @media (min-width: 768px) {
@@ -192,6 +204,7 @@ body {
   font-weight: 500;
   cursor: pointer;
   transition: background-color 0.2s, transform 0.2s;
+  width: 20vh; /* Ancho fijo para los botones */
 }
 
 .quick-action-button:hover {
@@ -659,7 +672,7 @@ body {
 /* Servicios */
 .services-container {
   display: grid;
-  grid-template-columns: repeat(1, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 1rem;
 }
 
