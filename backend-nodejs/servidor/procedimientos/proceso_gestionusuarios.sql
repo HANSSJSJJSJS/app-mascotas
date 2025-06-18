@@ -1,6 +1,3 @@
-
-
--- PASO 2: Crear el procedimiento para LEER USUARIOS con los nombres de columna 100% CORRECTOS.
 DELIMITER $$
 CREATE PROCEDURE `sp_leer_usuarios`()
 BEGIN

@@ -5,9 +5,109 @@ import { useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
-import { Briefcase, Plus, Edit, Trash2, Eye, DollarSign, FileText, CheckCircle, Search } from "lucide-react";
+import { Briefcase, Plus, Edit, Trash2, Eye, DollarSign, FileText, CheckCircle, Search, XCircle } from "lucide-react";
 import "../../stylos/cssAdmin/GestionServicios.css";
 import Loading from '../index/Loading';
+
+// --- MODAL DE AUDITORÍA ---
+const AuditLogModal = ({ isOpen, onClose, logData, serviceName, serviceCode }) => {
+    if (!isOpen) return null;
+
+    const getActionInfo = (action) => {
+        switch (action) {
+            case 'INSERT':
+                return { text: 'Servicio Creado', color: '#22c55e', icon: <Plus size={16} /> };
+            case 'UPDATE':
+                return { text: 'Campo Actualizado', color: 'var(--color-light-blue)', icon: <Edit size={14} /> };
+            case 'DELETE':
+                return { text: 'Servicio Eliminado', color: '#ef4444', icon: <Trash2 size={14} /> };
+            default:
+                return { text: action, color: 'var(--color-medium-blue)', icon: <FileText size={14} /> };
+        }
+    };
+
+    const formatFieldName = (field) => {
+        const names = {
+            nom_ser: 'Nombre del Servicio',
+            descrip_ser: 'Descripción',
+            precio: 'Precio'
+        };
+        return names[field] || field;
+    };
+
+    return (
+        <div className="modal-backdrop" onClick={onClose}>
+            <div className="modal-container audit-modal" onClick={(e) => e.stopPropagation()}>
+                <div className="modal-header audit-header-services">
+                    <div className="modal-header-content">
+                        <div className="modal-icon-wrapper">
+                            <FileText size={24} />
+                        </div>
+                        <div className="modal-title-section">
+                            <h3 className="modal-main-title">Historial del Servicio</h3>
+                            <p className="modal-subtitle">"{serviceName}" (Cód: #{serviceCode})</p>
+                        </div>
+                    </div>
+                    <button onClick={onClose} className="modal-close-btn">
+                        <XCircle size={22} />
+                    </button>
+                </div>
+                <div className="modal-body">
+                    {logData && logData.length > 0 ? (
+                        <div className="audit-timeline">
+                            {logData.map((log) => {
+                                const actionInfo = getActionInfo(log.accion);
+                                return (
+                                    <div key={log.audit_id} className="audit-timeline-item">
+                                        <div className="audit-icon-container" style={{ backgroundColor: actionInfo.color }}>
+                                            {actionInfo.icon}
+                                        </div>
+                                        <div className="audit-content">
+                                            <div className="audit-header">
+                                                <span className="audit-action-text">{formatFieldName(log.campo_modificado)}</span>
+                                                <span className="audit-meta">
+                                                    {new Date(log.fecha_modificacion).toLocaleString('es-CO', { dateStyle: 'long', timeStyle: 'short' })}
+                                                </span>
+                                            </div>
+                                            <div className="audit-details">
+                                                {log.accion === 'UPDATE' && (
+                                                    <>
+                                                        <div className="audit-change-row">
+                                                            <span className="audit-label">Antes:</span>
+                                                            <span className="audit-value-old">{log.valor_anterior || 'N/A'}</span>
+                                                        </div>
+                                                        <div className="audit-change-row">
+                                                            <span className="audit-label">Después:</span>
+                                                            <span className="audit-value-new">{log.valor_nuevo || 'N/A'}</span>
+                                                        </div>
+                                                    </>
+                                                )}
+                                                {(log.accion === 'INSERT' || log.accion === 'DELETE') && (
+                                                    <div className="audit-change-row">
+                                                        <span className="audit-label">{log.accion === 'INSERT' ? 'Valor:' : 'Eliminado:'}</span>
+                                                        <span className="audit-full-value">{log.valor_nuevo || log.valor_anterior}</span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <div className="audit-user">
+                                                Modificado por: <strong>{log.usuario_db}</strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    ) : (
+                        <div className="no-audit-data">
+                            <FileText size={48} />
+                            <p>No se encontraron registros de cambios para este servicio.</p>
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+};
 
 const GestionServicios = () => {
     const [searchParams] = useSearchParams();
@@ -29,6 +129,11 @@ const GestionServicios = () => {
     const [formData, setFormData] = useState(initialFormData);
     const [isEditing, setIsEditing] = useState(false);
     const [editingId, setEditingId] = useState(null);
+
+    // Estados para el modal de auditoría
+    const [isAuditModalOpen, setIsAuditModalOpen] = useState(false);
+    const [auditLog, setAuditLog] = useState([]);
+    const [currentServiceForAudit, setCurrentServiceForAudit] = useState(null);
 
     const fetchServicios = async () => {
         setLoading(true);
@@ -211,6 +316,22 @@ const GestionServicios = () => {
             }
         });
     };
+    
+    const handleViewAudit = async (servicio) => {
+        try {
+            const response = await axios.get(`http://localhost:3001/api/admin/servicios/audit/${servicio.codigo}`);
+            setAuditLog(response.data);
+            setCurrentServiceForAudit(servicio);
+            setIsAuditModalOpen(true);
+        } catch (error) {
+            console.error("Error fetching service audit log:", error);
+            Swal.fire({
+                title: 'Error',
+                text: 'No se pudo cargar el historial de cambios.',
+                icon: 'error',
+            });
+        }
+    };
 
     const filteredServicios = servicios.filter((servicio) => {
         const busqueda = searchTerm.toLowerCase();
@@ -232,6 +353,14 @@ const GestionServicios = () => {
     
     return (
         <div className="gestion-servicios">
+             <AuditLogModal
+                isOpen={isAuditModalOpen}
+                onClose={() => setIsAuditModalOpen(false)}
+                logData={auditLog}
+                serviceName={currentServiceForAudit?.nombre}
+                serviceCode={currentServiceForAudit?.codigo}
+            />
+
             <div className="page-header-compact">
                 <div className="header-content-centered">
                     <div className="title-container">
@@ -309,8 +438,9 @@ const GestionServicios = () => {
                                         <div className="detail-item"><FileText size={16} className="detail-icon" /> <span className="detail-text">Código: #{servicio.codigo}</span></div>
                                     </div>
                                     <div className="servicio-actions">
+                                        <button className="btn-log" onClick={() => handleViewAudit(servicio)}><FileText size={16} /> Historial</button>
                                         <button className="btn-edit" onClick={() => handleEditClick(servicio)}><Edit size={16} /> Editar</button>
-                                        <button className="btn-delete" onClick={() => handleDeleteClick(servicio)}><Trash2 size={16} color="#495a90"/> Eliminar</button>
+                                        <button className="btn-delete" onClick={() => handleDeleteClick(servicio)}><Trash2 size={16} color="#495a90"/>Eliminar</button>
                                     </div>
                                 </div>
                             ))}

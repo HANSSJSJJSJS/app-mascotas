@@ -460,7 +460,7 @@
   display: flex;
   gap: 8px;
 }
-
+.btn-log,
 .btn-edit,
 .btn-delete {
   flex: 1;
@@ -499,6 +499,16 @@
   transform: translateY(-2px);
 }
 
+.btn-log{
+  background-color: #cfd0d1;
+  color:#474a4c;
+  border: 1px solid rgba(158, 157, 157, 0.2);
+}
+
+.btn-log:hover{
+  background: rgba(169, 182, 235, 0.2);
+  transform: translateY(-2px);
+}
 /* Formulario de Registro */
 .registrar-servicio {
   background: white;
@@ -928,4 +938,271 @@
 
 .swal-custom-cancel-button:focus {
   box-shadow: 0 0 0 4px rgba(226, 232, 240, 0.5) !important;
+}
+
+/* ---
+=================================================================
+==     ESTILOS FINALES Y CORREGIDOS PARA MODAL DE AUDITORÍA    ==
+=================================================================
+--- */
+
+/* --- Colores Base (ya los debes tener, es referencia) --- */
+:root {
+  --color-black: #000000;
+  --color-dark-blue: #1a2540;
+  --color-medium-blue: #495a90;
+  --color-light-blue: #8196eb;
+  --color-very-light-blue: #c2d8ff;
+  --bg-primary: #f8fafc;
+  --bg-white: #ffffff;
+  --text-primary: #1a2540;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
+  --border-color: #e2e8f0;
+}
+
+/* --- Fondo oscuro para el modal --- */
+.modal-backdrop {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(26, 37, 64, 0.7); /* color2 con opacidad */
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* --- Contenedor principal del modal --- */
+.modal-container.audit-modal {
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-primary);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+}
+
+/* --- Encabezado del modal (TÍTULO BONITO) --- */
+.modal-header.audit-header-services {
+  background: linear-gradient(135deg, var(--color-light-blue) 0%, var(--color-medium-blue) 100%);
+  color: white;
+  padding: 1.25rem 2rem;
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.modal-icon-wrapper.audit-icon-services {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.modal-title-section {
+  text-align: left;
+}
+
+.modal-main-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 0.25rem 0;
+  color: white; /* Asegura que el título sea visible */
+}
+
+.modal-subtitle {
+  font-size: 0.9rem;
+  color: var(--color-very-light-blue);
+  opacity: 0.9;
+  margin: 0;
+}
+
+/* --- BOTÓN DE CIERRE "X" --- */
+.modal-close-btn {
+  background: transparent;
+  border: none;
+  color: white;
+  opacity: 0.7;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0.5rem;
+  border-radius: 50%;
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+}
+.modal-close-btn:hover {
+  opacity: 1;
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: rotate(90deg);
+}
+
+/* --- Cuerpo del modal y línea de tiempo --- */
+.audit-modal .modal-body {
+  padding: 1.5rem;
+  overflow-y: auto;
+}
+
+.audit-timeline {
+  position: relative;
+  padding-left: 20px;
+}
+
+.audit-timeline-item {
+  position: relative;
+  padding: 0.25rem 0 1.5rem 40px;
+  border-left: 2px solid var(--border-color);
+}
+.audit-timeline-item:last-child {
+  border-left-color: transparent;
+}
+
+.audit-icon-container {
+  position: absolute;
+  left: -21px;
+  top: 0.25rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  border: 4px solid var(--bg-primary);
+}
+
+.audit-content {
+  background-color: var(--bg-white);
+  border-radius: 8px;
+  padding: 1rem;
+  border: 1px solid var(--border-color);
+}
+
+.audit-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.audit-action-text {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-decoration: none !important; /* !Importante: Quita la línea de subrayado */
+}
+
+.audit-meta {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.audit-details {
+  font-size: 0.9rem;
+}
+
+.audit-field strong {
+  color: var(--text-primary);
+}
+
+.audit-diff {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  background-color: var(--border-light);
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  margin-top: 0.25rem;
+}
+
+.audit-diff .audit-value-old {
+  color: #ef4444;
+  text-decoration: line-through;
+}
+
+.audit-diff .audit-arrow {
+  color: var(--text-muted);
+  font-weight: bold;
+  margin: 0 0.5rem;
+}
+
+.audit-diff .audit-value-new {
+  color: #22c55e;
+  font-weight: bold;
+}
+
+.audit-full-value {
+  background-color: var(--border-light);
+  padding: 0.75rem;
+  border-radius: 6px;
+  font-family: monospace;
+  white-space: pre-wrap;
+  word-break: break-all;
+  color: var(--text-secondary);
+}
+
+.audit-user {
+  margin-top: 1rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-align: right;
+  padding-top: 0.5rem;
+  border-top: 1px dotted var(--border-color);
+}
+
+.audit-user strong {
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+/* ---
+============================================================
+==     ESTILOS ADICIONALES PARA DETALLES DE AUDITORÍA     ==
+============================================================
+--- */
+
+.audit-change-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.25rem 0;
+}
+
+.audit-label {
+  font-weight: 600;
+  color: var(--color-medium-blue);
+  min-width: 60px;
+}
+
+.audit-value-old {
+  color: #292929;
+  text-decoration: line-through;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.audit-value-new {
+  color: #1b1b1b;
+  font-weight: bold;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.audit-full-value {
+  font-family: 'Courier New', Courier, monospace;
+  color: var(--text-secondary);
 }
