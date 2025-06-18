@@ -14,9 +14,9 @@ app.use(cors())
 const dbConfig = {
   host: "localhost",
   user: "root",
-  password: "12345678",
+  password: "",
   database: "mascotas_db",
-  port: 3309,
+  port: 3301,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
@@ -1098,6 +1098,47 @@ app.get("/api/veterinarios", async (req, res) => {
   }
 });
 
+// GET /api/mascotas - Obtener todas las mascotas con información del propietario
+app.get("/api/mascotas", async (req, res) => {
+  try {
+    const query = `
+      SELECT 
+        m.cod_mas,
+        m.nom_mas,
+        m.especie,
+        m.raza,
+        m.edad,
+        m.genero,
+        m.peso,
+        m.color,
+        m.notas,
+        m.ultima_visita,
+        m.proxima_cita,
+        m.vacunado,
+        m.esterilizado,
+        m.activo,
+        m.id_pro,
+        m.foto,
+        u.nombre as nombre_propietario,
+        u.apellido as apellido_propietario,
+        u.telefono,
+        u.email,
+        u.direccion
+      FROM mascotas m
+      LEFT JOIN propietarios p ON m.id_pro = p.id_pro
+      LEFT JOIN usuarios u ON p.id_pro = u.id_usuario
+      WHERE m.activo = 1
+      ORDER BY m.nom_mas
+    `
+
+    const [rows] = await db.execute(query)
+    res.json(rows)
+  } catch (error) {
+    console.error("Error al obtener mascotas:", error)
+    res.status(500).json({ error: "Error interno del servidor" })
+  }
+})
+
 // Endpoint para registrar una nueva mascota
 app.post("/api/mascotas", upload.single("foto"), async (req, res) => {
   let connection;
@@ -1112,7 +1153,6 @@ app.post("/api/mascotas", upload.single("foto"), async (req, res) => {
       peso,
       color,
       notas,
-      fecha_nacimiento,
       vacunado,
       esterilizado,
       id_pro,
@@ -1192,29 +1232,6 @@ app.post("/api/mascotas", upload.single("foto"), async (req, res) => {
   }
 });
 
-// Endpoint para obtener todas las mascotas
-app.get("/api/mascotas", async (req, res) => {
-  try {
-    const [mascotas] = await pool.query(`
-      SELECT 
-        m.*,
-        CONCAT(u.nombre, ' ', u.apellido) as nombre_propietario
-      FROM mascotas m
-      LEFT JOIN propietarios p ON m.id_pro = p.id_pro
-      LEFT JOIN usuarios u ON p.id_pro = u.id_usuario
-      WHERE m.activo = true
-      ORDER BY m.cod_mas DESC
-    `);
-
-    res.json(mascotas);
-  } catch (error) {
-    console.error("Error al obtener mascotas:", error);
-    res.status(500).json({
-      success: false,
-      message: "Error en el servidor al obtener mascotas",
-    });
-  }
-});
 
 // Endpoint para obtener una mascota específica
 app.get("/api/mascotas/:id", async (req, res) => {
@@ -1251,117 +1268,6 @@ app.get("/api/mascotas/:id", async (req, res) => {
     });
   }
 });
-
-// Middleware de manejo de errores para multer
-app.use((error, req, res, next) => {
-  if (error instanceof multer.MulterError) {
-    if (error.code === "LIMIT_FILE_SIZE") {
-      return res.status(400).json({
-        success: false,
-        message: "El archivo es demasiado grande. Máximo 5MB permitido.",
-      });
-    }
-    if (error.code === "LIMIT_UNEXPECTED_FILE") {
-      return res.status(400).json({
-        success: false,
-        message: "Campo de archivo inesperado.",
-      });
-    }
-  }
-  if (error.message === "Solo se permiten archivos de imagen") {
-    return res.status(400).json({
-      success: false,
-      message: error.message,
-    });
-  }
-  res.status(500).json({
-    success: false,
-    message: "Error interno del servidor",
-  });
-});
-
-// =================================================================
-// ==                         CRUD MASCOTAS                       ==
-// =================================================================
-
-// GET /api/mascotas - Obtener todas las mascotas con información del propietario
-app.get("/api/mascotas", async (req, res) => {
-  try {
-    const query = `
-      SELECT 
-        m.cod_mas,
-        m.nom_mas,
-        m.especie,
-        m.raza,
-        m.edad,
-        m.genero,
-        m.peso,
-        m.color,
-        m.notas,
-        m.ultima_visita,
-        m.proxima_cita,
-        m.vacunado,
-        m.esterilizado,
-        m.activo,
-        m.id_pro,
-        m.foto,
-        u.nombre as nombre_propietario,
-        u.apellido as apellido_propietario,
-        u.telefono,
-        u.email,
-        u.direccion
-      FROM mascotas m
-      LEFT JOIN propietarios p ON m.id_pro = p.id_pro
-      LEFT JOIN usuarios u ON p.id_pro = u.id_usuario
-      WHERE m.activo = 1
-      ORDER BY m.nom_mas
-    `
-
-    const [rows] = await db.execute(query)
-    res.json(rows)
-  } catch (error) {
-    console.error("Error al obtener mascotas:", error)
-    res.status(500).json({ error: "Error interno del servidor" })
-  }
-})
-
-// POST /api/mascotas - Crear nueva mascota
-app.post("/api/mascotas", async (req, res) => {
-  try {
-    const { nom_mas, especie, raza, edad, genero, peso, color, notas, vacunado, esterilizado, id_pro, foto } = req.body
-
-    const query = `
-      INSERT INTO mascotas (
-        nom_mas, especie, raza, edad, genero, peso, color,
-        notas, vacunado, esterilizado, activo, id_pro, foto
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?)
-    `
-
-    const [result] = await db.execute(query, [
-      nom_mas,
-      especie,
-      raza,
-      edad,
-      genero,
-      peso,
-      color,
-      notas,
-      vacunado,
-      esterilizado,
-      id_pro,
-      foto || "",
-    ])
-
-    res.status(201).json({
-      success: true,
-      cod_mas: result.insertId,
-      message: "Mascota creada exitosamente",
-    })
-  } catch (error) {
-    console.error("Error al crear mascota:", error)
-    res.status(500).json({ error: "Error interno del servidor" })
-  }
-})
 
 // PUT /api/mascotas/:id - Actualizar mascota
 app.put("/api/mascotas/:id", async (req, res) => {
@@ -1440,3 +1346,33 @@ app.patch("/api/mascotas/:id/estado", async (req, res) => {
     res.status(500).json({ error: "Error interno del servidor" })
   }
 })
+
+// Middleware de manejo de errores para multer
+app.use((error, req, res, next) => {
+  if (error instanceof multer.MulterError) {
+    if (error.code === "LIMIT_FILE_SIZE") {
+      return res.status(400).json({
+        success: false,
+        message: "El archivo es demasiado grande. Máximo 5MB permitido.",
+      });
+    }
+    if (error.code === "LIMIT_UNEXPECTED_FILE") {
+      return res.status(400).json({
+        success: false,
+        message: "Campo de archivo inesperado.",
+      });
+    }
+  }
+  if (error.message === "Solo se permiten archivos de imagen") {
+    return res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+  res.status(500).json({
+    success: false,
+    message: "Error interno del servidor",
+  });
+});
+
+

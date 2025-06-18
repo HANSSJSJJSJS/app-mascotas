@@ -41,13 +41,12 @@ function MascotaForm() {
       formData.append("peso", Number.parseFloat(data.peso))
       formData.append("color", data.color)
       formData.append("notas", data.caracteristicas || data.observaciones || null)
-      formData.append("fecha_nacimiento", data.fechaNacimiento)
       formData.append("vacunado", data.vacunado || false)
       formData.append("esterilizado", data.esterilizado || false)
       formData.append("id_pro", usuarioActual.id_usuario)
       formData.append("foto", data.imagen) // El campo debe llamarse "foto"
 
-      const response = await axios.post("http://localhost:3000/api/mascotas", formData, {
+      const response = await axios.post("http://localhost:3001/api/mascotas", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       })
 

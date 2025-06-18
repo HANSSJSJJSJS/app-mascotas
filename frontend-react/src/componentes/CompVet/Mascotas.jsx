@@ -13,7 +13,7 @@ const GestorMascotas = () => {
   useEffect(() => {
     const cargarMascotas = async () => {
       try {
-        const response = await fetch('http://localhost:3000/api/mascotas');
+        const response = await fetch('http://localhost:3001/api/mascotas');
         if (!response.ok) throw new Error('Error al cargar mascotas');
         
         const data = await response.json();
@@ -34,7 +34,7 @@ const GestorMascotas = () => {
           esterilizado: mascota.esterilizado,
           activo: mascota.activo,
           dueño: mascota.nombre_propietario ? 
-            `${mascota.nombre_propietario} ${mascota.apellido_propietario}` : 'Sin dueño',
+          `${mascota.nombre_propietario} ${mascota.apellido_propietario}` : 'Sin dueño',
           telefono: mascota.telefono,
           email: mascota.email,
           direccion: mascota.direccion
@@ -73,7 +73,7 @@ const GestorMascotas = () => {
       const usuarioActual = JSON.parse(localStorage.getItem("userData"));
       if (!usuarioActual?.id_usuario) throw new Error("No se encontró información del usuario.");
 
-      const response = await fetch('http://localhost:3000/api/mascotas', {
+      const response = await fetch('http://localhost:3001/api/mascotas', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -124,7 +124,7 @@ const GestorMascotas = () => {
   // Manejar editar mascota
   const handleEditarMascota = async (mascotaActualizada) => {
     try {
-      const response = await fetch(`http://localhost:3000/api/mascotas/${mascotaEditando.id}`, {
+      const response = await fetch(`http://localhost:3001/api/mascotas/${mascotaEditando.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -173,7 +173,7 @@ const GestorMascotas = () => {
   const eliminarMascota = async (idMascota) => {
     if (window.confirm('¿Estás seguro de que deseas eliminar esta mascota?')) {
       try {
-        const response = await fetch(`http://localhost:3000/api/mascotas/${idMascota}`, {
+        const response = await fetch(`http://localhost:3001/api/mascotas/${idMascota}`, {
           method: 'DELETE'
         });
 
@@ -191,7 +191,7 @@ const GestorMascotas = () => {
   // Cambiar estado de mascota
   const cambiarEstadoMascota = async (idMascota, nuevoEstado) => {
     try {
-      const response = await fetch(`http://localhost:3000/api/mascotas/${idMascota}/estado`, {
+      const response = await fetch(`http://localhost:3001/api/mascotas/${idMascota}/estado`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
