@@ -1258,3 +1258,164 @@ app.use((error, req, res, next) => {
     message: "Error interno del servidor",
   });
 });
+
+// =================================================================
+// ==                         CRUD MASCOTAS                       ==
+// =================================================================
+
+// GET /api/mascotas - Obtener todas las mascotas con información del propietario
+app.get("/api/mascotas", async (req, res) => {
+  try {
+    const query = `
+      SELECT 
+        m.cod_mas,
+        m.nom_mas,
+        m.especie,
+        m.raza,
+        m.edad,
+        m.genero,
+        m.peso,
+        m.color,
+        m.notas,
+        m.ultima_visita,
+        m.proxima_cita,
+        m.vacunado,
+        m.esterilizado,
+        m.activo,
+        m.id_pro,
+        m.foto,
+        u.nombre as nombre_propietario,
+        u.apellido as apellido_propietario,
+        u.telefono,
+        u.email,
+        u.direccion
+      FROM mascotas m
+      LEFT JOIN propietarios p ON m.id_pro = p.id_pro
+      LEFT JOIN usuarios u ON p.id_pro = u.id_usuario
+      WHERE m.activo = 1
+      ORDER BY m.nom_mas
+    `
+
+    const [rows] = await db.execute(query)
+    res.json(rows)
+  } catch (error) {
+    console.error("Error al obtener mascotas:", error)
+    res.status(500).json({ error: "Error interno del servidor" })
+  }
+})
+
+// POST /api/mascotas - Crear nueva mascota
+app.post("/api/mascotas", async (req, res) => {
+  try {
+    const { nom_mas, especie, raza, edad, genero, peso, color, notas, vacunado, esterilizado, id_pro, foto } = req.body
+
+    const query = `
+      INSERT INTO mascotas (
+        nom_mas, especie, raza, edad, genero, peso, color,
+        notas, vacunado, esterilizado, activo, id_pro, foto
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?)
+    `
+
+    const [result] = await db.execute(query, [
+      nom_mas,
+      especie,
+      raza,
+      edad,
+      genero,
+      peso,
+      color,
+      notas,
+      vacunado,
+      esterilizado,
+      id_pro,
+      foto || "",
+    ])
+
+    res.status(201).json({
+      success: true,
+      cod_mas: result.insertId,
+      message: "Mascota creada exitosamente",
+    })
+  } catch (error) {
+    console.error("Error al crear mascota:", error)
+    res.status(500).json({ error: "Error interno del servidor" })
+  }
+})
+
+// PUT /api/mascotas/:id - Actualizar mascota
+app.put("/api/mascotas/:id", async (req, res) => {
+  try {
+    const { id } = req.params
+    const { nom_mas, especie, raza, edad, genero, peso, color, notas, vacunado, esterilizado } = req.body
+
+    const query = `
+      UPDATE mascotas SET 
+        nom_mas = ?, especie = ?, raza = ?, edad = ?, genero = ?,
+        peso = ?, color = ?, notas = ?, vacunado = ?, esterilizado = ?
+      WHERE cod_mas = ?
+    `
+
+    const [result] = await db.execute(query, [
+      nom_mas,
+      especie,
+      raza,
+      edad,
+      genero,
+      peso,
+      color,
+      notas,
+      vacunado,
+      esterilizado,
+      id,
+    ])
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Mascota no encontrada" })
+    }
+
+    res.json({ message: "Mascota actualizada exitosamente" })
+  } catch (error) {
+    console.error("Error al actualizar mascota:", error)
+    res.status(500).json({ error: "Error interno del servidor" })
+  }
+})
+
+// DELETE /api/mascotas/:id - Eliminar mascota
+app.delete("/api/mascotas/:id", async (req, res) => {
+  try {
+    const { id } = req.params
+
+    // Soft delete - cambiar activo a false
+    const query = "UPDATE mascotas SET activo = 0 WHERE cod_mas = ?"
+    const [result] = await db.execute(query, [id])
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Mascota no encontrada" })
+    }
+
+    res.json({ message: "Mascota eliminada exitosamente" })
+  } catch (error) {
+    console.error("Error al eliminar mascota:", error)
+    res.status(500).json({ error: "Error interno del servidor" })
+  }
+})
+
+// PATCH /api/mascotas/:id/estado - Cambiar estado de mascota
+app.patch("/api/mascotas/:id/estado", async (req, res) => {
+  try {
+    const { id } = req.params
+    const { activo } = req.body
+
+    const query = "UPDATE mascotas SET activo = ? WHERE cod_mas = ?"
+    const [result] = await db.execute(query, [activo, id])
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Mascota no encontrada" })
+    }
+
+    res.json({ message: "Estado actualizado exitosamente" })
+  } catch (error) {
+    console.error("Error al cambiar estado:", error)
+    res.status(500).json({ error: "Error interno del servidor" })
+  }
+})

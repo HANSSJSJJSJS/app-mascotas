@@ -1,250 +1,233 @@
 import React, { useState, useEffect } from 'react';
 import "../../stylos/cssVet/Mascotas.css";
+import MascotaForm from '../CompFormularios/MascotaForm';
 
 const GestorMascotas = () => {
-  // Datos iniciales de mascotas (solo perros y gatos)
-  const mascotasIniciales = [
-    {
-      id: "1",
-      nombre: "Max",
-      tipo: "perro",
-      raza: "Golden Retriever",
-      edad: 3,
-      peso: 30,
-      color: "Dorado",
-      dueño: "Juan Pérez",
-      telefono: "+34 123 456 789",
-      email: "juan@email.com",
-      direccion: "Calle Mayor 123, Madrid",
-      notas: "Muy amigable, le gusta jugar con otros perros",
-      ultimaVisita: "2024-01-15",
-      proximaCita: "2024-02-15",
-      vacunado: true,
-      esterilizado: false,
-      activo: true
-    },
-  ];
-
-  useEffect(() => {
-  const cargarMascotas = async () => {
-    try {
-      const response = await fetch('http://localhost:3001/api/mascotas');
-      if (!response.ok) {
-        throw new Error('Error al cargar mascotas');
-      }
-      const data = await response.json();
-      
-      // Transformar los datos del backend al formato que espera tu frontend
-      const mascotasTransformadas = data.map(mascota => ({
-  id: mascota.id,
-  nombre: mascota.nombre,
-  tipo: mascota.tipo,
-  raza: mascota.raza,
-  edad: mascota.edad,
-  genero: mascota.genero,
-  peso: mascota.peso,
-  idPropietario: mascota.idPropietario,
-  color: mascota.color,
-  notas: mascota.notas,
-  ultimaVisita: mascota.ultimaVisita,
-  proximaCita: mascota.proximaCita,
-  vacunado: mascota.vacunado,
-  esterilizado: mascota.esterilizado,
-  activo: mascota.activo,
-  dueño: `${mascota.nombre_propietario} ${mascota.apellido_propietario}`,
-  telefono: mascota.telefono,
-  email: mascota.email,
-  direccion: mascota.direccion
-}));
-      
-      setMascotas(mascotasTransformadas);
-    } catch (error) {
-      console.error("Error al cargar mascotas:", error);
-      // Puedes mantener las mascotas iniciales como fallback
-      setMascotas(mascotasIniciales);
-    }
-  };
-
-  cargarMascotas();
-}, []);
-
-  // Estados principales
-  const [mascotas, setMascotas] = useState(mascotasIniciales);
+  const [mascotas, setMascotas] = useState([]);
   const [terminoBusqueda, setTerminoBusqueda] = useState('');
   const [mostrarModalAgregar, setMostrarModalAgregar] = useState(false);
   const [mascotaEditando, setMascotaEditando] = useState(null);
-  
-  // Estado para el formulario
-  const [formulario, setFormulario] = useState({
-  nombre: '',
-  tipo: '',
-  raza: '',
-  edad: '',
-  genero: '',
-  peso: '',
-  idPropietario: '',
-  color: '',
-  notas: '',
-  ultimaVisita: '',
-  proximaCita: '',
-  vacunado: false,
-  esterilizado: false,
-  activo: true
-});
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Cargar mascotas al montar el componente
+  useEffect(() => {
+    const cargarMascotas = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/api/mascotas');
+        if (!response.ok) throw new Error('Error al cargar mascotas');
+        
+        const data = await response.json();
+        const mascotasTransformadas = data.map(mascota => ({
+          id: mascota.cod_mas,
+          nombre: mascota.nom_mas,
+          tipo: mascota.especie,
+          raza: mascota.raza,
+          edad: mascota.edad,
+          genero: mascota.genero,
+          peso: mascota.peso,
+          idPropietario: mascota.id_pro,
+          color: mascota.color,
+          notas: mascota.notas,
+          ultimaVisita: mascota.ultima_visita,
+          proximaCita: mascota.proxima_cita,
+          vacunado: mascota.vacunado,
+          esterilizado: mascota.esterilizado,
+          activo: mascota.activo,
+          dueño: mascota.nombre_propietario ? 
+            `${mascota.nombre_propietario} ${mascota.apellido_propietario}` : 'Sin dueño',
+          telefono: mascota.telefono,
+          email: mascota.email,
+          direccion: mascota.direccion
+        }));
+        
+        setMascotas(mascotasTransformadas);
+      } catch (error) {
+        console.error("Error al cargar mascotas:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    cargarMascotas();
+  }, []);
+
   // Filtrar mascotas
   const mascotasFiltradas = mascotas.filter(mascota => {
     return (
       mascota.nombre.toLowerCase().includes(terminoBusqueda.toLowerCase()) ||
-      mascota.dueño.toLowerCase().includes(terminoBusqueda.toLowerCase()) ||
-      mascota.raza.toLowerCase().includes(terminoBusqueda.toLowerCase())
+      (mascota.dueño && mascota.dueño.toLowerCase().includes(terminoBusqueda.toLowerCase())) ||
+      (mascota.raza && mascota.raza.toLowerCase().includes(terminoBusqueda.toLowerCase()))
     );
   });
 
   // Estadísticas
   const totalMascotas = mascotas.length;
-  const totalPerros = mascotas.filter(m => m.tipo === 'perro').length;
-  const totalGatos = mascotas.filter(m => m.tipo === 'gato').length;
+  const totalPerros = mascotas.filter(m => m.tipo === 'Perro').length;
+  const totalGatos = mascotas.filter(m => m.tipo === 'Gato').length;
   const totalActivos = mascotas.filter(m => m.activo).length;
   const totalInactivos = mascotas.filter(m => !m.activo).length;
 
-  // Manejadores de eventos
-  const manejarCambioInput = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormulario(prev => ({ 
-      ...prev, 
-      [name]: type === 'checkbox' ? checked : value 
-    }));
-  };
-
-  const agregarMascota = (e) => {
-    e.preventDefault();
-    const nuevaMascota = {
-      ...formulario,
-      id: Date.now().toString(),
-      edad: parseInt(formulario.edad) || 0,
-      peso: parseFloat(formulario.peso) || 0
-    };
-    setMascotas([...mascotas, nuevaMascota]);
-    setMostrarModalAgregar(false);
-    resetearFormulario();
-  };
-
-  const editarMascota = async (e) => {
-  e.preventDefault();
-  try {
-    const response = await fetch(`/api/mascotas/${mascotaEditando.id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        nom_mas: formulario.nombre,
-        especie: formulario.tipo,
-        raza: formulario.raza,
-        edad: parseInt(formulario.edad) || 0,
-        genero: formulario.genero,
-        peso: parseFloat(formulario.peso) || 0,
-        id_pro: formulario.idPropietario
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error('Error al actualizar mascota');
-    }
-
-    // Actualizar el estado local
-    const mascotaActualizada = {
-      ...formulario,
-      id: mascotaEditando.id,
-      edad: parseInt(formulario.edad) || 0,
-      peso: parseFloat(formulario.peso) || 0
-    };
-    
-    setMascotas(mascotas.map(m => m.id === mascotaEditando.id ? mascotaActualizada : m));
-    setMascotaEditando(null);
-    alert('Mascota actualizada exitosamente');
-  } catch (error) {
-    console.error("Error:", error);
-    alert('Error al actualizar la mascota: ' + error.message);
-  }
-};
-
-const eliminarMascota = async (idMascota) => {
-  if (window.confirm('¿Estás seguro de que deseas eliminar esta mascota?')) {
+  // Manejar agregar mascota
+  const handleAgregarMascota = async (nuevaMascota) => {
     try {
-      const response = await fetch(`/api/mascotas/${idMascota}`, {
-        method: 'DELETE'
+      const usuarioActual = JSON.parse(localStorage.getItem("userData"));
+      if (!usuarioActual?.id_usuario) throw new Error("No se encontró información del usuario.");
+
+      const response = await fetch('http://localhost:3000/api/mascotas', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          nom_mas: nuevaMascota.nombre,
+          especie: nuevaMascota.especie,
+          raza: nuevaMascota.raza,
+          edad: nuevaMascota.edad,
+          genero: nuevaMascota.genero,
+          peso: nuevaMascota.peso,
+          color: nuevaMascota.color,
+          notas: nuevaMascota.observaciones,
+          vacunado: nuevaMascota.vacunado,
+          esterilizado: nuevaMascota.esterilizado,
+          id_pro: usuarioActual.id_usuario
+        })
       });
 
-      if (!response.ok) {
-        throw new Error('Error al eliminar mascota');
-      }
+      if (!response.ok) throw new Error('Error al agregar mascota');
 
-      setMascotas(mascotas.filter(m => m.id !== idMascota));
-      alert('Mascota eliminada exitosamente');
+      const data = await response.json();
+      setMascotas([...mascotas, {
+        id: data.id,
+        nombre: data.nom_mas,
+        tipo: data.especie,
+        raza: data.raza,
+        edad: data.edad,
+        genero: data.genero,
+        peso: data.peso,
+        color: data.color,
+        notas: data.notas,
+        vacunado: data.vacunado,
+        esterilizado: data.esterilizado,
+        activo: true,
+        dueño: usuarioActual.nombre ? 
+          `${usuarioActual.nombre} ${usuarioActual.apellido}` : 'Tú'
+      }]);
+      
+      setMostrarModalAgregar(false);
+      return true;
     } catch (error) {
-      console.error("Error:", error);
-      alert('Error al eliminar la mascota: ' + error.message);
+      console.error("Error al agregar mascota:", error);
+      return false;
     }
-  }
-};
-  const cambiarEstadoMascota = (idMascota, nuevoEstado) => {
-    setMascotas(mascotas.map(m => 
-      m.id === idMascota ? {...m, activo: nuevoEstado} : m
-    ));
   };
 
-  const abrirModalEdicion = (mascota) => {
-    setMascotaEditando(mascota);
-    setFormulario({
-      nombre: mascota.nombre,
-      tipo: mascota.tipo,
-      raza: mascota.raza,
-      edad: mascota.edad,
-      peso: mascota.peso,
-      color: mascota.color,
-      dueño: mascota.dueño,
-      telefono: mascota.telefono,
-      email: mascota.email,
-      direccion: mascota.direccion,
-      ultimaVisita: mascota.ultimaVisita,
-      proximaCita: mascota.proximaCita,
-      notas: mascota.notas,
-      vacunado: mascota.vacunado,
-      esterilizado: mascota.esterilizado,
-      activo: mascota.activo
-    });
+  // Manejar editar mascota
+  const handleEditarMascota = async (mascotaActualizada) => {
+    try {
+      const response = await fetch(`http://localhost:3000/api/mascotas/${mascotaEditando.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          nom_mas: mascotaActualizada.nombre,
+          especie: mascotaActualizada.especie,
+          raza: mascotaActualizada.raza,
+          edad: mascotaActualizada.edad,
+          genero: mascotaActualizada.genero,
+          peso: mascotaActualizada.peso,
+          color: mascotaActualizada.color,
+          notas: mascotaActualizada.observaciones,
+          vacunado: mascotaActualizada.vacunado,
+          esterilizado: mascotaActualizada.esterilizado
+        })
+      });
+
+      if (!response.ok) throw new Error('Error al actualizar mascota');
+
+      setMascotas(mascotas.map(m => 
+        m.id === mascotaEditando.id ? {
+          ...m,
+          nombre: mascotaActualizada.nombre,
+          tipo: mascotaActualizada.especie,
+          raza: mascotaActualizada.raza,
+          edad: mascotaActualizada.edad,
+          genero: mascotaActualizada.genero,
+          peso: mascotaActualizada.peso,
+          color: mascotaActualizada.color,
+          notas: mascotaActualizada.observaciones,
+          vacunado: mascotaActualizada.vacunado,
+          esterilizado: mascotaActualizada.esterilizado
+        } : m
+      ));
+      
+      setMascotaEditando(null);
+      return true;
+    } catch (error) {
+      console.error("Error al editar mascota:", error);
+      return false;
+    }
   };
 
-  const resetearFormulario = () => {
-    setFormulario({
-      nombre: '',
-      tipo: '',
-      raza: '',
-      edad: '',
-      peso: '',
-      color: '',
-      dueño: '',
-      telefono: '',
-      email: '',
-      direccion: '',
-      ultimaVisita: '',
-      proximaCita: '',
-      notas: '',
-      vacunado: false,
-      esterilizado: false,
-      activo: true
-    });
+  // Eliminar mascota
+  const eliminarMascota = async (idMascota) => {
+    if (window.confirm('¿Estás seguro de que deseas eliminar esta mascota?')) {
+      try {
+        const response = await fetch(`http://localhost:3000/api/mascotas/${idMascota}`, {
+          method: 'DELETE'
+        });
+
+        if (!response.ok) throw new Error('Error al eliminar mascota');
+
+        setMascotas(mascotas.filter(m => m.id !== idMascota));
+        alert('Mascota eliminada exitosamente');
+      } catch (error) {
+        console.error("Error:", error);
+        alert('Error al eliminar la mascota: ' + error.message);
+      }
+    }
+  };
+
+  // Cambiar estado de mascota
+  const cambiarEstadoMascota = async (idMascota, nuevoEstado) => {
+    try {
+      const response = await fetch(`http://localhost:3000/api/mascotas/${idMascota}/estado`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ activo: nuevoEstado })
+      });
+
+      if (!response.ok) throw new Error('Error al cambiar estado');
+
+      setMascotas(mascotas.map(m => 
+        m.id === idMascota ? {...m, activo: nuevoEstado} : m
+      ));
+    } catch (error) {
+      console.error("Error al cambiar estado:", error);
+    }
   };
 
   // Helper para renderizar el badge de tipo de mascota
   const obtenerBadgeMascota = (tipo) => {
     switch(tipo) {
-      case 'perro': return { clase: 'mascota-badge-perro', icono: '🐕', texto: 'Perro' };
-      case 'gato': return { clase: 'mascota-badge-gato', icono: '🐈', texto: 'Gato' };
+      case 'Perro': return { clase: 'mascota-badge-perro', icono: '🐕', texto: 'Perro' };
+      case 'Gato': return { clase: 'mascota-badge-gato', icono: '🐈', texto: 'Gato' };
       default: return { clase: 'mascota-badge-otro', icono: '❓', texto: 'Otro' };
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="mascota-contenedor">
+        <div className="mascota-cargando">
+          <div className="spinner"></div>
+          <p>Cargando mascotas...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <main className="mascota-contenedor">
@@ -363,18 +346,22 @@ const eliminarMascota = async (idMascota) => {
                 <section className="mascota-tarjeta-cuerpo">
                   <div className="mascota-detalle-item">
                     <span className="mascota-detalle-icono">👤</span>
-                    <span>{mascota.dueño}</span>
+                    <span>{mascota.dueño || 'Sin dueño registrado'}</span>
                   </div>
                   
-                  <div className="mascota-detalle-item">
-                    <span className="mascota-detalle-icono">📞</span>
-                    <span>{mascota.telefono}</span>
-                  </div>
+                  {mascota.telefono && (
+                    <div className="mascota-detalle-item">
+                      <span className="mascota-detalle-icono">📞</span>
+                      <span>{mascota.telefono}</span>
+                    </div>
+                  )}
                   
-                  <div className="mascota-detalle-item">
-                    <span className="mascota-detalle-icono">📍</span>
-                    <span className="mascota-direccion">{mascota.direccion}</span>
-                  </div>
+                  {mascota.direccion && (
+                    <div className="mascota-detalle-item">
+                      <span className="mascota-detalle-icono">📍</span>
+                      <span className="mascota-direccion">{mascota.direccion}</span>
+                    </div>
+                  )}
                   
                   <div className="mascota-detalle-item">
                     <span className="mascota-detalle-icono">💉</span>
@@ -386,15 +373,17 @@ const eliminarMascota = async (idMascota) => {
                     <span>Esterilizado: {mascota.esterilizado ? 'Sí ✅' : 'No ❌'}</span>
                   </div>
                   
-                  <div className="mascota-detalle-item">
-                    <span className="mascota-detalle-icono">📅</span>
-                    <span>Próxima cita: {mascota.proximaCita || 'No programada'}</span>
-                  </div>
+                  {mascota.proximaCita && (
+                    <div className="mascota-detalle-item">
+                      <span className="mascota-detalle-icono">📅</span>
+                      <span>Próxima cita: {new Date(mascota.proximaCita).toLocaleDateString()}</span>
+                    </div>
+                  )}
                   
                   <div className="mascota-acciones">
                     <button 
                       className="mascota-boton mascota-boton-editar" 
-                      onClick={() => abrirModalEdicion(mascota)}
+                      onClick={() => setMascotaEditando(mascota)}
                     >
                       ✏️ Editar
                     </button>
@@ -429,430 +418,38 @@ const eliminarMascota = async (idMascota) => {
 
       {/* Modal para agregar mascota */}
       {mostrarModalAgregar && (
-        <div className="mascota-modal">
-          <div className="mascota-modal-contenido">
-            <header className="mascota-modal-encabezado">
-              <h2>Agregar Nueva Mascota</h2>
-              <p>Completa toda la información de la nueva mascota</p>
-            </header>
-            
-            <form onSubmit={agregarMascota} className="mascota-formulario">
-              <div className="mascota-formulario-grupo">
-                <label htmlFor="nombre">Nombre </label>
-                <input 
-                  type="text" 
-                  id="nombre" 
-                  name="nombre" 
-                  value={formulario.nombre}
-                  onChange={manejarCambioInput}
-                  required 
-                />
-              </div>
-              
-              <div className="mascota-formulario-grupo">
-                <label htmlFor="tipo">Tipo </label>
-                <select 
-                  id="tipo" 
-                  name="tipo" 
-                  value={formulario.tipo}
-                  onChange={manejarCambioInput}
-                  required
-                >
-                  <option value="">Seleccionar tipo</option>
-                  <option value="perro">Perro</option>
-                  <option value="gato">Gato</option>
-                </select>
-              </div>
-              
-              <div className="mascota-formulario-grupo">
-                <label htmlFor="raza">Raza</label>
-                <input 
-                  type="text" 
-                  id="raza" 
-                  name="raza" 
-                  value={formulario.raza}
-                  onChange={manejarCambioInput}
-                />
-              </div>
-              
-              <div className="mascota-formulario-grupo">
-                <label htmlFor="edad">Edad (años)</label>
-                <input 
-                  type="number" 
-                  id="edad" 
-                  name="edad" 
-                  min="0" 
-                  value={formulario.edad}
-                  onChange={manejarCambioInput}
-                />
-              </div>
-              
-              <div className="mascota-formulario-grupo">
-                <label htmlFor="peso">Peso (kg)</label>
-                <input 
-                  type="number" 
-                  id="peso" 
-                  name="peso" 
-                  step="0.1" 
-                  min="0" 
-                  value={formulario.peso}
-                  onChange={manejarCambioInput}
-                />
-              </div>
-              
-              <div className="mascota-formulario-grupo">
-                <label htmlFor="color">Color</label>
-                <input 
-                  type="text" 
-                  id="color" 
-                  name="color" 
-                  value={formulario.color}
-                  onChange={manejarCambioInput}
-                />
-              </div>
-              
-              <div className="mascota-formulario-grupo">
-                <label>
-                  <input 
-                    type="checkbox" 
-                    name="vacunado" 
-                    checked={formulario.vacunado}
-                    onChange={manejarCambioInput}
-                  />
-                  Vacunado
-                </label>
-              </div>
-              
-              <div className="mascota-formulario-grupo">
-                <label>
-                  <input 
-                    type="checkbox" 
-                    name="esterilizado" 
-                    checked={formulario.esterilizado}
-                    onChange={manejarCambioInput}
-                  />
-                  Esterilizado
-                </label>
-              </div>
-              
-              <div className="mascota-formulario-grupo">
-                <label>
-                  <input 
-                    type="checkbox" 
-                    name="activo" 
-                    checked={formulario.activo}
-                    onChange={manejarCambioInput}
-                  />
-                  Activo
-                </label>
-              </div>
-              
-              <div className="mascota-formulario-grupo">
-                <label htmlFor="dueño">Dueño </label>
-                <input 
-                  type="text" 
-                  id="dueño" 
-                  name="dueño" 
-                  value={formulario.dueño}
-                  onChange={manejarCambioInput}
-                  required 
-                />
-              </div>
-              
-              <div className="mascota-formulario-grupo">
-                <label htmlFor="telefono">Teléfono</label>
-                <input 
-                  type="tel" 
-                  id="telefono" 
-                  name="telefono" 
-                  value={formulario.telefono}
-                  onChange={manejarCambioInput}
-                />
-              </div>
-              
-              <div className="mascota-formulario-grupo mascota-formulario-ancho-completo">
-                <label htmlFor="email">Email</label>
-                <input 
-                  type="email" 
-                  id="email" 
-                  name="email" 
-                  value={formulario.email}
-                  onChange={manejarCambioInput}
-                />
-              </div>
-              
-              <div className="mascota-formulario-grupo mascota-formulario-ancho-completo">
-                <label htmlFor="direccion">Dirección</label>
-                <input 
-                  type="text" 
-                  id="direccion" 
-                  name="direccion" 
-                  value={formulario.direccion}
-                  onChange={manejarCambioInput}
-                />
-              </div>
-              
-              <div className="mascota-formulario-grupo">
-                <label htmlFor="ultimaVisita">Última Visita</label>
-                <input 
-                  type="date" 
-                  id="ultimaVisita" 
-                  name="ultimaVisita" 
-                  value={formulario.ultimaVisita}
-                  onChange={manejarCambioInput}
-                />
-              </div>
-              
-              <div className="mascota-formulario-grupo">
-                <label htmlFor="proximaCita">Próxima Cita</label>
-                <input 
-                  type="date" 
-                  id="proximaCita" 
-                  name="proximaCita" 
-                  value={formulario.proximaCita}
-                  onChange={manejarCambioInput}
-                />
-              </div>
-              
-              <div className="mascota-formulario-grupo mascota-formulario-ancho-completo">
-                <label htmlFor="notas">Notas</label>
-                <textarea 
-                  id="notas" 
-                  name="notas" 
-                  rows="3" 
-                  value={formulario.notas}
-                  onChange={manejarCambioInput}
-                ></textarea>
-              </div>
-              
-              <div className="mascota-modal-pie">
-                <button 
-                  type="button" 
-                  className="mascota-boton mascota-boton-secundario" 
-                  onClick={() => setMostrarModalAgregar(false)}
-                >
-                  Cancelar
-                </button>
-                <button type="submit" className="mascota-boton mascota-boton-primario">
-                  Agregar Mascota
-                </button>
-              </div>
-            </form>
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <MascotaForm 
+              onClose={() => setMostrarModalAgregar(false)}
+              onSubmit={handleAgregarMascota}
+              isEditing={false}
+            />
           </div>
         </div>
       )}
 
       {/* Modal para editar mascota */}
       {mascotaEditando && (
-        <div className="mascota-modal">
-          <div className="mascota-modal-contenido">
-            <header className="mascota-modal-encabezado">
-              <h2>Editar Mascota: {mascotaEditando.nombre}</h2>
-              <p>Modifica la información de la mascota</p>
-            </header>
-            
-            <form onSubmit={editarMascota} className="mascota-formulario">
-              <div className="mascota-formulario-grupo">
-                <label htmlFor="editNombre">Nombre </label>
-                <input 
-                  type="text" 
-                  id="editNombre" 
-                  name="nombre" 
-                  value={formulario.nombre}
-                  onChange={manejarCambioInput}
-                  required 
-                />
-              </div>
-              
-              <div className="mascota-formulario-grupo">
-                <label htmlFor="editTipo">Tipo </label>
-                <select 
-                  id="editTipo" 
-                  name="tipo" 
-                  value={formulario.tipo}
-                  onChange={manejarCambioInput}
-                  required
-                >
-                  <option value="">Seleccionar tipo</option>
-                  <option value="perro">Perro</option>
-                  <option value="gato">Gato</option>
-                </select>
-              </div>
-              
-              <div className="mascota-formulario-grupo">
-                <label htmlFor="editRaza">Raza</label>
-                <input 
-                  type="text" 
-                  id="editRaza" 
-                  name="raza" 
-                  value={formulario.raza}
-                  onChange={manejarCambioInput}
-                />
-              </div>
-              
-              <div className="mascota-formulario-grupo">
-                <label htmlFor="editEdad">Edad (años)</label>
-                <input 
-                  type="number" 
-                  id="editEdad" 
-                  name="edad" 
-                  min="0" 
-                  value={formulario.edad}
-                  onChange={manejarCambioInput}
-                />
-              </div>
-              
-              <div className="mascota-formulario-grupo">
-                <label htmlFor="editPeso">Peso (kg)</label>
-                <input 
-                  type="number" 
-                  id="editPeso" 
-                  name="peso" 
-                  step="0.1" 
-                  min="0" 
-                  value={formulario.peso}
-                  onChange={manejarCambioInput}
-                />
-              </div>
-              
-              <div className="mascota-formulario-grupo">
-                <label htmlFor="editColor">Color</label>
-                <input 
-                  type="text" 
-                  id="editColor" 
-                  name="color" 
-                  value={formulario.color}
-                  onChange={manejarCambioInput}
-                />
-              </div>
-              
-              <div className="mascota-formulario-grupo">
-                <label>
-                  <input 
-                    type="checkbox" 
-                    name="vacunado" 
-                    checked={formulario.vacunado}
-                    onChange={manejarCambioInput}
-                  />
-                  Vacunado
-                </label>
-              </div>
-              
-              <div className="mascota-formulario-grupo">
-                <label>
-                  <input 
-                    type="checkbox" 
-                    name="esterilizado" 
-                    checked={formulario.esterilizado}
-                    onChange={manejarCambioInput}
-                  />
-                  Esterilizado
-                </label>
-              </div>
-              
-              <div className="mascota-formulario-grupo">
-                <label>
-                  <input 
-                    type="checkbox" 
-                    name="activo" 
-                    checked={formulario.activo}
-                    onChange={manejarCambioInput}
-                  />
-                  Activo
-                </label>
-              </div>
-              
-              <div className="mascota-formulario-grupo">
-                <label htmlFor="editDueño">Dueño </label>
-                <input 
-                  type="text" 
-                  id="editDueño" 
-                  name="dueño" 
-                  value={formulario.dueño}
-                  onChange={manejarCambioInput}
-                  required 
-                />
-              </div>
-              
-              <div className="mascota-formulario-grupo">
-                <label htmlFor="editTelefono">Teléfono</label>
-                <input 
-                  type="tel" 
-                  id="editTelefono" 
-                  name="telefono" 
-                  value={formulario.telefono}
-                  onChange={manejarCambioInput}
-                />
-              </div>
-              
-              <div className="mascota-formulario-grupo mascota-formulario-ancho-completo">
-                <label htmlFor="editEmail">Email</label>
-                <input 
-                  type="email" 
-                  id="editEmail" 
-                  name="email" 
-                  value={formulario.email}
-                  onChange={manejarCambioInput}
-                />
-              </div>
-              
-              <div className="mascota-formulario-grupo mascota-formulario-ancho-completo">
-                <label htmlFor="editDireccion">Dirección</label>
-                <input 
-                  type="text" 
-                  id="editDireccion" 
-                  name="direccion" 
-                  value={formulario.direccion}
-                  onChange={manejarCambioInput}
-                />
-              </div>
-              
-              <div className="mascota-formulario-grupo">
-                <label htmlFor="editUltimaVisita">Última Visita</label>
-                <input 
-                  type="date" 
-                  id="editUltimaVisita" 
-                  name="ultimaVisita" 
-                  value={formulario.ultimaVisita}
-                  onChange={manejarCambioInput}
-                />
-              </div>
-              
-              <div className="mascota-formulario-grupo">
-                <label htmlFor="editProximaCita">Próxima Cita</label>
-                <input 
-                  type="date" 
-                  id="editProximaCita" 
-                  name="proximaCita" 
-                  value={formulario.proximaCita}
-                  onChange={manejarCambioInput}
-                />
-              </div>
-              
-              <div className="mascota-formulario-grupo mascota-formulario-ancho-completo">
-                <label htmlFor="editNotas">Notas</label>
-                <textarea 
-                  id="editNotas" 
-                  name="notas" 
-                  rows="3" 
-                  value={formulario.notas}
-                  onChange={manejarCambioInput}
-                ></textarea>
-              </div>
-              
-              <div className="mascota-modal-pie">
-                <button 
-                  type="button" 
-                  className="mascota-boton mascota-boton-secundario" 
-                  onClick={() => setMascotaEditando(null)}
-                >
-                  Cancelar
-                </button>
-                <button type="submit" className="mascota-boton mascota-boton-primario">
-                  Guardar Cambios
-                </button>
-              </div>
-            </form>
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <MascotaForm 
+              onClose={() => setMascotaEditando(null)}
+              onSubmit={handleEditarMascota}
+              isEditing={true}
+              initialData={{
+                nombre: mascotaEditando.nombre,
+                especie: mascotaEditando.tipo,
+                raza: mascotaEditando.raza,
+                edad: mascotaEditando.edad,
+                genero: mascotaEditando.genero,
+                peso: mascotaEditando.peso,
+                color: mascotaEditando.color,
+                observaciones: mascotaEditando.notas,
+                vacunado: mascotaEditando.vacunado,
+                esterilizado: mascotaEditando.esterilizado
+              }}
+            />
           </div>
         </div>
       )}

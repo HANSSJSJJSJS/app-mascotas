@@ -1,21 +1,7 @@
-"use client"
-
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import axios from "axios"
-import {
-  PawPrint,
-  Upload,
-  User,
-  Heart,
-  Calendar,
-  Weight,
-  Palette,
-  FileText,
-  ArrowLeft,
-  ArrowRight,
-  Check,
-} from "lucide-react"
+import { PawPrint, Upload, User, Heart, Calendar, Weight, Palette, FileText, ArrowLeft, ArrowRight, Check, X } from "lucide-react"
 import "../../stylos/cssFormularios/MascotaForm.css"
 
 function MascotaForm() {
@@ -61,7 +47,7 @@ function MascotaForm() {
       formData.append("id_pro", usuarioActual.id_usuario)
       formData.append("foto", data.imagen) // El campo debe llamarse "foto"
 
-      const response = await axios.post("http://localhost:3001/api/mascotas", formData, {
+      const response = await axios.post("http://localhost:3000/api/mascotas", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       })
 
@@ -158,7 +144,7 @@ function MascotaForm() {
   }
 
   function getImageUrl(foto) {
-    return foto ? `http://localhost:3001/uploads/mascotas/${foto}` : "/placeholder.svg";
+    return foto ? `http://localhost:3000/uploads/mascotas/${foto}` : "/placeholder.svg";
   }
 
   return (
@@ -271,10 +257,6 @@ function MascotaForm() {
                           <option value="">Seleccione una especie</option>
                           <option value="Perro">🐕 Perro</option>
                           <option value="Gato">🐱 Gato</option>
-                          <option value="Ave">🐦 Ave</option>
-                          <option value="Conejo">🐰 Conejo</option>
-                          <option value="Hamster">🐹 Hamster</option>
-                          <option value="Otro">🐾 Otro</option>
                         </select>
                         <span className="input-icon">
                           {dirtyFields.especie && !errors.especie && "✓"}

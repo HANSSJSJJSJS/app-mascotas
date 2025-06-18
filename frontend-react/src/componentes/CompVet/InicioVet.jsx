@@ -305,7 +305,7 @@ export default function InicioVet() {
                         onChange={(e) => setBusqueda(e.target.value)}
                       />
                     </div>
-                    <Link to="/pacientes" className="inicioVet-link">
+                    <Link to="mascotas" className="inicioVet-link">
                       Ver todos <ChevronRight className="inicioVet-linkIcon" />
                     </Link>
                   </div>
@@ -324,7 +324,7 @@ export default function InicioVet() {
                           {mascota.raza}, {mascota.edad} años
                         </div>
                       </div>
-                      <Link to={`/historial/${mascota.id}`} className="inicioVet-patientLink">
+                      <Link to={`/PanelVet/historial-clinico/${mascota.id}`} className="inicioVet-patientLink">
                         Historial
                       </Link>
                     </div>

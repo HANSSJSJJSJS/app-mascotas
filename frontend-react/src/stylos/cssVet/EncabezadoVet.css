@@ -14,19 +14,9 @@
     left: 250px;
     width: calc(100% - 250px);
   }
-
   .encabezado-container-vet.sidebar-closed {
     left: 70px;
     width: calc(100% - 70px);
-  }
-}
-
-/* En mobile, el encabezado siempre ocupa el ancho completo */
-@media (max-width: 1023px) {
-  .encabezado-container-vet.sidebar-open,
-  .encabezado-container-vet.sidebar-closed {
-    left: 0;
-    width: 100%;
   }
 }
 
@@ -36,11 +26,18 @@
   align-items: center;
   background-color: white;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  min-height: 64px;
   width: 100%;
+  padding: 0.75rem 1rem;
+  height: 56px;
 }
 
-/* Padding responsivo */
+@media (min-width: 768px) {
+  .encabezado-vet {
+    padding: 0.875rem 1.25rem;
+    height: 60px;
+  }
+}
+
 @media (min-width: 1024px) {
   .encabezado-vet {
     padding: 1rem 1.5rem;
@@ -48,26 +45,11 @@
   }
 }
 
-@media (min-width: 768px) and (max-width: 1023px) {
-  .encabezado-vet {
-    padding: 0.875rem 1.25rem;
-    height: 60px;
-  }
-}
-
-@media (max-width: 767px) {
-  .encabezado-vet {
-    padding: 0.75rem 1rem;
-    height: 56px;
-  }
-}
-
-/* Estilos adicionales para elementos internos del encabezado */
+/* Botón de menú móvil */
 .encabezado-vet .menu-toggle {
   display: none;
 }
 
-/* Mostrar botón de menú en dispositivos móviles */
 @media (max-width: 1023px) {
   .encabezado-vet .menu-toggle {
     display: flex;
@@ -81,48 +63,20 @@
     cursor: pointer;
     transition: all 0.2s ease;
   }
-
   .encabezado-vet .menu-toggle:hover {
     background-color: #f9fafb;
     border-color: #d1d5db;
   }
-
-  .encabezado-vet .menu-toggle:active {
-    background-color: #f3f4f6;
-  }
 }
 
-/* Ajustes para el contenido del encabezado */
-.encabezado-vet .logo {
-  height: auto;
-  max-height: 32px;
-}
 
-@media (max-width: 767px) {
-  .encabezado-vet .logo {
-    max-height: 28px;
-  }
-}
 
-/* Ajustes para elementos de navegación/acciones */
 .encabezado-vet .nav-actions {
   display: flex;
   align-items: center;
   gap: 0.75rem;
 }
 
-@media (max-width: 767px) {
-  .encabezado-vet .nav-actions {
-    gap: 0.5rem;
-  }
-  
-  /* Ocultar elementos no esenciales en móvil */
-  .encabezado-vet .nav-actions .hide-mobile {
-    display: none;
-  }
-}
-
-/* Ajustes para texto/títulos en el encabezado */
 .encabezado-vet .titulo {
   font-size: 1.125rem;
   font-weight: 600;
@@ -130,12 +84,21 @@
 }
 
 @media (max-width: 767px) {
+  .encabezado-vet .logo {
+    max-height: 28px;
+  }
+  .encabezado-vet .nav-actions {
+    gap: 0.5rem;
+  }
+  .encabezado-vet .nav-actions .hide-mobile {
+    display: none;
+  }
   .encabezado-vet .titulo {
     font-size: 1rem;
   }
 }
 
-/* Overlay para mobile cuando el sidebar está abierto */
+/* Overlay móvil */
 @media (max-width: 1023px) {
   .sidebar-overlay {
     position: fixed;
@@ -149,20 +112,20 @@
     visibility: hidden;
     transition: all 0.3s ease;
   }
-
   .sidebar-overlay.active {
     opacity: 1;
     visibility: visible;
   }
 }
 
+/* Botón de menú */
 .boton-menu-vet {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #c2d8ff;
+  color: #000000;
   padding: 0.75rem 1rem;
   border-radius: 8px;
   cursor: pointer;
@@ -175,15 +138,10 @@
 .boton-menu-vet:hover {
   background: rgba(255, 255, 255, 0.15);
   border-color: rgba(194, 216, 255, 0.4);
-  color: #ffffff;
+  color: #000000;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(26, 37, 64, 0.2);
 }
-
-.boton-menu-vet:active {
-  transform: translateY(0);
-}
-
 
 /* ===== DROPDOWN USUARIO ===== */
 .user-dropdown-container {
@@ -198,8 +156,7 @@
   padding: 0.5rem 0.75rem;
   border-radius: 12px;
   transition: all 0.3s ease;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(49, 49, 49, 0.08);
   backdrop-filter: blur(10px);
 }
 
@@ -233,20 +190,20 @@
 .user-name1 {
   font-weight: 600;
   font-size: 0.875rem;
-  color: #ffffff;
+  color: #000000;
   line-height: 1.2;
 }
 
 .user-role1 {
   font-size: 0.75rem;
-  color: #8196eb;
+  color: #000000;
   font-weight: 400;
 }
 
 .toggle-button {
   background: none;
   border: none;
-  color: #c2d8ff;
+  color: #000000;
   cursor: pointer;
   padding: 4px;
   border-radius: 4px;
@@ -258,7 +215,7 @@
 
 .toggle-button:hover {
   background: rgba(255, 255, 255, 0.1);
-  color: #ffffff;
+  color: #000000;
 }
 
 /* ===== DROPDOWN CONTENT ===== */
