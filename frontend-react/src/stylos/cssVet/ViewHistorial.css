@@ -1,305 +1,425 @@
-/* Modal de Historial Clínico - Fondo azul borroso + blanco */
-.historial-modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(
-      135deg,
-      rgba(194, 216, 255, 0.4) 0%,  /* azul muy claro, como hielo */
-      rgba(129, 150, 235, 0.7) 50%, /* azul claro, cielo */
-      rgba(26, 37, 64, 0.8) 100%     /* azul oscuro, noche */
-    );
-    backdrop-filter: blur(16px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 1rem;
-    z-index: 50;
-}
-
-/* Contenedor del Modal */
-.historial-modal-container {
-    background-color: white;
-    border-radius: 1.5rem;
-    box-shadow: var(--shadow-xl);
-    width: 100%;
-    max-width: 56rem;
-    max-height: 90vh;
-    overflow-y: auto;
-    border: 1px solid rgba(129, 150, 235, 0.3);
-    margin: auto;
-    color: var(--color2); /* texto azul oscuro */
-}
-
-/* Contenido del Modal */
-.historial-modal-content {
-    padding: 2rem;
-    color: var(--color2);
-}
-
-/* Header */
-.historial-modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 1.5rem;
-    padding-bottom: 1rem;
-    border-bottom: 2px solid var(--color4);
-}
-
-.historial-modal-title {
-    font-size: 1.75rem;
-    font-weight: 700;
-    color: var(--color2);
-    margin: 0;
-    line-height: 1.2;
-}
-
-.historial-close-button {
-    background: none;
-    border: none;
-    color: var(--color4);
-    cursor: pointer;
-    padding: 0.5rem;
-    border-radius: 8px;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.historial-close-button:hover {
-    background-color: var(--color5);
-    color: var(--color3);
-    transform: scale(1.1);
-}
-
-.historial-close-icon {
-    width: 1.5rem;
-    height: 1.5rem;
-    stroke: currentColor;
-    fill: none;
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-}
-
-/* Grid de Información */
-.historial-info-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 2rem;
-    margin-bottom: 2.5rem;
-}
-
-@media (min-width: 768px) {
-    .historial-info-grid {
-        grid-template-columns: 1fr 1fr;
-    }
-}
-
-.historial-info-section {
-    background-color: white;
-    padding: 1.5rem;
-    border-radius: 12px;
-    border: 1px solid var(--color5);
-    box-shadow: var(--shadow-md);
-}
-
-.historial-info-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--color3);
-    margin-bottom: 1rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.historial-info-title::before {
-    content: '';
-    width: 4px;
-    height: 1.25rem;
-    background: linear-gradient(to bottom, var(--color3), var(--color2));
-    border-radius: 2px;
-}
-
-.historial-info-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-}
-
-.historial-info-item {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    align-items: center;
-    padding: 0.5rem 0;
-    border-bottom: 1px solid var(--color5);
-}
-
-.historial-info-item:last-child {
-    border-bottom: none;
-}
-
-.historial-info-label {
-    font-weight: 600;
-    color: var(--color3);
-    min-width: fit-content;
-}
-
-.historial-info-value {
-    color: var(--color2);
-    flex: 1;
-}
-
-/* Badge de Estado */
-.historial-status-badge {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.25rem 0.75rem;
-    border-radius: 9999px;
-    font-size: 0.75rem;
-    font-weight: 500;
-    margin-left: 0.5rem;
-}
-
-.historial-status-active {
-    background-color: var(--color5);
-    color: var(--color2);
-    border: 1px solid var(--color4);
-}
-
-.historial-status-inactive {
-    background-color: var(--color4);
-    color: var(--color3);
-    border: 1px solid var(--color5);
-}
-
-/* Consultas */
-.historial-consultas-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 1.5rem;
-    padding-bottom: 0.75rem;
-    border-bottom: 2px solid var(--color5);
-}
-
-.historial-consultas-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--color2);
-    margin: 0;
-}
-
-.historial-consultas-count {
-    background: var(--gradient-accent);
-    color: white;
-    padding: 0.25rem 0.75rem;
-    border-radius: 9999px;
-    font-size: 0.875rem;
-    font-weight: 500;
-}
-
-.historial-consultas-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-}
-
-.historial-consulta-card {
-    background-color: white;
-    padding: 1.5rem;
-    border: 2px solid var(--color5);
-    border-radius: 12px;
-    box-shadow: var(--shadow-sm);
-    transition: all 0.3s ease;
-}
-
-.historial-consulta-card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-    border-color: var(--color3);
-}
-
-.historial-consulta-header {
-    font-size: 1.125rem;
-    font-weight: 600;
-    color: var(--color3);
-    margin-bottom: 1rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid var(--color5);
-}
-
-.historial-consulta-info {
-    display: grid;
-    gap: 0.75rem;
-}
-
-.historial-consulta-field {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-}
-
-@media (min-width: 640px) {
-    .historial-consulta-field {
-        flex-direction: row;
-        align-items: flex-start;
-    }
-}
-
-.historial-consulta-label {
-    font-weight: 600;
-    color: var(--color3);
-    min-width: 120px;
-    flex-shrink: 0;
-}
-
-.historial-consulta-value {
-    color: var(--color2);
-    line-height: 1.5;
-    flex: 1;
-}
-
-/* Estado sin consultas */
-.historial-no-consultas {
-    text-align: center;
-    padding: 3rem 1rem;
-    color: var(--color3);
-    font-style: italic;
-    background-color: white;
-    border-radius: 12px;
-    border: 2px dashed var(--color3);
-}
-
-/* Footer */
-.historial-modal-footer {
-    margin-top: 2rem;
-    padding-top: 1.5rem;
-    border-top: 2px solid var(--color5);
-    display: flex;
-    justify-content: flex-end;
-    gap: 1rem;
-}
-
-/* Botones ejemplo (puedes añadirlos si los usas) */
-.historial-btn-cerrar {
-    background: var(--gradient-primary);
-    color: white;
-    padding: 0.75rem 1.5rem;
-    border-radius: 12px;
-    border: none;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.historial-btn-cerrar:hover {
-    box-shadow: 0 12px 24px rgba(129, 150, 235, 0.5);
-    transform: translateY(-2px);
-}
+/* Variables de color */
+:root {
+    --morado-principal: rgba(129, 150, 235, 0.7); /* Color morado especificado */
+    --morado-oscuro: #1a2540;
+    --morado-medio: #495a90;
+    --morado-claro: #8196eb;
+    --morado-muy-claro: #c2d8ff;
+    --blanco: #ffffff;
+    --gris-claro: #f8f9fa;
+    --texto-oscuro: #2c3e50;
+  }
+  
+  /* Modal de Historial Clínico - Fondo morado borroso */
+  .historial-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(
+        135deg,
+        rgba(194, 216, 255, 0.4) 0%,
+        var(--morado-principal) 50%,
+        rgba(26, 37, 64, 0.8) 100%
+      );
+      backdrop-filter: blur(16px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      z-index: 50;
+  }
+  
+  /* Contenedor del Modal */
+  .historial-modal-container {
+      background-color: var(--blanco);
+      border-radius: 1.5rem;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      width: 100%;
+      max-width: 56rem;
+      max-height: 90vh;
+      overflow-y: auto;
+      border: 1px solid var(--morado-claro);
+      margin: auto;
+      color: var(--texto-oscuro);
+  }
+  
+  /* Contenido del Modal */
+  .historial-modal-content {
+      padding: 2rem;
+      color: var(--texto-oscuro);
+  }
+  
+  /* Header */
+  .historial-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--morado-claro);
+  }
+  
+  .historial-modal-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--morado-oscuro);
+      margin: 0;
+      line-height: 1.2;
+  }
+  
+  .historial-close-button {
+      background: none;
+      border: none;
+      color: var(--morado-claro);
+      cursor: pointer;
+      padding: 0.5rem;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+  }
+  
+  .historial-close-button:hover {
+      background-color: var(--gris-claro);
+      color: var(--morado-medio);
+      transform: scale(1.1);
+  }
+  
+  .historial-close-icon {
+      width: 1.5rem;
+      height: 1.5rem;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+  }
+  
+  /* Grid de Información */
+  .historial-info-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      margin-bottom: 2.5rem;
+  }
+  
+  @media (min-width: 768px) {
+      .historial-info-grid {
+          grid-template-columns: 1fr 1fr;
+      }
+  }
+  
+  .historial-info-section {
+      background-color: var(--blanco);
+      padding: 1.5rem;
+      border-radius: 12px;
+      border: 1px solid var(--gris-claro);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+  
+  .historial-info-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--morado-principal); /* Aplicado el morado especificado */
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+  }
+  
+  .historial-info-title::before {
+      content: '';
+      width: 4px;
+      height: 1.25rem;
+      background: linear-gradient(to bottom, var(--morado-claro), var(--morado-oscuro));
+      border-radius: 2px;
+  }
+  
+  .historial-info-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+  }
+  
+  .historial-info-item {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid var(--gris-claro);
+  }
+  
+  .historial-info-item:last-child {
+      border-bottom: none;
+  }
+  
+  .historial-info-label {
+      font-weight: 600;
+      color: var(--morado-principal); /* Aplicado el morado especificado */
+      min-width: fit-content;
+  }
+  
+  .historial-info-value {
+      color: var(--morado-oscuro);
+      flex: 1;
+  }
+  
+  /* Badge de Estado */
+  .historial-status-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      margin-left: 0.5rem;
+  }
+  
+  .historial-status-active {
+      background-color: var(--gris-claro);
+      color: var(--morado-oscuro);
+      border: 1px solid var(--morado-claro);
+  }
+  
+  .historial-status-inactive {
+      background-color: var(--morado-claro);
+      color: var(--gris-claro);
+      border: 1px solid var(--gris-claro);
+  }
+  
+  /* Consultas */
+  .historial-consultas-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--gris-claro);
+  }
+  
+  .historial-consultas-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--morado-oscuro);
+      margin: 0;
+  }
+  
+  .historial-consultas-count {
+      background: linear-gradient(135deg, var(--morado-claro), var(--morado-oscuro));
+      color: var(--blanco);
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      font-weight: 500;
+  }
+  
+  .historial-consultas-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+  }
+  
+  .historial-consulta-card {
+      background-color: var(--blanco);
+      padding: 1.5rem;
+      border: 2px solid var(--gris-claro);
+      border-radius: 12px;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+      transition: all 0.3s ease;
+  }
+  
+  .historial-consulta-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      border-color: var(--morado-claro);
+  }
+  
+  .historial-consulta-header {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--morado-principal); /* Aplicado el morado especificado */
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--gris-claro);
+  }
+  
+  .historial-consulta-info {
+      display: grid;
+      gap: 0.75rem;
+  }
+  
+  .historial-consulta-field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+  }
+  
+  @media (min-width: 640px) {
+      .historial-consulta-field {
+          flex-direction: row;
+          align-items: flex-start;
+      }
+  }
+  
+  .historial-consulta-label {
+      font-weight: 600;
+      color: var(--morado-principal); /* Aplicado el morado especificado */
+      min-width: 120px;
+      flex-shrink: 0;
+  }
+  
+  .historial-consulta-value {
+      color: var(--morado-oscuro);
+      line-height: 1.5;
+      flex: 1;
+  }
+  
+  /* Estado sin consultas */
+  .historial-no-consultas {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--morado-claro);
+      font-style: italic;
+      background-color: var(--blanco);
+      border-radius: 12px;
+      border: 2px dashed var(--morado-claro);
+  }
+  
+  /* Footer */
+  .historial-modal-footer {
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 2px solid var(--gris-claro);
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+  }
+  
+  /* Botón Cerrar */
+  .historial-btn-cerrar {
+      background: linear-gradient(135deg, var(--morado-claro), var(--morado-oscuro));
+      color: var(--blanco);
+      padding: 0.75rem 1.5rem;
+      border-radius: 12px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+  }
+  
+  .historial-btn-cerrar:hover {
+      box-shadow: 0 12px 24px rgba(129, 150, 235, 0.5);
+      transform: translateY(-2px);
+  }
+  
+  /* Estilos para los botones de PDF e impresión */
+  .historial-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+  }
+  
+  .historial-btn-pdf {
+      background: linear-gradient(135deg, #e74c3c, #c0392b);
+      color: var(--blanco);
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+  
+  .historial-btn-pdf:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  }
+  
+  .historial-btn-print {
+      background: linear-gradient(135deg, var(--morado-claro), var(--morado-medio));
+      color: var(--blanco);
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+  
+  .historial-btn-print:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  }
+  
+  /* Iconos para los botones */
+  .historial-btn-pdf::before {
+      content: "📄";
+      font-size: 16px;
+  }
+  
+  .historial-btn-print::before {
+      content: "🖨️";
+      font-size: 16px;
+  }
+  
+  /* Estilos para impresión */
+  @media print {
+      .historial-modal-overlay {
+          position: static;
+          background: none;
+          padding: 0;
+      }
+      
+      .historial-modal-container {
+          box-shadow: none;
+          margin: 0;
+          width: 100%;
+          max-width: 100%;
+          max-height: none;
+          border: none;
+          border-radius: 0;
+      }
+      
+      .historial-modal-content {
+          padding: 0;
+          color: black;
+      }
+      
+      .historial-actions,
+      .historial-modal-footer,
+      .historial-close-button {
+          display: none !important;
+      }
+      
+      body {
+          -webkit-print-color-adjust: exact !important;
+          color-adjust: exact !important;
+          background: white !important;
+      }
+      
+      .historial-info-section {
+          box-shadow: none !important;
+          border: 1px solid #ddd !important;
+          page-break-inside: avoid;
+      }
+      
+      .historial-consulta-card {
+          page-break-inside: avoid;
+      }
+  }
