@@ -729,3 +729,470 @@
   align-items: center;
   gap: 5px;
 }
+
+/* Estilo para el texto de ayuda debajo del campo */
+.input-hint {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.8rem;
+  color: #f01b1b;
+  font-style: italic;
+}
+
+/* ---
+=================================================================
+==     ESTILO EQUILIBRADO PARA MODAL DE AUDITORÍA             ==
+=================================================================
+--- */
+
+/* Variables de la paleta de colores */
+:root {
+  --audit-black: #000000;
+  --audit-dark-blue: #1a2540;
+  --audit-medium-blue: #495a90;
+  --audit-light-blue: #8196eb;
+  --audit-very-light-blue: #c2d8ff;
+}
+
+/* Botón de historial - Estilo limpio */
+.usuario-actions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.usuario-actions .btn-log {
+  background: #ffffff;
+  color: var(--audit-medium-blue);
+  border: 1px solid #e2e8f0;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.usuario-actions .btn-log:hover {
+  background: var(--audit-very-light-blue);
+  border-color: var(--audit-light-blue);
+  color: var(--audit-dark-blue);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(129, 150, 235, 0.15);
+}
+
+/* Backdrop elegante pero sutil */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(26, 37, 64, 0.75);
+  backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Container principal - Diseño limpio con sombra elegante */
+.modal-container.audit-modal {
+  width: 90%;
+  max-width: 850px;
+  max-height: 90vh;
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: white;
+  box-shadow: 
+    0 20px 25px -5px rgba(0, 0, 0, 0.15),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  animation: slideIn 0.4s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Header con gradiente sutil */
+.modal-header.audit-header-usuarios {
+  background: linear-gradient(135deg, var(--audit-medium-blue) 0%, var(--audit-dark-blue) 100%);
+  padding: 2rem 2.5rem;
+  position: relative;
+}
+
+.modal-header.audit-header-usuarios::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+}
+
+.modal-header-content {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+/* Icono con diseño limpio */
+.modal-icon-wrapper {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 12px;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.modal-title-section {
+  text-align: left;
+  flex: 1;
+}
+
+/* Título con gradiente personalizado */
+.modal-main-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+  background: linear-gradient(135deg, var(--audit-light-blue) 0%, var(--audit-medium-blue) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  text-shadow: none;
+  letter-spacing: -0.025em;
+}
+
+.modal-subtitle {
+  font-size: 1rem;
+  color: #e2e8f0;
+  margin: 0;
+  font-weight: 500;
+  opacity: 0.95;
+}
+
+/* Botón cerrar elegante */
+.modal-close-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #e2e8f0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0.75rem;
+  border-radius: 10px;
+  position: absolute;
+  top: 1.5rem;
+  right: 2rem;
+  z-index: 3;
+}
+
+.modal-close-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
+  color: white;
+  transform: rotate(90deg) scale(1.05);
+}
+
+/* Cuerpo con fondo sutil */
+.audit-modal .modal-body {
+  padding: 2.5rem;
+  overflow-y: auto;
+  background: #fafbfc;
+}
+
+/* Timeline con línea elegante */
+.audit-timeline {
+  position: relative;
+  padding-left: 35px;
+}
+
+.audit-timeline::before {
+  content: '';
+  position: absolute;
+  left: 22px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, 
+    var(--audit-light-blue) 0%, 
+    #e2e8f0 70%, 
+    transparent 100%);
+}
+
+.audit-timeline-item {
+  position: relative;
+  padding: 0.75rem 0 2rem 55px;
+  margin-bottom: 1rem;
+}
+
+.audit-timeline-item:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+/* Iconos con diseño limpio */
+.audit-icon-container {
+  position: absolute;
+  left: 0;
+  top: 0.75rem;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  border: 3px solid white;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+  z-index: 2;
+  transition: transform 0.2s ease;
+}
+
+.audit-timeline-item:hover .audit-icon-container {
+  transform: scale(1.05);
+}
+
+/* Tarjetas de contenido elegantes */
+.audit-content {
+  background: white;
+  border-radius: 12px;
+  padding: 1.75rem;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.audit-content:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+  border-color: var(--audit-very-light-blue);
+}
+
+.audit-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--audit-light-blue);
+  border-radius: 12px 12px 0 0;
+}
+
+.audit-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.audit-action-text {
+  font-size: 1.2rem;
+  font-weight: 650;
+  color: var(--audit-dark-blue);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.audit-meta {
+  font-size: 0.85rem;
+  color: #64748b;
+  background: #f1f5f9;
+  padding: 0.4rem 0.8rem;
+  border-radius: 16px;
+  font-weight: 500;
+  border: 1px solid #e2e8f0;
+}
+
+/* Detalles con separación clara */
+.audit-details {
+  font-size: 0.95rem;
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.audit-change-row {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 0.5rem 0;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.audit-change-row:hover {
+  background-color: #f8fafc;
+}
+
+.audit-label {
+  font-weight: 650;
+  color: var(--audit-medium-blue);
+  min-width: 80px;
+  font-size: 0.9rem;
+}
+
+.audit-value.audit-value-old {
+  color: #dc2626;
+  text-decoration: line-through;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+  background: #fef2f2;
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  border: 1px solid #fecaca;
+}
+
+.audit-value.audit-value-new {
+  color: #16a34a;
+  font-weight: 600;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+  background: #f0fdf4;
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  border: 1px solid #bbf7d0;
+}
+
+.audit-full-value {
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+  color: var(--audit-medium-blue);
+  background: #f8fafc;
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  border: 1px solid #e2e8f0;
+}
+
+/* Usuario con diseño sutil */
+.audit-user {
+  margin-top: 1.25rem;
+  font-size: 0.85rem;
+  color: #64748b;
+  text-align: right;
+  padding: 1rem;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.audit-user strong {
+  font-weight: 650;
+  color: var(--audit-dark-blue);
+}
+
+/* Estado sin datos limpio */
+.no-audit-data {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+  color: #64748b;
+}
+
+.no-audit-data svg {
+  color: var(--audit-light-blue);
+  margin-bottom: 1.5rem;
+  opacity: 0.7;
+}
+
+.no-audit-data p {
+  margin-top: 1rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  max-width: 350px;
+  line-height: 1.5;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .modal-container.audit-modal {
+    width: 95%;
+    max-height: 95vh;
+    border-radius: 12px;
+  }
+  
+  .modal-header.audit-header-usuarios {
+    padding: 1.75rem 2rem;
+  }
+  
+  .modal-main-title {
+    font-size: 1.5rem;
+  }
+  
+  .modal-subtitle {
+    font-size: 0.9rem;
+  }
+  
+  .audit-modal .modal-body {
+    padding: 2rem;
+  }
+  
+  .audit-timeline {
+    padding-left: 30px;
+  }
+  
+  .audit-timeline-item {
+    padding-left: 50px;
+  }
+  
+  .audit-icon-container {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .audit-content {
+    padding: 1.5rem;
+  }
+  
+  .audit-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+  
+  .audit-change-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+}
+
+/* Detalles adicionales para pulir el diseño */
+.audit-timeline-item:nth-child(even) .audit-content {
+  border-left: 3px solid var(--audit-very-light-blue);
+}
+
+.audit-timeline-item:nth-child(odd) .audit-content {
+  border-left: 3px solid var(--audit-light-blue);
+}
+
+/* Efecto sutil en hover para toda la timeline */
+.audit-timeline-item:hover {
+  transform: translateX(2px);
+  transition: transform 0.2s ease;
+}

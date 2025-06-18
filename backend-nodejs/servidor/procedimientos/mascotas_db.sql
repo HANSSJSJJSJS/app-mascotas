@@ -137,6 +137,17 @@ CREATE TABLE IF NOT EXISTS servicios_audit (
     fecha_modificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS audit_usuarios (
+    audit_id INT AUTO_INCREMENT PRIMARY KEY,
+    id_usuario INT NOT NULL,
+    campo_modificado VARCHAR(255) NOT NULL,
+    valor_anterior TEXT,
+    valor_nuevo TEXT,
+    accion VARCHAR(10) NOT NULL, 
+    fecha_modificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    usuario_db VARCHAR(255) DEFAULT CURRENT_USER
+);
+
 
 
 INSERT INTO tipo_persona (id_tipo, tipo) VALUES
@@ -207,3 +218,5 @@ INSERT INTO citas (fech_cit, hora, cod_ser, id_vet, cod_mas, id_pro, estado, not
 
 select * from citas_audit;
 select * from citas;
+
+select * from servicios_audit;
