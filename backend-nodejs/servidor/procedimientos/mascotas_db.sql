@@ -126,6 +126,18 @@ CREATE TABLE IF NOT EXISTS citas_audit (
     fecha_modificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS servicios_audit (
+    audit_id INT AUTO_INCREMENT PRIMARY KEY,
+    cod_ser INT,
+    accion VARCHAR(10) NOT NULL, 
+    campo_modificado VARCHAR(100),
+    valor_anterior TEXT,
+    valor_nuevo TEXT,
+    usuario_db VARCHAR(100), 
+    fecha_modificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
 
 INSERT INTO tipo_persona (id_tipo, tipo) VALUES
 (1, 'Invitado/Tutor'),

@@ -14,9 +14,9 @@ app.use(cors())
 const dbConfig = {
   host: "localhost",
   user: "root",
-  password: "",
+  password: "12345678",
   database: "mascotas_db",
-  port: 3306,
+  port: 3309,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
@@ -819,19 +819,22 @@ app.delete("/api/admin/gestion-roles/:id", async (req, res) => {
     }
 });
 
-// --- Endpoint para obtener todos los servicios (gestión de servicios) ---
+// =================================================================
+// ==               GESTIÓN DE SERVICIOS                          ==
+// =================================================================
+
+// --- Endpoint para obtener todos los servicios ---
 app.get("/api/admin/servicios", async (req, res) => {
   try {
-    const [servicios] = await pool.query("SELECT * FROM servicios");
-    console.log(servicios); // Inspeccionar los datos
-    res.json(servicios);
+    const [servicios] = await pool.query("CALL Admin_MostrarServicios()");
+    res.json(servicios[0]);
   } catch (error) {
     console.error("Error al obtener servicios:", error);
     res.status(500).json({ success: false, message: "Error en el servidor al obtener servicios" });
   }
 });
 
-// --- Endpoint para crear un nuevo servicio (gestión de servicios) ---
+// --- Endpoint para crear un nuevo servicio ---
 app.post("/api/admin/servicios", async (req, res) => {
     try {
         const { nom_ser, descrip_ser, precio } = req.body;
@@ -839,17 +842,16 @@ app.post("/api/admin/servicios", async (req, res) => {
             return res.status(400).json({ message: "El nombre y el precio del servicio son obligatorios." });
         }
 
-        const sql = "INSERT INTO servicios (nom_ser, descrip_ser, precio) VALUES (?, ?, ?)";
-        const [result] = await pool.query(sql, [nom_ser, descrip_ser || null, precio]);
+        const [result] = await pool.query("CALL Admin_CrearServicio(?, ?, ?)", [nom_ser, descrip_ser || null, precio]);
 
-        res.status(201).json({ success: true, message: 'Servicio creado exitosamente', insertedId: result.insertId });
+        res.status(201).json({ success: true, message: 'Servicio creado exitosamente', insertedId: result[0][0].cod_ser });
     } catch (error) {
         console.error("Error en POST /api/admin/servicios:", error);
         res.status(500).json({ message: "Error en el servidor al crear el servicio." });
     }
 });
 
-// --- Endpoint para actualizar un servicio (gestión de servicios) ---
+// --- Endpoint para actualizar un servicio ---
 app.put("/api/admin/servicios/:id", async (req, res) => {
     try {
         const { id } = req.params;
@@ -859,8 +861,7 @@ app.put("/api/admin/servicios/:id", async (req, res) => {
             return res.status(400).json({ message: "El nombre y el precio del servicio son obligatorios." });
         }
 
-        const sql = "UPDATE servicios SET nom_ser = ?, descrip_ser = ?, precio = ? WHERE cod_ser = ?";
-        const [result] = await pool.query(sql, [nom_ser, descrip_ser || null, precio, id]);
+        const [result] = await pool.query("CALL Admin_ActualizarServicio(?, ?, ?, ?)", [id, nom_ser, descrip_ser || null, precio]);
 
         if (result.affectedRows === 0) {
             return res.status(404).json({ message: "Servicio no encontrado." });
@@ -872,27 +873,47 @@ app.put("/api/admin/servicios/:id", async (req, res) => {
     }
 });
 
-// --- Endpoint para eliminar un servicio (gestión de servicios) ---
+// --- Endpoint para eliminar un servicio ---
 app.delete("/api/admin/servicios/:id", async (req, res) => {
     const { id } = req.params;
     try {
-        const [citas] = await pool.query("SELECT COUNT(*) AS count FROM citas WHERE cod_ser = ?", [id]);
-        if (citas[0].count > 0) {
-            return res.status(409).json({ message: `No se puede eliminar el servicio porque está asignado a ${citas[0].count} cita(s).` });
-        }
-
-        const [result] = await pool.query("DELETE FROM servicios WHERE cod_ser = ?", [id]);
+        // La lógica de validación ahora vive en el procedimiento almacenado
+        const [result] = await pool.query("CALL Admin_EliminarServicio(?)", [id]);
         
-        if (result.affectedRows === 0) {
+        // El procedimiento devuelve las filas afectadas solo si la eliminación fue exitosa
+        if (result[0][0].affectedRows === 0) {
             return res.status(404).json({ message: "Servicio no encontrado." });
         }
 
         res.json({ success: true, message: "Servicio eliminado exitosamente" });
     } catch (error) {
+        // Capturamos el error personalizado de la base de datos
+        const isForeignKeyError = error.sqlState === '45000';
+        const message = isForeignKeyError
+            ? error.sqlMessage // Usamos el mensaje que definimos en el trigger
+            : "Error al eliminar el servicio.";
+        const statusCode = isForeignKeyError ? 409 : 500; // 409 Conflict si está en uso
+
         console.error(`Error en DELETE /api/admin/servicios/${id}:`, error);
-        res.status(500).json({ success: false, message: "Error al eliminar el servicio." });
+        res.status(statusCode).json({ success: false, message });
     }
 });
+
+// --- Endpoint para OBTENER la auditoría de un servicio específico ---
+app.get("/api/admin/servicios/audit/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const [auditLog] = await pool.query("CALL Admin_MostrarAuditoriaServicio(?)", [id]);
+    res.json(auditLog[0]);
+  } catch (error) {
+    console.error(`Error en GET /api/admin/servicios/audit/${req.params.id}:`, error);
+    res.status(500).json({ message: "Error al obtener el historial de auditoría del servicio." });
+  }
+});
+// =================================================================
+// ==           FIN DE RUTAS DE GESTION DE SERVICIOS         ==
+// =================================================================
+
 
 // =================================================================
 // ==           FIN DE RUTAS DEL PANEL DE ADMINISTRADOR           ==

@@ -2,10 +2,10 @@ USE mascotas_db;
 DELIMITER $$
 
 -- =================================================================
--- ==      TRIGGERS DE AUDITORÍA CORREGIDOS (Versión 2.0)         ==
+-- ==          TRIGGERS DE AUDITORÍA DE LA TABLA CITAS            ==
 -- =================================================================
 
--- ------ TRIGGER 1: Se activa DESPUÉS de ACTUALIZAR una cita (CORREGIDO) ------
+-- ------ TRIGGER 1: Se activa DESPUÉS de ACTUALIZAR una cita  ------
 DROP TRIGGER IF EXISTS trg_after_citas_update$$
 
 CREATE TRIGGER trg_after_citas_update
@@ -63,7 +63,7 @@ BEGIN
 END$$
 
 
--- ------ TRIGGER 2: Se activa DESPUÉS de INSERTAR una nueva cita (CORREGIDO) ------
+-- ------ TRIGGER 2: Se activa DESPUÉS de INSERTAR una nueva cita  ------
 DROP TRIGGER IF EXISTS trg_after_citas_insert$$
 
 CREATE TRIGGER trg_after_citas_insert
@@ -90,7 +90,7 @@ BEGIN
 END$$
 
 
--- ------ TRIGGER 3: Se activa ANTES de ELIMINAR una cita (CORREGIDO) ------
+-- ------ TRIGGER 3: Se activa ANTES de ELIMINAR una cita  ------
 DROP TRIGGER IF EXISTS trg_before_citas_delete$$
 
 CREATE TRIGGER trg_before_citas_delete
