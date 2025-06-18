@@ -1144,6 +1144,9 @@ app.post("/api/mascotas", upload.single("foto"), async (req, res) => {
   let connection;
   try {
     console.log("📝 Iniciando registro de mascota");
+    console.log("Datos recibidos:", req.body); // Log para depuración
+    console.log("Archivo recibido:", req.file); // Log para depuración
+
     const {
       nom_mas,
       especie,
@@ -1156,7 +1159,6 @@ app.post("/api/mascotas", upload.single("foto"), async (req, res) => {
       vacunado,
       esterilizado,
       id_pro,
-      foto,
     } = req.body;
 
     // Validar campos requeridos
@@ -1222,6 +1224,7 @@ app.post("/api/mascotas", upload.single("foto"), async (req, res) => {
     });
   } catch (error) {
     if (connection) await connection.rollback();
+    console.error("Error en el servidor:", error);
     res.status(500).json({
       success: false,
       message: "Error en el servidor al registrar la mascota",
