@@ -1,9 +1,12 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
-import { Calendar, Clock, X, ChevronRight, User } from "lucide-react"
+import { Calendar, Clock, X, ChevronRight, User, Loader2 } from "lucide-react"
 import "../../stylos/cssFormularios/FormularioCita.css"
+
+// Configuración de la API - ajusta la URL según tu servidor
+const API_BASE_URL = "http://localhost:3001/api"
 
 function FormularioCita() {
   const {
@@ -14,69 +17,56 @@ function FormularioCita() {
     watch,
     formState: { errors },
   } = useForm()
+
+  const [servicios, setServicios] = useState([])
+  const [veterinarios, setVeterinarios] = useState([])
+  const [mascotas, setMascotas] = useState([])
   const [servicioSeleccionado, setServicioSeleccionado] = useState(null)
   const [servicioExpandido, setServicioExpandido] = useState(null)
-  const [mascotasUsuario, setMascotasUsuario] = useState([
-    { id: 1, nombre: "Max", tipo: "Perro", raza: "Labrador", edad: 3 },
-    { id: 2, nombre: "Luna", tipo: "Gato", raza: "Siamés", edad: 2 },
-  ])
+  const [loading, setLoading] = useState(false)
+  const [loadingData, setLoadingData] = useState(true)
+  const [error, setError] = useState(null)
+  const [success, setSuccess] = useState(null)
 
-  const usuarioActual = JSON.parse(localStorage.getItem("userData"));
+  // Usuario simulado - en una app real vendría del contexto de autenticación
+  const usuarioActual = {
+    id: 6, // ID del propietario en la base de datos
+    nombre: "Pedro González",
+  }
 
-  const servicios = [
-    {
-      id: 1,
-      nombre: "Consulta veterinaria",
-      icono: "consulta",
-      precio: 87599,
-      descripcion: "Revisión de cola a cabeza:",
-      detalles: ["Chequeo general de todos los sistemas.", "Toma de temperatura corporal.", "Revisión de piel."],
-    },
-    {
-      id: 2,
-      nombre: "Baño y peluquería",
-      icono: "peluqueria",
-      precio: 45000,
-      descripcion:
-        "Siempre limpio, nunca inlimpio: Servicio de baño y peluquería para todos los tamaños y todos los tipos de pelo. También puede realizarse un baño medicado de ser necesario para el paciente.",
-      detalles: [
-        "Recuerda que si tu mascota es un gato(a), para Baño y Peluquería sólo podremos atenderlos a las 09:00 a.m. en nuestras sedes. En caso de agendar en otro horario, tendríamos que re-programar para los días siguientes. ¡Te esperamos!",
-      ],
-    },
-    {
-      id: 3,
-      nombre: "SERVICIO VACUNACION",
-      icono: "vacunacion",
-      precio: 27600,
-      descripcion:
-        "¡Mascota vacunada vale por 2! La vacunación en cachorros ayuda a generar anticuerpos contra las principales enfermedades. Para las mascotas mayores de 1 año de edad se realiza un refuerzo anual. Incluye valoración inicial.",
-      detalles: [],
-    },
-    {
-      id: 4,
-      nombre: "Otro servicio",
-      icono: "otro",
-      precio: 35000,
-      descripcion: "Otros servicios veterinarios disponibles.",
-      detalles: [],
-    },
-    {
-      id: 5,
-      nombre: "Telemedicina (Virtual)",
-      icono: "telemedicina",
-      precio: 50000,
-      descripcion: "Consulta veterinaria virtual desde la comodidad de tu hogar.",
-      detalles: [],
-    },
-  ]
+  useEffect(() => {
+    cargarDatos()
+  }, [])
 
-  const veterinarios = [
-    { id: 1, nombre: "Dra. María López" },
-    { id: 2, nombre: "Dr. Juan Pérez" },
-    { id: 3, nombre: "Dra. Ana García" },
-    { id: 4, nombre: "Dr. Carlos Rodríguez" },
-    { id: 5, nombre: "Dra. Laura Martínez" },
-  ]
+  const cargarDatos = async () => {
+    try {
+      setLoadingData(true)
+
+      // Cargar servicios
+      const serviciosRes = await fetch(`${API_BASE_URL}/servicios`)
+      if (!serviciosRes.ok) throw new Error(`Error al cargar servicios: ${serviciosRes.status}`)
+      const serviciosData = await serviciosRes.json()
+      setServicios(serviciosData)
+
+      // Cargar veterinarios
+      const veterinariosRes = await fetch(`${API_BASE_URL}/veterinarios`)
+      if (!veterinariosRes.ok) throw new Error(`Error al cargar veterinarios: ${veterinariosRes.status}`)
+      const veterinariosData = await veterinariosRes.json()
+      setVeterinarios(veterinariosData)
+
+      // Cargar mascotas del propietario
+      const mascotasRes = await fetch(`${API_BASE_URL}/mascotas/${usuarioActual.id}`)
+      if (!mascotasRes.ok) throw new Error(`Error al cargar mascotas: ${mascotasRes.status}`)
+      const mascotasData = await mascotasRes.json()
+      setMascotas(mascotasData)
+
+      setLoadingData(false)
+    } catch (error) {
+      console.error("Error cargando datos:", error)
+      setError("Error al cargar los datos. Por favor, recarga la página.")
+      setLoadingData(false)
+    }
+  }
 
   const formatearPrecio = (precio) => {
     return new Intl.NumberFormat("es-CO", {
@@ -102,12 +92,40 @@ function FormularioCita() {
     }
   }
 
-  const onSubmit = handleSubmit((data) => {
-    console.log(data)
-    alert("Cita agendada con éxito. Nos comunicaremos contigo para confirmar.")
-    reset()
-    setServicioSeleccionado(null)
-    setServicioExpandido(null)
+  const onSubmit = handleSubmit(async (data) => {
+    try {
+      setLoading(true)
+
+      const citaData = {
+        fecha: data.fecha,
+        hora: data.hora,
+        idServicio: servicioSeleccionado.id,
+        idVeterinario: data.idVeterinario,
+        idMascota: data.idMascota,
+        idPropietario: usuarioActual.id,
+        notas: data.notas,
+      }
+
+      const response = await fetch(`${API_BASE_URL}/citas`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(citaData),
+      })
+
+      if (!response.ok) throw new Error(`Error al registrar la cita: ${response.status}`)
+      const responseData = await response.json()
+
+      setSuccess("Cita registrada exitosamente.")
+      reset()
+      setServicioSeleccionado(null)
+    } catch (error) {
+      console.error("Error registrando cita:", error)
+      setError("Error al registrar la cita. Por favor, intenta nuevamente.")
+    } finally {
+      setLoading(false)
+    }
   })
 
   const renderIcono = (iconoNombre) => {
@@ -125,6 +143,17 @@ function FormularioCita() {
     }
   }
 
+  if (loadingData) {
+    return (
+      <div className="container-cita">
+        <div className="text-center">
+          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
+          <p>Cargando datos...</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="container-cita">
       <div className="header-cita">
@@ -134,6 +163,39 @@ function FormularioCita() {
           <span>{usuarioActual.nombre}</span>
         </div>
       </div>
+
+      {/* Mensajes de error y éxito */}
+      {error && (
+        <div
+          className="alert alert-error"
+          style={{
+            backgroundColor: "#fee",
+            border: "1px solid #fcc",
+            padding: "10px",
+            borderRadius: "5px",
+            marginBottom: "20px",
+            color: "#c33",
+          }}
+        >
+          {error}
+        </div>
+      )}
+
+      {success && (
+        <div
+          className="alert alert-success"
+          style={{
+            backgroundColor: "#efe",
+            border: "1px solid #cfc",
+            padding: "10px",
+            borderRadius: "5px",
+            marginBottom: "20px",
+            color: "#3c3",
+          }}
+        >
+          {success}
+        </div>
+      )}
 
       <div className="pasos-cita">
         <div className="paso activo">
@@ -243,13 +305,28 @@ function FormularioCita() {
                     })}
                   >
                     <option value="">Seleccionar mascota</option>
-                    {mascotasUsuario.map((mascota) => (
+                    {mascotas.map((mascota) => (
                       <option key={mascota.id} value={mascota.id}>
-                        {mascota.nombre} ({mascota.tipo})
+                        {mascota.nombre} ({mascota.tipo} - {mascota.raza})
                       </option>
                     ))}
                   </select>
                   {errors.idMascota && <p className="error-mensaje">{errors.idMascota.message}</p>}
+                </label>
+              </div>
+
+              <div className="campo-formulario">
+                <label>
+                  <span className="label-text">Veterinario:</span>
+                  <select {...register("idVeterinario", { required: "El veterinario es obligatorio" })}>
+                    <option value="">Seleccionar veterinario</option>
+                    {veterinarios.map((vet) => (
+                      <option key={vet.id} value={vet.id}>
+                        {vet.nombre} - {vet.especialidad}
+                      </option>
+                    ))}
+                  </select>
+                  {errors.idVeterinario && <p className="error-mensaje">{errors.idVeterinario.message}</p>}
                 </label>
               </div>
 
@@ -302,21 +379,6 @@ function FormularioCita() {
                 </label>
               </div>
 
-              <div className="campo-formulario">
-                <label>
-                  <span className="label-text">Veterinario:</span>
-                  <select {...register("idVeterinario", { required: "El veterinario es obligatorio" })}>
-                    <option value="">Seleccionar veterinario</option>
-                    {veterinarios.map((vet) => (
-                      <option key={vet.id} value={vet.id}>
-                        {vet.nombre}
-                      </option>
-                    ))}
-                  </select>
-                  {errors.idVeterinario && <p className="error-mensaje">{errors.idVeterinario.message}</p>}
-                </label>
-              </div>
-
               <div className="campo-formulario campo-completo">
                 <label>
                   <span className="label-text">Notas adicionales (opcional):</span>
@@ -339,8 +401,17 @@ function FormularioCita() {
               <button type="button" className="btn-secundario" onClick={() => setServicioSeleccionado(null)}>
                 Volver
               </button>
-              <button type="submit" className="btn-primario">
-                Continuar <ChevronRight size={18} />
+              <button type="submit" className="btn-primario" disabled={loading}>
+                {loading ? (
+                  <>
+                    <Loader2 size={18} className="animate-spin" style={{ marginRight: "8px" }} />
+                    Agendando...
+                  </>
+                ) : (
+                  <>
+                    Continuar <ChevronRight size={18} />
+                  </>
+                )}
               </button>
             </div>
           </div>

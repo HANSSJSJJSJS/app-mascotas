@@ -99,8 +99,13 @@ export default function InicioPropietario() {
         })
 
         // Obtener servicios disponibles
-        const serviciosResponse = await axios.get(`http://localhost:3001/api/admin/servicios`);
-        setServicios(serviciosResponse.data)
+        try {
+          const serviciosResponse = await axios.get(`http://localhost:3001/api/admin/servicios`);
+          setServicios(serviciosResponse.data);
+        } catch (error) {
+          console.error("Error al obtener servicios:", error);
+          setServicios([]); // Fallback a un array vacío
+        }
 
         // Obtener historiales médicos
         const historialesResponse = await axios.get(

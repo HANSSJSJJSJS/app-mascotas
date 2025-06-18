@@ -5,10 +5,18 @@ const bcrypt = require("bcrypt")
 const multer = require("multer")
 const path = require("path")
 const fs = require("fs")
+const serviciosRoutes = require("./routes/servicios")
+const mascotaRoutes = require("./routes/mascota")
+const citasRoutes = require("./routes/citas")
+const VeterinarioRoutes = require("./routes/veterinarios")
 
 const app = express()
 app.use(express.json())
 app.use(cors())
+app.use("/api/servicios", serviciosRoutes)
+app.use("/api/mascotas", mascotaRoutes)
+app.use("/api/citas", citasRoutes)
+app.use("/api/veterinarios", VeterinarioRoutes)
 
 // Configuración de la conexión a MySQL
 const dbConfig = {
@@ -760,11 +768,23 @@ app.delete("/api/admin/gestion-roles/:id", async (req, res) => {
 // --- Endpoint para obtener todos los servicios ---
 app.get("/api/admin/servicios", async (req, res) => {
   try {
-    const [servicios] = await pool.query("CALL Admin_MostrarServicios()");
-    res.json(servicios[0]);
+    // Consulta directa a la tabla servicios
+    const [servicios] = await pool.query("SELECT cod_ser, nom_ser, descrip_ser, precio FROM servicios");
+
+    // Verifica que se obtuvieron resultados
+    if (!servicios || servicios.length === 0) {
+      return res.status(404).json({ success: false, message: "No hay servicios disponibles." });
+    }
+
+    // Devuelve los servicios obtenidos
+    res.json(servicios);
   } catch (error) {
     console.error("Error al obtener servicios:", error);
-    res.status(500).json({ success: false, message: "Error en el servidor al obtener servicios" });
+    res.status(500).json({ 
+      success: false, 
+      message: "Error en el servidor al obtener servicios", 
+      error: error.message 
+    });
   }
 });
 
