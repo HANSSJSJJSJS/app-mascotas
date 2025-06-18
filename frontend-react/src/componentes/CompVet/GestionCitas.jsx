@@ -268,9 +268,6 @@ const GestionCitas = () => {
               })}
             </p>
           </div>
-          <button className="btn-primary" onClick={openNewAppointmentModal}>
-            ➕ Nueva Cita
-          </button>
         </div>
       </header>
 

@@ -5,10 +5,18 @@ const bcrypt = require("bcrypt")
 const multer = require("multer")
 const path = require("path")
 const fs = require("fs")
+const serviciosRoutes = require("./routes/servicios")
+const mascotaRoutes = require("./routes/mascota")
+const citasRoutes = require("./routes/citas")
+const VeterinarioRoutes = require("./routes/veterinarios")
 
 const app = express()
 app.use(express.json())
 app.use(cors())
+app.use("/api/servicios", serviciosRoutes)
+app.use("/api/mascotas", mascotaRoutes)
+app.use("/api/citas", citasRoutes)
+app.use("/api/veterinarios", VeterinarioRoutes)
 
 // Configuración de la conexión a MySQL
 const dbConfig = {
@@ -17,6 +25,7 @@ const dbConfig = {
   password: "",
   database: "mascotas_db",
   port: 3301,
+  port: 3306,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
@@ -491,177 +500,111 @@ app.get("/api/admin/stats", async (req, res) => {
     }
 });
 
+
 // --- Endpoint para obtener todos los usuarios (gestión de usuarios) ---
 app.get("/api/admin/users", async (req, res) => {
-    try {
-        const sql = `
-            SELECT 
-                u.*,
-                r.rol AS nombre_rol, 
-                tp.tipo AS tipo_persona
-            FROM usuarios u
-            LEFT JOIN rol r ON u.id_rol = r.id_rol
-            LEFT JOIN tipo_persona tp ON u.id_tipo = tp.id_tipo
-            ORDER BY u.id_usuario DESC;
-        `;
-        const [users] = await pool.query(sql);
-        res.json(users);
-    } catch (error) {
-        console.error("Error en GET /api/admin/users:", error);
-        res.status(500).json({ message: "Error al obtener usuarios." });
-    }
+  try {
+      const [users] = await pool.query("CALL sp_get_all_users()");
+      res.json(users[0]);
+  } catch (error) {
+      console.error("Error en GET /api/admin/users:", error);
+      res.status(500).json({ message: "Error al obtener usuarios." });
+  }
 });
 
 // --- Endpoint para crear un nuevo usuario (gestión de usuarios) ---
 app.post("/api/admin/users", async (req, res) => {
-    console.log('Recibida petición para crear usuario:', req.body);
-    const connection = await pool.getConnection();
-    try {
-        const {
-            nombre, apellido, email, tipo_documento, numeroid, genero, 
-            fecha_nacimiento, telefono, ciudad, barrio, direccion, 
-            id_rol, id_tipo, contrasena 
-        } = req.body;
+  try {
+      const {
+          nombre, apellido, email, tipo_documento, numeroid, genero, 
+          fecha_nacimiento, telefono, ciudad, barrio, direccion, 
+          id_rol, id_tipo, contrasena 
+      } = req.body;
 
-        if (!nombre || !apellido || !email || !contrasena || !id_rol || !id_tipo) {
-            connection.release();
-            return res.status(400).json({ success: false, message: "Faltan campos obligatorios." });
-        }
-        
-        await connection.beginTransaction();
+      if (!nombre || !apellido || !email || !contrasena || !id_rol || !id_tipo) {
+          return res.status(400).json({ message: "Faltan campos obligatorios." });
+      }
+      
+      const hashedPassword = await bcrypt.hash(contrasena, 10);
+      
+      const [result] = await pool.query("CALL sp_create_user(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [
+          nombre, apellido, email, tipo_documento, numeroid, genero, 
+          fecha_nacimiento, telefono, ciudad, barrio, direccion, 
+          id_rol, id_tipo, hashedPassword
+      ]);
+      
+      const newUserId = result[0][0].id_usuario;
+      res.status(201).json({ message: 'Usuario creado exitosamente', id: newUserId });
 
-        const [existingUser] = await connection.query("SELECT id_usuario FROM usuarios WHERE email = ?", [email]);
-        if (existingUser.length > 0) {
-            await connection.rollback();
-            connection.release();
-            return res.status(409).json({ success: false, message: "El correo electrónico ya está registrado." });
-        }
-        
-        const hashedPassword = await bcrypt.hash(contrasena, 10);
-        
-        const query = `
-          INSERT INTO usuarios (
-            nombre, apellido, email, tipo_documento, numeroid, genero, fecha_nacimiento, 
-            telefono, ciudad, direccion, barrio, password_hash, id_rol, id_tipo, estado
-          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)`;
-        
-        const values = [
-            nombre, apellido, email, tipo_documento, numeroid, genero,
-            fecha_nacimiento, telefono || null, ciudad, direccion,
-            barrio || null, 
-            hashedPassword, id_rol, id_tipo
-        ];
-        
-        const [result] = await connection.query(query, values);
-        const userId = result.insertId;
-        
-        if (parseInt(id_tipo, 10) === 1) {
-            await connection.query('INSERT IGNORE INTO propietarios (id_pro) VALUES (?)', [userId]);
-        } else if (parseInt(id_tipo, 10) === 2 || parseInt(id_tipo, 10) === 3) {
-            await connection.query('INSERT IGNORE INTO veterinarios (id_vet, especialidad, horario) VALUES (?, "General", "N/A")', [userId]);
-        } else if (parseInt(id_tipo, 10) === 4) {
-            await connection.query('INSERT IGNORE INTO administradores (id_admin, cargo, fecha_ingreso) VALUES (?, "Cargo por definir", CURDATE())', [userId]);
-        }
-
-        await connection.commit();
-        res.status(201).json({ message: 'Usuario creado exitosamente', id: userId });
-
-    } catch (error) {
-        if (connection) await connection.rollback();
-        console.error("Error al crear usuario:", error);
-        res.status(500).json({ message: "Error en el servidor al crear el usuario." });
-    } finally {
-        if (connection) connection.release();
-    }
+  } catch (error) {
+      console.error("Error al crear usuario:", error);
+      const errorMessage = error.sqlState === '45000' ? error.sqlMessage : "Error en el servidor al crear el usuario.";
+      const statusCode = error.sqlState === '45000' ? 409 : 500;
+      res.status(statusCode).json({ message: errorMessage });
+  }
 });
 
 // --- Endpoint para actualizar un usuario existente (gestión de usuarios) ---
 app.put("/api/admin/users/:id", async (req, res) => {
-    const { id } = req.params;
-    const {
-        nombre, apellido, email, tipo_documento, numeroid, genero, 
-        fecha_nacimiento, telefono, ciudad, direccion, barrio,
-        id_rol, id_tipo, contrasena, estado 
-    } = req.body;
+  try {
+      const { id } = req.params;
+      const {
+          nombre, apellido, email, tipo_documento, numeroid, genero, 
+          fecha_nacimiento, telefono, ciudad, direccion, barrio,
+          id_rol, id_tipo, contrasena, estado 
+      } = req.body;
 
-    if (!nombre || !apellido || !email || !id_rol || !id_tipo) {
-        return res.status(400).json({ message: "Faltan campos obligatorios." });
-    }
+      if (!nombre || !apellido || !email || !id_rol || !id_tipo) {
+          return res.status(400).json({ message: "Faltan campos obligatorios." });
+      }
 
-    try {
-        let hashedPassword = null;
-        if (contrasena) {
-            hashedPassword = await bcrypt.hash(contrasena, 10);
-        }
-        
-        let sql = `
-            UPDATE usuarios SET
-                nombre = ?, apellido = ?, email = ?, tipo_documento = ?, numeroid = ?,
-                genero = ?, fecha_nacimiento = ?, telefono = ?, ciudad = ?, direccion = ?,
-                barrio = ?, id_rol = ?, id_tipo = ?, estado = ?
-                ${hashedPassword ? ', password_hash = ?' : ''}
-            WHERE id_usuario = ?`;
-        
-        const values = [
-            nombre, apellido, email, tipo_documento, numeroid, genero,
-            fecha_nacimiento, telefono || null, ciudad, direccion,
-            barrio || null,
-            id_rol, id_tipo, estado,
-        ];
+      let hashedPassword = null;
+      if (contrasena) {
+          hashedPassword = await bcrypt.hash(contrasena, 10);
+      }
+      
+      await pool.query("CALL sp_update_user(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [
+          id, nombre, apellido, email, tipo_documento, numeroid, genero, 
+          fecha_nacimiento, telefono, ciudad, barrio, direccion, 
+          id_rol, id_tipo, estado, hashedPassword
+      ]);
+      
+      res.json({ success: true, message: 'Usuario actualizado exitosamente' });
 
-        if (hashedPassword) {
-            values.push(hashedPassword);
-        }
-        values.push(id);
-
-        await pool.query(sql, values.filter(v => v !== undefined));
-        
-        res.json({ success: true, message: 'Usuario actualizado exitosamente' });
-
-    } catch (error) {
-        console.error("Error al actualizar usuario:", error);
-        if (error.code === 'ER_DUP_ENTRY') {
-            return res.status(400).json({ message: 'El correo electrónico o el documento ya pertenecen a otro usuario.' });
-        }
-        res.status(500).json({ message: "Error en el servidor al actualizar el usuario." });
-    }
+  } catch (error) {
+      console.error("Error al actualizar usuario:", error);
+      if (error.code === 'ER_DUP_ENTRY') {
+          return res.status(400).json({ message: 'El correo electrónico o el documento ya pertenecen a otro usuario.' });
+      }
+      res.status(500).json({ message: "Error en el servidor al actualizar el usuario." });
+  }
 });
 
 // --- Endpoint para eliminar un usuario (gestión de usuarios) ---
 app.delete("/api/admin/users/:id", async (req, res) => {
-    const { id } = req.params;
-    const connection = await pool.getConnection();
-    try {
-      await connection.beginTransaction();
-  
-      const [users] = await connection.query("SELECT id_tipo FROM usuarios WHERE id_usuario = ?", [id]);
-      if (users.length === 0) {
-        await connection.rollback();
-        connection.release();
-        return res.status(404).json({ message: "Usuario no encontrado." });
-      }
-      const { id_tipo } = users[0];
-  
-      if (id_tipo === 1) {
-        await connection.query("DELETE FROM propietarios WHERE id_pro = ?", [id]);
-      } else if (id_tipo === 2 || id_tipo === 3) {
-        await connection.query("DELETE FROM veterinarios WHERE id_vet = ?", [id]);
-      } else if (id_tipo === 4) {
-        await connection.query("DELETE FROM administradores WHERE id_admin = ?", [id]);
-      }
-      
-      await connection.query("DELETE FROM usuarios WHERE id_usuario = ?", [id]);
-  
-      await connection.commit();
+  try {
+      const { id } = req.params;
+      await pool.query("CALL sp_delete_user(?)", [id]);
       res.json({ success: true, message: "Usuario eliminado exitosamente" });
-  
-    } catch (error) {
-      if (connection) await connection.rollback();
+  } catch (error) {
       console.error("Error al eliminar usuario:", error);
       res.status(500).json({ success: false, message: "Error al eliminar el usuario." });
-    } finally {
-      if (connection) connection.release();
-    }
+  }
+});
+
+// --- Endpoint para obtener el historial de auditoría de un usuario ---
+app.get("/api/admin/users/audit/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+      const [logs] = await pool.query(
+          "SELECT * FROM audit_usuarios WHERE id_usuario = ? ORDER BY fecha_modificacion DESC",
+          [id]
+      );
+      res.json(logs);
+  } catch (error) {
+      console.error(`Error en GET /api/admin/users/audit/${id}:`, error);
+      res.status(500).json({ message: "Error al obtener el historial del usuario." });
+  }
 });
 
 // --- Endpoint para obtener la lista de roles (para formularios) ---
@@ -826,11 +769,23 @@ app.delete("/api/admin/gestion-roles/:id", async (req, res) => {
 // --- Endpoint para obtener todos los servicios ---
 app.get("/api/admin/servicios", async (req, res) => {
   try {
-    const [servicios] = await pool.query("CALL Admin_MostrarServicios()");
-    res.json(servicios[0]);
+    // Consulta directa a la tabla servicios
+    const [servicios] = await pool.query("SELECT cod_ser, nom_ser, descrip_ser, precio FROM servicios");
+
+    // Verifica que se obtuvieron resultados
+    if (!servicios || servicios.length === 0) {
+      return res.status(404).json({ success: false, message: "No hay servicios disponibles." });
+    }
+
+    // Devuelve los servicios obtenidos
+    res.json(servicios);
   } catch (error) {
     console.error("Error al obtener servicios:", error);
-    res.status(500).json({ success: false, message: "Error en el servidor al obtener servicios" });
+    res.status(500).json({ 
+      success: false, 
+      message: "Error en el servidor al obtener servicios", 
+      error: error.message 
+    });
   }
 });
 
