@@ -118,7 +118,7 @@ app.get("/api/usuario/:id", async (req, res) => {
 
     // Verificar si es propietario
     if (user.id_rol === 3) {
-      const [propietario] = await pool.query("SELECT * FROM propietarios WHERE id_usuario = ?", [id])
+      const [propietario] = await pool.query("SELECT * FROM propietarios WHERE id_pro = ?", [id])
 
       if (propietario.length > 0) {
         user.esPropietario = true
@@ -239,7 +239,7 @@ app.post("/logout", async (req, res) => {
     console.error("Error en logout:", error)
     res.status(500).json({ success: false, message: "Error en el servidor" })
   }
-})
+})  
 
 
 // Función para probar la conexión a la base de datos

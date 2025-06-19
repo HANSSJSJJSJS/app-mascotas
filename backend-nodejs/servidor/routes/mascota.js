@@ -30,7 +30,7 @@ router.get("/:propietarioId", async (req, res) => {
     );
 
     if (mascotas.length === 0) {
-      return res.status(404).json({ error: "No se encontraron mascotas para este propietario" });
+      return res.json([]); // Devuelve array vacío, no error
     }
 
     res.json(mascotas);
