@@ -58,7 +58,7 @@
       align-items: flex-start;
       margin-bottom: 1.5rem;
       padding-bottom: 1rem;
-      border-bottom: 2px solid var(--morado-claro);
+
   }
   
   .historial-modal-title {
@@ -325,25 +325,19 @@
   }
   
   .historial-btn-pdf {
-      background: linear-gradient(135deg, #e74c3c, #c0392b);
-      color: var(--blanco);
-      border: none;
-      padding: 10px 18px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      transition: all 0.3s ease;
-      text-decoration: none;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    background-color: #4a148c; /* Morado oscuro */
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.3s;
+    margin-right: 10px;
   }
   
   .historial-btn-pdf:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    background-color: #6a1b9a; /* Morado un poco más claro al pasar el mouse */
   }
   
   .historial-btn-print {

@@ -3,7 +3,6 @@ import ViewHistorialModal from '../CompVet/ViewHistorialModal';
 import { PlusCircle, Search, Eye } from 'react-bootstrap-icons';
 import Ban from 'react-bootstrap-icons/dist/icons/ban';
 import CheckCircle from 'react-bootstrap-icons/dist/icons/check-circle';
-import '../../stylos/cssVet/HistorialClinico.css';
 
 const HistorialClinico = () => {
   const [historiales, setHistoriales] = useState([]);
@@ -12,6 +11,13 @@ const HistorialClinico = () => {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [selectedHistorial, setSelectedHistorial] = useState(null);
   const [showViewModal, setShowViewModal] = useState(false);
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  // Actualizar hora cada minuto
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentTime(new Date()), 60000);
+    return () => clearInterval(timer);
+  }, []);
 
   // Cargar datos del localStorage al iniciar
   useEffect(() => {
@@ -89,118 +95,189 @@ const HistorialClinico = () => {
     setShowViewModal(true);
   };
 
+  // Estadísticas
+  const stats = {
+    total: historiales.length,
+    activos: historiales.filter(h => h.activo).length,
+    inactivos: historiales.filter(h => !h.activo).length,
+    conConsultas: historiales.filter(h => h.consultas.length > 0).length,
+  };
 
+  const getAnimalIcon = (especie) => {
+    switch (especie.toLowerCase()) {
+      case "perro":
+        return "🐕";
+      case "gato":
+        return "🐱";
+      case "ave":
+        return "🐦";
+      case "conejo":
+        return "🐰";
+      case "hamster":
+        return "🐹";
+      default:
+        return "🐾";
+    }
+  };
+
+  const getStatusIcon = (activo) => {
+    return activo ? "✅" : "❌";
+  };
 
   return (
-    <div className="historial-clinico-container">
-      <div className="header-section">
+    <div className="vet-container">
+      {/* Header */}
+      <header className="vet-header">
         <div className="header-content">
-          <h1 className="main-title">Gestión de Historiales Clínicos</h1>
-          <p className="subtitle">Sistema de gestión veterinaria</p>
+          <div className="header-left">
+            <h1 className="main-title">🏥 Gestión de Historiales Clínicos</h1>
+            <p className="subtitle">
+              {currentTime.toLocaleDateString("es-ES", {
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}{" "}
+              -{" "}
+              {currentTime.toLocaleTimeString("es-ES", {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
+            </p>
+          </div>
         </div>
-        <button 
-          className="create-button"
-          onClick={() => setShowCreateForm(true)}
-        >
-          <PlusCircle className="icon" />
-          Crear Historial
-        </button>
-      </div>
+      </header>
 
-      <div className="search-section">
-        <div className="search-container">
-          <Search className="search-icon" />
-          <input
-            type="text"
-            className="search-input"
-            placeholder="Buscar por nombre de mascota, propietario o especie..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+      {/* Stats Cards */}
+      <section className="stats-grid">
+        <div className="stat-card stat-today">
+          <div className="stat-icon">📋</div>
+          <div className="stat-content">
+            <h3>{stats.total}</h3>
+            <p>Historiales Totales</p>
+          </div>
         </div>
-      </div>
+        <div className="stat-card stat-pending">
+          <div className="stat-icon">✅</div>
+          <div className="stat-content">
+            <h3>{stats.activos}</h3>
+            <p>Activos</p>
+          </div>
+        </div>
+        <div className="stat-card stat-completed">
+          <div className="stat-icon">❌</div>
+          <div className="stat-content">
+            <h3>{stats.inactivos}</h3>
+            <p>Inactivos</p>
+          </div>
+        </div>
+        <div className="stat-card stat-urgent">
+          <div className="stat-icon">🏥</div>
+          <div className="stat-content">
+            <h3>{stats.conConsultas}</h3>
+            <p>Con Consultas</p>
+          </div>
+        </div>
+      </section>
 
-      {/* Lista de historiales */}
-      <div className="historiales-list">
-        {filteredHistoriales.length === 0 ? (
-          <div className="empty-state">
-            <div className="empty-content">
-              <div className="empty-icon">
-                <PlusCircle />
-              </div>
-              <h3>No hay historiales clínicos</h3>
-              <p>
-                Comienza creando el primer historial clínico para una mascota
-              </p>
+      {/* Filters */}
+      <section className="filters-section">
+        <div className="filters-container">
+          <div className="search-container">
+            <input
+              type="text"
+              placeholder="🔍 Buscar por mascota, propietario o especie..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="search-input"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Historiales List */}
+      <section className="appointments-section">
+        <div className="section-header">
+          <h2>📋 Listado de Historiales ({filteredHistoriales.length})</h2>
+        </div>
+
+        <div className="appointments-container">
+          {filteredHistoriales.length > 0 ? (
+            <div className="appointments-grid">
+              {filteredHistoriales.map((historial) => (
+                <div key={historial.id} className={`appointment-card ${historial.activo ? 'active' : 'inactive'}`}>
+                  <div className="appointment-header">
+                    <div className="pet-info">
+                      <span className="animal-icon">{getAnimalIcon(historial.mascota.especie)}</span>
+                      <div>
+                        <h3>{historial.mascota.nombre}</h3>
+                        <p>
+                          {historial.mascota.especie} • {historial.mascota.raza} • {historial.mascota.edad} años
+                        </p>
+                      </div>
+                    </div>
+                    <div className="appointment-status">
+                      <span className={`status-badge ${historial.activo ? 'status-confirmada' : 'status-cancelada'}`}>
+                        {getStatusIcon(historial.activo)} {historial.activo ? "Activo" : "Inactivo"}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="appointment-body">
+                    <div className="info-row">
+                      <span className="label">👤 Propietario:</span>
+                      <span>{historial.mascota.propietario}</span>
+                    </div>
+                    <div className="info-row">
+                      <span className="label">📞 Teléfono:</span>
+                      <span>{historial.mascota.telefono}</span>
+                    </div>
+                    <div className="info-row">
+                      <span className="label">⚖️ Peso:</span>
+                      <span>{historial.mascota.peso} kg</span>
+                    </div>
+                    <div className="info-row">
+                      <span className="label">🏥 Consultas:</span>
+                      <span>{historial.consultas.length}</span>
+                    </div>
+                  </div>
+
+                  <div className="appointment-actions">
+                    <button 
+                      className="btn-edit" 
+                      onClick={() => handleViewHistorial(historial)}
+                      title="Ver historial"
+                    >
+                      <Eye /> Ver
+                    </button>
+                    <button 
+                      className={`action-btn ${historial.activo ? 'btn-delete' : 'btn-save'}`}
+                      onClick={() => toggleHistorialStatus(historial.id)}
+                      title={historial.activo ? "Desactivar" : "Activar"}
+                    >
+                      {historial.activo ? <Ban /> : <CheckCircle />} 
+                      {historial.activo ? " Desactivar" : " Activar"}
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="no-appointments">
+              <div className="no-appointments-icon">🔍</div>
+              <h3>No se encontraron historiales</h3>
+              <p>Intenta ajustar los filtros de búsqueda o crea un nuevo historial</p>
               <button 
                 className="create-first-button"
                 onClick={() => setShowCreateForm(true)}
               >
+                <PlusCircle className="icon" />
                 Crear primer historial
               </button>
             </div>
-          </div>
-        ) : (
-          filteredHistoriales.map((historial) => (
-            <div 
-              key={historial.id}
-              className="historial-card"
-            >
-              <div className="card-header">
-                <div className="pet-info">
-                  <div className="pet-main-info">
-                    <h2 className="pet-name">
-                      {historial.mascota.nombre}
-                      <span className={`status-badge ${historial.activo ? 'active' : 'inactive'}`}>
-                        {historial.activo ? "Activo" : "Inactivo"}
-                      </span>
-                    </h2>
-                    <p className="pet-details">
-                      {historial.mascota.especie} • {historial.mascota.raza} • {historial.mascota.edad} años
-                    </p>
-                  </div>
-                  <div className="action-buttons">
-                    <button 
-                      className="action-btn view-btn"
-                      onClick={() => handleViewHistorial(historial)}
-                      title="Ver historial"
-                    >
-                      <Eye />
-                    </button>
-                    <button 
-                      className={`action-btn ${historial.activo ? 'deactivate-btn' : 'activate-btn'}`}
-                      onClick={() => toggleHistorialStatus(historial.id)}
-                      title={historial.activo ? "Desactivar" : "Activar"}
-                    >
-                      {historial.activo ? <Ban /> : <CheckCircle />}
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <div className="card-body">
-                <div className="info-grid">
-                  <div className="info-item">
-                    <span className="info-label">Propietario:</span>
-                    <p className="info-value">{historial.mascota.propietario}</p>
-                  </div>
-                  <div className="info-item">
-                    <span className="info-label">Teléfono:</span>
-                    <p className="info-value">{historial.mascota.telefono}</p>
-                  </div>
-                  <div className="info-item">
-                    <span className="info-label">Peso:</span>
-                    <p className="info-value">{historial.mascota.peso} kg</p>
-                  </div>
-                  <div className="info-item">
-                    <span className="info-label">Consultas:</span>
-                    <p className="info-value">{historial.consultas.length}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))
-        )}
-      </div>
+          )}
+        </div>
+      </section>
 
       {/* Modal para ver historial */}
       {showViewModal && selectedHistorial && (

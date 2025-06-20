@@ -364,74 +364,75 @@ const GestionCitas = () => {
               {filteredCitas.map((cita) => (
                 <div key={cita.id} className={`appointment-card priority-${cita.prioridad}`}>
                   <div className="appointment-header">
-                    <div className="pet-info">
-                      <span className="animal-icon">{getAnimalIcon(cita.tipoMascota)}</span>
-                      <div>
-                        <h3>{cita.mascota}</h3>
-                        <p>
-                          {cita.tipoMascota} • {cita.raza}
-                        </p>
-                      </div>
+                    <h3>{cita.mascota}</h3>
+                    <span className="animal-type">{getAnimalIcon(cita.tipoMascota)} {cita.tipoMascota} - {cita.raza}</span>
+                  </div>
+
+                  <div className="appointment-details">
+                    <div className="detail-section">
+                      <h4>Propietario</h4>
+                      <p>{cita.propietario}</p>
                     </div>
-                    <div className="appointment-status">
+
+                    <div className="detail-section">
+                      <h4>Teléfono</h4>
+                      <p>{cita.telefono}</p>
+                    </div>
+
+                    <div className="detail-section">
+                      <h4>Email</h4>
+                      <p>{cita.email}</p>
+                    </div>
+
+                    <div className="detail-section">
+                      <h4>Fecha</h4>
+                      <p>{cita.fecha}</p>
+                    </div>
+
+                    <div className="detail-section">
+                      <h4>Hora</h4>
+                      <p>{cita.hora}</p>
+                    </div>
+
+                    <div className="detail-section">
+                      <h4>Tipo de consulta</h4>
+                      <p>{cita.tipo}</p>
+                    </div>
+
+                    <div className="detail-section">
+                      <h4>Motivo</h4>
+                      <p>{cita.motivo}</p>
+                    </div>
+                  </div>
+
+                  <div className="appointment-footer">
+                    <div className="status-info">
                       <span className={`status-badge status-${cita.estado}`}>
                         {getStatusIcon(cita.estado)} {cita.estado}
                       </span>
+                      <span className={`priority-badge priority-${cita.prioridad}`}>
+                        {getPriorityIcon(cita.prioridad)} {cita.prioridad}
+                      </span>
                     </div>
-                  </div>
 
-                  <div className="appointment-body">
-                    <div className="info-row">
-                      <span className="label">👤 Propietario:</span>
-                      <span>{cita.propietario}</span>
+                    <div className="appointment-actions">
+                      <select
+                        value={cita.estado}
+                        onChange={(e) => handleStatusChange(cita.id, e.target.value)}
+                        className="status-select"
+                      >
+                        <option value="pendiente">Pendiente</option>
+                        <option value="confirmada">Confirmada</option>
+                        <option value="completada">Completada</option>
+                        <option value="cancelada">Cancelada</option>
+                      </select>
+                      <button className="btn-edit" onClick={() => handleEdit(cita)} title="Editar cita">
+                        ✏️
+                      </button>
+                      <button className="btn-delete" onClick={() => handleDelete(cita.id)} title="Eliminar cita">
+                        🗑️
+                      </button>
                     </div>
-                    <div className="info-row">
-                      <span className="label">📞 Teléfono:</span>
-                      <span>{cita.telefono}</span>
-                    </div>
-                    <div className="info-row">
-                      <span className="label">📧 Email:</span>
-                      <span>{cita.email}</span>
-                    </div>
-                    <div className="info-row">
-                      <span className="label">📅 Fecha:</span>
-                      <span>{cita.fecha}</span>
-                    </div>
-                    <div className="info-row">
-                      <span className="label">🕐 Hora:</span>
-                      <span>{cita.hora}</span>
-                    </div>
-                    <div className="info-row">
-                      <span className="label">🏥 Tipo:</span>
-                      <span>{cita.tipo}</span>
-                    </div>
-                    <div className="info-row">
-                      <span className="label">{getPriorityIcon(cita.prioridad)} Prioridad:</span>
-                      <span className={`priority-${cita.prioridad}`}>{cita.prioridad}</span>
-                    </div>
-                    <div className="info-row">
-                      <span className="label">📝 Motivo:</span>
-                      <span>{cita.motivo}</span>
-                    </div>
-                  </div>
-
-                  <div className="appointment-actions">
-                    <select
-                      value={cita.estado}
-                      onChange={(e) => handleStatusChange(cita.id, e.target.value)}
-                      className="status-select"
-                    >
-                      <option value="pendiente">Pendiente</option>
-                      <option value="confirmada">Confirmada</option>
-                      <option value="completada">Completada</option>
-                      <option value="cancelada">Cancelada</option>
-                    </select>
-                    <button className="btn-edit" onClick={() => handleEdit(cita)} title="Editar cita">
-                      ✏️
-                    </button>
-                    <button className="btn-delete" onClick={() => handleDelete(cita.id)} title="Eliminar cita">
-                      🗑️
-                    </button>
                   </div>
                 </div>
               ))}

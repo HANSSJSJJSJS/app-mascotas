@@ -102,7 +102,7 @@ const pdfStyles = StyleSheet.create({
     fontSize: 10,
     fontWeight: 'bold',
     marginLeft: 5,
-    whiteSpace: 'nowrap' // Esto evita que el texto se divida
+    whiteSpace: 'nowrap'
   },
   activeStatus: {
     backgroundColor: '#495a90',
@@ -316,12 +316,6 @@ const ViewHistorialModal = ({ historial, onClose }) => {
               >
                 {({ loading }) => (loading ? 'Preparando PDF...' : 'Descargar PDF')}
               </PDFDownloadLink>
-              <button 
-                onClick={handlePrint} 
-                className="historial-btn-print"
-              >
-                Imprimir
-              </button>
               <button
                 onClick={onClose}
                 className="historial-close-button"
