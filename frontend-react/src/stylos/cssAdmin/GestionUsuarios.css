@@ -4,8 +4,8 @@
   min-height: 100vh;
 }
 
-/* Header compacto como en las otras gestiones - FIJO PARA CENTRADO ESTABLE */
-.page-header-compact {
+/* Header compacto - ESPECIFICIDAD MÁXIMA PARA CONSISTENCIA TOTAL */
+.gestion-usuarios .page-header-compact {
   background: linear-gradient(135deg, #1a2540 0%, #495a90 100%);
   color: white;
   padding: 70px 32px;
@@ -18,7 +18,7 @@
   box-sizing: border-box;
 }
 
-.page-header-compact::before {
+.gestion-usuarios .page-header-compact::before {
   content: "";
   position: absolute;
   top: -60px;
@@ -29,10 +29,11 @@
   border-radius: 50%;
 }
 
-.header-content-centered {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+/* ESTRUCTURA SUPER ESPECÍFICA PARA EVITAR CONFLICTOS */
+.gestion-usuarios .page-header-compact .header-content-centered {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
   position: relative;
   z-index: 1;
   width: 100%;
@@ -40,50 +41,60 @@
   margin: 0 auto;
 }
 
-.title-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-  width: 100%;
+.gestion-usuarios .page-header-compact .header-content-centered .title-container {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 20px !important;
+  width: auto;
+  flex-shrink: 0;
 }
 
-.header-icon {
-  width: 72px;
-  height: 72px;
+.gestion-usuarios .page-header-compact .header-content-centered .title-container .header-icon {
+  width: 72px !important;
+  height: 72px !important;
   background: rgba(255, 255, 255, 0.15);
   border-radius: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  flex-shrink: 0;
+  flex-shrink: 0 !important;
 }
 
-.header-text {
-  text-align: center;
-  flex-shrink: 0;
+.gestion-usuarios .page-header-compact .header-content-centered .title-container .header-text {
+  text-align: left !important;
+  flex-shrink: 0 !important;
 }
 
-.header-text h1 {
-  font-size: 38px;
-  font-weight: 700;
-  margin: 0 0 8px 0;
-  color: #ffffff;
-  letter-spacing: -0.5px;
-  white-space: nowrap;
+/* TÍTULO CON ESPECIFICIDAD MÁXIMA - TAMAÑO GRANDE Y CONSISTENTE */
+.gestion-usuarios .page-header-compact .header-content-centered .title-container .header-text h1 {
+  font-size: 38px !important;
+  font-weight: 700 !important;
+  margin: 0 0 8px 0 !important;
+  color: #ffffff !important;
+  letter-spacing: -0.5px !important;
+  white-space: nowrap !important;
+  line-height: 1.2 !important;
+  font-family: inherit !important;
+  text-transform: none !important;
+  font-style: normal !important;
 }
 
-.header-text p {
-  font-size: 18px;
-  margin: 0;
-  color: rgba(255, 255, 255, 0.85);
-  font-weight: 400;
-  white-space: nowrap;
+.gestion-usuarios .page-header-compact .header-content-centered .title-container .header-text p {
+  font-size: 18px !important;
+  margin: 0 !important;
+  color: rgba(255, 255, 255, 0.85) !important;
+  font-weight: 400 !important;
+  white-space: nowrap !important;
+  font-family: inherit !important;
+  text-transform: none !important;
+  font-style: normal !important;
 }
 
-.tabs-container {
+/* TABS CON ESPECIFICIDAD MÁXIMA PARA CONSISTENCIA */
+.gestion-usuarios .tabs-container {
   background: white;
   margin: 0 24px 24px 24px;
   border-radius: 16px;
@@ -91,41 +102,81 @@
   overflow: hidden;
 }
 
-.tabs {
-  display: flex;
-  border-bottom: 1px solid #e5e7eb;
+.gestion-usuarios .tabs-container .tabs {
+  display: flex !important;
+  border-bottom: 1px solid #e5e7eb !important;
 }
 
-.tab {
-  flex: 1;
-  padding: 16px 24px;
-  border: none;
-  background: white;
-  color: #495a90;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  border-bottom: 3px solid transparent;
+.gestion-usuarios .tabs-container .tabs .tab {
+  flex: 1 !important;
+  padding: 16px 24px !important;
+  border: none !important;
+  background: white !important;
+  color: #495a90 !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  border-bottom: 3px solid transparent !important;
+  font-family: inherit !important;
+  text-transform: none !important;
+  font-style: normal !important;
 }
 
-.tab:hover {
-  background: #f8fafc;
-  color: #1a2540;
+.gestion-usuarios .tabs-container .tabs .tab:hover {
+  background: #f8fafc !important;
+  color: #1a2540 !important;
 }
 
-.tab.active {
-  background: #f8fafc;
-  color: #1a2540;
-  border-bottom-color: #8196eb;
-  font-weight: 600;
+/* PESTAÑA ACTIVA CON ESPECIFICIDAD MÁXIMA - LÍNEA AZUL CONSISTENTE */
+.gestion-usuarios .tabs-container .tabs .tab.active {
+  background: #f8fafc !important;
+  color: #1a2540 !important;
+  border-bottom-color: #8196eb !important;
+  font-weight: 600 !important;
+  border-bottom-width: 3px !important;
+  border-bottom-style: solid !important;
 }
 
-.tab-content {
+/* FORZAR LÍNEA AZUL EN LA PRIMERA PESTAÑA POR DEFECTO */
+.gestion-usuarios .tabs-container .tabs .tab:first-child {
+  border-bottom: 3px solid #8196eb !important;
+  background: #f8fafc !important;
+  color: #1a2540 !important;
+  font-weight: 600 !important;
+}
+
+/* ASEGURAR QUE LA LÍNEA AZUL SIEMPRE ESTÉ VISIBLE */
+.gestion-usuarios .tabs-container .tabs .tab:first-child::after {
+  content: "" !important;
+  position: absolute !important;
+  bottom: -1px !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 3px !important;
+  background: #8196eb !important;
+  z-index: 10 !important;
+}
+
+/* POSICIÓN RELATIVA PARA EL PSEUDO-ELEMENTO */
+.gestion-usuarios .tabs-container .tabs .tab {
+  position: relative !important;
+}
+
+/* OVERRIDE PARA SEGUNDA PESTAÑA */
+.gestion-usuarios .tabs-container .tabs .tab:nth-child(2) {
+  border-bottom: 3px solid transparent !important;
+}
+
+.gestion-usuarios .tabs-container .tabs .tab:nth-child(2)::after {
+  display: none !important;
+}
+
+.gestion-usuarios .tab-content {
   margin: 0 24px;
 }
 
@@ -137,7 +188,7 @@
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 
-.search-section {
+.gestion-usuarios .search-section {
   display: block;
   width: 100%;
   margin: 0 0 32px 0;
@@ -151,7 +202,7 @@
   box-sizing: border-box;
 }
 
-.search-container {
+.gestion-usuarios .search-container {
   display: block;
   position: relative;
   width: 100%;
@@ -159,7 +210,7 @@
   margin: 0 auto;
 }
 
-.search-input {
+.gestion-usuarios .search-input {
   display: block;
   width: 100%;
   height: 56px;
@@ -178,18 +229,18 @@
   font-family: inherit;
 }
 
-.search-input:focus {
+.gestion-usuarios .search-input:focus {
   border-color: #c2d8ff;
   box-shadow: 0 0 0 4px rgba(194, 216, 255, 0.5), 0 8px 32px rgba(0, 0, 0, 0.15);
   transform: translateY(-2px);
 }
 
-.search-input::placeholder {
+.gestion-usuarios .search-input::placeholder {
   color: #94a3b8;
   font-weight: 400;
 }
 
-.search-icon {
+.gestion-usuarios .search-icon {
   position: absolute;
   left: 20px;
   top: 50%;
@@ -385,7 +436,8 @@
 }
 
 .usuario-actions {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 8px;
 }
 
@@ -602,52 +654,70 @@
   border-color: #495a90;
 }
 
+/* RESPONSIVE MEJORADO CON ESPECIFICIDAD */
 @media (max-width: 768px) {
   .gestion-usuarios {
     padding: 0;
   }
-  .page-header-compact {
+
+  .gestion-usuarios .page-header-compact {
     padding: 32px 20px;
   }
-  .title-container {
-    flex-direction: column;
+
+  .gestion-usuarios .page-header-compact .header-content-centered .title-container {
+    flex-direction: column !important;
     text-align: center;
     gap: 16px;
   }
-  .header-text h1 {
-    font-size: 32px;
-    white-space: normal;
+
+  .gestion-usuarios .page-header-compact .header-content-centered .title-container .header-text {
+    text-align: center !important;
   }
-  .header-text p {
-    font-size: 16px;
-    white-space: normal;
+
+  .gestion-usuarios .page-header-compact .header-content-centered .title-container .header-text h1 {
+    font-size: 32px !important;
+    white-space: normal !important;
   }
-  .tabs {
-    flex-direction: column;
+
+  .gestion-usuarios .page-header-compact .header-content-centered .title-container .header-text p {
+    font-size: 16px !important;
+    white-space: normal !important;
   }
-  .tab {
-    padding: 12px 16px;
+
+  .gestion-usuarios .tabs-container .tabs {
+    flex-direction: column !important;
   }
+
+  .gestion-usuarios .tabs-container .tabs .tab {
+    padding: 12px 16px !important;
+  }
+
   .tab-content {
     margin: 0 16px;
   }
-  .search-section {
+
+  .gestion-usuarios .search-section {
     padding: 16px;
     margin-bottom: 24px;
   }
-  .search-input {
+
+  .gestion-usuarios .search-input {
     height: 48px;
     font-size: 14px;
   }
+
   .usuarios-grid {
     grid-template-columns: 1fr;
   }
+
   .form-grid {
     grid-template-columns: 1fr;
   }
+
   .form-actions {
     flex-direction: column;
   }
+
   .usuario-details {
     grid-template-columns: 1fr;
   }
@@ -721,7 +791,7 @@
 
 /* === AÑADIDO: ESTILOS PARA LOS ERRORES DE VALIDACIÓN === */
 .error-text {
-  color: #c53030; /* Un rojo oscuro para buena legibilidad */
+  color: #c53030;
   font-size: 12px;
   font-weight: 500;
   margin-top: 6px;
@@ -730,7 +800,6 @@
   gap: 5px;
 }
 
-/* Estilo para el texto de ayuda debajo del campo */
 .input-hint {
   display: block;
   margin-top: 4px;
@@ -739,83 +808,88 @@
   font-style: italic;
 }
 
-/* ---
-=================================================================
-==     ESTILO EQUILIBRADO PARA MODAL DE AUDITORÍA             ==
-=================================================================
---- */
+/* ===================================================================
+   ESTILOS MEJORADOS Y ESTABLES PARA MODAL DE AUDITORÍA
+   ================================================================== */
 
-/* Variables de la paleta de colores */
-:root {
-  --audit-black: #000000;
-  --audit-dark-blue: #1a2540;
-  --audit-medium-blue: #495a90;
-  --audit-light-blue: #8196eb;
-  --audit-very-light-blue: #c2d8ff;
-}
-
-/* Botón de historial - Estilo limpio */
-.usuario-actions {
+/* Botón de historial - Estilo específico y estable */
+.gestion-usuarios .usuario-actions {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 8px;
 }
 
-.usuario-actions .btn-log {
-  background: #ffffff;
-  color: var(--audit-medium-blue);
-  border: 1px solid #e2e8f0;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+.gestion-usuarios .usuario-actions .btn-log {
+  background: #ffffff !important;
+  color: #495a90 !important;
+  border: 1px solid #e2e8f0 !important;
+  font-weight: 600 !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  padding: 10px !important;
+  border-radius: 8px !important;
+  font-size: 12px !important;
+  cursor: pointer !important;
 }
 
-.usuario-actions .btn-log:hover {
-  background: var(--audit-very-light-blue);
-  border-color: var(--audit-light-blue);
-  color: var(--audit-dark-blue);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(129, 150, 235, 0.15);
+.gestion-usuarios .usuario-actions .btn-log:hover {
+  background: #c2d8ff !important;
+  border-color: #8196eb !important;
+  color: #1a2540 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(129, 150, 235, 0.15) !important;
 }
 
-/* Backdrop elegante pero sutil */
-.modal-backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(26, 37, 64, 0.75);
-  backdrop-filter: blur(8px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  animation: fadeIn 0.3s ease-out;
+/* Backdrop del modal - Máxima especificidad y estabilidad */
+.gestion-usuarios .modal-backdrop {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  background: rgba(26, 37, 64, 0.75) !important;
+  backdrop-filter: blur(8px) !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  z-index: 999999 !important;
+  animation: fadeInModal 0.3s ease-out !important;
+  padding: 20px !important;
+  box-sizing: border-box !important;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+@keyframes fadeInModal {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+  }
+  to {
+    opacity: 1;
+    backdrop-filter: blur(8px);
+  }
 }
 
-/* Container principal - Diseño limpio con sombra elegante */
-.modal-container.audit-modal {
-  width: 90%;
-  max-width: 850px;
-  max-height: 90vh;
-  border-radius: 16px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  background: white;
-  box-shadow: 
-    0 20px 25px -5px rgba(0, 0, 0, 0.15),
-    0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  animation: slideIn 0.4s ease-out;
+/* Container principal del modal - Estabilidad total */
+.gestion-usuarios .modal-container.audit-modal {
+  width: 90% !important;
+  max-width: 850px !important;
+  max-height: 90vh !important;
+  border-radius: 16px !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+  background: #ffffff !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+  animation: slideInModal 0.4s ease-out !important;
+  position: relative !important;
+  margin: auto !important;
 }
 
-@keyframes slideIn {
+@keyframes slideInModal {
   from {
     opacity: 0;
     transform: translateY(-30px) scale(0.95);
@@ -826,373 +900,391 @@
   }
 }
 
-/* Header con gradiente sutil */
-.modal-header.audit-header-usuarios {
-  background: linear-gradient(135deg, var(--audit-medium-blue) 0%, var(--audit-dark-blue) 100%);
-  padding: 2rem 2.5rem;
-  position: relative;
+/* Header del modal - Estilo fijo y específico */
+.gestion-usuarios .modal-header.audit-header-usuarios {
+  background: linear-gradient(135deg, #495a90 0%, #1a2540 100%) !important;
+  padding: 2rem 2.5rem !important;
+  position: relative !important;
+  flex-shrink: 0 !important;
+  border-bottom: none !important;
 }
 
-.modal-header.audit-header-usuarios::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+.gestion-usuarios .modal-header.audit-header-usuarios::after {
+  content: "" !important;
+  position: absolute !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 1px !important;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent) !important;
 }
 
-.modal-header-content {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
+.gestion-usuarios .modal-header-content {
+  display: flex !important;
+  align-items: center !important;
+  gap: 1.5rem !important;
+  position: relative !important;
+  z-index: 2 !important;
 }
 
-/* Icono con diseño limpio */
-.modal-icon-wrapper {
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  border-radius: 12px;
-  width: 56px;
-  height: 56px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
+/* Icono del modal - Diseño específico */
+.gestion-usuarios .modal-icon-wrapper {
+  background: rgba(255, 255, 255, 0.15) !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  border-radius: 12px !important;
+  width: 56px !important;
+  height: 56px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #ffffff !important;
+  flex-shrink: 0 !important;
 }
 
-.modal-title-section {
-  text-align: left;
-  flex: 1;
+.gestion-usuarios .modal-title-section {
+  text-align: left !important;
+  flex: 1 !important;
 }
 
-/* Título con gradiente personalizado */
-.modal-main-title {
-  font-size: 1.75rem;
-  font-weight: 700;
-  margin: 0 0 0.5rem 0;
-  background: linear-gradient(135deg, var(--audit-light-blue) 0%, var(--audit-medium-blue) 100%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
-  text-shadow: none;
-  letter-spacing: -0.025em;
+/* Títulos del modal - Estilo fijo */
+.gestion-usuarios .modal-main-title {
+  font-size: 1.75rem !important;
+  font-weight: 700 !important;
+  margin: 0 0 0.5rem 0 !important;
+  color: #8196eb !important;
+  letter-spacing: -0.025em !important;
+  text-shadow: none !important;
 }
 
-.modal-subtitle {
-  font-size: 1rem;
-  color: #e2e8f0;
-  margin: 0;
-  font-weight: 500;
-  opacity: 0.95;
+.gestion-usuarios .modal-subtitle {
+  font-size: 1rem !important;
+  color: #e2e8f0 !important;
+  margin: 0 !important;
+  font-weight: 500 !important;
+  opacity: 0.95 !important;
 }
 
-/* Botón cerrar elegante */
-.modal-close-btn {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #e2e8f0;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  padding: 0.75rem;
-  border-radius: 10px;
-  position: absolute;
-  top: 1.5rem;
-  right: 2rem;
-  z-index: 3;
+/* Botón cerrar - Estilo específico */
+.gestion-usuarios .modal-close-btn {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  color: #e2e8f0 !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  padding: 0.75rem !important;
+  border-radius: 10px !important;
+  position: absolute !important;
+  top: 1.5rem !important;
+  right: 2rem !important;
+  z-index: 3 !important;
 }
 
-.modal-close-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.4);
-  color: white;
-  transform: rotate(90deg) scale(1.05);
+.gestion-usuarios .modal-close-btn:hover {
+  background: rgba(255, 255, 255, 0.2) !important;
+  border-color: rgba(255, 255, 255, 0.4) !important;
+  color: #ffffff !important;
+  transform: rotate(90deg) scale(1.05) !important;
 }
 
-/* Cuerpo con fondo sutil */
-.audit-modal .modal-body {
-  padding: 2.5rem;
-  overflow-y: auto;
-  background: #fafbfc;
+/* Cuerpo del modal - Scroll estable */
+.gestion-usuarios .audit-modal .modal-body {
+  padding: 2.5rem !important;
+  overflow-y: auto !important;
+  background: #fafbfc !important;
+  flex: 1 !important;
+  min-height: 200px !important;
 }
 
-/* Timeline con línea elegante */
-.audit-timeline {
-  position: relative;
-  padding-left: 35px;
+/* Timeline - Línea y estructura estable */
+.gestion-usuarios .audit-timeline {
+  position: relative !important;
+  padding-left: 35px !important;
 }
 
-.audit-timeline::before {
-  content: '';
-  position: absolute;
-  left: 22px;
-  top: 0;
-  bottom: 0;
-  width: 2px;
-  background: linear-gradient(to bottom, 
-    var(--audit-light-blue) 0%, 
-    #e2e8f0 70%, 
-    transparent 100%);
+.gestion-usuarios .audit-timeline::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 22px !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  width: 2px !important;
+  background: linear-gradient(to bottom, #8196eb 0%, #e2e8f0 70%, transparent 100%) !important;
 }
 
-.audit-timeline-item {
-  position: relative;
-  padding: 0.75rem 0 2rem 55px;
-  margin-bottom: 1rem;
+.gestion-usuarios .audit-timeline-item {
+  position: relative !important;
+  padding: 0.75rem 0 2rem 55px !important;
+  margin-bottom: 1rem !important;
 }
 
-.audit-timeline-item:last-child {
-  margin-bottom: 0;
-  padding-bottom: 0;
+.gestion-usuarios .audit-timeline-item:last-child {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
 }
 
-/* Iconos con diseño limpio */
-.audit-icon-container {
-  position: absolute;
-  left: 0;
-  top: 0.75rem;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  border: 3px solid white;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
-  z-index: 2;
-  transition: transform 0.2s ease;
+/* Iconos de la timeline - Diseño fijo */
+.gestion-usuarios .audit-icon-container {
+  position: absolute !important;
+  left: 0 !important;
+  top: 0.75rem !important;
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #ffffff !important;
+  border: 3px solid #ffffff !important;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12) !important;
+  z-index: 2 !important;
+  transition: transform 0.2s ease !important;
 }
 
-.audit-timeline-item:hover .audit-icon-container {
-  transform: scale(1.05);
+.gestion-usuarios .audit-timeline-item:hover .audit-icon-container {
+  transform: scale(1.05) !important;
 }
 
-/* Tarjetas de contenido elegantes */
-.audit-content {
-  background: white;
-  border-radius: 12px;
-  padding: 1.75rem;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
-  transition: all 0.3s ease;
-  position: relative;
+/* Tarjetas de contenido - Estilo estable */
+.gestion-usuarios .audit-content {
+  background: #ffffff !important;
+  border-radius: 12px !important;
+  padding: 1.75rem !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04) !important;
+  transition: all 0.3s ease !important;
+  position: relative !important;
 }
 
-.audit-content:hover {
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
-  transform: translateY(-2px);
-  border-color: var(--audit-very-light-blue);
+.gestion-usuarios .audit-content:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08) !important;
+  transform: translateY(-2px) !important;
+  border-color: #c2d8ff !important;
 }
 
-.audit-content::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: var(--audit-light-blue);
-  border-radius: 12px 12px 0 0;
+.gestion-usuarios .audit-content::before {
+  content: "" !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 3px !important;
+  background: #8196eb !important;
+  border-radius: 12px 12px 0 0 !important;
 }
 
-.audit-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 1.25rem;
-  flex-wrap: wrap;
-  gap: 1rem;
+.gestion-usuarios .audit-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-start !important;
+  margin-bottom: 1.25rem !important;
+  flex-wrap: wrap !important;
+  gap: 1rem !important;
 }
 
-.audit-action-text {
-  font-size: 1.2rem;
-  font-weight: 650;
-  color: var(--audit-dark-blue);
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
+.gestion-usuarios .audit-action-text {
+  font-size: 1.2rem !important;
+  font-weight: 650 !important;
+  color: #1a2540 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.75rem !important;
 }
 
-.audit-meta {
-  font-size: 0.85rem;
-  color: #64748b;
-  background: #f1f5f9;
-  padding: 0.4rem 0.8rem;
-  border-radius: 16px;
-  font-weight: 500;
-  border: 1px solid #e2e8f0;
+.gestion-usuarios .audit-meta {
+  font-size: 0.85rem !important;
+  color: #64748b !important;
+  background: #f1f5f9 !important;
+  padding: 0.4rem 0.8rem !important;
+  border-radius: 16px !important;
+  font-weight: 500 !important;
+  border: 1px solid #e2e8f0 !important;
 }
 
-/* Detalles con separación clara */
-.audit-details {
-  font-size: 0.95rem;
-  margin-top: 1.25rem;
-  padding-top: 1.25rem;
-  border-top: 1px solid #e2e8f0;
+/* Detalles de cambios - Estilo específico */
+.gestion-usuarios .audit-details {
+  font-size: 0.95rem !important;
+  margin-top: 1.25rem !important;
+  padding-top: 1.25rem !important;
+  border-top: 1px solid #e2e8f0 !important;
 }
 
-.audit-change-row {
-  display: flex;
-  align-items: baseline;
-  gap: 1rem;
-  padding: 0.5rem 0;
-  border-radius: 6px;
-  transition: background-color 0.2s ease;
+.gestion-usuarios .audit-change-row {
+  display: flex !important;
+  align-items: baseline !important;
+  gap: 1rem !important;
+  padding: 0.5rem 0 !important;
+  border-radius: 6px !important;
+  transition: background-color 0.2s ease !important;
 }
 
-.audit-change-row:hover {
-  background-color: #f8fafc;
+.gestion-usuarios .audit-change-row:hover {
+  background-color: #f8fafc !important;
 }
 
-.audit-label {
-  font-weight: 650;
-  color: var(--audit-medium-blue);
-  min-width: 80px;
-  font-size: 0.9rem;
+.gestion-usuarios .audit-label {
+  font-weight: 650 !important;
+  color: #495a90 !important;
+  min-width: 80px !important;
+  font-size: 0.9rem !important;
 }
 
-.audit-value.audit-value-old {
-  color: #dc2626;
-  text-decoration: line-through;
-  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
-  background: #fef2f2;
-  padding: 0.3rem 0.6rem;
-  border-radius: 6px;
-  font-size: 0.85rem;
-  border: 1px solid #fecaca;
+.gestion-usuarios .audit-value.audit-value-old {
+  color: #dc2626 !important;
+  text-decoration: line-through !important;
+  font-family: "SF Mono", "Monaco", "Inconsolata", "Roboto Mono", monospace !important;
+  background: #fef2f2 !important;
+  padding: 0.3rem 0.6rem !important;
+  border-radius: 6px !important;
+  font-size: 0.85rem !important;
+  border: 1px solid #fecaca !important;
 }
 
-.audit-value.audit-value-new {
-  color: #16a34a;
-  font-weight: 600;
-  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
-  background: #f0fdf4;
-  padding: 0.3rem 0.6rem;
-  border-radius: 6px;
-  font-size: 0.85rem;
-  border: 1px solid #bbf7d0;
+.gestion-usuarios .audit-value.audit-value-new {
+  color: #16a34a !important;
+  font-weight: 600 !important;
+  font-family: "SF Mono", "Monaco", "Inconsolata", "Roboto Mono", monospace !important;
+  background: #f0fdf4 !important;
+  padding: 0.3rem 0.6rem !important;
+  border-radius: 6px !important;
+  font-size: 0.85rem !important;
+  border: 1px solid #bbf7d0 !important;
 }
 
-.audit-full-value {
-  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
-  color: var(--audit-medium-blue);
-  background: #f8fafc;
-  padding: 0.3rem 0.6rem;
-  border-radius: 6px;
-  font-size: 0.85rem;
-  border: 1px solid #e2e8f0;
+.gestion-usuarios .audit-full-value {
+  font-family: "SF Mono", "Monaco", "Inconsolata", "Roboto Mono", monospace !important;
+  color: #495a90 !important;
+  background: #f8fafc !important;
+  padding: 0.3rem 0.6rem !important;
+  border-radius: 6px !important;
+  font-size: 0.85rem !important;
+  border: 1px solid #e2e8f0 !important;
 }
 
-/* Usuario con diseño sutil */
-.audit-user {
-  margin-top: 1.25rem;
-  font-size: 0.85rem;
-  color: #64748b;
-  text-align: right;
-  padding: 1rem;
-  background: #f8fafc;
-  border-radius: 8px;
-  border: 1px solid #e2e8f0;
+/* Usuario modificador - Estilo específico */
+.gestion-usuarios .audit-user {
+  margin-top: 1.25rem !important;
+  font-size: 0.85rem !important;
+  color: #64748b !important;
+  text-align: right !important;
+  padding: 1rem !important;
+  background: #f8fafc !important;
+  border-radius: 8px !important;
+  border: 1px solid #e2e8f0 !important;
 }
 
-.audit-user strong {
-  font-weight: 650;
-  color: var(--audit-dark-blue);
+.gestion-usuarios .audit-user strong {
+  font-weight: 650 !important;
+  color: #1a2540 !important;
 }
 
-/* Estado sin datos limpio */
-.no-audit-data {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 4rem 2rem;
-  text-align: center;
-  color: #64748b;
+/* Estado sin datos - Estilo específico */
+.gestion-usuarios .no-audit-data {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 4rem 2rem !important;
+  text-align: center !important;
+  color: #64748b !important;
 }
 
-.no-audit-data svg {
-  color: var(--audit-light-blue);
-  margin-bottom: 1.5rem;
-  opacity: 0.7;
+.gestion-usuarios .no-audit-data svg {
+  color: #8196eb !important;
+  margin-bottom: 1.5rem !important;
+  opacity: 0.7 !important;
 }
 
-.no-audit-data p {
-  margin-top: 1rem;
-  font-size: 1.1rem;
-  font-weight: 500;
-  max-width: 350px;
-  line-height: 1.5;
+.gestion-usuarios .no-audit-data p {
+  margin-top: 1rem !important;
+  font-size: 1.1rem !important;
+  font-weight: 500 !important;
+  max-width: 350px !important;
+  line-height: 1.5 !important;
 }
 
-/* Responsive */
+/* Responsive específico para auditoría */
 @media (max-width: 768px) {
-  .modal-container.audit-modal {
-    width: 95%;
-    max-height: 95vh;
-    border-radius: 12px;
+  .gestion-usuarios .modal-container.audit-modal {
+    width: 95% !important;
+    max-height: 95vh !important;
+    border-radius: 12px !important;
+    margin: 10px !important;
   }
-  
-  .modal-header.audit-header-usuarios {
-    padding: 1.75rem 2rem;
+
+  .gestion-usuarios .modal-header.audit-header-usuarios {
+    padding: 1.75rem 2rem !important;
   }
-  
-  .modal-main-title {
-    font-size: 1.5rem;
+
+  .gestion-usuarios .modal-main-title {
+    font-size: 1.5rem !important;
   }
-  
-  .modal-subtitle {
-    font-size: 0.9rem;
+
+  .gestion-usuarios .modal-subtitle {
+    font-size: 0.9rem !important;
   }
-  
-  .audit-modal .modal-body {
-    padding: 2rem;
+
+  .gestion-usuarios .audit-modal .modal-body {
+    padding: 2rem !important;
   }
-  
-  .audit-timeline {
-    padding-left: 30px;
+
+  .gestion-usuarios .audit-timeline {
+    padding-left: 30px !important;
   }
-  
-  .audit-timeline-item {
-    padding-left: 50px;
+
+  .gestion-usuarios .audit-timeline-item {
+    padding-left: 50px !important;
   }
-  
-  .audit-icon-container {
-    width: 40px;
-    height: 40px;
+
+  .gestion-usuarios .audit-icon-container {
+    width: 40px !important;
+    height: 40px !important;
   }
-  
-  .audit-content {
-    padding: 1.5rem;
+
+  .gestion-usuarios .audit-content {
+    padding: 1.5rem !important;
   }
-  
-  .audit-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.75rem;
+
+  .gestion-usuarios .audit-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0.75rem !important;
   }
-  
-  .audit-change-row {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
+
+  .gestion-usuarios .audit-change-row {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0.5rem !important;
   }
 }
 
-/* Detalles adicionales para pulir el diseño */
-.audit-timeline-item:nth-child(even) .audit-content {
-  border-left: 3px solid var(--audit-very-light-blue);
+/* Efectos adicionales para estabilidad visual */
+.gestion-usuarios .audit-timeline-item:nth-child(even) .audit-content {
+  border-left: 3px solid #c2d8ff !important;
 }
 
-.audit-timeline-item:nth-child(odd) .audit-content {
-  border-left: 3px solid var(--audit-light-blue);
+.gestion-usuarios .audit-timeline-item:nth-child(odd) .audit-content {
+  border-left: 3px solid #8196eb !important;
 }
 
-/* Efecto sutil en hover para toda la timeline */
-.audit-timeline-item:hover {
-  transform: translateX(2px);
-  transition: transform 0.2s ease;
+.gestion-usuarios .audit-timeline-item:hover {
+  transform: translateX(2px) !important;
+  transition: transform 0.2s ease !important;
+}
+
+/* Forzar estabilidad total de estilos */
+.gestion-usuarios .modal-backdrop * {
+  box-sizing: border-box !important;
+}
+
+.gestion-usuarios .modal-container * {
+  box-sizing: border-box !important;
+}
+
+/* Prevenir conflictos con otros estilos */
+.gestion-usuarios .modal-backdrop,
+.gestion-usuarios .modal-backdrop *,
+.gestion-usuarios .modal-container.audit-modal,
+.gestion-usuarios .modal-container.audit-modal * {
+  font-family: inherit !important;
+  line-height: inherit !important;
 }

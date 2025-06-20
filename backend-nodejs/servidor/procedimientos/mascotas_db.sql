@@ -144,11 +144,9 @@ CREATE TABLE IF NOT EXISTS audit_usuarios (
     valor_anterior TEXT,
     valor_nuevo TEXT,
     accion VARCHAR(10) NOT NULL, 
-    fecha_modificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    usuario_db VARCHAR(255) DEFAULT CURRENT_USER
+    usuario_db VARCHAR(255),
+    fecha_modificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
-
 
 INSERT INTO tipo_persona (id_tipo, tipo) VALUES
 (1, 'Invitado/Tutor'),

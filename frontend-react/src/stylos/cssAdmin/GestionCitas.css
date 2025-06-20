@@ -33,76 +33,104 @@ body {
 
 /* --- Contenedor Principal --- */
 .citas-admin-container {
-  padding: 2rem 2.5rem;
+  padding: 0;
   background-color: var(--bg-primary);
   min-height: 100vh;
 }
 
-/* --- HEADER ORIGINAL MANTENIDO --- */
+/* --- HEADER IGUAL QUE USUARIOS --- */
 .citas-admin-header {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1.5rem;
   background: linear-gradient(135deg, #1a2540 0%, #495a90 100%);
   color: white;
-  padding: 50px 32px;
+  padding: 70px 32px;
+  margin-bottom: 24px;
   border-radius: 0 0 20px 20px;
-  margin-bottom: 2.5rem;
-  box-shadow: 0 10px 25px -5px rgba(26, 37, 64, 0.4);
-  height: 250px;
-  margin-top: -40px;
+  box-shadow: 0 6px 24px rgba(26, 37, 64, 0.3);
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+.citas-admin-header::before {
+  content: "";
+  position: absolute;
+  top: -60px;
+  right: -60px;
+  width: 240px;
+  height: 240px;
+  background: radial-gradient(circle, rgba(129, 150, 235, 0.4) 0%, transparent 70%);
+  border-radius: 50%;
 }
 
 .header-icon-container {
-  flex-shrink: 0;
-  background-color: rgba(255, 255, 255, 0.1);
-  width: 72px;
-  height: 72px;
+  width: 72px !important;
+  height: 72px !important;
+  background: rgba(255, 255, 255, 0.15);
   border-radius: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: white;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  flex-shrink: 0 !important;
 }
 
 .header-icon-container svg {
   color: white;
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
 }
 
 .header-text-container {
-  text-align: left;
+  text-align: left !important;
+  flex-shrink: 0 !important;
+  margin-left: 20px;
 }
 
 .header-text-container h1 {
-  color: white;
-  font-size: 2.5rem;
-  font-weight: 800;
-  margin: 0 0 0.5rem 0;
-  letter-spacing: -0.5px;
+  font-size: 38px !important;
+  font-weight: 700 !important;
+  margin: 0 0 8px 0 !important;
+  color: #ffffff !important;
+  letter-spacing: -0.5px !important;
+  white-space: nowrap !important;
+  line-height: 1.2 !important;
+  font-family: inherit !important;
+  text-transform: none !important;
+  font-style: normal !important;
 }
 
 .header-text-container p {
-  color: var(--color-very-light-blue);
-  font-size: 1.1rem;
-  margin: 0;
-  opacity: 0.9;
+  font-size: 18px !important;
+  margin: 0 !important;
+  color: rgba(255, 255, 255, 0.85) !important;
+  font-weight: 400 !important;
+  white-space: nowrap !important;
+  font-family: inherit !important;
+  text-transform: none !important;
+  font-style: normal !important;
 }
 
 /* --- NUEVO DISEÑO DE ESTADÍSTICAS --- */
-.stats-section {
+.citas-admin-container .stats-section {
   margin-bottom: 3rem;
+  padding: 0 32px;
 }
 
-.stats-grid {
+.citas-admin-container .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-.stat-card {
+.citas-admin-container .stat-card {
   background: var(--bg-white);
   border: 2px solid var(--border-color);
   border-radius: 12px;
@@ -111,13 +139,13 @@ body {
   transition: all 0.2s ease;
 }
 
-.stat-card:hover {
+.citas-admin-container .stat-card:hover {
   border-color: var(--color-light-blue);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(73, 90, 144, 0.15);
 }
 
-.stat-number {
+.citas-admin-container .stat-number {
   font-size: 2.5rem;
   font-weight: 800;
   color: var(--text-primary);
@@ -125,7 +153,7 @@ body {
   margin-bottom: 0.5rem;
 }
 
-.stat-label {
+.citas-admin-container .stat-label {
   font-size: 0.9rem;
   font-weight: 600;
   color: var(--text-secondary);
@@ -133,7 +161,7 @@ body {
   letter-spacing: 0.5px;
 }
 
-.stat-icon {
+.citas-admin-container .stat-icon {
   position: absolute;
   top: 1.5rem;
   right: 1.5rem;
@@ -159,6 +187,10 @@ body {
   border: 2px solid var(--border-color);
   border-radius: 16px;
   overflow: hidden;
+  margin: 0 32px;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .table-header {
@@ -405,7 +437,8 @@ body {
 }
 
 .edit-btn,
-.delete-btn {
+.delete-btn,
+.log-btn {
   width: 36px;
   height: 36px;
   border: none;
@@ -415,6 +448,16 @@ body {
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
+}
+
+.log-btn {
+  background: #e7e5e4 !important;
+  color: #78716c !important;
+}
+
+.log-btn:hover {
+  background: #a8a29e !important;
+  color: white !important;
 }
 
 .edit-btn {
@@ -627,21 +670,46 @@ body {
   font-weight: 600 !important;
 }
 
-/* --- RESPONSIVE --- */
+/* --- RESPONSIVE MEJORADO CON ESPECIFICIDAD - IGUAL QUE DASHBOARD --- */
+@media (max-width: 1024px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 @media (max-width: 768px) {
   .citas-admin-container {
-    padding: 1rem;
+    padding: 0;
   }
 
   .citas-admin-header {
-    flex-direction: column;
+    padding: 32px 20px;
+    flex-direction: column !important;
+    gap: 20px;
     text-align: center;
-    padding: 2rem 1rem;
-    height: auto;
+  }
+
+  .header-text-container {
+    text-align: center !important;
+    margin-left: 0;
   }
 
   .header-text-container h1 {
-    font-size: 2rem;
+    font-size: 32px !important;
+    white-space: normal !important;
+  }
+
+  .header-text-container p {
+    font-size: 16px !important;
+    white-space: normal !important;
+  }
+
+  .stats-section {
+    padding: 0 20px;
+  }
+
+  .table-section {
+    margin: 0 20px;
   }
 
   .stats-grid {
@@ -665,6 +733,17 @@ body {
   .modal-container {
     width: 95%;
     margin: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-icon-container {
+    width: 64px !important;
+    height: 64px !important;
+  }
+
+  .header-text-container h1 {
+    font-size: 28px !important;
   }
 }
 
@@ -705,7 +784,7 @@ body {
 .modal-icon-wrapper {
   width: 60px;
   height: 60px;
-  background: var(--color-dark-blue); /* Fondo azul oscuro */
+  background: var(--color-dark-blue);
   border-radius: 16px;
   display: flex;
   align-items: center;
@@ -720,20 +799,20 @@ body {
 .modal-main-title {
   font-size: 1.75rem;
   font-weight: 800;
-  color: var(--color-dark-blue); /* Cambiar a azul oscuro para contrastar con fondo claro */
+  color: var(--color-dark-blue);
   margin: 0 0 0.5rem 0;
   letter-spacing: -0.025em;
-  text-shadow: none; /* Quitar sombra ya que no es necesaria */
-  opacity: 1; /* Asegurar opacidad completa */
+  text-shadow: none;
+  opacity: 1;
 }
 
 .modal-subtitle {
   font-size: 1rem;
-  color: var(--color-dark-blue); /* Cambiar a azul oscuro */
+  color: var(--color-dark-blue);
   margin: 0;
   opacity: 0.8;
   font-weight: 600;
-  text-shadow: none; /* Quitar sombra */
+  text-shadow: none;
 }
 
 .enhanced-close {
@@ -894,107 +973,243 @@ body {
   transform: translateY(-1px);
 }
 
-/* --- ESTILOS PARA EL MODAL DE AUDITORÍA --- */
-.audit-modal .modal-body {
-  padding: 1rem 0 1rem 2.5rem;
-  background-color: #f8fafc;
+/* ===================================================================
+   ESTILOS MEJORADOS Y ESTABLES PARA MODAL DE AUDITORÍA DE CITAS
+   ================================================================== */
+
+/* Backdrop del modal de auditoría - Máxima especificidad */
+.citas-admin-container .modal-backdrop {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  background-color: rgba(26, 37, 64, 0.7) !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  z-index: 999999 !important;
+  padding: 20px !important;
+  box-sizing: border-box !important;
 }
 
-.audit-timeline {
-  position: relative;
+/* Container del modal de auditoría - Estabilidad total */
+.citas-admin-container .modal-container.audit-modal {
+  background: white !important;
+  border-radius: 12px !important;
+  width: 90% !important;
+  max-width: 800px !important;
+  max-height: 90vh !important;
+  overflow: hidden !important;
+  border: 2px solid var(--border-color) !important;
+  box-shadow: 0 25px 50px -12px rgba(26, 37, 64, 0.25) !important;
+  position: relative !important;
+  margin: auto !important;
 }
 
-.audit-timeline-item {
-  position: relative;
-  padding: 1rem 1rem 1.5rem 3rem;
-  border-left: 2px solid #e2e8f0;
-  margin-left: 1rem;
+/* Header del modal de auditoría - Estilo específico */
+.citas-admin-container .audit-modal .modal-header.enhanced-header {
+  background: linear-gradient(135deg, var(--color-light-blue) 0%, var(--color-medium-blue) 100%) !important;
+  padding: 2rem 2.5rem !important;
+  position: relative !important;
+  overflow: hidden !important;
+  border-bottom: 2px solid var(--border-color) !important;
 }
 
-.audit-timeline-item:last-child {
-  border-left: 2px solid transparent;
+.citas-admin-container .audit-modal .modal-header-content {
+  display: flex !important;
+  align-items: center !important;
+  gap: 1.5rem !important;
+  position: relative !important;
+  z-index: 2 !important;
 }
 
-.audit-timeline-item::before {
-  content: '';
-  position: absolute;
-  left: -9px;
-  top: 1.25rem;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background-color: var(--color-light-blue);
-  border: 3px solid white;
-  box-shadow: 0 0 0 2px var(--color-light-blue);
-  
+.citas-admin-container .audit-modal .modal-icon-wrapper {
+  width: 60px !important;
+  height: 60px !important;
+  background: var(--color-dark-blue) !important;
+  border-radius: 16px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 2px solid var(--color-medium-blue) !important;
+  color: white !important;
 }
 
-.audit-action {
-  position: absolute;
-  left: 2.5rem;
-  top: 1rem;
-  padding: 0.25rem 0.75rem;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: white;
-  text-transform: capitalize;
-
+.citas-admin-container .audit-modal .modal-title-section {
+  flex: 1 !important;
 }
 
-
-.audit-details {
-  padding-top: 2.25rem;
-  font-size: 0.95rem;
+.citas-admin-container .audit-modal .modal-main-title {
+  font-size: 1.75rem !important;
+  font-weight: 800 !important;
+  color: var(--color-dark-blue) !important;
+  margin: 0 0 0.5rem 0 !important;
+  letter-spacing: -0.025em !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
 }
 
-.audit-field {
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: 0.5rem;
-  margin-top: 10px;
+.citas-admin-container .audit-modal .modal-subtitle {
+  font-size: 1rem !important;
+  color: var(--color-dark-blue) !important;
+  margin: 0 !important;
+  opacity: 0.8 !important;
+  font-weight: 600 !important;
+  text-shadow: none !important;
 }
 
-.audit-values {
-  background-color: #f1f5f9;
-  border-radius: 6px;
-  padding: 0.5rem 0.75rem;
-  margin-bottom: 0.5rem;
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 0.9rem;
+.citas-admin-container .audit-modal .modal-close-btn.enhanced-close {
+  background: var(--color-dark-blue) !important;
+  border: 2px solid var(--color-medium-blue) !important;
+  color: white !important;
+  width: 48px !important;
+  height: 48px !important;
+  border-radius: 12px !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 
-.audit-values strong {
-  font-weight: 600;
-  color: var(--text-secondary);
+.citas-admin-container .audit-modal .modal-close-btn.enhanced-close:hover {
+  background: var(--color-medium-blue) !important;
+  transform: scale(1.05) !important;
 }
 
-.audit-meta {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  display: flex;
-  justify-content: space-between;
-  padding-top: 0.5rem;
+/* Cuerpo del modal de auditoría - Estilo específico y estable */
+.citas-admin-container .audit-modal .modal-body {
+  padding: 1rem 0 1rem 2.5rem !important;
+  background-color: #f8fafc !important;
+  overflow-y: auto !important;
+  max-height: 60vh !important;
 }
 
-/* --- BOTÓN DE ACCIÓN PARA LOGS --- */
-.log-btn {
-  width: 36px;
-  height: 36px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-  background: #e7e5e4;
-  color: #78716c;
+/* Timeline de auditoría - Diseño específico */
+.citas-admin-container .audit-timeline {
+  position: relative !important;
 }
 
-.log-btn:hover {
-  background: #a8a29e;
-  color: white;
+.citas-admin-container .audit-timeline-item {
+  position: relative !important;
+  padding: 1rem 1rem 1.5rem 3rem !important;
+  border-left: 2px solid #e2e8f0 !important;
+  margin-left: 1rem !important;
+}
+
+.citas-admin-container .audit-timeline-item:last-child {
+  border-left: 2px solid transparent !important;
+}
+
+.citas-admin-container .audit-timeline-item::before {
+  content: "" !important;
+  position: absolute !important;
+  left: -9px !important;
+  top: 1.25rem !important;
+  width: 16px !important;
+  height: 16px !important;
+  border-radius: 50% !important;
+  background-color: var(--color-light-blue) !important;
+  border: 3px solid white !important;
+  box-shadow: 0 0 0 2px var(--color-light-blue) !important;
+}
+
+/* Acción de auditoría - Estilo específico */
+.citas-admin-container .audit-action {
+  position: absolute !important;
+  left: 2.5rem !important;
+  top: 1rem !important;
+  padding: 0.25rem 0.75rem !important;
+  border-radius: 20px !important;
+  font-size: 0.8rem !important;
+  font-weight: 600 !important;
+  color: white !important;
+  text-transform: capitalize !important;
+}
+
+/* Detalles de auditoría - Estilo específico */
+.citas-admin-container .audit-details {
+  padding-top: 2.25rem !important;
+  font-size: 0.95rem !important;
+}
+
+.citas-admin-container .audit-field {
+  font-weight: 600 !important;
+  color: var(--text-primary) !important;
+  margin-bottom: 0.5rem !important;
+  margin-top: 10px !important;
+}
+
+.citas-admin-container .audit-values {
+  background-color: #f1f5f9 !important;
+  border-radius: 6px !important;
+  padding: 0.5rem 0.75rem !important;
+  margin-bottom: 0.5rem !important;
+  font-family: "Courier New", Courier, monospace !important;
+  font-size: 0.9rem !important;
+}
+
+.citas-admin-container .audit-values strong {
+  font-weight: 600 !important;
+  color: var(--text-secondary) !important;
+}
+
+.citas-admin-container .audit-meta {
+  font-size: 0.8rem !important;
+  color: var(--text-muted) !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  padding-top: 0.5rem !important;
+}
+
+/* Estado sin datos de auditoría */
+.citas-admin-container .no-audit-data {
+  padding: 3rem !important;
+  text-align: center !important;
+  color: var(--text-secondary) !important;
+  font-size: 1.1rem !important;
+  background: #f8fafc !important;
+}
+
+/* Responsive para modal de auditoría */
+@media (max-width: 768px) {
+  .citas-admin-container .modal-container.audit-modal {
+    width: 95% !important;
+    max-width: none !important;
+    margin: 1rem !important;
+  }
+
+  .citas-admin-container .audit-modal .modal-header.enhanced-header {
+    padding: 1.5rem !important;
+  }
+
+  .citas-admin-container .audit-modal .modal-main-title {
+    font-size: 1.5rem !important;
+  }
+
+  .citas-admin-container .audit-modal .modal-body {
+    padding: 1.5rem !important;
+  }
+
+  .citas-admin-container .audit-timeline-item {
+    padding-left: 2rem !important;
+    margin-left: 0.5rem !important;
+  }
+
+  .citas-admin-container .audit-action {
+    left: 1.5rem !important;
+  }
+}
+
+/* Forzar estabilidad de estilos para auditoría */
+.citas-admin-container .modal-backdrop * {
+  box-sizing: border-box !important;
+}
+
+.citas-admin-container .modal-container.audit-modal * {
+  box-sizing: border-box !important;
+  font-family: inherit !important;
 }
 
 /* Responsive para el modal mejorado */

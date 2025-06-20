@@ -187,7 +187,8 @@
   flex-shrink: 0;
 }
 
-.search-section {
+/* ESTILOS DE BÚSQUEDA ESPECÍFICOS SOLO PARA GESTION-ROLES */
+.gestion-roles .search-section {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -195,13 +196,13 @@
   z-index: 1;
 }
 
-.search-container {
+.gestion-roles .search-container {
   position: relative;
   width: 100%;
   max-width: 500px;
 }
 
-.search-input {
+.gestion-roles .search-input {
   width: 100%;
   padding: 16px 20px 16px 56px;
   border: 2px solid rgba(255, 255, 255, 0.2);
@@ -213,19 +214,19 @@
   backdrop-filter: blur(10px);
 }
 
-.search-input::placeholder {
+.gestion-roles .search-input::placeholder {
   color: rgba(255, 255, 255, 0.7);
   font-weight: 400;
 }
 
-.search-input:focus {
+.gestion-roles .search-input:focus {
   outline: none;
   border-color: rgba(255, 255, 255, 0.4);
   background: rgba(255, 255, 255, 0.15);
   box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1);
 }
 
-.search-icon {
+.gestion-roles .search-icon {
   position: absolute;
   left: 20px;
   top: 50%;
