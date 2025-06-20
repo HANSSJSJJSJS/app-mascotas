@@ -70,31 +70,31 @@
   }
 }
 
-/* Header del dashboard mejorado - FIJO PARA CENTRADO ESTABLE */
-.dashboard-header {
+/* Header del dashboard - IGUAL QUE GESTIÓN DE USUARIOS */
+.dashboard-home .dashboard-header {
   background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
-  border-radius: 0 0 24px 24px;
-  padding: 40px 32px;
-  margin-bottom: 32px;
+  border-radius: 0 0 20px 20px;
+  padding: 70px 32px;
+  margin-bottom: 24px;
   position: relative;
   overflow: hidden;
-  box-shadow: var(--shadow-xl);
+  box-shadow: 0 6px 24px rgba(26, 37, 64, 0.3);
   width: 100%;
   box-sizing: border-box;
 }
 
-.dashboard-header::before {
+.dashboard-home .dashboard-header::before {
   content: "";
   position: absolute;
-  top: -100px;
-  right: -100px;
-  width: 300px;
-  height: 300px;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+  top: -60px;
+  right: -60px;
+  width: 240px;
+  height: 240px;
+  background: radial-gradient(circle, rgba(129, 150, 235, 0.4) 0%, transparent 70%);
   border-radius: 50%;
 }
 
-.dashboard-header::after {
+.dashboard-home .dashboard-header::after {
   content: "";
   position: absolute;
   bottom: -80px;
@@ -105,10 +105,11 @@
   border-radius: 50%;
 }
 
-.header-content {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+/* ESTRUCTURA SUPER ESPECÍFICA PARA EVITAR CONFLICTOS - IGUAL QUE GESTIÓN DE USUARIOS */
+.dashboard-home .dashboard-header .header-content {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
   position: relative;
   z-index: 1;
   width: 100%;
@@ -116,74 +117,57 @@
   margin: 0 auto;
 }
 
-.header-left {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-  width: 100%;
+.dashboard-home .dashboard-header .header-content .header-left {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 20px !important;
+  width: auto;
+  flex-shrink: 0;
 }
 
-.header-icon {
-  width: 80px;
-  height: 80px;
+.dashboard-home .dashboard-header .header-content .header-left .header-icon {
+  width: 72px !important;
+  height: 72px !important;
   background: rgba(255, 255, 255, 0.15);
-  border-radius: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  border-radius: 16px;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
   color: white;
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  flex-shrink: 0;
+  flex-shrink: 0 !important;
 }
 
-.header-text {
-  text-align: center;
-  flex-shrink: 0;
+.dashboard-home .dashboard-header .header-content .header-left .header-text {
+  text-align: left !important;
+  flex-shrink: 0 !important;
 }
 
-.header-text h1 {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: white;
-  margin: 0 0 8px 0;
-  letter-spacing: -0.5px;
-  white-space: nowrap;
+/* TÍTULO CON ESPECIFICIDAD MÁXIMA - MISMO TAMAÑO QUE GESTIÓN DE USUARIOS */
+.dashboard-home .dashboard-header .header-content .header-left .header-text h1 {
+  font-size: 38px !important;
+  font-weight: 700 !important;
+  margin: 0 0 8px 0 !important;
+  color: #ffffff !important;
+  letter-spacing: -0.5px !important;
+  white-space: nowrap !important;
+  line-height: 1.2 !important;
+  font-family: inherit !important;
+  text-transform: none !important;
+  font-style: normal !important;
 }
 
-.header-text p {
-  font-size: 1.125rem;
-  color: rgba(255, 255, 255, 0.85);
-  margin: 0;
-  font-weight: 400;
-  white-space: nowrap;
-}
-
-.header-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.quick-stats {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.quick-stat {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 0.875rem;
-  font-weight: 500;
-  padding: 8px 16px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+.dashboard-home .dashboard-header .header-content .header-left .header-text p {
+  font-size: 18px !important;
+  color: rgba(255, 255, 255, 0.85) !important;
+  margin: 0 !important;
+  font-weight: 400 !important;
+  white-space: nowrap !important;
+  font-family: inherit !important;
+  text-transform: none !important;
+  font-style: normal !important;
 }
 
 /* Sección de estadísticas */
@@ -289,7 +273,6 @@
   font-weight: 400;
 }
 
-/* Grid del dashboard */
 /* Tarjetas del dashboard */
 .dashboard-card {
   background: white;
@@ -298,7 +281,7 @@
   box-shadow: var(--shadow-lg);
   border: 1px solid var(--gray-100);
   transition: var(--transition);
-  margin-bottom: 40px; /* Añadido margen inferior */
+  margin-bottom: 40px;
 }
 
 .dashboard-card:hover {
@@ -310,7 +293,6 @@
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 24px;
-  margin-top: 50px;
 }
 
 .card-title h2 {
@@ -326,25 +308,11 @@
   margin: 0;
 }
 
-.view-all {
-  font-size: 0.875rem;
-  color: var(--primary);
-  text-decoration: none;
-  font-weight: 500;
-  transition: var(--transition);
-}
-
-.view-all:hover {
-  color: var(--primary-dark);
-  text-decoration: underline;
-}
-
-/* Acciones rápidas */
 /* Contenedor de acciones rápidas centrado */
 .quick-actions-container {
   max-width: 900px;
-  margin: 0 auto 60px auto; /* Aumentado el margen inferior */
-  padding: 0 32px 32px 32px; /* Añadido padding inferior */
+  margin: 0 auto 60px auto;
+  padding: 0 32px 32px 32px;
 }
 
 .quick-actions-grid {
@@ -352,7 +320,7 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 24px;
   justify-content: center;
-  margin-bottom: 20px; /* Añadido margen inferior */
+  margin-bottom: 20px;
 }
 
 .action-card {
@@ -444,14 +412,14 @@
   color: var(--gray-600);
 }
 
-/* === AÑADIDO: Estilo para el mensaje de error === */
+/* Mensaje de error */
 .error-message {
   color: #e74c3c;
   background-color: #fdd;
   border: 1px solid #e74c3c;
   padding: 1rem;
   border-radius: 8px;
-  margin: 0 32px 1.5rem 32px; /* Alineado con el padding de las secciones */
+  margin: 0 32px 1.5rem 32px;
   text-align: center;
   max-width: 1200px;
   box-sizing: border-box;
@@ -459,8 +427,7 @@
   margin-right: auto;
 }
 
-
-/* Responsive para acciones rápidas y otros elementos */
+/* RESPONSIVE MEJORADO CON ESPECIFICIDAD - IGUAL QUE GESTIÓN DE USUARIOS */
 @media (max-width: 1024px) {
   .quick-actions-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -476,27 +443,34 @@
 }
 
 @media (max-width: 768px) {
-  .dashboard-header {
-    padding: 24px 20px;
+  .dashboard-home .dashboard-header {
+    padding: 32px 20px;
   }
 
-  .header-content {
-    flex-direction: column;
+  .dashboard-home .dashboard-header .header-content {
+    flex-direction: column !important;
     gap: 20px;
     text-align: center;
   }
 
-  .header-left {
-    flex-direction: column;
+  .dashboard-home .dashboard-header .header-content .header-left {
+    flex-direction: column !important;
     gap: 16px;
+    text-align: center;
   }
 
-  .header-text h1 {
-    font-size: 2rem;
+  .dashboard-home .dashboard-header .header-content .header-left .header-text {
+    text-align: center !important;
   }
 
-  .header-text p {
-    white-space: normal;
+  .dashboard-home .dashboard-header .header-content .header-left .header-text h1 {
+    font-size: 32px !important;
+    white-space: normal !important;
+  }
+
+  .dashboard-home .dashboard-header .header-content .header-left .header-text p {
+    font-size: 16px !important;
+    white-space: normal !important;
   }
 
   .stats-section {
@@ -539,16 +513,20 @@
     padding: 20px;
     margin-bottom: 30px;
   }
-  
+
   .error-message {
     margin: 0 20px 1.5rem 20px;
   }
 }
 
 @media (max-width: 480px) {
-  .header-icon {
-    width: 64px;
-    height: 64px;
+  .dashboard-home .dashboard-header .header-content .header-left .header-icon {
+    width: 64px !important;
+    height: 64px !important;
+  }
+
+  .dashboard-home .dashboard-header .header-content .header-left .header-text h1 {
+    font-size: 28px !important;
   }
 
   .stat-card {

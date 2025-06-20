@@ -144,7 +144,7 @@
   font-size: 15px;
   transition: all 0.3s ease;
   background: white;
-  color:#495a90
+  color: #495a90;
 }
 
 .search-input:focus {
@@ -460,6 +460,7 @@
   display: flex;
   gap: 8px;
 }
+
 .btn-log,
 .btn-edit,
 .btn-delete {
@@ -499,16 +500,17 @@
   transform: translateY(-2px);
 }
 
-.btn-log{
+.btn-log {
   background-color: #cfd0d1;
-  color:#474a4c;
+  color: #474a4c;
   border: 1px solid rgba(158, 157, 157, 0.2);
 }
 
-.btn-log:hover{
+.btn-log:hover {
   background: rgba(169, 182, 235, 0.2);
   transform: translateY(-2px);
 }
+
 /* Formulario de Registro */
 .registrar-servicio {
   background: white;
@@ -797,11 +799,7 @@
   }
 }
 
-/* =================================================================
-==          ESTILOS PERSONALIZADOS PARA SWEETALERT2          ==
-================================================================= */
-
-/* --- Contenedores Base --- */
+/* ESTILOS PERSONALIZADOS PARA SWEETALERT2 */
 .swal-custom-success,
 .swal-custom-warning,
 .swal-custom-error {
@@ -810,7 +808,6 @@
   padding: 24px !important;
 }
 
-/* --- Títulos y Contenido --- */
 .swal-custom-title {
   color: #1a2540 !important;
   font-size: 28px !important;
@@ -831,14 +828,11 @@
   font-weight: 600;
 }
 
-/* --- Contenedor de Acciones (Botones) --- */
 .swal-custom-actions {
   gap: 12px !important;
   margin-top: 24px !important;
 }
 
-
-/* --- Variante ÉXITO --- */
 .swal-custom-success {
   background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
   border: 2px solid #e5e7eb;
@@ -849,21 +843,18 @@
   border-color: rgba(34, 197, 94, 0.4) !important;
 }
 
-/* --- Variante ADVERTENCIA --- */
 .swal-custom-warning {
-  background: #ffffff !important; /* Fondo blanco y limpio */
-  border: 2px solid #8196eb !important; /* Borde con el color de acento azul */
-  box-shadow: 0 10px 40px rgba(129, 150, 235, 0.2) !important; /* Sombra azulada sutil */
+  background: #ffffff !important;
+  border: 2px solid #8196eb !important;
+  box-shadow: 0 10px 40px rgba(129, 150, 235, 0.2) !important;
 }
 
-/* --- Variante ERROR --- */
 .swal-custom-error {
-    background: linear-gradient(145deg, #ffffff 0%, #fef2f2 100%); /* Rojo muy claro */
-    border: 2px solid #fca5a5;
-    box-shadow: 0 10px 40px rgba(252, 165, 165, 0.2);
+  background: linear-gradient(145deg, #ffffff 0%, #fef2f2 100%);
+  border: 2px solid #fca5a5;
+  box-shadow: 0 10px 40px rgba(252, 165, 165, 0.2);
 }
 
-/* --- Botones Genéricos --- */
 .swal-custom-confirm-button,
 .swal-custom-delete-button,
 .swal-custom-cancel-button {
@@ -884,10 +875,9 @@
 .swal-custom-confirm-button:focus,
 .swal-custom-delete-button:focus,
 .swal-custom-cancel-button:focus {
-    outline: none !important;
+  outline: none !important;
 }
 
-/* Botón de Confirmación (Azul) */
 .swal-custom-confirm-button {
   background: linear-gradient(135deg, #8196eb, #495a90) !important;
   color: white !important;
@@ -903,16 +893,15 @@
   box-shadow: 0 0 0 4px rgba(129, 150, 235, 0.3) !important;
 }
 
-/* Botón de Eliminación (Estilo Delineado con la paleta oficial) */
 .swal-custom-delete-button {
   background-color: transparent !important;
-  color: #8196eb !important; /* Color del texto y borde */
+  color: #8196eb !important;
   border: 2px solid #8196eb !important;
   box-shadow: none !important;
 }
 
 .swal-custom-delete-button:hover {
-  background-color: rgba(129, 152, 235, 0.1) !important; /* Resalte sutil al pasar el mouse */
+  background-color: rgba(129, 152, 235, 0.1) !important;
   color: #495a90 !important;
   border-color: #495a90 !important;
   transform: translateY(-2px);
@@ -922,7 +911,6 @@
   box-shadow: 0 0 0 4px rgba(129, 152, 235, 0.3) !important;
 }
 
-/* Botón de Cancelación (Gris) */
 .swal-custom-cancel-button {
   background: #f1f5f9 !important;
   color: #475569 !important;
@@ -940,269 +928,525 @@
   box-shadow: 0 0 0 4px rgba(226, 232, 240, 0.5) !important;
 }
 
-/* ---
-=================================================================
-==     ESTILOS FINALES Y CORREGIDOS PARA MODAL DE AUDITORÍA    ==
-=================================================================
---- */
+/* ESTILOS MEJORADOS Y ESTABLES PARA MODAL DE AUDITORÍA DE SERVICIOS */
 
-/* --- Colores Base (ya los debes tener, es referencia) --- */
-:root {
-  --color-black: #000000;
-  --color-dark-blue: #1a2540;
-  --color-medium-blue: #495a90;
-  --color-light-blue: #8196eb;
-  --color-very-light-blue: #c2d8ff;
-  --bg-primary: #f8fafc;
-  --bg-white: #ffffff;
-  --text-primary: #1a2540;
-  --text-secondary: #64748b;
-  --text-muted: #94a3b8;
-  --border-color: #e2e8f0;
-}
-
-/* --- Fondo oscuro para el modal --- */
-.modal-backdrop {
+/* Backdrop del modal de auditoría */
+.gestion-servicios .modal-backdrop {
   position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background-color: rgba(26, 37, 64, 0.7); /* color2 con opacidad */
-  backdrop-filter: blur(4px);
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(26, 37, 64, 0.85);
+  backdrop-filter: blur(10px);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 999999;
+  animation: fadeInServicesAudit 0.3s ease-out;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
-/* --- Contenedor principal del modal --- */
-.modal-container.audit-modal {
+@keyframes fadeInServicesAudit {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+  }
+  to {
+    opacity: 1;
+    backdrop-filter: blur(10px);
+  }
+}
+
+/* Container del modal de auditoría */
+.gestion-servicios .modal-container.audit-modal {
   width: 90%;
-  max-width: 800px;
+  max-width: 850px;
   max-height: 90vh;
   border-radius: 16px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  background: var(--bg-primary);
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+  background: white;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(129, 150, 235, 0.1);
+  animation: slideInServicesAudit 0.4s ease-out;
+  position: relative;
+  margin: auto;
 }
 
-/* --- Encabezado del modal (TÍTULO BONITO) --- */
-.modal-header.audit-header-services {
-  background: linear-gradient(135deg, var(--color-light-blue) 0%, var(--color-medium-blue) 100%);
-  color: white;
-  padding: 1.25rem 2rem;
+@keyframes slideInServicesAudit {
+  from {
+    opacity: 0;
+    transform: translateY(-30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Header del modal de auditoría */
+.gestion-servicios .modal-header.audit-header-services {
+  background: linear-gradient(135deg, #1a2540 0%, #495a90 100%);
+  padding: 2rem 2.5rem;
   position: relative;
+  border-bottom: 3px solid #8196eb;
+  flex-shrink: 0;
+}
+
+.gestion-servicios .modal-header.audit-header-services::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+  pointer-events: none;
+}
+
+.gestion-servicios .modal-header-content {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  position: relative;
+  z-index: 2;
+}
+
+/* Icono del modal */
+.gestion-servicios .modal-icon-wrapper {
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-radius: 12px;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  flex-shrink: 0;
+}
+
+.gestion-servicios .modal-icon-wrapper svg,
+.gestion-servicios .modal-icon-wrapper i,
+.gestion-servicios .modal-icon-wrapper::before {
+  color: white;
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+  display: block;
+  opacity: 1;
+  visibility: visible;
+}
+
+.gestion-servicios .modal-title-section {
+  text-align: left;
+  flex: 1;
+}
+
+/* Títulos del modal */
+.gestion-servicios .modal-main-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  margin: 0 0 0.5rem 0;
+  color: #ffffff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  letter-spacing: -0.025em;
+}
+
+.gestion-servicios .modal-subtitle {
+  font-size: 1rem;
+  color: #f1f5f9;
+  margin: 0;
+  font-weight: 600;
+  opacity: 1;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Botón cerrar */
+.gestion-servicios .modal-close-btn {
+  background: rgba(255, 255, 255, 0.15);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: #f1f5f9;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0.75rem;
+  border-radius: 10px;
+  position: absolute;
+  top: 1.5rem;
+  right: 2rem;
+  z-index: 3;
+}
+
+.gestion-servicios .modal-close-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: white;
+  transform: rotate(90deg) scale(1.1);
+}
+
+/* Cuerpo del modal */
+.gestion-servicios .audit-modal .modal-body {
+  padding: 2.5rem;
+  overflow-y: auto;
+  background: #f8fafc;
+  flex: 1;
+  min-height: 200px;
+}
+
+/* Timeline de auditoría */
+.gestion-servicios .audit-timeline {
+  position: relative;
+  padding-left: 40px;
+}
+
+.gestion-servicios .audit-timeline::before {
+  content: "";
+  position: absolute;
+  left: 24px;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(to bottom, #8196eb 0%, #495a90 50%, #c2d8ff 100%);
+  border-radius: 2px;
+  box-shadow: 0 0 8px rgba(129, 150, 235, 0.3);
+}
+
+.gestion-servicios .audit-timeline-item {
+  position: relative;
+  padding: 0.75rem 0 2rem 60px;
+  margin-bottom: 1.5rem;
+}
+
+.gestion-servicios .audit-timeline-item:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+/* Iconos de la timeline */
+.gestion-servicios .audit-icon-container {
+  position: absolute;
+  left: 0;
+  top: 0.75rem;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  background: #8196eb;
+  border: 4px solid white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2), 0 0 0 2px #8196eb;
+  z-index: 10;
+  transition: transform 0.2s ease;
+  overflow: visible;
+  font-size: 20px !important;
+  font-weight: bold !important;
+  font-family: Arial, sans-serif !important;
+}
+
+/* Iconos específicos usando data attributes */
+.gestion-servicios .audit-icon-container[data-action="INSERT"]::before {
+  content: "+" !important;
+  color: white !important;
+  font-size: 24px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  display: block !important;
+}
+
+.gestion-servicios .audit-icon-container[data-action="UPDATE"]::before {
+  content: "✎" !important;
+  color: white !important;
+  font-size: 20px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  display: block !important;
+}
+
+.gestion-servicios .audit-icon-container[data-action="DELETE"]::before {
+  content: "✕" !important;
+  color: white !important;
+  font-size: 20px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  display: block !important;
+}
+
+.gestion-servicios .audit-icon-container[data-action="DEFAULT"]::before {
+  content: "●" !important;
+  color: white !important;
+  font-size: 16px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  display: block !important;
+}
+
+/* Fallback para cualquier icono sin data-action */
+.gestion-servicios .audit-icon-container:not([data-action])::before {
+  content: "●" !important;
+  color: white !important;
+  font-size: 16px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  display: block !important;
+}
+
+/* Ocultar cualquier contenido hijo para evitar conflictos */
+.gestion-servicios .audit-icon-container > * {
+  display: none !important;
+}
+
+.gestion-servicios .audit-timeline-item:hover .audit-icon-container {
+  transform: scale(1.1);
+  background: #495a90;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25), 0 0 0 3px #495a90;
+}
+
+/* Tarjetas de contenido */
+.gestion-servicios .audit-content {
+  background: white;
+  border-radius: 12px;
+  padding: 1.75rem;
+  border: 2px solid #c2d8ff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(129, 150, 235, 0.1);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.gestion-servicios .audit-content:hover {
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15), 0 4px 8px rgba(129, 150, 235, 0.2);
+  transform: translateY(-3px);
+  border-color: #8196eb;
+}
+
+.gestion-servicios .audit-content::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #8196eb, #495a90);
+  border-radius: 12px 12px 0 0;
+}
+
+.gestion-servicios .audit-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-}
-
-.modal-header-content {
-  display: flex;
-  align-items: center;
+  align-items: flex-start;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
   gap: 1rem;
 }
 
-.modal-icon-wrapper.audit-icon-services {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-}
-
-.modal-title-section {
-  text-align: left;
-}
-
-.modal-main-title {
-  font-size: 1.5rem;
+.gestion-servicios .audit-action-text {
+  font-size: 1.3rem;
   font-weight: 700;
-  margin: 0 0 0.25rem 0;
-  color: white; /* Asegura que el título sea visible */
-}
-
-.modal-subtitle {
-  font-size: 0.9rem;
-  color: var(--color-very-light-blue);
-  opacity: 0.9;
-  margin: 0;
-}
-
-/* --- BOTÓN DE CIERRE "X" --- */
-.modal-close-btn {
-  background: transparent;
-  border: none;
-  color: white;
-  opacity: 0.7;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  padding: 0.5rem;
-  border-radius: 50%;
-  position: absolute;
-  top: 0.75rem;
-  right: 0.75rem;
-}
-.modal-close-btn:hover {
-  opacity: 1;
-  background-color: rgba(255, 255, 255, 0.1);
-  transform: rotate(90deg);
-}
-
-/* --- Cuerpo del modal y línea de tiempo --- */
-.audit-modal .modal-body {
-  padding: 1.5rem;
-  overflow-y: auto;
-}
-
-.audit-timeline {
-  position: relative;
-  padding-left: 20px;
-}
-
-.audit-timeline-item {
-  position: relative;
-  padding: 0.25rem 0 1.5rem 40px;
-  border-left: 2px solid var(--border-color);
-}
-.audit-timeline-item:last-child {
-  border-left-color: transparent;
-}
-
-.audit-icon-container {
-  position: absolute;
-  left: -21px;
-  top: 0.25rem;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
+  color: #1a2540;
   display: flex;
   align-items: center;
-  justify-content: center;
-  color: white;
-  border: 4px solid var(--bg-primary);
+  gap: 0.75rem;
+  text-decoration: none;
 }
 
-.audit-content {
-  background-color: var(--bg-white);
-  border-radius: 8px;
-  padding: 1rem;
-  border: 1px solid var(--border-color);
-}
-
-.audit-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.75rem;
-}
-
-.audit-action-text {
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  text-decoration: none !important; /* !Importante: Quita la línea de subrayado */
-}
-
-.audit-meta {
-  font-size: 0.8rem;
-  color: var(--text-secondary);
-}
-
-.audit-details {
+.gestion-servicios .audit-meta {
   font-size: 0.9rem;
-}
-
-.audit-field strong {
-  color: var(--text-primary);
-}
-
-.audit-diff {
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 0.9rem;
-  line-height: 1.5;
-  background-color: var(--border-light);
-  padding: 0.5rem 0.75rem;
-  border-radius: 6px;
-  margin-top: 0.25rem;
-}
-
-.audit-diff .audit-value-old {
-  color: #ef4444;
-  text-decoration: line-through;
-}
-
-.audit-diff .audit-arrow {
-  color: var(--text-muted);
-  font-weight: bold;
-  margin: 0 0.5rem;
-}
-
-.audit-diff .audit-value-new {
-  color: #22c55e;
-  font-weight: bold;
-}
-
-.audit-full-value {
-  background-color: var(--border-light);
-  padding: 0.75rem;
-  border-radius: 6px;
-  font-family: monospace;
-  white-space: pre-wrap;
-  word-break: break-all;
-  color: var(--text-secondary);
-}
-
-.audit-user {
-  margin-top: 1rem;
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  text-align: right;
-  padding-top: 0.5rem;
-  border-top: 1px dotted var(--border-color);
-}
-
-.audit-user strong {
+  color: #495a90;
+  background: #c2d8ff;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
   font-weight: 600;
-  color: var(--text-secondary);
+  border: 2px solid #8196eb;
+  box-shadow: 0 2px 4px rgba(129, 150, 235, 0.2);
 }
 
-/* ---
-============================================================
-==     ESTILOS ADICIONALES PARA DETALLES DE AUDITORÍA     ==
-============================================================
---- */
+/* Detalles de auditoría */
+.gestion-servicios .audit-details {
+  font-size: 1rem;
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 2px solid #c2d8ff;
+}
 
-.audit-change-row {
+.gestion-servicios .audit-change-row {
   display: flex;
   align-items: baseline;
-  gap: 0.5rem;
-  padding: 0.25rem 0;
+  gap: 1rem;
+  padding: 0.75rem;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+  margin: 0.5rem 0;
 }
 
-.audit-label {
-  font-weight: 600;
-  color: var(--color-medium-blue);
-  min-width: 60px;
+.gestion-servicios .audit-change-row:hover {
+  background-color: rgba(194, 216, 255, 0.1);
 }
 
-.audit-value-old {
-  color: #292929;
+.gestion-servicios .audit-label {
+  font-weight: 700;
+  color: #495a90;
+  min-width: 90px;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.gestion-servicios .audit-value-old {
+  color: #dc2626;
   text-decoration: line-through;
-  font-family: 'Courier New', Courier, monospace;
+  font-family: "SF Mono", "Monaco", "Inconsolata", "Roboto Mono", monospace;
+  background: #fef2f2;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  border: 2px solid #fecaca;
+  font-weight: 600;
 }
 
-.audit-value-new {
-  color: #1b1b1b;
-  font-weight: bold;
-  font-family: 'Courier New', Courier, monospace;
+.gestion-servicios .audit-value-new {
+  color: #16a34a;
+  font-weight: 700;
+  font-family: "SF Mono", "Monaco", "Inconsolata", "Roboto Mono", monospace;
+  background: #f0fdf4;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  border: 2px solid #bbf7d0;
 }
 
-.audit-full-value {
-  font-family: 'Courier New', Courier, monospace;
-  color: var(--text-secondary);
+.gestion-servicios .audit-full-value {
+  font-family: "SF Mono", "Monaco", "Inconsolata", "Roboto Mono", monospace;
+  color: #495a90;
+  background: #c2d8ff;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  border: 2px solid #8196eb;
+  font-weight: 600;
+}
+
+/* Usuario modificador */
+.gestion-servicios .audit-user {
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+  color: #495a90;
+  text-align: right;
+  padding: 1.2rem;
+  background: linear-gradient(135deg, #f8fafc, #c2d8ff);
+  border-radius: 10px;
+  border: 2px solid #8196eb;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.gestion-servicios .audit-user strong {
+  font-weight: 700;
+  color: #1a2540;
+}
+
+/* Estado sin datos */
+.gestion-servicios .no-audit-data {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+  color: #495a90;
+}
+
+.gestion-servicios .no-audit-data svg {
+  color: #8196eb;
+  margin-bottom: 1.5rem;
+  opacity: 0.8;
+}
+
+.gestion-servicios .no-audit-data p {
+  margin-top: 1rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  max-width: 350px;
+  line-height: 1.5;
+}
+
+/* Responsive específico para auditoría */
+@media (max-width: 768px) {
+  .gestion-servicios .modal-container.audit-modal {
+    width: 95%;
+    max-height: 95vh;
+    border-radius: 12px;
+    margin: 10px;
+  }
+
+  .gestion-servicios .modal-header.audit-header-services {
+    padding: 1.75rem 2rem;
+  }
+
+  .gestion-servicios .modal-main-title {
+    font-size: 1.5rem;
+  }
+
+  .gestion-servicios .modal-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .gestion-servicios .audit-modal .modal-body {
+    padding: 2rem;
+  }
+
+  .gestion-servicios .audit-timeline {
+    padding-left: 35px;
+  }
+
+  .gestion-servicios .audit-timeline-item {
+    padding-left: 55px;
+  }
+
+  .gestion-servicios .audit-icon-container {
+    width: 44px;
+    height: 44px;
+  }
+
+  .gestion-servicios .audit-content {
+    padding: 1.5rem;
+  }
+
+  .gestion-servicios .audit-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .gestion-servicios .audit-change-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+}
+
+/* Efectos adicionales para estabilidad visual */
+.gestion-servicios .audit-timeline-item:nth-child(even) .audit-content {
+  border-left: 4px solid #c2d8ff;
+}
+
+.gestion-servicios .audit-timeline-item:nth-child(odd) .audit-content {
+  border-left: 4px solid #8196eb;
+}
+
+.gestion-servicios .audit-timeline-item:hover {
+  transform: translateX(3px);
+  transition: transform 0.2s ease;
+}
+
+/* Forzar estabilidad de estilos para auditoría */
+.gestion-servicios .modal-backdrop * {
+  box-sizing: border-box;
+}
+
+.gestion-servicios .modal-container.audit-modal * {
+  box-sizing: border-box;
+  font-family: inherit;
 }
