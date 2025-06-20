@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
-import HistorialForm from '../CompVet/HistorialForm';
 import ViewHistorialModal from '../CompVet/ViewHistorialModal';
-import { PlusCircle, Search, Eye} from 'react-bootstrap-icons';
-import Edit from 'react-bootstrap-icons/dist/icons/pencil-square';
+import { PlusCircle, Search, Eye } from 'react-bootstrap-icons';
 import Ban from 'react-bootstrap-icons/dist/icons/ban';
 import CheckCircle from 'react-bootstrap-icons/dist/icons/check-circle';
 import '../../stylos/cssVet/HistorialClinico.css';
@@ -14,7 +12,6 @@ const HistorialClinico = () => {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [selectedHistorial, setSelectedHistorial] = useState(null);
   const [showViewModal, setShowViewModal] = useState(false);
-  const [showUpdateForm, setShowUpdateForm] = useState(false);
 
   // Cargar datos del localStorage al iniciar
   useEffect(() => {
@@ -80,15 +77,6 @@ const HistorialClinico = () => {
     setShowCreateForm(false);
   };
 
-  const handleUpdateHistorial = (updatedHistorial) => {
-    const updatedHistoriales = historiales.map((h) => 
-      h.id === updatedHistorial.id ? updatedHistorial : h
-    );
-    saveToLocalStorage(updatedHistoriales);
-    setShowUpdateForm(false);
-    setSelectedHistorial(null);
-  };
-
   const toggleHistorialStatus = (id) => {
     const updatedHistoriales = historiales.map((h) => 
       h.id === id ? { ...h, activo: !h.activo } : h
@@ -101,33 +89,7 @@ const HistorialClinico = () => {
     setShowViewModal(true);
   };
 
-  const handleEditHistorial = (historial) => {
-    setSelectedHistorial(historial);
-    setShowUpdateForm(true);
-  };
 
-  if (showCreateForm) {
-    return (
-      <HistorialForm 
-        onSave={handleCreateHistorial} 
-        onCancel={() => setShowCreateForm(false)} 
-      />
-    );
-  }
-
-  if (showUpdateForm && selectedHistorial) {
-    return (
-      <HistorialForm
-        historial={selectedHistorial}
-        onSave={handleUpdateHistorial}
-        onCancel={() => {
-          setShowUpdateForm(false);
-          setSelectedHistorial(null);
-        }}
-        isEditMode={true}
-      />
-    );
-  }
 
   return (
     <div className="historial-clinico-container">
@@ -204,13 +166,6 @@ const HistorialClinico = () => {
                       title="Ver historial"
                     >
                       <Eye />
-                    </button>
-                    <button 
-                      className="action-btn edit-btn"
-                      onClick={() => handleEditHistorial(historial)}
-                      title="Editar historial"
-                    >
-                      <Edit />
                     </button>
                     <button 
                       className={`action-btn ${historial.activo ? 'deactivate-btn' : 'activate-btn'}`}
