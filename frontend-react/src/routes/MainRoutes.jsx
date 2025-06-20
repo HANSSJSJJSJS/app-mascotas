@@ -97,16 +97,18 @@ const MainRoutes = () => {
       </Route>
       
       {/* RUTAS ADMINISTRADOR */}
-      <Route path="/admin" element={<AdminDashboard />}>
-        <Route index element={<DashboardHome />} />
-        <Route path="dashboard" element={<DashboardHome />} />
-        <Route path="usuarios" element={<GestionUsuarios />} />
-        <Route path="roles" element={<GestionRoles />} />
-        <Route path="servicios" element={<GestionServicios />} />
-        <Route path="gestion-citas" element={<GestionCitas />} />
-        <Route path="gestion-usuarios" element={<GestionUsuarios />} />
-        <Route path="gestion-roles" element={<GestionRoles />} />
-        <Route path="gestion-servicios" element={<GestionServicios />} /> 
+      <Route element={isDevelopment ? <RutasVet /> : <RutaProtegida rolPermitido="veterinario"><RutasVet /></RutaProtegida>}>
+        <Route path="/admin" element={<AdminDashboard />}>
+          <Route index element={<DashboardHome />} />
+          <Route path="dashboard" element={<DashboardHome />} />
+          <Route path="usuarios" element={<GestionUsuarios />} />
+          <Route path="roles" element={<GestionRoles />} />
+          <Route path="servicios" element={<GestionServicios />} />
+          <Route path="gestion-citas" element={<GestionCitas />} />
+          <Route path="gestion-usuarios" element={<GestionUsuarios />} />
+          <Route path="gestion-roles" element={<GestionRoles />} />
+          <Route path="gestion-servicios" element={<GestionServicios />} /> 
+        </Route>
       </Route>
 
       {/* Rutas propietario */}

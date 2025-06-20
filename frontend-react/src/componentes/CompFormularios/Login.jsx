@@ -5,7 +5,8 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import '../../stylos/cssFormularios/Login.css';
 import logo from "../../imagenes/logo.png";
-import MascotaForm from "../CompFormularios/MascotaForm"
+import MascotaForm from "../CompFormularios/MascotaForm";
+import { useAuth } from '../../context/AuthContext'; // Correcto: Usar el hook 'useAuth'
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -14,28 +15,29 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [rol, setRol] = useState("");
   const [isBlocked, setIsBlocked] = useState(false);
-  const [remainingTime, setRemainingTime] = useState(0); // Definido correctamente aquí
+  const [remainingTime, setRemainingTime] = useState(0); 
   const navigate = useNavigate();
+  const { login } = useAuth(); // Correcto: así se obtiene la función login
 
-  // Verificar bloqueo al cargar el componente o cambiar email
-useEffect(() => {
-  const blockedEmails = JSON.parse(localStorage.getItem('blockedEmails')) || {};
-  const currentEmailBlock = blockedEmails[email];
+  // ... (Toda tu lógica de useEffect para el bloqueo de cuenta se mantiene igual, no la pego para no alargar, pero NO la borres)
+
+  useEffect(() => {
+    const blockedEmails = JSON.parse(localStorage.getItem('blockedEmails')) || {};
+    const currentEmailBlock = blockedEmails[email];
+    
+    if (currentEmailBlock && Date.now() < currentEmailBlock.blockTime) {
+      setIsBlocked(true);
+      const timeLeft = Math.min(
+        30, 
+        Math.ceil((currentEmailBlock.blockTime - Date.now()) / 1000)
+      );
+      setRemainingTime(timeLeft);
+    } else {
+      setIsBlocked(false);
+    }
+  }, [email]);
   
-  if (currentEmailBlock && Date.now() < currentEmailBlock.blockTime) {
-    setIsBlocked(true);
-    // Asegurar que el tiempo máximo de bloqueo sea 30 segundos
-    const timeLeft = Math.min(
-      30, 
-      Math.ceil((currentEmailBlock.blockTime - Date.now()) / 1000)
-    );
-    setRemainingTime(timeLeft);
-  } else {
-    setIsBlocked(false);
-  }
-}, [email]);
-
-  // Temporizador para desbloquear (ahora en segundos)
+    // Temporizador para desbloquear (ahora en segundos)
   useEffect(() => {
     let interval;
     if (isBlocked && remainingTime > 0) {
@@ -50,6 +52,7 @@ useEffect(() => {
     }
     return () => clearInterval(interval);
   }, [isBlocked, remainingTime, email]);
+
 
   const validateForm = () => {
     const newErrors = {};
@@ -94,7 +97,6 @@ useEffect(() => {
         password,
       });
 
-      // Resetear intentos si el login es exitoso para este email
       const blockedEmails = JSON.parse(localStorage.getItem('blockedEmails')) || {};
       delete blockedEmails[email];
       localStorage.setItem('blockedEmails', JSON.stringify(blockedEmails));
@@ -107,23 +109,27 @@ useEffect(() => {
       });
 
       const { user } = response.data;
-      setRol(user.id_rol); // Guardamos el rol en el estado si quieres usarlo después
-          
-      localStorage.setItem("userData", JSON.stringify(user));
-          
+
+      // --- INICIO DE LA MODIFICACIÓN ---
+      // Tu AuthContext espera un solo objeto de usuario. 
+      // Le pasamos el objeto 'user' completo que ya contiene el token.
+      if (user) {
+        login(user); // Llamamos a login con el objeto 'user'
+      }
+      // --- FIN DE LA MODIFICACIÓN ---
+
       // Navegación inmediata con el rol extraído
-      if (user.id_rol === 1) {
-        navigate("/Admin");
-      } else if (user.id_rol === 2) {
-        navigate("/PanelVet");
-      } else if (user.id_rol === 3) {
+      if (user && user.id_rol === 1) {
+        navigate("/admin"); 
+      } else if (user && user.id_rol === 2) {
+        navigate("/PanelVet"); 
+      } else if (user && user.id_rol === 3) {
         navigate("/PanelPropietario");
       } else {
-        console.error("Rol no reconocido:", user.id_rol);
+        console.error("Rol no reconocido:", user?.id_rol);
+        navigate("/"); // Navegación por defecto si no hay rol
       }
 
-
-      // Limpiar campos después de redirigir
       setEmail("");
       setPassword("");
 
@@ -133,7 +139,7 @@ useEffect(() => {
       const newAttempts = currentAttempts + 1;
 
       if (newAttempts >= 3) {
-        const blockDuration = 30 * 1000; // 30 segundos exactos
+        const blockDuration = 30 * 1000;
         const newBlockTime = Date.now() + blockDuration;
 
         blockedEmails[email] = {
@@ -143,7 +149,7 @@ useEffect(() => {
       
         localStorage.setItem('blockedEmails', JSON.stringify(blockedEmails));
         setIsBlocked(true);
-        setRemainingTime(30); // Establecer exactamente 30 segundos
+        setRemainingTime(30);
 
         await Swal.fire({
           icon: "error",
