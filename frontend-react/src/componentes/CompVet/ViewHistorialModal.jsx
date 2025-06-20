@@ -3,7 +3,7 @@ import { useRef } from 'react';
 import { useReactToPrint } from 'react-to-print';
 import { PDFDownloadLink, Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
 
-// Estilos mejorados para el PDF
+// Estilos para el PDF con tu paleta de colores
 const pdfStyles = StyleSheet.create({
   page: {
     flexDirection: 'column',
@@ -15,11 +15,11 @@ const pdfStyles = StyleSheet.create({
     marginBottom: 30,
     paddingBottom: 15,
     borderBottomWidth: 2,
-    borderBottomColor: '#2c3e50',
+    borderBottomColor: '#1a2540',
     borderBottomStyle: 'solid'
   },
   clinicHeader: {
-    backgroundColor: '#3498db',
+    backgroundColor: '#1a2540',
     color: 'white',
     padding: 10,
     textAlign: 'center',
@@ -31,26 +31,26 @@ const pdfStyles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 10,
-    color: '#2c3e50'
+    color: '#1a2540'
   },
   subtitle: {
     fontSize: 18,
     fontWeight: 'bold',
     marginTop: 15,
     marginBottom: 10,
-    color: '#3498db',
+    color: '#495a90',
     borderBottomWidth: 1,
-    borderBottomColor: '#3498db',
+    borderBottomColor: '#495a90',
     borderBottomStyle: 'solid',
     paddingBottom: 5
   },
   section: {
     marginBottom: 20,
     padding: 15,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: '#f5f7fa',
     borderRadius: 8,
     borderLeftWidth: 4,
-    borderLeftColor: '#3498db',
+    borderLeftColor: '#495a90',
     borderLeftStyle: 'solid'
   },
   row: {
@@ -61,11 +61,11 @@ const pdfStyles = StyleSheet.create({
   label: {
     width: 150,
     fontWeight: 'bold',
-    color: '#2c3e50'
+    color: '#1a2540'
   },
   value: {
     flex: 1,
-    color: '#34495e'
+    color: '#000000'
   },
   consulta: {
     marginTop: 15,
@@ -82,7 +82,7 @@ const pdfStyles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 8,
-    color: '#3498db'
+    color: '#495a90'
   },
   footer: {
     marginTop: 30,
@@ -101,14 +101,15 @@ const pdfStyles = StyleSheet.create({
     borderRadius: 10,
     fontSize: 10,
     fontWeight: 'bold',
-    marginLeft: 5
+    marginLeft: 5,
+    whiteSpace: 'nowrap' // Esto evita que el texto se divida
   },
   activeStatus: {
-    backgroundColor: '#2ecc71',
+    backgroundColor: '#495a90',
     color: 'white'
   },
   inactiveStatus: {
-    backgroundColor: '#e74c3c',
+    backgroundColor: '#d32f2f',
     color: 'white'
   },
   pageNumber: {
@@ -267,7 +268,6 @@ const HistorialPDF = ({ historial }) => (
 const ViewHistorialModal = ({ historial, onClose }) => {
   const componentRef = useRef();
   
-  // Función corregida para manejar la impresión
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
     pageStyle: `
