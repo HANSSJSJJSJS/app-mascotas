@@ -11,7 +11,7 @@ const OlvideContrasena = () => {
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
-  // Configuración de EmailJS
+  // Configuración de EmailJS aayyyy
   const EMAILJS_CONFIG = {
     serviceId: "service_fc4gglm",
     templateId: "template_mfv4h2s",
