@@ -11,13 +11,7 @@ app.use(express.json());
 app.use(cors());
 
 // --- Configuración de la Base de Datos ---
-const pool = mysql.createPool({
-  host: "localhost",
-  user: "root",
-  password: "", // Tu contraseña
-  database: "mascotas_db",
-  port: 3306,          // Tu puerto
-});
+const pool = mysql.createPool(dbConfig)
 
 // =================================================================
 // ==              RUTA DE VERIFICACIÓN DE ESTADO                 ==

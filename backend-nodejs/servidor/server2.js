@@ -9,6 +9,7 @@ const serviciosRoutes = require("./routes/servicios")
 const mascotaRoutes = require("./routes/mascota")
 const citasRoutes = require("./routes/citas")
 const VeterinarioRoutes = require("./routes/veterinarios")
+const propietarioRoutes = require("./routes/propietario");
 
 const app = express()
 app.use(express.json())
@@ -17,16 +18,15 @@ app.use("/api/servicios", serviciosRoutes)
 app.use("/api/mascotas", mascotaRoutes)
 app.use("/api/citas", citasRoutes)
 app.use("/api/veterinarios", VeterinarioRoutes)
+app.use("/api/propietario", propietarioRoutes);
 
 // Configuración de la conexión a MySQL
 const dbConfig = {
   host: "localhost",
   user: "root",
-  password: "12345678",
+  password: "",
   database: "mascotas_db",
-  port: 3301,
   port: 3306,
-  port: 3309,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,

@@ -72,7 +72,7 @@ export default function InicioPropietario() {
 
         // Obtener mascotas del usuario
         const mascotasResponse = await axios.get(
-          `http://localhost:3001/api/propietario/${usuarioActual.id_usuario}/mascotas`,
+          `http://localhost:3001/api/mascotas/${usuarioActual.id_usuario}`,
         )
         setMascotas(mascotasResponse.data)
 
@@ -129,9 +129,9 @@ export default function InicioPropietario() {
   // Filtrar mascotas según el término de búsqueda
   const mascotasFiltradas = mascotas.filter(
     (mascota) =>
-      mascota.nom_mas.toLowerCase().includes(filtroMascotas.toLowerCase()) ||
-      mascota.especie.toLowerCase().includes(filtroMascotas.toLowerCase()) ||
-      mascota.raza.toLowerCase().includes(filtroMascotas.toLowerCase()),
+      (mascota.nom_mas && mascota.nom_mas.toLowerCase().includes(filtroMascotas.toLowerCase())) ||
+      (mascota.especie && mascota.especie.toLowerCase().includes(filtroMascotas.toLowerCase())) ||
+      (mascota.raza && mascota.raza.toLowerCase().includes(filtroMascotas.toLowerCase())),
   )
 
   // Filtrar citas según el estado seleccionado

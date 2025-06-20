@@ -1,71 +1,91 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { Save, Loader2, Upload, User, Phone, Mail, MapPin, FileText, Plus } from "lucide-react"
-import logo from "../../imagenes/logo.png"
+import { Save, Loader2, Upload, User, Phone, Mail, MapPin, FileText, AlertCircle } from "lucide-react"
 import "../../stylos/cssPropietario/ActualizarPropietario.css"
+import { apiService } from "../../services/apiService"
 
 const formSchema = z.object({
-  nombre: z.string().min(2, { message: "El nombre debe tener al menos 2 caracteres" }),
-  apellido: z.string().min(2, { message: "El apellido debe tener al menos 2 caracteres" }),
   telefono: z.string().min(8, { message: "El teléfono debe tener al menos 8 dígitos" }),
   email: z.string().email({ message: "Ingrese un email válido" }),
   direccion: z.string().min(5, { message: "La dirección debe tener al menos 5 caracteres" }),
+  ciudad: z.string().optional(),
+  barrio: z.string().optional(),
   notas: z.string().optional(),
 })
 
 export default function ActualizarPropietario() {
-  const [activeTab, setActiveTab] = useState("informacion")
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [imagenPreview, setImagenPreview] = useState(null)
   const [imagenFile, setImagenFile] = useState(null)
+  const [propietario, setPropietario] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
-  const propietario = JSON.parse(localStorage.getItem("userData"));
+  // Cargar datos del usuario al montar el componente
+  useEffect(() => {
+    const loadUserData = () => {
+      try {
+        const userData = localStorage.getItem("userData")
+        if (userData) {
+          const parsedData = JSON.parse(userData)
+          setPropietario(parsedData)
+          console.log("Datos del usuario cargados:", parsedData)
+        } else {
+          setError("No se encontraron datos del usuario")
+        }
+      } catch (err) {
+        console.error("Error al cargar datos del usuario:", err)
+        setError("Error al cargar los datos del usuario")
+      } finally {
+        setLoading(false)
+      }
+    }
 
-  console.log(propietario)
-
-  const propietarioEjemplo = {
-    nombre: propietario.nombre,
-    apellido: propietario.apellido,
-    telefono: propietario.telefono,
-    email: propietario.email,
-    direccion: propietario.direccion,
-    notas: "Cliente desde 2020",
-    mascotas: [
-      {
-        id: "1",
-        nombre: "Max",
-        especie: "Perro",
-        raza: "Labrador",
-        edad: 3,
-        imagen: "/placeholder.svg?height=150&width=150",
-      },
-      {
-        id: "2",
-        nombre: "Luna",
-        especie: "Gato",
-        raza: "Siamés",
-        edad: 2,
-        imagen: "/placeholder.svg?height=150&width=150",
-      },
-    ],
-  }
+    loadUserData()
+  }, [])
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm({
     resolver: zodResolver(formSchema),
-    defaultValues: propietarioEjemplo,
   })
+
+  // Actualizar valores del formulario cuando se cargan los datos
+  useEffect(() => {
+    if (propietario) {
+      reset({
+        telefono: propietario.telefono || "",
+        email: propietario.email || "",
+        direccion: propietario.direccion || "",
+        ciudad: propietario.ciudad || "",
+        barrio: propietario.barrio || "",
+        notas: propietario.notas || "",
+      })
+    }
+  }, [propietario, reset])
 
   const handleImagenChange = (e) => {
     const file = e.target.files[0]
     if (file) {
+      // Validar tipo de archivo
+      if (!file.type.startsWith("image/")) {
+        alert("Por favor seleccione un archivo de imagen válido")
+        return
+      }
+
+      // Validar tamaño (5MB máximo)
+      if (file.size > 5 * 1024 * 1024) {
+        alert("El archivo es demasiado grande. Máximo 5MB permitido.")
+        return
+      }
+
       setImagenFile(file)
       const reader = new FileReader()
       reader.onloadend = () => {
@@ -76,16 +96,87 @@ export default function ActualizarPropietario() {
   }
 
   const onSubmit = async (data) => {
+    if (!propietario) {
+      alert("No se encontraron datos del usuario")
+      return
+    }
+
     setIsSubmitting(true)
     try {
-      // Aquí se incluiría la lógica para enviar los datos y la imagen al servidor
-      await new Promise((resolve) => setTimeout(resolve, 1500))
-      alert("Datos actualizados correctamente")
+      const formData = new FormData()
+      formData.append("telefono", data.telefono)
+      formData.append("email", data.email)
+      formData.append("direccion", data.direccion)
+      formData.append("ciudad", data.ciudad)
+      formData.append("barrio", data.barrio)
+      formData.append("notas", data.notas)
+      formData.append("nombre", propietario.nombre)
+      formData.append("apellido", propietario.apellido)
+      formData.append("tipo_documento", propietario.tipo_documento)
+      formData.append("numeroid", propietario.numeroid)
+      formData.append("genero", propietario.genero)
+      formData.append("fecha_nacimiento", propietario.fecha_nacimiento)
+
+      if (imagenFile) {
+        formData.append("imagen", imagenFile)
+      }
+
+      const response = await fetch(`http://localhost:3001/api/propietario/${propietario.id_usuario}`, {
+        method: "PUT",
+        body: formData,
+      })
+
+      const result = await response.json()
+
+      if (result.success) {
+        alert("Datos actualizados correctamente")
+        const updatedUser = { ...propietario, ...data, foto_perfil: result.foto_perfil }
+        localStorage.setItem("userData", JSON.stringify(updatedUser))
+        setPropietario(updatedUser)
+        setImagenFile(null)
+        setImagenPreview(null)
+      } else {
+        alert("Error al actualizar los datos: " + (result.message || "Error desconocido"))
+      }
     } catch (error) {
-      alert("Error al actualizar los datos")
+      console.error("Error al actualizar:", error)
+      alert("Error de conexión al actualizar los datos. Verifique su conexión a internet.")
     } finally {
       setIsSubmitting(false)
     }
+  }
+
+  if (loading) {
+    return (
+      <div className="page-content">
+        <div className="loading-container">
+          <Loader2 className="icon-spin" size={32} />
+          <p>Cargando datos del usuario...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="page-content">
+        <div className="error-container">
+          <AlertCircle size={32} />
+          <p>{error}</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!propietario) {
+    return (
+      <div className="page-content">
+        <div className="error-container">
+          <AlertCircle size={32} />
+          <p>No se encontraron datos del usuario</p>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -93,52 +184,44 @@ export default function ActualizarPropietario() {
       {/* Encabezado de la página */}
       <div className="page-header">
         <div className="header-logo">
-          <img src={logo || "/placeholder.svg?height=60&width=60"} alt="Logo Clínica" className="logo" />
+          <div className="logo-placeholder">
+            <User size={30} />
+          </div>
         </div>
         <div className="header-text">
           <h1 className="header-title">Clínica Veterinaria</h1>
           <h2 className="header-subtitle">Actualizar Datos del Propietario</h2>
-          <p className="header-description">Actualice la información del propietario de la mascota</p>
+          <p className="header-description">Actualice su información de contacto</p>
         </div>
-      </div>
-
-      {/* Pestañas de navegación */}
-      <div className="tabs-navigation">
-        <button
-          onClick={() => setActiveTab("informacion")}
-          className={`tab-button ${activeTab === "informacion" ? "active" : ""}`}
-        >
-          Información Personal
-        </button>
-        <button
-          onClick={() => setActiveTab("mascotas")}
-          className={`tab-button ${activeTab === "mascotas" ? "active" : ""}`}
-        >
-          Mascotas Asociadas
-        </button>
       </div>
 
       {/* Contenido principal */}
       <div className="main-content">
-        {activeTab === "informacion" ? (
-          <div className="info-personal-content">
-            <form onSubmit={handleSubmit(onSubmit)} className="form-propietario">
-              <div className="form-section profile-section">
-                <div className="profile-image-wrapper">
+        <div className="info-personal-content">
+          <form onSubmit={handleSubmit(onSubmit)} className="form-propietario">
+            <div className="form-propietario-compact">
+              <div className="profile-section-compact">
+                <div className="profile-image-wrapper-compact">
                   {imagenPreview ? (
                     <img
                       src={imagenPreview || "/placeholder.svg"}
                       alt="Foto del propietario"
-                      className="profile-image"
+                      className="profile-image-small"
+                    />
+                  ) : propietario.foto ? (
+                    <img
+                      src={`http://localhost:3001/uploads/propietarios/${propietario.foto_perfil}`}
+                      alt="Foto del propietario"
+                      className="profile-image-small"
                     />
                   ) : (
-                    <div className="profile-image-placeholder">
-                      <User size={40} />
+                    <div className="profile-image-placeholder-small">
+                      <User size={24} />
                     </div>
                   )}
-                  <label htmlFor="imagen-propietario" className="upload-button">
-                    <Upload className="icon" size={16} />
-                    Subir imagen
+                  <label htmlFor="imagen-propietario" className="upload-button-small">
+                    <Upload className="icon" size={14} />
+                    {imagenFile ? "Cambiar" : "Subir"}
                   </label>
                   <input
                     type="file"
@@ -148,38 +231,37 @@ export default function ActualizarPropietario() {
                     className="input-file"
                   />
                 </div>
-                <div className="profile-info">
-                  <h3 className="profile-name">
-                    {propietarioEjemplo.nombre} {propietarioEjemplo.apellido}
+                <div className="profile-info-compact">
+                  <h3 className="profile-name-compact">
+                    {propietario.nombre} {propietario.apellido}
                   </h3>
-                  <div className="profile-badge">
-                    <span className="badge">{propietarioEjemplo.mascotas.length} mascotas</span>
-                  </div>
-                  <p className="profile-since">Cliente desde 2020</p>
+                  <p className="profile-since-compact">Cliente registrado</p>
                 </div>
               </div>
 
-              <div className="form-section data-section">
+              <div className="data-section-compact">
+                {/* Campos de solo lectura para nombre y apellido */}
                 <div className="form-row">
                   <div className="form-field">
                     <label htmlFor="nombre">Nombre</label>
                     <div className="input-with-icon">
                       <User className="field-icon" size={16} />
-                      <input id="nombre" {...register("nombre")} />
+                      <input id="nombre" value={propietario.nombre || ""} readOnly className="readonly-input" />
                     </div>
-                    {errors.nombre && <span className="error-message">{errors.nombre.message}</span>}
+                    <p className="field-hint">Este campo no se puede modificar</p>
                   </div>
 
                   <div className="form-field">
                     <label htmlFor="apellido">Apellido</label>
                     <div className="input-with-icon">
                       <User className="field-icon" size={16} />
-                      <input id="apellido" {...register("apellido")} />
+                      <input id="apellido" value={propietario.apellido || ""} readOnly className="readonly-input" />
                     </div>
-                    {errors.apellido && <span className="error-message">{errors.apellido.message}</span>}
+                    <p className="field-hint">Este campo no se puede modificar</p>
                   </div>
                 </div>
 
+                {/* Campos editables */}
                 <div className="form-row">
                   <div className="form-field">
                     <label htmlFor="telefono">Teléfono</label>
@@ -201,6 +283,24 @@ export default function ActualizarPropietario() {
                 </div>
 
                 <div className="form-row">
+                  <div className="form-field">
+                    <label htmlFor="ciudad">Ciudad</label>
+                    <div className="input-with-icon">
+                      <MapPin className="field-icon" size={16} />
+                      <input id="ciudad" {...register("ciudad")} />
+                    </div>
+                  </div>
+
+                  <div className="form-field">
+                    <label htmlFor="barrio">Barrio</label>
+                    <div className="input-with-icon">
+                      <MapPin className="field-icon" size={16} />
+                      <input id="barrio" {...register("barrio")} />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="form-row">
                   <div className="form-field full-width">
                     <label htmlFor="direccion">Dirección</label>
                     <div className="input-with-icon">
@@ -216,9 +316,9 @@ export default function ActualizarPropietario() {
                     <label htmlFor="notas">Notas adicionales</label>
                     <div className="input-with-icon textarea-container">
                       <FileText className="field-icon" size={16} />
-                      <textarea id="notas" {...register("notas")} rows="2"></textarea>
+                      <textarea id="notas" {...register("notas")} rows={3}></textarea>
                     </div>
-                    <p className="field-hint">Información adicional relevante sobre el propietario.</p>
+                    <p className="field-hint">Información adicional relevante.</p>
                   </div>
                 </div>
 
@@ -238,40 +338,9 @@ export default function ActualizarPropietario() {
                   </button>
                 </div>
               </div>
-            </form>
-          </div>
-        ) : (
-          <div className="mascotas-content">
-            <h3 className="mascotas-title">
-              Mascotas de {propietarioEjemplo.nombre} {propietarioEjemplo.apellido}
-            </h3>
-
-            <div className="mascotas-grid">
-              {propietarioEjemplo.mascotas.map((mascota) => (
-                <div key={mascota.id} className="mascota-card">
-                  <div className="mascota-image-container">
-                    <img src={mascota.imagen || "/placeholder.svg"} alt={mascota.nombre} className="mascota-image" />
-                  </div>
-                  <div className="mascota-details">
-                    <h4 className="mascota-name">{mascota.nombre}</h4>
-                    <p className="mascota-breed">
-                      {mascota.especie} - {mascota.raza}
-                    </p>
-                    <p className="mascota-age">{mascota.edad} años</p>
-                    <button className="details-button">Ver detalles</button>
-                  </div>
-                </div>
-              ))}
-
-              <div className="add-mascota-card">
-                <div className="add-icon-container">
-                  <Plus size={30} />
-                </div>
-                <p className="add-text">Agregar mascota</p>
-              </div>
             </div>
-          </div>
-        )}
+          </form>
+        </div>
       </div>
     </div>
   )

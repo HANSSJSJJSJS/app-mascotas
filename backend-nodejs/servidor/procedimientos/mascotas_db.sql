@@ -1,4 +1,7 @@
 
+
+ALTER TABLE usuarios ADD COLUMN foto_perfil VARCHAR(255) NULL;
+
 DROP DATABASE mascotas_db;
 
 CREATE DATABASE IF NOT EXISTS mascotas_db;
