@@ -17,7 +17,6 @@ import {
   Plus,
 } from "lucide-react"
 import axios from "axios"
-import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import "../../stylos/cssPropietario/InicioPropietario.css"
 
@@ -62,7 +61,7 @@ export default function InicioPropietario() {
     // Obtener datos del usuario
     const fetchUserData = async () => {
       try {
-        const usuarioActual = JSON.parse(localStorage.getItem("userData"))
+        const usuarioActual = JSON.parse(localStorage.getItem("pet-app-user"))
         if (!usuarioActual?.id_usuario) {
           console.error("ID de usuario no disponible")
           return

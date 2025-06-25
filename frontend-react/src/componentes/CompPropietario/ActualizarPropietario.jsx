@@ -29,7 +29,7 @@ export default function ActualizarPropietario() {
   useEffect(() => {
     const loadUserData = () => {
       try {
-        const userData = localStorage.getItem("userData")
+        const userData = localStorage.getItem("pet-app-user")
         if (userData) {
           const parsedData = JSON.parse(userData)
           setPropietario(parsedData)
