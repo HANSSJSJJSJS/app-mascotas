@@ -10,7 +10,7 @@ const PanelPropietario = () => {
   const [esMobile, setEsMobile] = useState(false) 
   const navigate = useNavigate()
 
-  const userData = JSON.parse(localStorage.getItem("userData")) || {}
+  const userData = JSON.parse(localStorage.getItem("pet-app-user")) || {}
 
   useEffect(() => {
     const verificarSiEsMobile = () => {

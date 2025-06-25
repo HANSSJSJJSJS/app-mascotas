@@ -299,9 +299,9 @@ export default function InicioPropietario() {
                       </div>
                     </div>
                     <div className="pet-details">
-                      <h4 className="pet-name">{mascota.nom_mas}</h4>
+                      <h4 className="pet-name">{mascota.nombre}</h4>
                       <p className="pet-breed">
-                        {mascota.especie} - {mascota.raza}
+                        {mascota.tipo} {mascota.raza}
                       </p>
                       <p className="pet-age">
                         {Math.floor(mascota.edad)} años • {mascota.genero}
