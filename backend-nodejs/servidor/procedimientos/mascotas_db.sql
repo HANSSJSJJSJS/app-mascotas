@@ -1,5 +1,3 @@
-
-
 ALTER TABLE usuarios ADD COLUMN foto_perfil VARCHAR(255) NULL;
 
 DROP DATABASE mascotas_db;
@@ -78,6 +76,8 @@ proxima_cita DATE,
 vacunado BOOLEAN DEFAULT false,
 esterilizado BOOLEAN DEFAULT false,
 activo BOOLEAN DEFAULT true,
+fecha DATE,
+hora TIME,
 id_pro INT NOT NULL,
 FOREIGN KEY (id_pro) references propietarios(id_pro)
 ON DELETE NO ACTION

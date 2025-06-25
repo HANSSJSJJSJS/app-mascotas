@@ -27,26 +27,6 @@ export default function InicioVet() {
       estado: 'pendiente',
       tipoMascota: 'Gato'
     },
-    {
-      id: 3,
-      hora: '15:00',
-      mascota: 'Rocky',
-      raza: 'Bulldog',
-      tipo: 'Seguimiento dermatológico',
-      propietario: 'Ana Martínez',
-      estado: 'pendiente',
-      tipoMascota: 'Perro'
-    },
-    {
-      id: 4,
-      hora: '17:00',
-      mascota: 'Coco',
-      raza: 'Poodle',
-      tipo: 'Limpieza dental',
-      propietario: 'Roberto Sánchez',
-      estado: 'pendiente',
-      tipoMascota: 'Perro'
-    }
   ]);
 
   const [mascotas, setMascotas] = useState([
@@ -64,20 +44,6 @@ export default function InicioVet() {
       edad: 2,
       tipo: 'Gato'
     },
-    {
-      id: 3,
-      nombre: 'Rocky',
-      raza: 'Bulldog',
-      edad: 4,
-      tipo: 'Perro'
-    },
-    {
-      id: 4,
-      nombre: 'Coco',
-      raza: 'Poodle',
-      edad: 5,
-      tipo: 'Perro'
-    }
   ]);
 
   // Estados para UI
@@ -142,35 +108,28 @@ export default function InicioVet() {
   useEffect(() => {
     const cargarDatos = async () => {
       try {
-        setCargando(true);
-        
-        // Datos simulados (reemplazar con llamadas reales a API)
-        /*
-        const [respuestaCitas, respuestaMascotas] = await Promise.all([
-          fetch('/api/citas/hoy'),
-          fetch('/api/mascotas/recientes')
+        const [resCitas, resConsultas, resMascotas] = await Promise.all([
+          fetch('/api/estadisticas/citas-hoy'),
+          fetch('/api/estadisticas/consultas-pendientes'),
+          fetch('/api/estadisticas/mascotas-totales')
         ]);
-        
-        if (!respuestaCitas.ok || !respuestaMascotas.ok) {
-          throw new Error('Error al cargar datos');
-        }
-        
-        const datosCitas = await respuestaCitas.json();
-        const datosMascotas = await respuestaMascotas.json();
-        
-        setCitas(datosCitas);
-        setMascotas(datosMascotas);
-        */
-        
-      } catch (err) {
-        setError(err.message);
-        console.error("Error fetching data:", err);
-        mostrarNotificacion('Error al cargar datos', 'error');
-      } finally {
-        setCargando(false);
+  
+        const dataCitas = await resCitas.json();
+        const dataConsultas = await resConsultas.json();
+        const dataMascotas = await resMascotas.json();
+  
+        // Actualizar tu estado con estos valores
+        setDatos({
+          citasHoy: dataCitas.total,
+          consultasPendientes: dataConsultas.total,
+          mascotasTotales: dataMascotas.total
+        });
+  
+      } catch (error) {
+        console.error("Error cargando estadísticas:", error);
       }
     };
-
+  
     cargarDatos();
   }, []);
 

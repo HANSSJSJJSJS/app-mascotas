@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import "../../stylos/cssVet/Mascotas.css";
+import axios from "axios";
 import MascotaForm from '../CompFormularios/MascotaForm';
 
 const GestorMascotas = () => {
@@ -189,25 +190,19 @@ const GestorMascotas = () => {
   };
 
   // Cambiar estado de mascota
-  const cambiarEstadoMascota = async (idMascota, nuevoEstado) => {
+  const cambiarEstadoMascota = async (id, nuevoEstado) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/mascotas/${idMascota}/estado`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ activo: nuevoEstado })
+      const response = await axios.patch(`http://localhost:3001/api/mascotas/${id}/estado`, {
+        activo: nuevoEstado
       });
-
-      if (!response.ok) throw new Error('Error al cambiar estado');
-
-      setMascotas(mascotas.map(m => 
-        m.id === idMascota ? {...m, activo: nuevoEstado} : m
-      ));
+  
+      console.log("Estado actualizado:", response.data);
     } catch (error) {
       console.error("Error al cambiar estado:", error);
+      alert("Error al cambiar estado");
     }
   };
+  
 
   // Helper para renderizar el badge de tipo de mascota
   const obtenerBadgeMascota = (tipo) => {

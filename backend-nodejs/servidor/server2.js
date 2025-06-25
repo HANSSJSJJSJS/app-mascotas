@@ -1052,23 +1052,22 @@ app.get("/api/mascotas", async (req, res) => {
       LEFT JOIN usuarios u ON p.id_pro = u.id_usuario
       WHERE m.activo = 1
       ORDER BY m.nom_mas
-    `
+    `;
 
-    const [rows] = await db.execute(query)
-    res.json(rows)
+    const [rows] = await pool.query(query); // Cambiado de db.execute a pool.query
+    res.json(rows);
   } catch (error) {
-    console.error("Error al obtener mascotas:", error)
-    res.status(500).json({ error: "Error interno del servidor" })
+    console.error("Error al obtener mascotas:", error);
+    res.status(500).json({ error: "Error interno del servidor" });
   }
-})
-
+});
 // Endpoint para registrar una nueva mascota
 app.post("/api/mascotas", upload.single("foto"), async (req, res) => {
   let connection;
   try {
-    console.log("📝 Iniciando registro de mascota");
-    console.log("Datos recibidos:", req.body); // Log para depuración
-    console.log("Archivo recibido:", req.file); // Log para depuración
+    console.log("📥 Registrando nueva mascota");
+    console.log("➡️ Datos recibidos:", req.body);
+    console.log("🖼️ Archivo:", req.file);
 
     const {
       nom_mas,
@@ -1084,80 +1083,91 @@ app.post("/api/mascotas", upload.single("foto"), async (req, res) => {
       id_pro,
     } = req.body;
 
-    // Validar campos requeridos
+    // Validación básica
     if (!nom_mas || !especie || !raza || !edad || !genero || !peso || !color || !id_pro) {
       return res.status(400).json({
         success: false,
-        message: "Faltan campos requeridos para el registro de la mascota",
+        message: "Faltan campos obligatorios",
       });
     }
 
-    // Obtener nombre de la imagen subida
-    const fotoMascota = req.file ? req.file.filename : "default.jpg";
+    // Validar que id_pro sea un número
+    if (!Number.isInteger(Number(id_pro))) {
+      return res.status(400).json({
+        success: false,
+        message: "El ID del propietario debe ser un número válido",
+      });
+    }
 
+    // Conectar a la base de datos
     connection = await pool.getConnection();
+
+    // Validar que el propietario existe
+    const [propietario] = await connection.query(
+      "SELECT id_usuario FROM usuarios WHERE id_usuario = ?",
+      [id_pro]
+    );
+    if (propietario.length === 0) {
+      connection.release();
+      return res.status(400).json({
+        success: false,
+        message: `No existe ningún propietario con ID ${id_pro}`,
+      });
+    }
+
+    // Iniciar transacción
     await connection.beginTransaction();
 
-    const insertMascotaQuery = `
+    const fotoMascota = req.file ? req.file.filename : "default.jpg";
+
+    const insertQuery = `
       INSERT INTO mascotas (
-        nom_mas, 
-        especie, 
-        raza, 
-        edad, 
-        genero, 
-        peso, 
-        color, 
-        notas, 
-        vacunado, 
-        esterilizado, 
-        activo, 
-        id_pro, 
-        foto
+        nom_mas, especie, raza, edad, genero, peso,
+        color, notas, vacunado, esterilizado, activo, id_pro, foto
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
-    const mascotaValues = [
+    const values = [
       nom_mas,
       especie,
       raza,
-      Number.parseFloat(edad),
+      parseFloat(edad),
       genero,
-      Number.parseFloat(peso),
+      parseFloat(peso),
       color,
       notas || null,
-      vacunado || false,
-      esterilizado || false,
-      true, // activo por defecto
-      Number.parseInt(id_pro),
+      vacunado === "true" ? 1 : 0,
+      esterilizado === "true" ? 1 : 0,
+      1, // activo por defecto
+      parseInt(id_pro),
       fotoMascota,
     ];
 
-    const [mascotaResult] = await connection.query(insertMascotaQuery, mascotaValues);
+    const [result] = await connection.query(insertQuery, values);
     await connection.commit();
 
     res.json({
       success: true,
-      message: "Mascota registrada exitosamente",
+      message: "Mascota registrada correctamente",
       mascota: {
-        id: mascotaResult.insertId,
+        id: result.insertId,
         nombre: nom_mas,
-        especie: especie,
-        raza: raza,
+        especie,
+        raza,
       },
     });
   } catch (error) {
     if (connection) await connection.rollback();
-    console.error("Error en el servidor:", error);
+    console.error("❌ Error registrando mascota:", error);
     res.status(500).json({
       success: false,
-      message: "Error en el servidor al registrar la mascota",
+      message: "Error interno al registrar la mascota",
       error: error.message,
     });
   } finally {
     if (connection) connection.release();
   }
 });
-
 
 // Endpoint para obtener una mascota específica
 app.get("/api/mascotas/:id", async (req, res) => {
@@ -1198,17 +1208,17 @@ app.get("/api/mascotas/:id", async (req, res) => {
 // PUT /api/mascotas/:id - Actualizar mascota
 app.put("/api/mascotas/:id", async (req, res) => {
   try {
-    const { id } = req.params
-    const { nom_mas, especie, raza, edad, genero, peso, color, notas, vacunado, esterilizado } = req.body
+    const { id } = req.params;
+    const { nom_mas, especie, raza, edad, genero, peso, color, notas, vacunado, esterilizado } = req.body;
 
     const query = `
       UPDATE mascotas SET 
         nom_mas = ?, especie = ?, raza = ?, edad = ?, genero = ?,
         peso = ?, color = ?, notas = ?, vacunado = ?, esterilizado = ?
       WHERE cod_mas = ?
-    `
+    `;
 
-    const [result] = await db.execute(query, [
+    const [result] = await pool.query(query, [
       nom_mas,
       especie,
       raza,
@@ -1220,18 +1230,18 @@ app.put("/api/mascotas/:id", async (req, res) => {
       vacunado,
       esterilizado,
       id,
-    ])
+    ]);
 
     if (result.affectedRows === 0) {
-      return res.status(404).json({ error: "Mascota no encontrada" })
+      return res.status(404).json({ error: "Mascota no encontrada" });
     }
 
-    res.json({ message: "Mascota actualizada exitosamente" })
+    res.json({ message: "Mascota actualizada exitosamente" });
   } catch (error) {
-    console.error("Error al actualizar mascota:", error)
-    res.status(500).json({ error: "Error interno del servidor" })
+    console.error("Error al actualizar mascota:", error);
+    res.status(500).json({ error: "Error interno del servidor" });
   }
-})
+});
 
 // DELETE /api/mascotas/:id - Eliminar mascota
 app.delete("/api/mascotas/:id", async (req, res) => {
@@ -1256,22 +1266,71 @@ app.delete("/api/mascotas/:id", async (req, res) => {
 // PATCH /api/mascotas/:id/estado - Cambiar estado de mascota
 app.patch("/api/mascotas/:id/estado", async (req, res) => {
   try {
-    const { id } = req.params
-    const { activo } = req.body
+    const { id } = req.params;
+    const { activo } = req.body;
 
-    const query = "UPDATE mascotas SET activo = ? WHERE cod_mas = ?"
-    const [result] = await db.execute(query, [activo, id])
+    console.log("Cambio de estado recibido:", { id, activo });
+
+    const query = "UPDATE mascotas SET activo = ? WHERE cod_mas = ?";
+    const [result] = await db.execute(query, [activo, id]);
 
     if (result.affectedRows === 0) {
-      return res.status(404).json({ error: "Mascota no encontrada" })
+      return res.status(404).json({ error: "Mascota no encontrada" });
     }
 
-    res.json({ message: "Estado actualizado exitosamente" })
+
   } catch (error) {
-    console.error("Error al cambiar estado:", error)
-    res.status(500).json({ error: "Error interno del servidor" })
+    console.error("Error al cambiar estado:", error);
+    res.status(500).json({ error: "Error interno del servidor" });
   }
-})
+});
+
+app.get("/api/mascotas-totales", async (req, res) => {
+  try {
+    const [result] = await pool.query(`
+      SELECT COUNT(*) as total 
+      FROM mascotas
+      WHERE activo = 1
+    `);
+    
+    res.json({ total: result[0].total });
+  } catch (error) {
+    console.error("Error al contar mascotas:", error);
+    res.status(500).json({ error: "Error interno del servidor" });
+  }
+});
+
+app.get("/api/citas-hoy", async (req, res) => {
+  try {
+    const hoy = new Date().toISOString().split("T")[0];
+    
+    const [result] = await pool.query(`
+      SELECT COUNT(*) as total 
+      FROM citas 
+      WHERE DATE(fecha) = ?
+    `, [hoy]);
+    
+    res.json({ total: result[0].total });
+  } catch (error) {
+    console.error("Error al contar citas de hoy:", error);
+    res.status(500).json({ error: "Error interno del servidor" });
+  }
+});
+
+app.get("/api/consultas-pendientes", async (req, res) => {
+  try {
+    const [result] = await pool.query(`
+      SELECT COUNT(*) as total 
+      FROM consultas
+      WHERE estado = 'pendiente'
+    `);
+    
+    res.json({ total: result[0].total });
+  } catch (error) {
+    console.error("Error al contar consultas pendientes:", error);
+    res.status(500).json({ error: "Error interno del servidor" });
+  }
+});
 
 // Middleware de manejo de errores para multer
 app.use((error, req, res, next) => {

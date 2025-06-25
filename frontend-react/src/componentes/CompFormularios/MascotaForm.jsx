@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import axios from "axios"
-import { PawPrint, Upload, User, Heart, Calendar, Weight, Palette, FileText, ArrowLeft, ArrowRight, Check, X } from "lucide-react"
+import { PawPrint, Upload, User, Heart, Calendar, Weight, Palette, FileText, ArrowLeft, ArrowRight, Check, X, UserCheck  } from "lucide-react"
 import "../../stylos/cssFormularios/MascotaForm.css"
 
 function MascotaForm() {
@@ -23,64 +23,70 @@ function MascotaForm() {
   })
 
   const onSubmit = async (data) => {
-    setIsSubmitting(true)
+    setIsSubmitting(true);
     try {
-      const usuarioActual = JSON.parse(localStorage.getItem("userData"))
-      if (!usuarioActual?.id_usuario) throw new Error("No se encontró información del usuario.")
-
-      const formData = new FormData()
-      formData.append("nom_mas", data.nombre)
-      formData.append("especie", data.especie)
-      formData.append("raza", data.raza)
-      // Calcular la edad basada en la fecha de nacimiento
-      const fechaNacimiento = new Date(data.fechaNacimiento)
-      const hoy = new Date()
-      const edad = (hoy - fechaNacimiento) / (365.25 * 24 * 60 * 60 * 1000)
-      formData.append("edad", Number.parseFloat(edad.toFixed(2)))
-      formData.append("genero", data.genero)
-      formData.append("peso", Number.parseFloat(data.peso))
-      formData.append("color", data.color)
-      formData.append("notas", data.caracteristicas || data.observaciones || null)
-      formData.append("vacunado", data.vacunado || false)
-      formData.append("esterilizado", data.esterilizado || false)
-      formData.append("id_pro", usuarioActual.id_usuario)
-      formData.append("foto", data.imagen) // El campo debe llamarse "foto"
-
+      // Ya NO necesitas validar el localStorage aquí
+      // Puedes dejarlo si quieres validar el token más adelante para proteger rutas
+  
+      const formData = new FormData();
+      formData.append("nom_mas", data.nombre);
+      formData.append("especie", data.especie);
+      formData.append("raza", data.raza);
+  
+      // Calcular edad
+      const fechaNacimiento = new Date(data.fechaNacimiento);
+      const hoy = new Date();
+      const edad = (hoy - fechaNacimiento) / (365.25 * 24 * 60 * 60 * 1000);
+      formData.append("edad", Number.parseFloat(edad.toFixed(2)));
+  
+      formData.append("genero", data.genero);
+      formData.append("peso", Number.parseFloat(data.peso));
+      formData.append("color", data.color);
+      formData.append("notas", data.caracteristicas || data.observaciones || "");
+      formData.append("vacunado", data.vacunado || false);
+      formData.append("esterilizado", data.esterilizado || false);
+      formData.append("id_pro", data.id_pro); // ✅ Usar el que viene del formulario
+  
+      if (data.imagen) {
+        formData.append("foto", data.imagen);
+      }
+  
       const response = await axios.post("http://localhost:3001/api/mascotas", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      })
-
+        headers: {
+          "Content-Type": "multipart/form-data",
+          // Opcional: solo si estás usando autenticación con token
+          "Authorization": `Bearer ${localStorage.getItem("token") || ""}`,
+        },
+      });
+  
       if (response.data.success) {
-        // Mostrar mensaje de éxito
-        alert("¡Mascota registrada exitosamente!")
-
-        // Resetear el formulario
-        reset()
-        setImagePreview(null)
-        setCurrentStep(1)
+        alert("¡Mascota registrada exitosamente!");
+        reset();
+        setImagePreview(null);
+        setCurrentStep(1);
       } else {
-        throw new Error(response.data.message || "Error en el registro")
+        throw new Error(response.data.message || "Error en el registro");
       }
     } catch (error) {
-      let errorMessage = "Error al registrar la mascota"
-
+      let errorMessage = "Error al registrar la mascota";
+  
       if (error.response) {
-        errorMessage = error.response.data?.message || error.response.data?.error || error.response.statusText
-        console.error("Error en la respuesta del servidor:", errorMessage)
+        errorMessage = error.response.data?.message || error.response.data?.error || error.response.statusText;
+        console.error("Error en la respuesta del servidor:", error.response.data);
       } else if (error.request) {
-        errorMessage = "El servidor no respondió. Verifica que esté corriendo."
-        console.error("No hubo respuesta del servidor")
+        errorMessage = "El servidor no respondió. Verifica tu conexión a internet.";
+        console.error("No hubo respuesta del servidor:", error.request);
       } else {
-        errorMessage = error.message
-        console.error("Error en la petición:", errorMessage)
+        errorMessage = error.message;
+        console.error("Error en la configuración de la petición:", error.message);
       }
-
-      alert(`Error: ${errorMessage}`)
+  
+      alert(`Error: ${errorMessage}`);
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
-
+  };
+  
   // Función para ir al siguiente paso con validación
   const nextStep = async () => {
     let fieldsToValidate = []
@@ -141,7 +147,8 @@ function MascotaForm() {
       reader.readAsDataURL(file)
     }
   }
-
+  
+  
   function getImageUrl(foto) {
     return foto ? `http://localhost:3000/uploads/mascotas/${foto}` : "/placeholder.svg";
   }
@@ -316,6 +323,37 @@ function MascotaForm() {
                         </span>
                       </div>
                       {errors.fechaNacimiento && <p className="error-message">{errors.fechaNacimiento.message}</p>}
+
+                      {/* Tercera fila - ID Propietario */}
+                  <div className="form-row">
+                    <div className="form-group full-width">
+                      <label htmlFor="idpropietario">
+                        <UserCheck size={16} />
+                        ID del Propietario *
+                      </label>
+                      <div className={`input-container ${getFieldClass("id_pro")}`}>
+                        <input
+                          type="text"
+                          id="id_pro"
+                          placeholder="Ingrese el ID del propietario"
+                          {...register("id_pro", {
+                            required: "El ID del propietario es obligatorio",
+                            pattern: {
+                              value: /^[a-zA-Z0-9]+$/,
+                              message: "Solo letras y números permitidos",
+                            },
+                            minLength: { value: 1, message: "Mínimo 1 caracteres" },
+                            maxLength: { value: 10, message: "Máximo 10 caracteres" },
+                          })}
+                        />
+                        <span className="input-icon">
+                          {dirtyFields.id_pro && !errors.id_pro && "✓"}
+                          {errors.idpro && "!"}
+                        </span>
+                      </div>
+                      {errors.id_pro && <p className="error-message">{errors.id_pro.message}</p>}
+                    </div>
+                  </div>
                     </div>
                   </div>
                 </div>
@@ -562,4 +600,4 @@ function MascotaForm() {
   )
 }
 
-export default MascotaForm
+export default MascotaForm;
