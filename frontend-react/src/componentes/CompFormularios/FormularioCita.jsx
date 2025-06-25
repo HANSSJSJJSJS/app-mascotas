@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import {
@@ -45,7 +43,7 @@ function FormularioCita() {
 
   useEffect(() => {
     // Obtener el ID del usuario autenticado (ejemplo: desde localStorage)
-    const userData = JSON.parse(localStorage.getItem("userData"))
+    const userData = JSON.parse(localStorage.getItem("pet-app-user"))
     if (userData && userData.id_usuario) {
       fetch(`${API_BASE_URL}/usuario/${userData.id_usuario}`)
         .then((res) => res.json())

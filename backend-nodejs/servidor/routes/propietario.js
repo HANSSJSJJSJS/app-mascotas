@@ -62,24 +62,26 @@ router.post("/:id/imagen", upload.single("imagen"), async (req, res) => {
 router.put("/:id", upload.single("imagen"), async (req, res) => {
   try {
     const { id } = req.params;
+    console.log("BODY:", req.body);
+    console.log("FILE:", req.file);
+
     const {
-      telefono,
-      email,
-      direccion,
-      ciudad,
-      barrio,
-      notas,
-      nombre,
-      apellido,
-      tipo_documento,
-      numeroid,
-      genero,
-      fecha_nacimiento,
+      telefono = "",
+      email = "",
+      direccion = "",
+      ciudad = "",
+      barrio = "",
+      nombre = "",
+      apellido = "",
+      tipo_documento = "",
+      numeroid = "",
+      genero = "",
+      fecha_nacimiento = "",
     } = req.body;
 
     // Construye el query dinámicamente
-    let query = "UPDATE usuarios SET telefono=?, email=?, direccion=?, ciudad=?, barrio=?, notas=?";
-    let params = [telefono, email, direccion, ciudad, barrio, notas];
+    let query = "UPDATE usuarios SET telefono=?, email=?, direccion=?, ciudad=?, barrio=?";
+    let params = [telefono, email, direccion, ciudad, barrio];
 
     if (req.file) {
       query += ", foto_perfil=?";
@@ -97,7 +99,7 @@ router.put("/:id", upload.single("imagen"), async (req, res) => {
     });
   } catch (error) {
     console.error("Error al actualizar propietario:", error);
-    res.status(500).json({ success: false, message: "Error al actualizar propietario", error: error.message });
+    res.status(500).json({ success: false, message: "Error al actualizar propietario", error: error.message, sql: error.sqlMessage });
   }
 });
 

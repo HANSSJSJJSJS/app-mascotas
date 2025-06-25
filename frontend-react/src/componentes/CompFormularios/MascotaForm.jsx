@@ -25,7 +25,7 @@ function MascotaForm() {
   const onSubmit = async (data) => {
     setIsSubmitting(true)
     try {
-      const usuarioActual = JSON.parse(localStorage.getItem("userData"))
+      const usuarioActual = JSON.parse(localStorage.getItem("pet-app-user"))
       if (!usuarioActual?.id_usuario) throw new Error("No se encontró información del usuario.")
 
       const formData = new FormData()

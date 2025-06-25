@@ -14,7 +14,6 @@ const formSchema = z.object({
   direccion: z.string().min(5, { message: "La dirección debe tener al menos 5 caracteres" }),
   ciudad: z.string().optional(),
   barrio: z.string().optional(),
-  notas: z.string().optional(),
 })
 
 export default function ActualizarPropietario() {
@@ -29,7 +28,7 @@ export default function ActualizarPropietario() {
   useEffect(() => {
     const loadUserData = () => {
       try {
-        const userData = localStorage.getItem("userData")
+        const userData = localStorage.getItem("pet-app-user")
         if (userData) {
           const parsedData = JSON.parse(userData)
           setPropietario(parsedData)
@@ -66,7 +65,6 @@ export default function ActualizarPropietario() {
         direccion: propietario.direccion || "",
         ciudad: propietario.ciudad || "",
         barrio: propietario.barrio || "",
-        notas: propietario.notas || "",
       })
     }
   }, [propietario, reset])
@@ -109,7 +107,6 @@ export default function ActualizarPropietario() {
       formData.append("direccion", data.direccion)
       formData.append("ciudad", data.ciudad)
       formData.append("barrio", data.barrio)
-      formData.append("notas", data.notas)
       formData.append("nombre", propietario.nombre)
       formData.append("apellido", propietario.apellido)
       formData.append("tipo_documento", propietario.tipo_documento)
@@ -130,8 +127,13 @@ export default function ActualizarPropietario() {
 
       if (result.success) {
         alert("Datos actualizados correctamente")
-        const updatedUser = { ...propietario, ...data, foto_perfil: result.foto_perfil }
-        localStorage.setItem("userData", JSON.stringify(updatedUser))
+        // Guardar solo el nombre del archivo, no la ruta completa
+        let foto_perfil = result.foto_perfil
+        if (foto_perfil && foto_perfil.startsWith("/uploads/propietarios/")) {
+          foto_perfil = foto_perfil.replace("/uploads/propietarios/", "")
+        }
+        const updatedUser = { ...propietario, ...data, foto_perfil }
+        localStorage.setItem("pet-app-user", JSON.stringify(updatedUser))
         setPropietario(updatedUser)
         setImagenFile(null)
         setImagenPreview(null)
@@ -208,7 +210,7 @@ export default function ActualizarPropietario() {
                       alt="Foto del propietario"
                       className="profile-image-small"
                     />
-                  ) : propietario.foto ? (
+                  ) : propietario.foto_perfil ? (
                     <img
                       src={`http://localhost:3001/uploads/propietarios/${propietario.foto_perfil}`}
                       alt="Foto del propietario"
@@ -235,7 +237,6 @@ export default function ActualizarPropietario() {
                   <h3 className="profile-name-compact">
                     {propietario.nombre} {propietario.apellido}
                   </h3>
-                  <p className="profile-since-compact">Cliente registrado</p>
                 </div>
               </div>
 
@@ -308,17 +309,6 @@ export default function ActualizarPropietario() {
                       <input id="direccion" {...register("direccion")} />
                     </div>
                     {errors.direccion && <span className="error-message">{errors.direccion.message}</span>}
-                  </div>
-                </div>
-
-                <div className="form-row">
-                  <div className="form-field full-width">
-                    <label htmlFor="notas">Notas adicionales</label>
-                    <div className="input-with-icon textarea-container">
-                      <FileText className="field-icon" size={16} />
-                      <textarea id="notas" {...register("notas")} rows={3}></textarea>
-                    </div>
-                    <p className="field-hint">Información adicional relevante.</p>
                   </div>
                 </div>
 
