@@ -127,7 +127,12 @@ export default function ActualizarPropietario() {
 
       if (result.success) {
         alert("Datos actualizados correctamente")
-        const updatedUser = { ...propietario, ...data, foto_perfil: result.foto_perfil }
+        // Guardar solo el nombre del archivo, no la ruta completa
+        let foto_perfil = result.foto_perfil
+        if (foto_perfil && foto_perfil.startsWith("/uploads/propietarios/")) {
+          foto_perfil = foto_perfil.replace("/uploads/propietarios/", "")
+        }
+        const updatedUser = { ...propietario, ...data, foto_perfil }
         localStorage.setItem("pet-app-user", JSON.stringify(updatedUser))
         setPropietario(updatedUser)
         setImagenFile(null)
@@ -205,7 +210,7 @@ export default function ActualizarPropietario() {
                       alt="Foto del propietario"
                       className="profile-image-small"
                     />
-                  ) : propietario.foto ? (
+                  ) : propietario.foto_perfil ? (
                     <img
                       src={`http://localhost:3001/uploads/propietarios/${propietario.foto_perfil}`}
                       alt="Foto del propietario"
