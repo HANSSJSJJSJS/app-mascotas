@@ -51,6 +51,28 @@ function MascotaForm() {
         formData.append("foto", data.imagen);
       }
   
+
+      const usuarioActual = JSON.parse(localStorage.getItem("pet-app-user"))
+      if (!usuarioActual?.id_usuario) throw new Error("No se encontró información del usuario.")
+
+      const formData = new FormData()
+      formData.append("nom_mas", data.nombre)
+      formData.append("especie", data.especie)
+      formData.append("raza", data.raza)
+      // Calcular la edad basada en la fecha de nacimiento
+      const fechaNacimiento = new Date(data.fechaNacimiento)
+      const hoy = new Date()
+      const edad = (hoy - fechaNacimiento) / (365.25 * 24 * 60 * 60 * 1000)
+      formData.append("edad", Number.parseFloat(edad.toFixed(2)))
+      formData.append("genero", data.genero)
+      formData.append("peso", Number.parseFloat(data.peso))
+      formData.append("color", data.color)
+      formData.append("notas", data.caracteristicas || data.observaciones || null)
+      formData.append("vacunado", data.vacunado || false)
+      formData.append("esterilizado", data.esterilizado || false)
+      formData.append("id_pro", usuarioActual.id_usuario)
+      formData.append("foto", data.imagen) // El campo debe llamarse "foto"
+
       const response = await axios.post("http://localhost:3001/api/mascotas", formData, {
         headers: {
           "Content-Type": "multipart/form-data",

@@ -5,38 +5,18 @@ import '../../stylos/cssVet/GestionCitas.css';
 const HORARIOS_DISPONIBLES = ["09:00", "11:00", "13:00", "15:00", "17:00"];
 
 const GestionCitas = () => {
-  const [citas, setCitas] = useState([
-    {
-      id: "1",
-      mascota: "Max",
-      propietario: "María González",
-      fecha: new Date().toISOString().split("T")[0], // Fecha actual
-      hora: "09:00",
-      tipo: "Consulta General",
-      estado: "pendiente",
-      prioridad: "media",
-      motivo: "Revisión anual y vacunas",
-      tipoMascota: "perro",
-      raza: "Golden Retriever",
-      telefono: "+34 666 123 456",
-      email: "maria.gonzalez@email.com",
-    },
-    {
-      id: "2",
-      mascota: "Luna",
-      propietario: "Carlos Rodríguez",
-      fecha: new Date(Date.now() + 86400000).toISOString().split("T")[0], // Mañana
-      hora: "11:00",
-      tipo: "Emergencia",
-      estado: "confirmada",
-      prioridad: "urgente",
-      motivo: "Vómitos y diarrea desde ayer",
-      tipoMascota: "gato",
-      raza: "Siamés",
-      telefono: "+34 677 987 654",
-      email: "carlos.rodriguez@email.com",
-    },
-  ]);
+  const [citas, setCitas] = useState([]);
+
+useEffect(() => {
+  fetch("http://localhost:3001/api/citas")
+    .then((res) => res.json())
+    .then((data) => {
+      setCitas(data);
+    })
+    .catch((error) => {
+      console.error("Error al obtener citas:", error);
+    });
+}, []);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [filterEstado, setFilterEstado] = useState("todos");
@@ -268,6 +248,9 @@ const GestionCitas = () => {
               })}
             </p>
           </div>
+          <button className="btn-new-appointment" onClick={openNewAppointmentModal}>
+            ➕ Nueva Cita
+          </button>
         </div>
       </header>
 
@@ -442,6 +425,9 @@ const GestionCitas = () => {
               <div className="no-appointments-icon">🔍</div>
               <h3>No se encontraron citas</h3>
               <p>Intenta ajustar los filtros de búsqueda</p>
+              <button className="btn-new-appointment" onClick={openNewAppointmentModal}>
+                ➕ Crear Nueva Cita
+              </button>
             </div>
           )}
         </div>

@@ -47,9 +47,6 @@ body {
   border-radius: var(--border-radius);
   margin-bottom: 30px;
   box-shadow: var(--shadow-lg);
-}
-
-.header-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -57,8 +54,19 @@ body {
   gap: 20px;
 }
 
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.header-left {
+  flex: 1;
+}
+
 .main-title {
-  color: rgb(255, 255, 255) !important;
+  color: var(--white);
   font-size: 2.5rem;
   font-weight: 700;
   margin-bottom: 10px;
@@ -69,10 +77,11 @@ body {
   font-size: 1.1rem;
   opacity: 0.9;
   font-weight: 300;
-  color: white !important;
+  color: var(--white);
 }
 
-.btn-primary {
+/* Botón Nueva Cita */
+.btn-new-appointment {
   background: var(--color4);
   color: var(--white);
   border: none;
@@ -83,9 +92,13 @@ body {
   cursor: pointer;
   transition: var(--transition);
   box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
 }
 
-.btn-primary:hover {
+.btn-new-appointment:hover {
   background: var(--color3);
   transform: translateY(-2px);
   box-shadow: var(--shadow-lg);
@@ -472,21 +485,36 @@ body {
 
 /* No Appointments */
 .no-appointments {
-  text-align: center;
+  background-color: var(--white);
+  border-radius: var(--border-radius);
   padding: 60px 20px;
-  color: var(--color3);
+  text-align: center;
+  box-shadow: var(--shadow);
 }
 
 .no-appointments-icon {
   font-size: 4rem;
+  color: var(--color4);
   margin-bottom: 20px;
-  opacity: 0.5;
+  opacity: 0.6;
 }
 
 .no-appointments h3 {
-  font-size: 1.5rem;
-  margin-bottom: 10px;
   color: var(--color2);
+  font-size: 1.8rem;
+  margin-bottom: 10px;
+}
+
+.no-appointments p {
+  color: var(--gray-medium);
+  font-size: 1.1rem;
+  margin-bottom: 25px;
+}
+
+.no-appointments .btn-new-appointment {
+  margin: 0 auto;
+  padding: 12px 24px;
+  font-size: 1rem;
 }
 
 /* Modal */
@@ -651,7 +679,7 @@ body {
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .header-content {
+  .vet-header {
     flex-direction: column;
     text-align: center;
   }
