@@ -63,12 +63,20 @@ router.get("/", async (req, res) => {
         s.nom_ser as servicio,
         s.precio,
         CONCAT(u.nombre, ' ', u.apellido) as veterinario,
+        prop.nombre AS prop_nombre,
+        prop.apellido AS prop_apellido,
+        prop.telefono AS prop_telefono,
+        prop.ciudad AS prop_ciudad,
+        prop.barrio AS prop_barrio,
+        prop.direccion AS prop_direccion,
+        prop.email AS prop_email,
         m.nom_mas as mascota
       FROM citas c
       INNER JOIN servicios s ON c.cod_ser = s.cod_ser
       INNER JOIN veterinarios v ON c.id_vet = v.id_vet
       INNER JOIN usuarios u ON v.id_vet = u.id_usuario
       INNER JOIN mascotas m ON c.cod_mas = m.cod_mas
+      INNER JOIN usuarios prop ON m.id_pro = prop.id_usuario
     `
 
     const params = []
@@ -84,6 +92,40 @@ router.get("/", async (req, res) => {
     const citas = await executeQuery(query, params)
     res.json(citas)
   } catch (error) {
+    console.log(error)
+    console.error("Error fetching citas:", error)
+    res.status(500).json({ error: "Error al obtener las citas" })
+  }
+})
+
+router.get("/registrar", async (req, res) => {
+  const body = req.body
+
+  try {
+    // Consulta SQL compleja que une múltiples tablas
+    let query = `
+      INSERT INTO citas ( fech_cit, hora, cod_ser, id_vet, cod_mas, id_pro, estado, notas )
+      VALUES ( ?, ?, ?, ?, ?, ?, ?, ?);
+    `
+
+    const params = [
+      body.mascota,
+      body.propietario,
+      body.fecha,
+      body.hora,
+      body.tipo,
+      body.prioridad,
+      body.motivo,
+      body.tipoMascota,
+      body.raza,
+      body.telefono,
+      body.email
+    ]
+
+    const citas = await executeQuery(query, params)
+    res.json(citas)
+  } catch (error) {
+    console.log(error)
     console.error("Error fetching citas:", error)
     res.status(500).json({ error: "Error al obtener las citas" })
   }

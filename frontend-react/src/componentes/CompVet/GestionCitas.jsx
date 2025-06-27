@@ -11,10 +11,35 @@ useEffect(() => {
   fetch("http://localhost:3001/api/citas")
     .then((res) => res.json())
     .then((data) => {
+      console.log(data)
       setCitas(data);
     })
     .catch((error) => {
       console.error("Error al obtener citas:", error);
+    });
+}, []);
+useEffect(() => {
+  // Datos que quieres enviar en el cuerpo del POST
+  const nuevaCita = {
+    nombre: "Juan Pérez",
+    fecha: "2025-07-01",
+    hora: "10:00",
+    motivo: "Consulta médica"
+  };
+
+  fetch("http://localhost:3001/api/citas", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(nuevaCita)
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      console.log("Cita creada:", data);
+    })
+    .catch((error) => {
+      console.error("Error al crear la cita:", error);
     });
 }, []);
 
@@ -153,7 +178,7 @@ useEffect(() => {
   };
 
   // Filtrar citas
-  const filteredCitas = citas.filter((cita) => {
+  const filteredCitas = citas?.filter((cita) => {
     const matchesSearch =
       cita.mascota.toLowerCase().includes(searchTerm.toLowerCase()) ||
       cita.propietario.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -353,18 +378,19 @@ useEffect(() => {
 
                   <div className="appointment-details">
                     <div className="detail-section">
+                      {console.log(citas)}
                       <h4>Propietario</h4>
-                      <p>{cita.propietario}</p>
+                      <p>{cita.prop_nombre}</p>
                     </div>
 
                     <div className="detail-section">
                       <h4>Teléfono</h4>
-                      <p>{cita.telefono}</p>
+                      <p>{cita.prop_telefono}</p>
                     </div>
 
                     <div className="detail-section">
                       <h4>Email</h4>
-                      <p>{cita.email}</p>
+                      <p>{cita.prop_email}</p>
                     </div>
 
                     <div className="detail-section">
@@ -378,13 +404,13 @@ useEffect(() => {
                     </div>
 
                     <div className="detail-section">
-                      <h4>Tipo de consulta</h4>
-                      <p>{cita.tipo}</p>
+                      <h4>Estado</h4>
+                      <p>{cita.estado}</p>
                     </div>
 
                     <div className="detail-section">
-                      <h4>Motivo</h4>
-                      <p>{cita.motivo}</p>
+                      <h4>Servicio</h4>
+                      <p>{cita.servicio}</p>
                     </div>
                   </div>
 

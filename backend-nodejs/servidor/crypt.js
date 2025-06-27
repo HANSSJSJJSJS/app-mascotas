@@ -7,7 +7,7 @@ async function encryptPasswords() {
         user: 'root',
         password: '',
         port: 3306,
-        database: 'moybe_db'
+        database: 'mascotas_db'
     });
 
     const [users] = await db.query('SELECT id_usuario, password_hash FROM usuarios');
