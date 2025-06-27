@@ -1,14 +1,14 @@
-import { useState } from "react"
-import { useForm } from "react-hook-form"
-import axios from "axios"
-import { PawPrint, Upload, User, Heart, Calendar, Weight, Palette, FileText, ArrowLeft, ArrowRight, Check, X, UserCheck  } from "lucide-react"
-import "../../stylos/cssFormularios/MascotaForm.css"
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import axios from "axios";
+import { PawPrint, Upload, User, Heart, Calendar, Weight, Palette, FileText, ArrowLeft, ArrowRight, Check, X, UserCheck } from "lucide-react";
+import "../../stylos/cssFormularios/MascotaForm.css";
 
 function MascotaForm() {
-  const [currentStep, setCurrentStep] = useState(1)
-  const totalSteps = 3
-  const [imagePreview, setImagePreview] = useState(null)
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [currentStep, setCurrentStep] = useState(1);
+  const totalSteps = 3;
+  const [imagePreview, setImagePreview] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     register,
@@ -20,67 +20,43 @@ function MascotaForm() {
     formState: { errors, dirtyFields },
   } = useForm({
     mode: "onChange",
-  })
+  });
 
   const onSubmit = async (data) => {
     setIsSubmitting(true);
     try {
-      // Ya NO necesitas validar el localStorage aquí
-      // Puedes dejarlo si quieres validar el token más adelante para proteger rutas
-  
+      const usuarioActual = JSON.parse(localStorage.getItem("pet-app-user"));
+      if (!usuarioActual?.id_usuario) throw new Error("No se encontró información del usuario.");
+
       const formData = new FormData();
       formData.append("nom_mas", data.nombre);
       formData.append("especie", data.especie);
       formData.append("raza", data.raza);
-  
-      // Calcular edad
+
+      // Calcular la edad basada en la fecha de nacimiento
       const fechaNacimiento = new Date(data.fechaNacimiento);
       const hoy = new Date();
       const edad = (hoy - fechaNacimiento) / (365.25 * 24 * 60 * 60 * 1000);
       formData.append("edad", Number.parseFloat(edad.toFixed(2)));
-  
       formData.append("genero", data.genero);
       formData.append("peso", Number.parseFloat(data.peso));
       formData.append("color", data.color);
       formData.append("notas", data.caracteristicas || data.observaciones || "");
       formData.append("vacunado", data.vacunado || false);
       formData.append("esterilizado", data.esterilizado || false);
-      formData.append("id_pro", data.id_pro); // ✅ Usar el que viene del formulario
-  
+      formData.append("id_pro", data.id_pro || usuarioActual.id_usuario);
+
       if (data.imagen) {
         formData.append("foto", data.imagen);
       }
-  
-
-      const usuarioActual = JSON.parse(localStorage.getItem("pet-app-user"))
-      if (!usuarioActual?.id_usuario) throw new Error("No se encontró información del usuario.")
-
-      const formData = new FormData()
-      formData.append("nom_mas", data.nombre)
-      formData.append("especie", data.especie)
-      formData.append("raza", data.raza)
-      // Calcular la edad basada en la fecha de nacimiento
-      const fechaNacimiento = new Date(data.fechaNacimiento)
-      const hoy = new Date()
-      const edad = (hoy - fechaNacimiento) / (365.25 * 24 * 60 * 60 * 1000)
-      formData.append("edad", Number.parseFloat(edad.toFixed(2)))
-      formData.append("genero", data.genero)
-      formData.append("peso", Number.parseFloat(data.peso))
-      formData.append("color", data.color)
-      formData.append("notas", data.caracteristicas || data.observaciones || null)
-      formData.append("vacunado", data.vacunado || false)
-      formData.append("esterilizado", data.esterilizado || false)
-      formData.append("id_pro", usuarioActual.id_usuario)
-      formData.append("foto", data.imagen) // El campo debe llamarse "foto"
 
       const response = await axios.post("http://localhost:3001/api/mascotas", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
-          // Opcional: solo si estás usando autenticación con token
           "Authorization": `Bearer ${localStorage.getItem("token") || ""}`,
         },
       });
-  
+
       if (response.data.success) {
         alert("¡Mascota registrada exitosamente!");
         reset();
@@ -91,7 +67,7 @@ function MascotaForm() {
       }
     } catch (error) {
       let errorMessage = "Error al registrar la mascota";
-  
+
       if (error.response) {
         errorMessage = error.response.data?.message || error.response.data?.error || error.response.statusText;
         console.error("Error en la respuesta del servidor:", error.response.data);
@@ -102,75 +78,73 @@ function MascotaForm() {
         errorMessage = error.message;
         console.error("Error en la configuración de la petición:", error.message);
       }
-  
+
       alert(`Error: ${errorMessage}`);
     } finally {
       setIsSubmitting(false);
     }
   };
-  
+
   // Función para ir al siguiente paso con validación
   const nextStep = async () => {
-    let fieldsToValidate = []
+    let fieldsToValidate = [];
 
     switch (currentStep) {
       case 1:
-        fieldsToValidate = ["nombre", "especie", "raza", "fechaNacimiento"]
-        break
+        fieldsToValidate = ["nombre", "especie", "raza", "fechaNacimiento"];
+        break;
       case 2:
-        fieldsToValidate = ["genero", "peso", "color"]
-        break
+        fieldsToValidate = ["genero", "peso", "color"];
+        break;
       case 3:
-        // Ahora el paso 3 es obligatorio: observaciones debe ser requerido
-        fieldsToValidate = ["observaciones"]
-        break
+        fieldsToValidate = ["observaciones"];
+        break;
     }
 
-    const isStepValid = fieldsToValidate.length === 0 || (await trigger(fieldsToValidate))
+    const isStepValid = fieldsToValidate.length === 0 || (await trigger(fieldsToValidate));
 
     if (isStepValid) {
-      setCurrentStep((prev) => Math.min(prev + 1, totalSteps))
-      window.scrollTo(0, 0)
+      setCurrentStep((prev) => Math.min(prev + 1, totalSteps));
+      window.scrollTo(0, 0);
     } else {
-      alert("Por favor, complete todos los campos requeridos correctamente.")
+      alert("Por favor, complete todos los campos requeridos correctamente.");
     }
-  }
+  };
 
   const prevStep = () => {
-    setCurrentStep((prev) => Math.max(prev - 1, 1))
-    window.scrollTo(0, 0)
-  }
+    setCurrentStep((prev) => Math.max(prev - 1, 1));
+    window.scrollTo(0, 0);
+  };
 
-  const progress = (currentStep / totalSteps) * 100
+  const progress = (currentStep / totalSteps) * 100;
 
   const getFieldClass = (fieldName) => {
-    if (!dirtyFields[fieldName]) return ""
-    return errors[fieldName] ? "field-error" : "field-success"
-  }
+    if (!dirtyFields[fieldName]) return "";
+    return errors[fieldName] ? "field-error" : "field-success";
+  };
 
   const handleImageChange = (event) => {
-    const file = event.target.files[0]
+    const file = event.target.files[0];
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
-        alert("La imagen debe ser menor a 5MB")
-        return
+        alert("La imagen debe ser menor a 5MB");
+        return;
       }
 
       if (!file.type.startsWith("image/")) {
-        alert("Solo se permiten archivos de imagen")
-        return
+        alert("Solo se permiten archivos de imagen");
+        return;
       }
 
-      const reader = new FileReader()
+      const reader = new FileReader();
       reader.onloadend = () => {
-        setImagePreview(reader.result)
-        setValue("imagen", file)
-      }
-      reader.readAsDataURL(file)
+        setImagePreview(reader.result);
+        setValue("imagen", file);
+      };
+      reader.readAsDataURL(file);
     }
-  }
-  
-  
+  };
+
   function getImageUrl(foto) {
     return foto ? `http://localhost:3000/uploads/mascotas/${foto}` : "/placeholder.svg";
   }
@@ -333,9 +307,9 @@ function MascotaForm() {
                           {...register("fechaNacimiento", {
                             required: "La fecha de nacimiento es obligatoria",
                             validate: (value) => {
-                              const fechaNacimiento = new Date(value)
-                              const hoy = new Date()
-                              return fechaNacimiento <= hoy || "La fecha no puede ser futura"
+                              const fechaNacimiento = new Date(value);
+                              const hoy = new Date();
+                              return fechaNacimiento <= hoy || "La fecha no puede ser futura";
                             },
                           })}
                         />
@@ -345,8 +319,10 @@ function MascotaForm() {
                         </span>
                       </div>
                       {errors.fechaNacimiento && <p className="error-message">{errors.fechaNacimiento.message}</p>}
+                    </div>
+                  </div>
 
-                      {/* Tercera fila - ID Propietario */}
+                  {/* Tercera fila - ID Propietario */}
                   <div className="form-row">
                     <div className="form-group full-width">
                       <label htmlFor="idpropietario">
@@ -370,12 +346,10 @@ function MascotaForm() {
                         />
                         <span className="input-icon">
                           {dirtyFields.id_pro && !errors.id_pro && "✓"}
-                          {errors.idpro && "!"}
+                          {errors.id_pro && "!"}
                         </span>
                       </div>
                       {errors.id_pro && <p className="error-message">{errors.id_pro.message}</p>}
-                    </div>
-                  </div>
                     </div>
                   </div>
                 </div>
@@ -619,7 +593,7 @@ function MascotaForm() {
         </form>
       </div>
     </div>
-  )
+  );
 }
 
 export default MascotaForm;

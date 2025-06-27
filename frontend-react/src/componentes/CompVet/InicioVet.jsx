@@ -6,6 +6,12 @@ import "../../stylos/cssVet/Card.css";
 
 export default function InicioVet() {
   // Estados principales
+  const [datos, setDatos] = useState({
+    citasHoy: 0,
+    consultasPendientes: 0,
+    mascotasTotales: 0
+  });
+
   const [citas, setCitas] = useState([
     {
       id: 1,
@@ -108,17 +114,20 @@ export default function InicioVet() {
   useEffect(() => {
     const cargarDatos = async () => {
       try {
+        setCargando(true);
+        
+        // Simulando llamadas a API (reemplaza con tus endpoints reales)
         const [resCitas, resConsultas, resMascotas] = await Promise.all([
-          fetch('/api/estadisticas/citas-hoy'),
-          fetch('/api/estadisticas/consultas-pendientes'),
-          fetch('/api/estadisticas/mascotas-totales')
+          Promise.resolve({ json: () => ({ total: citas.length }) }),
+          Promise.resolve({ json: () => ({ total: citas.filter(c => c.estado === 'pendiente').length }) }),
+          Promise.resolve({ json: () => ({ total: mascotas.length }) })
         ]);
   
         const dataCitas = await resCitas.json();
         const dataConsultas = await resConsultas.json();
         const dataMascotas = await resMascotas.json();
   
-        // Actualizar tu estado con estos valores
+        // Actualizar estado con estos valores
         setDatos({
           citasHoy: dataCitas.total,
           consultasPendientes: dataConsultas.total,
@@ -127,11 +136,14 @@ export default function InicioVet() {
   
       } catch (error) {
         console.error("Error cargando estadísticas:", error);
+        setError("Error al cargar los datos");
+      } finally {
+        setCargando(false);
       }
     };
   
     cargarDatos();
-  }, []);
+  }, [citas, mascotas]);
 
   return (
     <>
@@ -165,7 +177,7 @@ export default function InicioVet() {
                 </div>
                 <div>
                   <div className="inicioVet-summaryLabel">Citas hoy</div>
-                  <div className="inicioVet-summaryValue">{citas.length}</div>
+                  <div className="inicioVet-summaryValue">{datos.citasHoy}</div>
                 </div>
               </div>
             </div>
@@ -179,7 +191,7 @@ export default function InicioVet() {
                 </div>
                 <div>
                   <div className="inicioVet-summaryLabel">Mascotas totales</div>
-                  <div className="inicioVet-summaryValue">{mascotas.length}</div>
+                  <div className="inicioVet-summaryValue">{datos.mascotasTotales}</div>
                 </div>
               </div>
             </div>
@@ -193,9 +205,7 @@ export default function InicioVet() {
                 </div>
                 <div>
                   <div className="inicioVet-summaryLabel">Consultas pendientes</div>
-                  <div className="inicioVet-summaryValue">
-                    {citas.filter(c => c.estado === 'pendiente').length}
-                  </div>
+                  <div className="inicioVet-summaryValue">{datos.consultasPendientes}</div>
                 </div>
               </div>
             </div>
