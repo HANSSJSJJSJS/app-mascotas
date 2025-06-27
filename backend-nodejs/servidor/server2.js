@@ -1264,13 +1264,22 @@ app.delete("/api/mascotas/:id", async (req, res) => {
 })
 
 // PATCH /api/mascotas/:id/estado - Cambiar estado de mascota
+// PATCH /api/mascotas/:id/estado
 app.patch("/api/mascotas/:id/estado", async (req, res) => {
   try {
     const { id } = req.params;
     const { activo } = req.body;
 
-    console.log("Cambio de estado recibido:", { id, activo });
+    // Validación básica
+    if (typeof activo !== 'boolean') {
+      return res.status(400).json({ 
+        error: "El campo 'activo' debe ser un valor booleano (true/false)" 
+      });
+    }
 
+    console.log(`Actualizando estado de mascota ${id} a ${activo}`);
+
+    // Ejecutar la actualización
     const query = "UPDATE mascotas SET activo = ? WHERE cod_mas = ?";
     const [result] = await db.execute(query, [activo, id]);
 
@@ -1278,10 +1287,22 @@ app.patch("/api/mascotas/:id/estado", async (req, res) => {
       return res.status(404).json({ error: "Mascota no encontrada" });
     }
 
+    // Obtener el estado actualizado para confirmación
+    const [updated] = await db.execute("SELECT activo FROM mascotas WHERE cod_mas = ?", [id]);
+    
+    res.status(200).json({
+      success: true,
+      message: "Estado actualizado correctamente",
+      mascota: { id, activo: updated[0].activo }
+    });
 
   } catch (error) {
-    console.error("Error al cambiar estado:", error);
-    res.status(500).json({ error: "Error interno del servidor" });
+    console.error("Error en PATCH /mascotas/estado:", error);
+    res.status(500).json({ 
+      error: "Error al actualizar el estado",
+      details: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
   }
 });
 

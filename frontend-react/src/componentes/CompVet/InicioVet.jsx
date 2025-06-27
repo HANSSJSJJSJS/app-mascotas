@@ -110,53 +110,109 @@ export default function InicioVet() {
     setModalAbierto(true);
   };
 
-  // Carga de datos desde API
-  useEffect(() => {
-    const cargarDatos = async () => {
-      try {
-        setCargando(true);
-        
-        // Simulando llamadas a API (reemplaza con tus endpoints reales)
-        const [resCitas, resConsultas, resMascotas] = await Promise.all([
-          Promise.resolve({ json: () => ({ total: citas.length }) }),
-          Promise.resolve({ json: () => ({ total: citas.filter(c => c.estado === 'pendiente').length }) }),
-          Promise.resolve({ json: () => ({ total: mascotas.length }) })
-        ]);
-  
-        const dataCitas = await resCitas.json();
-        const dataConsultas = await resConsultas.json();
-        const dataMascotas = await resMascotas.json();
-  
-        // Actualizar estado con estos valores
-        setDatos({
-          citasHoy: dataCitas.total,
-          consultasPendientes: dataConsultas.total,
-          mascotasTotales: dataMascotas.total
-        });
-  
-      } catch (error) {
-        console.error("Error cargando estadísticas:", error);
-        setError("Error al cargar los datos");
-      } finally {
-        setCargando(false);
+  // Función para cargar estadísticas desde el backend
+  const cargarEstadisticas = async () => {
+    try {
+      console.log('🔄 Iniciando carga de estadísticas...');
+      setCargando(true);
+      setError(null);
+      
+      // Llamadas individuales para mejor debugging
+      console.log('📡 Cargando mascotas totales...');
+      const resMascotasTotales = await fetch('http://localhost:3001/api/mascotas-totales');
+      console.log('Respuesta mascotas:', resMascotasTotales.status, resMascotasTotales.ok);
+      
+      console.log('📡 Cargando citas de hoy...');
+      const resCitasHoy = await fetch('http://localhost:3001/api/citas-hoy');
+      console.log('Respuesta citas:', resCitasHoy.status, resCitasHoy.ok);
+      
+      console.log('📡 Cargando consultas pendientes...');
+      const resConsultasPendientes = await fetch('http://localhost:3001/api/consultas-pendientes');
+      console.log('Respuesta consultas:', resConsultasPendientes.status, resConsultasPendientes.ok);
+
+      // Verificar respuestas y parsear datos
+      let mascotasTotales = 0;
+      let citasHoy = 0;
+      let consultasPendientes = 0;
+
+      if (resMascotasTotales.ok) {
+        const dataMascotasTotales = await resMascotasTotales.json();
+        console.log('Datos mascotas:', dataMascotasTotales);
+        mascotasTotales = dataMascotasTotales.total || 0;
+      } else {
+        console.error('Error en endpoint mascotas:', resMascotasTotales.status);
       }
-    };
-  
-    cargarDatos();
-  }, [citas, mascotas]);
+
+      if (resCitasHoy.ok) {
+        const dataCitasHoy = await resCitasHoy.json();
+        console.log('Datos citas:', dataCitasHoy);
+        citasHoy = dataCitasHoy.total || 0;
+      } else {
+        console.error('Error en endpoint citas:', resCitasHoy.status);
+      }
+
+      if (resConsultasPendientes.ok) {
+        const dataConsultasPendientes = await resConsultasPendientes.json();
+        console.log('Datos consultas:', dataConsultasPendientes);
+        consultasPendientes = dataConsultasPendientes.total || 0;
+      } else {
+        console.error('Error en endpoint consultas:', resConsultasPendientes.status);
+      }
+
+      // Actualizar el estado con los datos del backend
+      const nuevosdatos = {
+        mascotasTotales,
+        citasHoy,
+        consultasPendientes
+      };
+      
+      console.log('✅ Datos finales:', nuevosdatos);
+      setDatos(nuevosdatos);
+
+    } catch (error) {
+      console.error("❌ Error cargando estadísticas:", error);
+      setError(`Error al cargar las estadísticas: ${error.message}`);
+      
+      // Valores por defecto en caso de error
+      setDatos({
+        mascotasTotales: 0,
+        citasHoy: 0,
+        consultasPendientes: 0
+      });
+    } finally {
+      setCargando(false);
+      console.log('🏁 Carga completada');
+    }
+  };
+
+  // Cargar estadísticas al montar el componente
+  useEffect(() => {
+    cargarEstadisticas();
+  }, []);
+
+  // Función para recargar estadísticas manualmente
+  const recargarEstadisticas = () => {
+    cargarEstadisticas();
+  };
 
   return (
     <>
       {/* Estados de carga y error */}
       {cargando && (
         <div className="inicioVet-loadingOverlay">
-          <div className="inicioVet-loadingMessage">Cargando...</div>
+          <div className="inicioVet-loadingMessage">Cargando estadísticas...</div>
         </div>
       )}
       
       {error && (
         <div className="inicioVet-errorAlert">
           {error}
+          <button 
+            onClick={recargarEstadisticas}
+            style={{ marginLeft: '10px', padding: '5px 10px', cursor: 'pointer' }}
+          >
+            Reintentar
+          </button>
         </div>
       )}
 
@@ -177,7 +233,9 @@ export default function InicioVet() {
                 </div>
                 <div>
                   <div className="inicioVet-summaryLabel">Citas hoy</div>
-                  <div className="inicioVet-summaryValue">{datos.citasHoy}</div>
+                  <div className="inicioVet-summaryValue">
+                    {cargando ? '...' : datos.citasHoy}
+                  </div>
                 </div>
               </div>
             </div>
@@ -191,7 +249,9 @@ export default function InicioVet() {
                 </div>
                 <div>
                   <div className="inicioVet-summaryLabel">Mascotas totales</div>
-                  <div className="inicioVet-summaryValue">{datos.mascotasTotales}</div>
+                  <div className="inicioVet-summaryValue">
+                    {cargando ? '...' : datos.mascotasTotales}
+                  </div>
                 </div>
               </div>
             </div>
@@ -205,7 +265,9 @@ export default function InicioVet() {
                 </div>
                 <div>
                   <div className="inicioVet-summaryLabel">Consultas pendientes</div>
-                  <div className="inicioVet-summaryValue">{datos.consultasPendientes}</div>
+                  <div className="inicioVet-summaryValue">
+                    {cargando ? '...' : datos.consultasPendientes}
+                  </div>
                 </div>
               </div>
             </div>

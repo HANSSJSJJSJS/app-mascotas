@@ -191,17 +191,43 @@ const GestorMascotas = () => {
 
   // Cambiar estado de mascota
   const cambiarEstadoMascota = async (id, nuevoEstado) => {
-    try {
-      const response = await axios.patch(`http://localhost:3001/api/mascotas/${id}/estado`, {
-        activo: nuevoEstado
-      });
-  
-      console.log("Estado actualizado:", response.data);
-    } catch (error) {
-      console.error("Error al cambiar estado:", error);
-      alert("Error al cambiar estado");
+  try {
+    // Actualización optimista (cambia el estado antes de la respuesta del servidor)
+    setMascotas(prev => prev.map(m => 
+      m.id === id ? { ...m, activo: nuevoEstado } : m
+    ));
+
+    const response = await axios.patch(
+      `http://localhost:3001/api/mascotas/${id}/estado`,
+      { activo: nuevoEstado },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}` // Si usas autenticación
+        }
+      }
+    );
+
+    if (!response.data.success) {
+      throw new Error(response.data.error || "Error al actualizar el estado");
     }
-  };
+
+    console.log("Estado actualizado:", response.data);
+
+  } catch (error) {
+    console.error("Error al cambiar estado:", error);
+    
+    // Revertir el cambio si falla
+    setMascotas(prev => prev.map(m => 
+      m.id === id ? { ...m, activo: !nuevoEstado } : m
+    ));
+
+    // Mostrar error al usuario
+    alert(error.response?.data?.error || 
+         error.message || 
+         "Error al cambiar el estado de la mascota");
+  }
+};
   
 
   // Helper para renderizar el badge de tipo de mascota

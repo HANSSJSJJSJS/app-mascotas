@@ -129,7 +129,7 @@ const MainRoutes = () => {
           <Route index element={<InicioVet />} />
           <Route path="nueva-consulta" element={<NuevaConsulta />} />
           <Route path="consultas" element={<Consultas />} />
-          <Route path="historial-clinico" element={<HistorialClinico />} />
+          <Route path="historial-clinico/" element={<HistorialClinico />} />
           <Route path="mascotas" element={<MascotasVet />} />
           <Route path="gestion-citas" element={<GestionCitasVet />} />
         </Route>
