@@ -10,6 +10,9 @@ export default function Mascota() {
   const [showFotoModal, setShowFotoModal] = useState(false)
   const [fotoPreview, setFotoPreview] = useState(null)
   const [isUploadingFoto, setIsUploadingFoto] = useState(false)
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [errorModalMessage, setErrorModalMessage] = useState("");
   const fileInputRef = useRef(null)
 
   // Cargar mascotas reales del backend
@@ -98,9 +101,10 @@ export default function Mascota() {
       setShowFotoModal(false);
       setFotoPreview(null);
       if (fileInputRef.current) fileInputRef.current.value = "";
-      alert("Foto actualizada correctamente");
+      setShowSuccessModal(true);
     } catch (error) {
-      alert("Error al actualizar la foto");
+      setErrorModalMessage("Error al actualizar la foto");
+      setShowErrorModal(true);
     } finally {
       setIsUploadingFoto(false);
     }
@@ -113,6 +117,9 @@ export default function Mascota() {
       fileInputRef.current.value = ""
     }
   }
+
+  const closeSuccessModal = () => setShowSuccessModal(false);
+  const closeErrorModal = () => setShowErrorModal(false);
 
   return (
     <div className="mascota-layout-container">
@@ -366,6 +373,40 @@ export default function Mascota() {
           </div>
         )}
       </div>
+
+      {/* Modales de éxito y error para la foto */}
+      {showSuccessModal && (
+        <div className="modal-overlay-main" onClick={closeSuccessModal}>
+          <div className="modal-success-main" onClick={e => e.stopPropagation()}>
+            <div className="modal-success-content-main">
+              <div className="success-icon-main">
+                <Upload size={48} />
+              </div>
+              <h3>¡Foto actualizada correctamente!</h3>
+              <p>La foto de tu mascota se ha actualizado con éxito.</p>
+              <button className="btn-modal-close-main" onClick={closeSuccessModal}>
+                Entendido
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {showErrorModal && (
+        <div className="modal-overlay-main" onClick={closeErrorModal}>
+          <div className="modal-error-main" onClick={e => e.stopPropagation()}>
+            <div className="modal-error-content-main">
+              <div className="error-icon-main">
+                <X size={48} />
+              </div>
+              <h3>¡Error!</h3>
+              <p>{errorModalMessage}</p>
+              <button className="btn-modal-close-main" onClick={closeErrorModal}>
+                Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

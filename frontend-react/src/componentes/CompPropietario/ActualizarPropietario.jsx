@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import "../../stylos/cssPropietario/ActualizarPropietario.css"
-import { Save, Loader2, Upload, User, Phone, Mail, MapPin, AlertCircle, Camera } from "lucide-react"
+import { Save, Loader2, Upload, User, Phone, Mail, MapPin, AlertCircle, Camera, CheckCircle, XCircle } from "lucide-react"
 
 const formSchema = z.object({
   telefono: z.string().min(8, { message: "El teléfono debe tener al menos 8 dígitos" }),
@@ -22,6 +22,9 @@ export default function ActualizarPropietario() {
   const [propietario, setPropietario] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [errorModalMessage, setErrorModalMessage] = useState("");
 
   // Cargar datos del usuario al montar el componente
   useEffect(() => {
@@ -73,14 +76,16 @@ export default function ActualizarPropietario() {
     if (file) {
       // Validar tipo de archivo
       if (!file.type.startsWith("image/")) {
-        alert("Por favor seleccione un archivo de imagen válido")
-        return
+        setErrorModalMessage("Por favor seleccione un archivo de imagen válido");
+        setShowErrorModal(true);
+        return;
       }
 
       // Validar tamaño (5MB máximo)
       if (file.size > 5 * 1024 * 1024) {
-        alert("El archivo es demasiado grande. Máximo 5MB permitido.")
-        return
+        setErrorModalMessage("El archivo es demasiado grande. Máximo 5MB permitido.");
+        setShowErrorModal(true);
+        return;
       }
 
       setImagenFile(file)
@@ -94,8 +99,9 @@ export default function ActualizarPropietario() {
 
   const onSubmit = async (data) => {
     if (!propietario) {
-      alert("No se encontraron datos del usuario")
-      return
+      setErrorModalMessage("No se encontraron datos del usuario");
+      setShowErrorModal(true);
+      return;
     }
 
     setIsSubmitting(true)
@@ -125,7 +131,7 @@ export default function ActualizarPropietario() {
       const result = await response.json()
 
       if (result.success) {
-        alert("Datos actualizados correctamente")
+        setShowSuccessModal(true);
         // Guardar solo el nombre del archivo, no la ruta completa
         let foto_perfil = result.foto_perfil
         if (foto_perfil && foto_perfil.startsWith("/uploads/propietarios/")) {
@@ -138,15 +144,20 @@ export default function ActualizarPropietario() {
         setImagenFile(null)
         setImagenPreview(null)
       } else {
-        alert("Error al actualizar los datos: " + (result.message || "Error desconocido"))
+        setErrorModalMessage("Error al actualizar los datos: " + (result.message || "Error desconocido"));
+        setShowErrorModal(true);
       }
     } catch (error) {
       console.error("Error al actualizar:", error)
-      alert("Error de conexión al actualizar los datos. Verifique su conexión a internet.")
+      setErrorModalMessage("Error de conexión al actualizar los datos. Verifique su conexión a internet.");
+      setShowErrorModal(true);
     } finally {
       setIsSubmitting(false)
     }
   }
+  const closeErrorModal = () => setShowErrorModal(false);
+
+  const closeSuccessModal = () => setShowSuccessModal(false);
 
   if (loading) {
     return (
@@ -367,6 +378,40 @@ export default function ActualizarPropietario() {
           </div>
         </div>
       </div>
+
+      {showSuccessModal && (
+        <div className="modal-overlay" onClick={closeSuccessModal}>
+          <div className="modal-success" onClick={e => e.stopPropagation()}>
+            <div className="modal-success-content">
+              <div className="success-icon">
+                <CheckCircle size={48} />
+              </div>
+              <h3>¡Datos actualizados correctamente!</h3>
+              <p>Tu información de propietario ha sido guardada exitosamente.</p>
+              <button className="btn-modal-close" onClick={closeSuccessModal}>
+                Entendido
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showErrorModal && (
+        <div className="modal-overlay" onClick={closeErrorModal}>
+          <div className="modal-error" onClick={e => e.stopPropagation()}>
+            <div className="modal-error-content">
+              <div className="error-icon-modal">
+                <XCircle size={48} />
+              </div>
+              <h3>¡Ha ocurrido un error!</h3>
+              <p>{errorModalMessage}</p>
+              <button className="btn-modal-close" onClick={closeErrorModal}>
+                Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
