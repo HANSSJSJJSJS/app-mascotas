@@ -179,14 +179,20 @@ export default function Mascota() {
 
                 <div className="pet-info-main">
                   <h2 className="pet-name-main">{mascotaActual.nombre}</h2>
-                  <div className="pet-badges-container">
-                    <span className={`badge-main ${mascotaActual.tipo?.toLowerCase()}`}>
+                  <div className="pet-badges-container-mascota">
+                    <span className={`badge-main-mascota ${mascotaActual.tipo?.toLowerCase()}`}>
                       {mascotaActual.tipo?.toUpperCase()}
                     </span>
-                    <span className="badge-secondary">{mascotaActual.raza}</span>
+                    <span className="badge-secondary-mascota">{mascotaActual.raza}</span>
+                    {mascotaActual.vacunado && (
+                      <span className="pet-badge-mascota vaccinated-badge-mascota" title="Vacunado">
+                        <Shield size={14} className="badge-icon-mascota" />
+                        Vacunado
+                      </span>
+                    )}
                     {mascotaActual.esterilizado && (
-                      <span className="badge-esterilizado-main">
-                        <Shield className="badge-icon-main" />
+                      <span className="pet-badge-mascota neutered-badge-mascota" title="Esterilizado">
+                        <Heart size={14} className="badge-icon-mascota" />
                         Esterilizado
                       </span>
                     )}

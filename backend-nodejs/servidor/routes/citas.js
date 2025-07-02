@@ -131,4 +131,50 @@ router.get("/registrar", async (req, res) => {
   }
 })
 
+// PUT /api/citas/:id - Actualizar el estado de una cita
+router.put('/:id', async (req, res) => {
+  try {
+    const citaId = req.params.id;
+    const { estado } = req.body;
+    if (!estado) {
+      return res.status(400).json({ error: 'El estado es requerido' });
+    }
+
+    // Si se intenta cancelar, validar la ventana de 24 horas
+    if (estado === 'CANCELADA') {
+      // Obtener la cita actual
+      const [cita] = await executeQuery(
+        'SELECT estado, fech_cit, hora FROM citas WHERE cod_cit = ?',
+        [citaId]
+      );
+      if (!cita) {
+        return res.status(404).json({ error: 'Cita no encontrada' });
+      }
+      // Solo aplica la restricción si la cita está confirmada
+      if (cita.estado === 'CONFIRMADA') {
+        // Combinar fecha y hora de la cita
+        const citaDateTime = new Date(`${cita.fech_cit}T${cita.hora}`);
+        const now = new Date();
+        const diffMs = citaDateTime - now;
+        const diffHours = diffMs / (1000 * 60 * 60);
+        if (diffHours < 24) {
+          return res.status(403).json({ error: 'Solo puedes cancelar una cita confirmada hasta 24 horas antes.' });
+        }
+      }
+    }
+
+    const result = await executeQuery(
+      'UPDATE citas SET estado = ? WHERE cod_cit = ?',
+      [estado, citaId]
+    );
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Cita no encontrada' });
+    }
+    res.json({ message: 'Estado de la cita actualizado correctamente' });
+  } catch (error) {
+    console.error('Error al actualizar la cita:', error);
+    res.status(500).json({ error: 'Error al actualizar la cita' });
+  }
+});
+
 module.exports = router

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
+import { useLocation } from "react-router-dom"
 import {
   Calendar,
   Clock,
@@ -28,6 +29,7 @@ function FormularioCita() {
     watch,
     formState: { errors },
   } = useForm()
+  const location = useLocation()
 
   const [servicios, setServicios] = useState([])
   const [veterinarios, setVeterinarios] = useState([])
@@ -60,6 +62,14 @@ function FormularioCita() {
     }
   }, [usuarioActual])
 
+  useEffect(() => {
+    // Si viene un servicio seleccionado desde la navegación, seleccionarlo
+    if (location.state && location.state.servicioSeleccionado) {
+      setServicioSeleccionado(location.state.servicioSeleccionado)
+      setValue("idServicio", location.state.servicioSeleccionado.id)
+    }
+  }, [location.state, setValue])
+
   const cargarDatos = async (usuarioId) => {
     try {
       setLoadingData(true)
@@ -70,8 +80,12 @@ function FormularioCita() {
       const serviciosData = await serviciosRes.json()
       setServicios(serviciosData)
 
-      // Pre-seleccionar el primer servicio automáticamente
-      if (serviciosData.length > 0) {
+      // Si viene un servicio seleccionado desde la navegación, seleccionarlo
+      if (location.state && location.state.servicioSeleccionado) {
+        setServicioSeleccionado(location.state.servicioSeleccionado)
+        setValue("idServicio", location.state.servicioSeleccionado.id)
+      } else if (serviciosData.length > 0) {
+        // Pre-seleccionar el primer servicio automáticamente solo si no viene uno desde navegación
         const primerServicio = serviciosData[0]
         setServicioSeleccionado(primerServicio)
         setValue("idServicio", primerServicio.id)
@@ -125,14 +139,36 @@ function FormularioCita() {
     try {
       setLoading(true)
 
+      // Convert string IDs to numbers (if not empty)
+      const idMascota = data.idMascota ? Number(data.idMascota) : null
+      const idVeterinario = data.idVeterinario ? Number(data.idVeterinario) : null
+      const idServicio = servicioSeleccionado?.id ? Number(servicioSeleccionado.id) : null
+      const idPropietario = usuarioActual.id_usuario ? Number(usuarioActual.id_usuario) : null
+
       const citaData = {
         fecha: data.fecha,
         hora: data.hora,
-        idServicio: servicioSeleccionado.id,
-        idVeterinario: data.idVeterinario,
-        idMascota: data.idMascota,
-        idPropietario: usuarioActual.id_usuario,
+        idServicio,
+        idVeterinario,
+        idMascota,
+        idPropietario,
         notas: data.notas,
+      }
+      // Debug log: show payload and types
+      console.log("Cita a enviar:", citaData, {
+        fecha: typeof citaData.fecha,
+        hora: typeof citaData.hora,
+        idServicio: typeof citaData.idServicio,
+        idVeterinario: typeof citaData.idVeterinario,
+        idMascota: typeof citaData.idMascota,
+        idPropietario: typeof citaData.idPropietario,
+      })
+
+      // Check for missing required fields before sending
+      if (!citaData.fecha || !citaData.hora || !citaData.idServicio || !citaData.idVeterinario || !citaData.idMascota || !citaData.idPropietario) {
+        setError("Todos los campos son requeridos")
+        setLoading(false)
+        return
       }
 
       const response = await fetch(`${API_BASE_URL}/citas`, {
@@ -363,17 +399,17 @@ function FormularioCita() {
                             className="input-full"
                           >
                             <option value="">Seleccionar mascota</option>
-                            {mascotas.length === 0 ? (
+                            {mascotas.length === 0 && (
                               <option disabled value="">
                                 No tienes mascotas registradas
                               </option>
-                            ) : (
+                            )}
+                            {mascotas.length > 0 &&
                               mascotas.map((mascota) => (
                                 <option key={mascota.id} value={mascota.id}>
                                   {mascota.nombre} ({mascota.tipo} - {mascota.raza})
                                 </option>
-                              ))
-                            )}
+                              ))}
                           </select>
                           {errors.idMascota && <p className="error-mensaje-full">{errors.idMascota.message}</p>}
                         </label>
