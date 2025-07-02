@@ -9,6 +9,8 @@ const serviciosRoutes = require("./routes/servicios")
 const mascotaRoutes = require("./routes/mascota")
 const citasRoutes = require("./routes/citas")
 const VeterinarioRoutes = require("./routes/veterinarios")
+const historialRoutes = require('./routes/historiales');
+
 const propietarioRoutes = require("./routes/propietario");
 
 const app = express()
@@ -18,6 +20,7 @@ app.use("/api/servicios", serviciosRoutes)
 app.use("/api/mascotas", mascotaRoutes)
 app.use("/api/citas", citasRoutes)
 app.use("/api/veterinarios", VeterinarioRoutes)
+app.use('/api', historialRoutes)
 app.use("/api/propietario", propietarioRoutes);
 
 // Configuración de la conexión a MySQL
@@ -1379,6 +1382,15 @@ app.use((error, req, res, next) => {
     success: false,
     message: "Error interno del servidor",
   });
+});
+app.get('/api/historiales', async (req, res) => {
+  try {
+    const [rows] = await pool.query('SELECT * FROM historiales_medicos');
+    res.json(rows);
+  } catch (error) {
+    console.error("Error al obtener historiales:", error);
+    res.status(500).json({ error: "Error al obtener historiales" });
+  }
 });
 
 
