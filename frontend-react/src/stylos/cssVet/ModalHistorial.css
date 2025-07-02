@@ -1,0 +1,130 @@
+:root {
+    --color1: #000000;
+    --color2: #1a2540;
+    --color3: #495a90;
+    --color4: #8196eb;
+    --color5: #c2d8ff;
+    --white: #ffffff;
+    --gray-light: #f8f9fa;
+    --gray-medium: #6c757d;
+    --success: #28a745;
+    --warning: #ffc107;
+    --danger: #dc3545;
+    --info: #17a2b8;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+    --border-radius: 12px;
+    --transition: all 0.3s ease;
+  }
+  
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .modal-content {
+    background: var(--white);
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    width: 100%;
+    max-width: 600px;
+    box-shadow: var(--shadow-lg);
+    position: relative;
+    animation: fadeIn 0.3s ease;
+  }
+  
+  .modal-content h2 {
+    margin-bottom: 1.5rem;
+    font-size: 24px;
+    color: var(--color2);
+    text-align: center;
+  }
+  
+  .modal-content form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .modal-content label {
+    font-weight: 600;
+    color: var(--color3);
+  }
+  
+  .modal-content input,
+  .modal-content textarea,
+  .modal-content select {
+    padding: 10px;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--color4);
+    font-size: 16px;
+    background-color: var(--gray-light);
+    transition: var(--transition);
+  }
+  
+  .modal-content input:focus,
+  .modal-content textarea:focus,
+  .modal-content select:focus {
+    outline: none;
+    border-color: var(--color3);
+    box-shadow: 0 0 0 2px var(--color5);
+  }
+  
+  .modal-content .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .modal-content .btn-cancel {
+    background: var(--gray-medium);
+    color: var(--white);
+    border: none;
+    padding: 10px 16px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: var(--transition);
+  }
+  
+  .modal-content .btn-cancel:hover {
+    background: var(--danger);
+  }
+  
+  .modal-content .btn-create {
+    background: var(--color2); /* Morado oscuro */
+    color: var(--white);
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: var(--transition);
+  }
+  
+  .modal-content .btn-create:hover {
+    background: var(--color3); /* Morado medio */
+  }
+.btn-save {
+  background-color: var(--color4); /* Azul claro / morado claro */
+  color: var(--white);
+  border: none;
+  padding: 10px 20px;
+  border-radius: var(--border-radius);
+  font-weight: 600;
+  font-size: 14px;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-save:hover {
+  background-color: var(--color3); /* Morado medio al hacer hover */
+}

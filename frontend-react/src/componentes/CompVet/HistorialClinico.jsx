@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react';
 import ViewHistorialModal from '../CompVet/ViewHistorialModal';
+import CreateHistorialModal from '../CompVet/CreateHistorialModal';
 import { PlusCircle, Search, Eye } from 'react-bootstrap-icons';
 import Ban from 'react-bootstrap-icons/dist/icons/ban';
 import CheckCircle from 'react-bootstrap-icons/dist/icons/check-circle';
+import '../../stylos/cssVet/ModalHistorial.css';
 import '../../stylos/cssVet/HistorialClinico.css';
+
 
 const HistorialClinico = () => {
   const [historiales, setHistoriales] = useState([]);
@@ -124,6 +127,9 @@ const HistorialClinico = () => {
               })}
             </p>
           </div>
+          <button className="btn-new-appointment" onClick={() => setShowCreateForm(true)}>
+            <PlusCircle /> Nuevo Historial
+          </button>
         </div>
       </header>
 
@@ -204,6 +210,13 @@ const HistorialClinico = () => {
             setShowViewModal(false);
             setSelectedHistorial(null);
           }}
+        />
+      )}
+
+      {showCreateForm && (
+        <CreateHistorialModal
+          onClose={() => setShowCreateForm(false)}
+          onCreate={handleCreateHistorial}
         />
       )}
     </div>
