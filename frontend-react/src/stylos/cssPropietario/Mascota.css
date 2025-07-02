@@ -900,3 +900,93 @@
     flex-direction: column;
   }
 }
+
+.pet-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  padding: 0.4em 1em;
+  border-radius: 16px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-left: 0.3em;
+  color: white;
+  box-shadow: 0 2px 8px rgba(129, 150, 235, 0.10);
+}
+
+.vaccinated-badge {
+  background: linear-gradient(135deg, #10b981, #34d399);
+}
+
+.neutered-badge {
+  background: linear-gradient(135deg, #6366f1, #818cf8);
+}
+
+.badge-icon {
+  color: white;
+  margin-right: 0.2em;
+}
+
+.pet-badges-container-mascota {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.badge-main-mascota {
+  padding: 0.6rem 1.2rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.badge-main-mascota.perro {
+  background: linear-gradient(135deg, var(--color4), var(--color3));
+  color: white;
+  box-shadow: 0 4px 12px rgba(129, 150, 235, 0.3);
+}
+
+.badge-main-mascota.gato {
+  background: linear-gradient(135deg, #8b5cf6, #a78bfa);
+  color: white;
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+}
+
+.badge-secondary-mascota {
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--color2);
+  padding: 0.6rem 1.2rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: 2px solid var(--color4);
+}
+
+.pet-badge-mascota {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  padding: 0.4em 1em;
+  border-radius: 16px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-left: 0.3em;
+  color: white;
+  box-shadow: 0 2px 8px rgba(129, 150, 235, 0.10);
+}
+
+.vaccinated-badge-mascota {
+  background: linear-gradient(135deg, #10b981, #34d399);
+}
+
+.neutered-badge-mascota {
+  background: linear-gradient(135deg, #6366f1, #818cf8);
+}
+
+.badge-icon-mascota {
+  color: white;
+  margin-right: 0.2em;
+}

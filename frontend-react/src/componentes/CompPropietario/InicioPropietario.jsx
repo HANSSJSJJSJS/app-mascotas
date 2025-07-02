@@ -1,3 +1,5 @@
+"use client"
+
 import { useEffect, useState } from "react"
 import {
   Calendar,
@@ -8,16 +10,21 @@ import {
   ClockIcon,
   Activity,
   Shield,
-  Clipboard,
   User,
   Heart,
   AlertCircle,
   Search,
   Filter,
   Plus,
+  CheckCircle,
+  XCircle,
+  MoreHorizontal,
+  Eye,
+  Edit,
+  Trash2,
 } from "lucide-react"
 import axios from "axios"
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom"
 import "../../stylos/cssPropietario/InicioPropietario.css"
 
 export default function InicioPropietario() {
@@ -38,8 +45,8 @@ export default function InicioPropietario() {
   })
   const [filtroMascotas, setFiltroMascotas] = useState("")
   const [filtroCitas, setFiltroCitas] = useState("todas")
-
-  const navigate = useNavigate() // Inicializar navigate
+  const [mostrarMenuCita, setMostrarMenuCita] = useState(null)
+  const navigate = useNavigate()
 
   useEffect(() => {
     // Formatear fecha y hora
@@ -70,17 +77,17 @@ export default function InicioPropietario() {
         setUsuario(usuarioActual)
 
         // Obtener mascotas del usuario
-        const mascotasResponse = await axios.get(
-          `http://localhost:3001/api/mascotas/${usuarioActual.id_usuario}`,
-        )
+        const mascotasResponse = await axios.get(`http://localhost:3001/api/mascotas/${usuarioActual.id_usuario}`)
         setMascotas(mascotasResponse.data)
 
         // Calcular estadísticas de mascotas
         const vacunadas = mascotasResponse.data.filter((mascota) => mascota.vacunado).length
         const esterilizadas = mascotasResponse.data.filter((mascota) => mascota.esterilizado).length
 
-        // Obtener citas
-        const citasResponse = await axios.get(`http://localhost:3001/api/propietario/${usuarioActual.id_usuario}/citas`)
+        // Obtener citas usando la nueva API
+        const citasResponse = await axios.get(
+          `http://localhost:3001/api/citas?propietarioId=${usuarioActual.id_usuario}`,
+        )
         const citasObtenidas = citasResponse.data
         setCitas(citasObtenidas)
 
@@ -99,11 +106,11 @@ export default function InicioPropietario() {
 
         // Obtener servicios disponibles
         try {
-          const serviciosResponse = await axios.get(`http://localhost:3001/api/admin/servicios`);
-          setServicios(serviciosResponse.data);
+          const serviciosResponse = await axios.get(`http://localhost:3001/api/admin/servicios`)
+          setServicios(serviciosResponse.data)
         } catch (error) {
-          console.error("Error al obtener servicios:", error);
-          setServicios([]); // Fallback a un array vacío
+          console.error("Error al obtener servicios:", error)
+          setServicios([])
         }
 
         // Obtener historiales médicos
@@ -121,7 +128,6 @@ export default function InicioPropietario() {
     }
 
     fetchUserData()
-
     return () => clearInterval(timeInterval)
   }, [])
 
@@ -141,32 +147,104 @@ export default function InicioPropietario() {
 
   // Ordenar citas por fecha (las más próximas primero)
   const citasOrdenadas = [...citasFiltradas].sort((a, b) => {
-    return new Date(a.fech_cit) - new Date(b.fech_cit)
+    return new Date(a.fecha) - new Date(b.fecha)
   })
 
-  // Obtener citas próximas (en los próximos 4 días)
+  // Obtener citas próximas (en los próximos 7 días)
   const citasProximas = citasOrdenadas.filter((cita) => {
-    if (cita.estado !== "PENDIENTE") return false
+    if (filtroCitas !== "todas" && filtroCitas !== "pendiente") return true
 
     const hoy = new Date()
-    const fechaCita = new Date(cita.fech_cit)
+    const fechaCita = new Date(cita.fecha)
     const diffTime = fechaCita - hoy
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
 
-    return diffDays >= 0 && diffDays <= 4
+    return diffDays >= 0 && diffDays <= 7
   })
-
-  // Obtener últimos historiales médicos
-  const ultimosHistoriales = [...historiales]
-    .sort((a, b) => {
-      return new Date(b.fech_his) - new Date(a.fech_his)
-    })
-    .slice(0, 3)
 
   // Utilidad para obtener la URL de la imagen de la mascota
   function getImageUrl(foto) {
-    if (!foto || foto === "default.jpg") return "/placeholder.svg";
-    return `http://localhost:3001/uploads/mascotas/${foto}`;
+    if (!foto || foto === "default.jpg") return "/placeholder.svg"
+    return `http://localhost:3001/uploads/mascotas/${foto}`
+  }
+
+  // Funciones para manejar las citas
+  const handleConfirmarCita = async (cita) => {
+    try {
+      await axios.put(`http://localhost:3001/api/citas/${cita.id}`, {
+        estado: "CONFIRMADA",
+      })
+      // Actualizar el estado local
+      setCitas(citas.map((c) => (c.id === cita.id ? { ...c, estado: "CONFIRMADA" } : c)))
+      alert("Cita confirmada exitosamente")
+    } catch (error) {
+      console.error("Error al confirmar cita:", error)
+      alert("Error al confirmar la cita")
+    }
+  }
+
+  const handleCancelarCita = async (cita) => {
+    if (window.confirm("¿Estás seguro de que deseas cancelar esta cita?")) {
+      try {
+        await axios.put(`http://localhost:3001/api/citas/${cita.id}`, {
+          estado: "CANCELADA",
+        })
+        // Actualizar el estado local
+        setCitas(citas.map((c) => (c.id === cita.id ? { ...c, estado: "CANCELADA" } : c)))
+        alert("Cita cancelada exitosamente")
+      } catch (error) {
+        console.error("Error al cancelar cita:", error)
+        alert("Error al cancelar la cita")
+      }
+    }
+  }
+
+  const handleReprogramarCita = (cita) => {
+    navigate("/PanelPropietario/agendar-cita", { state: { citaEditar: cita } })
+  }
+
+  const getDaysUntilAppointment = (dateString) => {
+    const today = new Date()
+    const appointmentDate = new Date(dateString)
+    const diffTime = appointmentDate.getTime() - today.getTime()
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+
+    if (diffDays === 0) return "Hoy"
+    if (diffDays === 1) return "Mañana"
+    if (diffDays > 1) return `En ${diffDays} días`
+    return "Pasada"
+  }
+
+  const getStatusBadge = (estado) => {
+    const statusConfig = {
+      PENDIENTE: { class: "status-badge-pending", label: "Pendiente", icon: Clock },
+      CONFIRMADA: { class: "status-badge-confirmed", label: "Confirmada", icon: CheckCircle },
+      REALIZADA: { class: "status-badge-completed", label: "Realizada", icon: CheckCircle },
+      CANCELADA: { class: "status-badge-cancelled", label: "Cancelada", icon: XCircle },
+    }
+
+    const config = statusConfig[estado] || statusConfig.PENDIENTE
+    const IconComponent = config.icon
+
+    return (
+      <span className={`appointment-status-new ${config.class}`}>
+        <IconComponent size={12} />
+        {config.label}
+      </span>
+    )
+  }
+
+  // Devuelve true si la cita está confirmada
+  const isConfirmedAppointment = (cita) => cita.estado === "CONFIRMADA"
+
+  // Devuelve true si faltan más de 24 horas para la cita
+  const canCancelConfirmedAppointment = (cita) => {
+    if (cita.estado !== "CONFIRMADA") return false
+    const citaDateTime = new Date(`${cita.fecha}T${cita.hora}`)
+    const now = new Date()
+    const diffMs = citaDateTime - now
+    const diffHours = diffMs / (1000 * 60 * 60)
+    return diffHours > 24
   }
 
   return (
@@ -235,15 +313,18 @@ export default function InicioPropietario() {
           <div className="dashboard-section">
             <h3 className="section-title">Acciones rápidas</h3>
             <div className="quick-actions">
-              <button className="quick-action-button" onClick={() => navigate('/PanelPropietario/agendar-cita')}>
+              <button className="quick-action-button" onClick={() => navigate("/PanelPropietario/agendar-cita")}>
                 <Calendar size={18} />
                 <span>Agendar cita</span>
               </button>
-              <button className="quick-action-button" onClick={() => navigate('/PanelPropietario/mascota-form')}>
+              <button className="quick-action-button" onClick={() => navigate("/PanelPropietario/mascota-form")}>
                 <Plus size={18} />
                 <span>Nueva mascota</span>
               </button>
-              <button className="quick-action-button" onClick={() => navigate('/PanelPropietario/ActualizarPropietario')}>
+              <button
+                className="quick-action-button"
+                onClick={() => navigate("/PanelPropietario/ActualizarPropietario")}
+              >
                 <User size={18} />
                 <span>Mi perfil</span>
               </button>
@@ -265,11 +346,12 @@ export default function InicioPropietario() {
                     onChange={(e) => setFiltroMascotas(e.target.value)}
                   />
                 </div>
-                <button className="view-all-button">
+                <button className="view-all-button" onClick={() => navigate("/PanelPropietario/mascota")}>
                   Ver todas <ChevronRight size={16} />
                 </button>
               </div>
             </div>
+
             <div className="pets-grid">
               {mascotasFiltradas.length > 0 ? (
                 mascotasFiltradas.map((mascota, index) => (
@@ -277,11 +359,11 @@ export default function InicioPropietario() {
                     <div className="pet-header">
                       <div className="pet-image-container">
                         <img
-                          src={getImageUrl(mascota.foto)}
+                          src={getImageUrl(mascota.foto) || "/placeholder.svg"}
                           alt={mascota.nom_mas}
                           className="pet-image"
                           onError={(e) => {
-                            e.target.src = "/placeholder.svg?height=200&width=200";
+                            e.target.src = "/placeholder.svg?height=200&width=200"
                           }}
                         />
                       </div>
@@ -298,6 +380,7 @@ export default function InicioPropietario() {
                         )}
                       </div>
                     </div>
+
                     <div className="pet-details">
                       <h4 className="pet-name">{mascota.nombre}</h4>
                       <p className="pet-breed">
@@ -313,8 +396,12 @@ export default function InicioPropietario() {
                         </p>
                       )}
                     </div>
+
                     <div className="pet-actions">
-                      <button className="pet-action-button secondary" onClick={() => navigate('/PanelPropietario/agendar-cita')}>
+                      <button
+                        className="pet-action-button secondary"
+                        onClick={() => navigate("/PanelPropietario/agendar-cita")}
+                      >
                         Agendar cita
                       </button>
                     </div>
@@ -323,16 +410,15 @@ export default function InicioPropietario() {
               ) : (
                 <p className="no-results">No se encontraron mascotas con ese criterio.</p>
               )}
-
               {/* Card para agregar mascota */}
-              <div className="add-pet-card" onClick={() => navigate('/PanelPropietario/mascota-form')}>
+              <div className="add-pet-card" onClick={() => navigate("/PanelPropietario/mascota-form")}>
                 <span className="add-icon">+</span>
                 <span>Agregar mascota</span>
               </div>
             </div>
           </div>
 
-          {/* Próximas citas con filtros */}
+          {/* Sección de citas mejorada */}
           <div className="dashboard-section">
             <div className="section-header">
               <h3 className="section-title">Próximas citas</h3>
@@ -344,66 +430,154 @@ export default function InicioPropietario() {
                     value={filtroCitas}
                     onChange={(e) => setFiltroCitas(e.target.value)}
                   >
-                    <option value="todas">Todas</option>
+                    <option value="todas">Todas las citas</option>
                     <option value="pendiente">Pendientes</option>
                     <option value="confirmada">Confirmadas</option>
                     <option value="realizada">Realizadas</option>
                     <option value="cancelada">Canceladas</option>
                   </select>
                 </div>
-                <button className="view-all-button">
+                <button className="view-all-button" onClick={() => navigate("/PanelPropietario/citas")}>
                   Ver todas <ChevronRight size={16} />
                 </button>
               </div>
             </div>
-            <div className="appointments-container">
-              {citasProximas.length > 0 ? (
-                citasProximas.map((cita, index) => (
-                  <div className={`appointment-card ${cita.estado.toLowerCase()}`} key={index}>
-                    <div className="appointment-icon">
-                      <Calendar size={18} />
-                    </div>
-                    <div className="appointment-details">
-                      <div className="appointment-header">
-                        <h3>
-                          {cita.tipo || "Consulta general"} - {cita.nombre_mascota}
-                        </h3>
-                        <span className={`appointment-status ${cita.estado.toLowerCase()}`}>{cita.estado}</span>
-                      </div>
-                      <div className="appointment-date">
-                        <CalendarIcon size={14} className="mini-icon" />
-                        <span>
-                          {new Date(cita.fech_cit).toLocaleDateString("es-ES", {
-                            weekday: "long",
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                          })}
-                        </span>
-                      </div>
-                      <div className="appointment-time">
-                        <ClockIcon size={14} className="mini-icon" />
-                        <span>
-                          {cita.hora} - {cita.veterinario}
-                        </span>
-                      </div>
-                      {cita.notas && (
-                        <div className="appointment-notes">
-                          <AlertCircle size={14} className="mini-icon" />
-                          <span>{cita.notas}</span>
+
+            {citasProximas.length > 0 ? (
+              <>
+                <div className="citas-counter">
+                  <span className="counter-text">
+                    Mostrando {citasProximas.length} cita{citasProximas.length !== 1 ? "s" : ""}
+                    {filtroCitas !== "todas" && ` (${filtroCitas})`}
+                  </span>
+                </div>
+
+                <div className="appointments-container-improved">
+                  {citasProximas.map((cita, index) => (
+                    <div key={index} className={`appointment-card-improved ${cita.estado.toLowerCase()}`}>
+                      <div className="appointment-main-content">
+                        <div className="appointment-icon-improved">
+                          <Calendar size={18} />
                         </div>
-                      )}
+
+                        <div className="appointment-details-improved">
+                          <div className="appointment-header-improved">
+                            <h3 className="appointment-title">
+                              {cita.servicio || "Consulta general"} - {cita.mascota}
+                            </h3>
+                            {getStatusBadge(cita.estado)}
+                          </div>
+
+                          <div className="appointment-info-grid">
+                            <div className="appointment-info-item">
+                              <CalendarIcon size={14} className="info-icon" />
+                              <span>
+                                {new Date(cita.fecha).toLocaleDateString("es-ES", {
+                                  weekday: "long",
+                                  year: "numeric",
+                                  month: "long",
+                                  day: "numeric",
+                                })}
+                              </span>
+                              <span className="days-badge">{getDaysUntilAppointment(cita.fecha)}</span>
+                            </div>
+
+                            <div className="appointment-info-item">
+                              <ClockIcon size={14} className="info-icon" />
+                              <span>
+                                {cita.hora} - Dr. {cita.veterinario}
+                              </span>
+                            </div>
+
+                            {cita.precio && (
+                              <div className="appointment-info-item">
+                                <span className="price-label">Precio:</span>
+                                <span className="price-value">
+                                  ${new Intl.NumberFormat("es-CO").format(cita.precio)}
+                                </span>
+                              </div>
+                            )}
+
+                            {cita.notas && (
+                              <div className="appointment-info-item notes">
+                                <AlertCircle size={14} className="info-icon warning" />
+                                <span>{cita.notas}</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="appointment-actions-improved">
+                        {cita.estado === "PENDIENTE" && (
+                          <div className="primary-actions">
+                            <button
+                              className="action-button-improved primary"
+                              onClick={() => handleConfirmarCita(cita)}
+                            >
+                              <CheckCircle size={14} />
+                              Confirmar
+                            </button>
+                            <button
+                              className="action-button-improved secondary"
+                              onClick={() => handleReprogramarCita(cita)}
+                            >
+                              <Edit size={14} />
+                              Reprogramar
+                            </button>
+                          </div>
+                        )}
+                        {/* Mostrar botón cancelar para confirmadas siempre */}
+                        {isConfirmedAppointment(cita) && (
+                          <button
+                            className="action-button-improved danger"
+                            onClick={() => handleCancelarCita(cita)}
+                          >
+                            <Trash2 size={14} />
+                            Cancelar cita
+                          </button>
+                        )}
+                        {/* Mostrar botón reprogramar para canceladas */}
+                        {cita.estado === "CANCELADA" && (
+                          <button
+                            className="action-button-improved secondary"
+                            onClick={() => handleReprogramarCita(cita)}
+                          >
+                            <Edit size={14} />
+                            Reprogramar
+                          </button>
+                        )}
+                      </div>
                     </div>
-                    <div className="appointment-actions">
-                      <button className="action-button primary">Confirmar</button>
-                      <button className="action-button secondary">Reprogramar</button>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <p className="no-results">No hay citas próximas pendientes.</p>
-              )}
-            </div>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <div className="no-appointments-state">
+                <div className="no-appointments-icon">
+                  <Calendar size={48} />
+                </div>
+                <h3 className="no-appointments-title">
+                  No hay citas {filtroCitas !== "todas" ? filtroCitas.toLowerCase() + "s" : "próximas"}
+                </h3>
+                <p className="no-appointments-description">
+                  {filtroCitas === "todas"
+                    ? "No tienes citas programadas en los próximos días."
+                    : `No tienes citas con estado "${filtroCitas}".`}
+                </p>
+                <div className="no-appointments-actions">
+                  <button
+                    className="action-button-improved primary"
+                    onClick={() => navigate("/PanelPropietario/agendar-cita")}
+                  >
+                    Agendar nueva cita
+                  </button>
+                  <button className="action-button-improved secondary" onClick={() => setFiltroCitas("todas")}>
+                    Ver todas las citas
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Servicios disponibles */}
@@ -420,7 +594,23 @@ export default function InicioPropietario() {
                     <div className="service-price">
                       ${new Intl.NumberFormat("es-CO", { style: "decimal" }).format(servicio.precio)}
                     </div>
-                    <button className="service-button">Agendar</button>
+                    <button
+                      className="service-button"
+                      onClick={() => {
+                        // Transformar el objeto servicio para que tenga las propiedades esperadas por el formulario
+                        const servicioTransformado = {
+                          id: servicio.cod_ser || servicio.id || servicio._id || servicio.id_servicio || servicio.nom_ser, // fallback
+                          nombre: servicio.nom_ser || servicio.nombre,
+                          precio: servicio.precio,
+                          descripcion: servicio.descrip_ser || servicio.descripcion || '',
+                          detalles: servicio.detalles || [],
+                          icono: servicio.icono || 'consulta',
+                        };
+                        navigate("/PanelPropietario/agendar-cita", { state: { servicioSeleccionado: servicioTransformado } });
+                      }}
+                    >
+                      Agendar
+                    </button>
                   </div>
                 ))
               ) : (
@@ -448,7 +638,7 @@ export default function InicioPropietario() {
                       <p className="vet-specialty">{veterinario.especialidad}</p>
                       <p className="vet-schedule">{veterinario.horario}</p>
                     </div>
-                    <button className="vet-button">
+                    <button className="vet-button" onClick={() => navigate("/PanelPropietario/agendar-cita")}>
                       Agendar cita <ChevronRight size={16} />
                     </button>
                   </div>
