@@ -1,9 +1,8 @@
-import { Outlet } from "react-router-dom"
+import { Outlet, useNavigate } from "react-router-dom"
 import { useState, useEffect, useCallback } from "react"
 import "../../stylos/cssPropietario/PanelPropietario.css"
 import BarraPropietario from "./BarraPropietario"
 import EncabezadoPropietario from "./EncabezadoPropietario"
-import { useNavigate } from 'react-router-dom'
 
 const PanelPropietario = () => {
   const [estaMenuAbierto, setEstaMenuAbierto] = useState(true)
@@ -39,7 +38,6 @@ const PanelPropietario = () => {
     localStorage.removeItem("token")
     navigate("/login")
   }, [navigate])
-
   return (
     <div className="app-container">
       <BarraPropietario 
@@ -54,7 +52,32 @@ const PanelPropietario = () => {
         estaMenuAbierto={estaMenuAbierto}
         onCerrarSesion={onCerrarSesion}
       />
-      
+      {/* Botón flotante para ir al chat de IA */}
+      <button
+        style={{
+          position: "fixed",
+          bottom: 32,
+          right: 32,
+          zIndex: 2000,
+          background: "linear-gradient(135deg, #8196eb, #495a90)",
+          color: "#fff",
+          border: "none",
+          borderRadius: "50%",
+          width: 64,
+          height: 64,
+          boxShadow: "0 4px 16px rgba(129,150,235,0.25)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: 28,
+          cursor: "pointer",
+          transition: "background 0.2s, box-shadow 0.2s"
+        }}
+        title="Ir al chat IA"
+        onClick={() => navigate("/PanelPropietario/ia")}
+      >
+        🤖
+      </button>
       <div
         className="content-wrapper"
         style={{

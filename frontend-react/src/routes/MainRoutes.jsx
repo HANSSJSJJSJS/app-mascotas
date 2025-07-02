@@ -38,6 +38,7 @@ const FormularioCita = React.lazy(() => import("../componentes/CompFormularios/F
 const ActualizarPropietario = React.lazy(() => import("../componentes/CompPropietario/ActualizarPropietario"));
 const Mascota = React.lazy(() => import("../componentes/CompPropietario/Mascota"));
 const FormularioMascota =React.lazy(() => import("../componentes/CompFormularios/MascotaForm"))
+const Ia = React.lazy(() => import("../componentes/CompPropietario/ia_pro"));
 
 // Componentes veterinario
 const PanelVet = React.lazy(() => import("../componentes/CompVet/PanelVet"))
@@ -120,6 +121,7 @@ const MainRoutes = () => {
           <Route path="ActualizarPropietario" element={<ActualizarPropietario />} />
           <Route path="mascota" element={<Mascota />} />
           <Route path="mascota-form" element={<FormularioMascota />} />
+          <Route path="ia" element={<Ia />} />
         </Route>
       </Route>
 

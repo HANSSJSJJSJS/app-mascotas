@@ -17,6 +17,7 @@
     "bootstrap": "^5.3.5",
     "bootstrap-icons": "^1.13.1",
     "date-fns": "^4.1.0",
+    "deep-chat-react": "^2.2.1",
     "emailjs-com": "^3.2.0",
     "file-saver": "^2.0.5",
     "jquery": "^3.7.1",
