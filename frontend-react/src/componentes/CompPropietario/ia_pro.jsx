@@ -13,9 +13,6 @@ function Ia(){
     >
         <DeepChat
         directConnection={{
-            openAI:{
-                key:""  
-            }
         }}
         
         />
