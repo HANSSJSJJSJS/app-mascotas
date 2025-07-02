@@ -1,139 +1,553 @@
-:root {
-  --color1: #000000;
-  --color2: #1a2540;
-  --color3: #495a90;
-  --color4: #8196eb;
-  --color5: #c2d8ff;
-}
+/* ================================================= */
+/* ENCABEZADO PROPIETARIO - VERSIÓN MEJORADA CON ANIMACIONES */
+/* ================================================= */
 
-/* ENCABEZADO */
-.encabezado-container {
+/* Contenedor principal del encabezado - FONDO BLANCO */
+.encabezado {
+  height: 70px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
   position: fixed;
   top: 0;
-  left: 250px; /* Ancho del menú abierto */
-  width: calc(100% - 250px); /* Ancho restante de la ventana */
-  z-index: 90;
-  transition: all 0.3s ease;
-  background-color: white;
+  left: 280px;
+  right: 0;
+  z-index: 95;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
 }
 
-.encabezado-container.menu-cerrado {
-  left: 70px; /* Ancho del menú cerrado */
-  width: calc(100% - 70px); /* Ancho restante cuando menú está cerrado */
+.encabezado.menu-cerrado {
+  left: 100px;
 }
 
-/* ENCABEZADO PRINCIPAL */
-.encabezado {
+/* NUEVO: Efecto de pulso sutil en el encabezado */
+.encabezado::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #8196eb, transparent);
+  opacity: 0;
+  animation: encabezado-pulse 3s ease-in-out infinite;
+}
+
+@keyframes encabezado-pulse {
+  0%,
+  100% {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scaleX(1);
+  }
+}
+
+/* Sección izquierda */
+.encabezado-left {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 10px 30px;
-  background-color: white;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-  height: 70px;
-  width: 100%;
+  gap: 20px;
 }
 
-/* BOTÓN MENU */
-.boton-menu {
-  left: 90px; 
+/* Sección derecha */
+.encabezado-right {
+  display: flex;
+  align-items: center;
+}
+
+/* Botón del menú hamburguesa MEJORADO */
+.menu-toggle {
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: linear-gradient(135deg, #495a90, #8196eb);
+  color: #fff;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 10px rgba(73, 90, 144, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+/* NUEVO: Efecto de brillo en el botón */
+.menu-toggle::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transform: rotate(45deg);
+  transition: transform 0.6s;
+  opacity: 0;
+}
+
+.menu-toggle:hover::before {
+  opacity: 1;
+  transform: rotate(45deg) translate(50%, 50%);
+}
+
+.menu-toggle:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 8px 20px rgba(73, 90, 144, 0.4);
+}
+
+/* NUEVO: Animación de rotación del icono */
+.menu-toggle:hover svg {
+  transform: rotate(90deg);
+  transition: transform 0.3s ease;
+}
+
+/* ================================================= */
+/* MENÚ DE PERFIL DE USUARIO MEJORADO               */
+/* ================================================= */
+
+.user-profile-menu {
+  position: relative;
+}
+
+/* Botón trigger del menú de perfil MEJORADO */
+.user-profile-trigger {
   display: flex;
   align-items: center;
   gap: 10px;
-  background: none;
-  border: none;
+  background-color: #f8f9fa;
+  border: 1px solid transparent;
+  padding: 6px 10px 6px 6px;
+  border-radius: 12px;
   cursor: pointer;
-  color: var(--color3);
-  padding: 8px 12px;
-  border-radius: 4px;
-  transition: background-color 0.2s;
-  z-index: 95;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
 }
 
-.boton-menu:hover {
-  background-color: var(--color5);
+/* NUEVO: Efecto de onda al hacer hover */
+.user-profile-trigger::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: radial-gradient(circle, rgba(129, 150, 235, 0.1) 0%, transparent 70%);
+  transition: all 0.4s ease;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
 }
 
-.boton-menu svg {
-  width: 20px;
-  height: 20px;
+.user-profile-trigger:hover::before {
+  width: 200px;
+  height: 200px;
 }
 
-/* CONTROLES DE ENCABEZADO */
-.controles-encabezado {
+.user-profile-trigger:hover {
+  background-color: #f0f4ff;
+  border-color: rgba(129, 150, 235, 0.2);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(129, 150, 235, 0.15);
+}
+
+.user-profile-menu.open .user-profile-trigger {
+  background-color: #e8f2ff;
+  border-color: rgba(129, 150, 235, 0.3);
+  box-shadow: 0 4px 12px rgba(129, 150, 235, 0.2);
+}
+
+/* Avatar MEJORADO con animación */
+.user-profile-trigger .avatar {
+  width: 38px;
+  height: 38px;
+  background: linear-gradient(135deg, #495a90, #6a7fca);
+  border-radius: 50%;
   display: flex;
   align-items: center;
-  gap: 15px;
-}
-
-/* USUARIO */
-.info-usuario {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  background-color: var(--color5);
-  padding: 5px 20px;
-  border-radius: 10px;
-}
-
-.info-usuario span {
+  justify-content: center;
+  color: #fff;
   font-weight: 600;
-  color: var(--color3);
+  font-size: 16px;
+  box-shadow: 0 2px 4px rgba(73, 90, 144, 0.2);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* NUEVO: Efecto de rotación sutil en el avatar */
+.user-profile-trigger:hover .avatar {
+  transform: rotate(5deg) scale(1.05);
+  box-shadow: 0 4px 8px rgba(73, 90, 144, 0.3);
+}
+
+/* NUEVO: Brillo en el avatar */
+.user-profile-trigger .avatar::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  animation: avatar-shine 2s infinite;
+  opacity: 0.7;
+}
+
+@keyframes avatar-shine {
+  0% {
+    transform: rotate(0deg) translate(-50%, -50%);
+  }
+  100% {
+    transform: rotate(360deg) translate(-50%, -50%);
+  }
+}
+
+/* Información del usuario */
+.user-profile-trigger .user-info {
+  text-align: left;
+  display: none;
+  transition: all 0.3s ease;
+}
+
+@media (min-width: 768px) {
+  .user-profile-trigger .user-info {
+    display: block;
+  }
+}
+
+.user-profile-trigger .user-info h4 {
+  margin: 0;
   font-size: 14px;
+  font-weight: 600;
+  color: #1a2540;
+  transition: color 0.3s ease;
 }
 
-.info-usuario small {
+.user-profile-trigger .user-info p {
+  margin: 0;
   font-size: 12px;
-  color: var(--color3);
+  color: #495a90;
+  transition: color 0.3s ease;
 }
 
-.email-usuario {
-  font-size: 11px !important;
-  color: var(--color2) !important;
+/* NUEVO: Cambio de color en hover */
+.user-profile-trigger:hover .user-info h4 {
+  color: #495a90;
 }
 
-/* BOTÓN CERRAR SESIÓN */
-.boton-cerrar-sesion {
+.user-profile-trigger:hover .user-info p {
+  color: #8196eb;
+}
+
+/* Iconos con animación mejorada */
+.user-profile-trigger svg {
+  color: #6b7280;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.user-profile-trigger:hover svg {
+  color: #495a90;
+  transform: rotate(180deg);
+}
+
+.user-profile-menu.open svg {
+  transform: rotate(180deg);
+  color: #8196eb;
+}
+
+/* ================================================= */
+/* DROPDOWN MENU CON ANIMACIONES MEJORADAS         */
+/* ================================================= */
+
+.user-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  width: 260px;
+  background-color: #fff;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+  z-index: 100;
+  overflow: hidden;
+  animation: dropdown-slide-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform-origin: top right;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* NUEVA: Animación más suave del dropdown */
+@keyframes dropdown-slide-in {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px) rotateX(-10deg);
+    filter: blur(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0) rotateX(0deg);
+    filter: blur(0px);
+  }
+}
+
+/* Header del dropdown con efecto mejorado */
+.dropdown-header {
   display: flex;
   align-items: center;
-  gap: 8px;
-  background-color: var(--color4);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 8px 12px;
-  cursor: pointer;
-  transition: all 0.2s ease;
+  gap: 12px;
+  padding: 16px;
+  background: linear-gradient(135deg, #1a2540, #495a90);
+  position: relative;
+  overflow: hidden;
+}
+
+/* NUEVO: Efecto de partículas en el header */
+.dropdown-header::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 40% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+  animation: particles-float 4s ease-in-out infinite;
+}
+
+@keyframes particles-float {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: translateY(0px);
+  }
+  50% {
+    opacity: 0.6;
+    transform: translateY(-5px);
+  }
+}
+
+.dropdown-header .avatar.large {
+  width: 44px;
+  height: 44px;
+  font-size: 18px;
+  background: #fff;
+  color: #495a90;
+  font-weight: 700;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  animation: avatar-pulse 2s ease-in-out infinite;
+}
+
+/* NUEVA: Animación de pulso en el avatar grande */
+@keyframes avatar-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(255, 255, 255, 0);
+  }
+}
+
+.dropdown-header .user-info h4 {
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.dropdown-header .user-info p {
+  color: #c7d2fe;
   font-size: 13px;
+  opacity: 0.9;
+  margin: 2px 0 0 0;
+  line-height: 1.2;
 }
 
-.boton-cerrar-sesion:hover {
-  background-color: var(--color3);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+/* Divisor con efecto mejorado */
+.dropdown-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #e5e7eb 20%, #e5e7eb 80%, transparent);
+  margin: 8px 0;
+  position: relative;
 }
 
-/* RESPONSIVE */
-@media (max-width: 1024px) {
-  .encabezado-container {
-    left: 0;
-    width: 100%;
-  }
-
-  .boton-menu span {
-    display: none;
-  }
+/* NUEVO: Línea de acento en el divisor */
+.dropdown-divider::after {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30px;
+  height: 2px;
+  background: linear-gradient(90deg, #8196eb, #c2d8ff);
+  border-radius: 1px;
+  opacity: 0.5;
 }
+
+/* Items del dropdown con animaciones mejoradas */
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
+  background-color: transparent;
+  text-align: left;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+}
+
+/* NUEVO: Efecto de onda en los items */
+.dropdown-item::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 0;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(129, 150, 235, 0.1), rgba(194, 216, 255, 0.1));
+  transition: all 0.3s ease;
+  transform: translateY(-50%);
+}
+
+.dropdown-item:hover::before {
+  width: 100%;
+}
+
+.dropdown-item:hover {
+  background-color: rgba(129, 150, 235, 0.05);
+  color: #1a2540;
+  padding-left: 24px;
+  transform: translateX(4px);
+}
+
+/* Iconos con animación mejorada */
+.dropdown-item svg {
+  color: #495a90;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+}
+
+.dropdown-item:hover svg {
+  color: #1a2540;
+  transform: scale(1.1) rotate(5deg);
+}
+
+/* Botón de logout con efecto especial */
+.dropdown-item.logout:hover {
+  background-color: rgba(220, 38, 38, 0.05);
+  color: #dc2626;
+}
+
+.dropdown-item.logout:hover::before {
+  background: linear-gradient(90deg, rgba(220, 38, 38, 0.1), rgba(254, 226, 226, 0.1));
+}
+
+.dropdown-item.logout:hover svg {
+  color: #dc2626;
+  transform: scale(1.1) rotate(-5deg);
+}
+
+/* ================================================= */
+/* RESPONSIVE DESIGN                                 */
+/* ================================================= */
 
 @media (max-width: 768px) {
   .encabezado {
-    padding: 10px 15px;
+    left: 0;
+    padding: 0 16px;
   }
 
-  .info-usuario {
-    padding: 5px 10px;
+  .encabezado.menu-cerrado {
+    left: 0;
   }
-  
-  .boton-cerrar-sesion span {
-    display: none;
+
+  .user-dropdown-menu {
+    width: 240px;
   }
+
+  .dropdown-header {
+    padding: 14px;
+  }
+
+  .dropdown-header .avatar.large {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .user-dropdown-menu {
+    width: 220px;
+    right: -5px;
+  }
+
+  .dropdown-item {
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+}
+
+/* ================================================= */
+/* NUEVOS EFECTOS ADICIONALES                       */
+/* ================================================= */
+
+/* Efecto de focus para accesibilidad */
+.user-profile-trigger:focus,
+.menu-toggle:focus {
+  outline: 2px solid #8196eb;
+  outline-offset: 2px;
+}
+
+/* Animación de carga sutil */
+@keyframes subtle-loading {
+  0% {
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.8;
+  }
+}
+
+/* Efecto de micro-interacción en textos */
+.user-profile-trigger .user-info h4,
+.user-profile-trigger .user-info p {
+  transition: all 0.2s ease;
+}
+
+.user-profile-trigger:hover .user-info h4 {
+  transform: translateX(2px);
+}
+
+.user-profile-trigger:hover .user-info p {
+  transform: translateX(1px);
 }

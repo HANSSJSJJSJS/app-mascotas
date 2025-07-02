@@ -221,3 +221,4 @@ select * from citas_audit;
 select * from citas;
 
 select * from servicios_audit;
+SELECT cod_mas, nom_mas, foto FROM mascotas WHERE cod_mas = 1;

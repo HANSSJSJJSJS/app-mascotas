@@ -34,14 +34,10 @@ const PanelPropietario = () => {
   }, [estaMenuAbierto])
 
   const onCerrarSesion = useCallback(() => {
-    if (window.confirm("¿Estás seguro de que quieres cerrar sesión?")) {
-      // Limpiar datos del localStorage
-      localStorage.removeItem("userData")
-      localStorage.removeItem("token")
-      
-      // Redirigir al login
-      navigate("/login")
-    }
+    // Cerrar sesión directamente, sin confirmación
+    localStorage.removeItem("userData")
+    localStorage.removeItem("token")
+    navigate("/login")
   }, [navigate])
 
   return (
