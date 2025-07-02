@@ -19,6 +19,9 @@ app.use("/api/mascotas", mascotaRoutes)
 app.use("/api/citas", citasRoutes)
 app.use("/api/veterinarios", VeterinarioRoutes)
 app.use("/api/propietario", propietarioRoutes);
+const uploadsPath = path.resolve(__dirname, "../uploads");
+console.log("Sirviendo archivos estáticos desde:", uploadsPath);
+app.use("/uploads", express.static(uploadsPath));
 
 // Configuración de la conexión a MySQL
 const dbConfig = {
@@ -38,7 +41,7 @@ const pool = mysql.createPool(dbConfig)
 // Configuración de Multer para la carga de imágenes en carpeta /uploads/mascotas
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const uploadPath = path.join(__dirname, "../uploads/mascotas")
+    const uploadPath = path.join(__dirname, "../../uploads/mascotas")
     if (!fs.existsSync(uploadPath)) {
       fs.mkdirSync(uploadPath, { recursive: true })
     }
@@ -62,35 +65,6 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
 })
 
-// Middleware para servir imágenes
-app.use("/uploads", express.static(path.join(__dirname, "../uploads")))
-
-// Endpoint para subir imagen individual (opcional, útil para pruebas)
-app.post("/api/upload-imagen", upload.single("imagen"), async (req, res) => {
-  try {
-    if (!req.file) {
-      return res.status(400).json({ success: false, message: "No se recibió ningún archivo" })
-    }
-    res.json({
-      success: true,
-      message: "Imagen subida exitosamente",
-      filename: req.file.filename,
-      url: `/uploads/mascotas/${req.file.filename}`,
-    })
-  } catch (error) {
-    res.status(500).json({ success: false, message: "Error en el servidor al subir la imagen", error: error.message })
-  }
-})
-
-// Endpoint para servir imagen individual
-app.get("/api/imagen/:filename", (req, res) => {
-  const { filename } = req.params
-  const imagePath = path.join(__dirname, "../uploads/mascotas", filename)
-  if (!fs.existsSync(imagePath)) {
-    return res.status(404).json({ success: false, message: "Imagen no encontrada" })
-  }
-  res.sendFile(imagePath)
-})
 
 // Endpoint para obtener datos del usuario (agregar a tu servidor)
 app.get("/api/usuario/:id", async (req, res) => {
@@ -1379,6 +1353,29 @@ app.use((error, req, res, next) => {
     success: false,
     message: "Error interno del servidor",
   });
+});
+
+// Endpoint para obtener la foto de una mascota
+app.get("/api/mascotas/:id/foto", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Obtener la mascota por su ID
+    const [mascota] = await pool.query("SELECT * FROM mascotas WHERE cod_mas = ?", [id]);
+
+    if (mascota.length === 0) {
+      return res.status(404).json({ success: false, message: "Mascota no encontrada" });
+    }
+
+    // Obtener el path completo de la foto
+    const filePath = path.resolve(__dirname, "../../uploads/mascotas", req.file.filename);
+
+    // Devolver la foto como un archivo
+    res.sendFile(filePath);
+  } catch (error) {
+    console.error("Error al obtener la foto de la mascota:", error);
+    res.status(500).json({ success: false, message: "Error en el servidor" });
+  }
 });
 
 

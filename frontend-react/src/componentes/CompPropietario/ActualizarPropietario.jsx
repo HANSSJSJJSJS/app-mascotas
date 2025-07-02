@@ -4,9 +4,8 @@ import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { Save, Loader2, Upload, User, Phone, Mail, MapPin, FileText, AlertCircle } from "lucide-react"
 import "../../stylos/cssPropietario/ActualizarPropietario.css"
-import { apiService } from "../../services/apiService"
+import { Save, Loader2, Upload, User, Phone, Mail, MapPin, AlertCircle, Camera } from "lucide-react"
 
 const formSchema = z.object({
   telefono: z.string().min(8, { message: "El teléfono debe tener al menos 8 dígitos" }),
@@ -132,6 +131,7 @@ export default function ActualizarPropietario() {
         if (foto_perfil && foto_perfil.startsWith("/uploads/propietarios/")) {
           foto_perfil = foto_perfil.replace("/uploads/propietarios/", "")
         }
+
         const updatedUser = { ...propietario, ...data, foto_perfil }
         localStorage.setItem("pet-app-user", JSON.stringify(updatedUser))
         setPropietario(updatedUser)
@@ -150,9 +150,9 @@ export default function ActualizarPropietario() {
 
   if (loading) {
     return (
-      <div className="page-content">
-        <div className="loading-container">
-          <Loader2 className="icon-spin" size={32} />
+      <div className="update-container">
+        <div className="loading-state">
+          <Loader2 className="loading-spinner" size={32} />
           <p>Cargando datos del usuario...</p>
         </div>
       </div>
@@ -161,9 +161,9 @@ export default function ActualizarPropietario() {
 
   if (error) {
     return (
-      <div className="page-content">
-        <div className="error-container">
-          <AlertCircle size={32} />
+      <div className="update-container">
+        <div className="error-state">
+          <AlertCircle className="error-icon" size={32} />
           <p>{error}</p>
         </div>
       </div>
@@ -172,9 +172,9 @@ export default function ActualizarPropietario() {
 
   if (!propietario) {
     return (
-      <div className="page-content">
-        <div className="error-container">
-          <AlertCircle size={32} />
+      <div className="update-container">
+        <div className="error-state">
+          <AlertCircle className="error-icon" size={32} />
           <p>No se encontraron datos del usuario</p>
         </div>
       </div>
@@ -197,139 +197,174 @@ export default function ActualizarPropietario() {
         </div>
       </div>
 
-      {/* Contenido principal */}
-      <div className="main-content">
-        <div className="info-personal-content">
-          <form onSubmit={handleSubmit(onSubmit)} className="form-propietario">
-            <div className="form-propietario-compact">
-              <div className="profile-section-compact">
-                <div className="profile-image-wrapper-compact">
+      <div className="content-layout">
+        {/* Sección de perfil */}
+        <div className="profile-section">
+          <div className="profile-card">
+            <div className="profile-image-section">
+              <div className="image-container">
+                <div className="avatar-wrapper">
                   {imagenPreview ? (
                     <img
                       src={imagenPreview || "/placeholder.svg"}
                       alt="Foto del propietario"
-                      className="profile-image-small"
+                      className="profile-avatar"
                     />
                   ) : propietario.foto_perfil ? (
                     <img
                       src={`http://localhost:3001/uploads/propietarios/${propietario.foto_perfil}`}
                       alt="Foto del propietario"
-                      className="profile-image-small"
+                      className="profile-avatar"
                     />
                   ) : (
-                    <div className="profile-image-placeholder-small">
-                      <User size={24} />
+                    <div className="avatar-placeholder">
+                      <User className="avatar-icon" size={40} />
                     </div>
                   )}
-                  <label htmlFor="imagen-propietario" className="upload-button-small">
-                    <Upload className="icon" size={14} />
-                    {imagenFile ? "Cambiar" : "Subir"}
+                  <label htmlFor="imagen-propietario" className="camera-overlay">
+                    <Camera className="camera-icon" size={16} />
                   </label>
                   <input
                     type="file"
                     id="imagen-propietario"
                     accept="image/*"
                     onChange={handleImagenChange}
-                    className="input-file"
+                    className="file-input-hidden"
                   />
                 </div>
-                <div className="profile-info-compact">
-                  <h3 className="profile-name-compact">
-                    {propietario.nombre} {propietario.apellido}
-                  </h3>
-                </div>
+                <span className="image-label">Foto del propietario</span>
               </div>
+            </div>
 
-              <div className="data-section-compact">
-                {/* Campos de solo lectura para nombre y apellido */}
-                <div className="form-row">
-                  <div className="form-field">
-                    <label htmlFor="nombre">Nombre</label>
-                    <div className="input-with-icon">
-                      <User className="field-icon" size={16} />
-                      <input id="nombre" value={propietario.nombre || ""} readOnly className="readonly-input" />
-                    </div>
-                    <p className="field-hint">Este campo no se puede modificar</p>
-                  </div>
+            <div className="profile-info">
+              <h2 className="profile-name">
+                {propietario.nombre} {propietario.apellido}
+              </h2>
+              <div className="profile-id">{propietario.tipo_documento}: {propietario.numeroid}</div>
 
-                  <div className="form-field">
-                    <label htmlFor="apellido">Apellido</label>
-                    <div className="input-with-icon">
-                      <User className="field-icon" size={16} />
-                      <input id="apellido" value={propietario.apellido || ""} readOnly className="readonly-input" />
-                    </div>
-                    <p className="field-hint">Este campo no se puede modificar</p>
-                  </div>
-                </div>
-
-                {/* Campos editables */}
-                <div className="form-row">
-                  <div className="form-field">
-                    <label htmlFor="telefono">Teléfono</label>
-                    <div className="input-with-icon">
-                      <Phone className="field-icon" size={16} />
-                      <input id="telefono" {...register("telefono")} />
-                    </div>
-                    {errors.telefono && <span className="error-message">{errors.telefono.message}</span>}
-                  </div>
-
-                  <div className="form-field">
-                    <label htmlFor="email">Email</label>
-                    <div className="input-with-icon">
-                      <Mail className="field-icon" size={16} />
-                      <input id="email" type="email" {...register("email")} />
-                    </div>
-                    {errors.email && <span className="error-message">{errors.email.message}</span>}
-                  </div>
-                </div>
-
-                <div className="form-row">
-                  <div className="form-field">
-                    <label htmlFor="ciudad">Ciudad</label>
-                    <div className="input-with-icon">
-                      <MapPin className="field-icon" size={16} />
-                      <input id="ciudad" {...register("ciudad")} />
-                    </div>
-                  </div>
-
-                  <div className="form-field">
-                    <label htmlFor="barrio">Barrio</label>
-                    <div className="input-with-icon">
-                      <MapPin className="field-icon" size={16} />
-                      <input id="barrio" {...register("barrio")} />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="form-row">
-                  <div className="form-field full-width">
-                    <label htmlFor="direccion">Dirección</label>
-                    <div className="input-with-icon">
-                      <MapPin className="field-icon" size={16} />
-                      <input id="direccion" {...register("direccion")} />
-                    </div>
-                    {errors.direccion && <span className="error-message">{errors.direccion.message}</span>}
-                  </div>
-                </div>
-
-                <div className="form-actions">
-                  <button type="submit" className="save-button" disabled={isSubmitting}>
-                    {isSubmitting ? (
-                      <>
-                        <Loader2 className="icon-spin" size={16} />
-                        Guardando...
-                      </>
-                    ) : (
-                      <>
-                        <Save size={16} />
-                        Guardar Cambios
-                      </>
-                    )}
-                  </button>
+              <div className="profile-details">
+                <div className="detail-row">
+                  <User className="detail-icon" size={16} />
+                  <span>{propietario.genero}</span>
                 </div>
               </div>
             </div>
-          </form>
+          </div>
+        </div>
+
+        {/* Sección del formulario */}
+        <div className="form-section">
+          <div className="form-card">
+            <div className="form-header">
+              <User className="form-header-icon" size={20} />
+              <h3 className="form-title">Información de Contacto</h3>
+            </div>
+
+            <form onSubmit={handleSubmit(onSubmit)} className="contact-form">
+              <div className="form-grid">
+                {/* Campos de solo lectura */}
+                <div className="form-group">
+                  <label className="form-label">Nombre</label>
+                  <div className="input-container">
+                    <User className="input-icon" size={16} />
+                    <input
+                      type="text"
+                      value={propietario.nombre || ""}
+                      readOnly
+                      className="form-input readonly-input"
+                    />
+                  </div>
+                  <span className="field-note">Este campo no se puede modificar</span>
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">Apellido</label>
+                  <div className="input-container">
+                    <User className="input-icon" size={16} />
+                    <input
+                      type="text"
+                      value={propietario.apellido || ""}
+                      readOnly
+                      className="form-input readonly-input"
+                    />
+                  </div>
+                  <span className="field-note">Este campo no se puede modificar</span>
+                </div>
+
+                {/* Campos editables */}
+                <div className="form-group">
+                  <label className="form-label">Teléfono *</label>
+                  <div className="input-container">
+                    <Phone className="input-icon" size={16} />
+                    <input type="text" {...register("telefono")} className="form-input" placeholder="3101234567" />
+                  </div>
+                  {errors.telefono && <span className="error-text">{errors.telefono.message}</span>}
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">Email *</label>
+                  <div className="input-container">
+                    <Mail className="input-icon" size={16} />
+                    <input
+                      type="email"
+                      {...register("email")}
+                      className="form-input"
+                      placeholder="carlos@example.com"
+                    />
+                  </div>
+                  {errors.email && <span className="error-text">{errors.email.message}</span>}
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">Ciudad</label>
+                  <div className="input-container">
+                    <MapPin className="input-icon" size={16} />
+                    <input type="text" {...register("ciudad")} className="form-input" placeholder="soacha" />
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">Barrio</label>
+                  <div className="input-container">
+                    <MapPin className="input-icon" size={16} />
+                    <input type="text" {...register("barrio")} className="form-input" placeholder="Hogares Soacha" />
+                  </div>
+                </div>
+
+                <div className="form-group full-width">
+                  <label className="form-label">Dirección *</label>
+                  <div className="input-container">
+                    <MapPin className="input-icon" size={16} />
+                    <input type="text" {...register("direccion")} className="form-input" placeholder="Calle 1 #1-1" />
+                  </div>
+                  {errors.direccion && <span className="error-text">{errors.direccion.message}</span>}
+                </div>
+              </div>
+
+              {imagenFile && (
+                <div className="file-alert">
+                  <Upload className="alert-icon" size={16} />
+                  <span>Nueva imagen seleccionada: {imagenFile.name}</span>
+                </div>
+              )}
+
+              <div className="form-actions">
+                <button type="submit" disabled={isSubmitting} className="save-button">
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="button-icon spin" size={16} />
+                      Guardando...
+                    </>
+                  ) : (
+                    <>
+                      <Save className="button-icon" size={16} />
+                      Guardar Cambios
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </div>
