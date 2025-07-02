@@ -154,11 +154,11 @@
 
 
 .barra-navegacion-moderna.colapsada .indicador-online-grande {
-  width: 100px;
-  height: 14px;
+  width: -10px;
+  height: px;
   bottom: 2px;
-  right: 20px;
-  border-width: 20px;
+  right: -2px;
+  border-width: 2px;
 }
 
 @keyframes pulse {
