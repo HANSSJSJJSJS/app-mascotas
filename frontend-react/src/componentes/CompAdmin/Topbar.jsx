@@ -12,7 +12,6 @@ const Topbar = ({
   isMobile,
   mobileMenuOpen,
 }) => {
-  // --- INICIO DE LAS MODIFICACIONES DE FUNCIONALIDAD ---
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { usuario, logout } = useAuth(); // Obtenemos el usuario y la función logout del contexto
@@ -56,7 +55,6 @@ const Topbar = ({
     )
   }
   
-  // --- FIN DE LAS MODIFICACIONES DE FUNCIONALIDAD ---
 
   return (
     // El header aplica la clase 'collapsed' a sí mismo para moverse

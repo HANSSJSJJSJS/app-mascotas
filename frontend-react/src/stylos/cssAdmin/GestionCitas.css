@@ -8,7 +8,6 @@
   --color-medium-blue: #495a90;
   --color-light-blue: #8196eb;
   --color-very-light-blue: #c2d8ff;
-
   --bg-primary: #f8fafc;
   --bg-white: #ffffff;
   --text-primary: #1a2540;
@@ -18,14 +17,12 @@
   --border-light: #f1f5f9;
 }
 
-/* --- Reset --- */
-* {
-  margin: 0;
-  padding: 0;
+/* --- Reset SOLO para el contenedor de citas --- */
+.citas-admin-container * {
   box-sizing: border-box;
 }
 
-body {
+.citas-admin-container {
   font-family: "Inter", sans-serif;
   background-color: var(--bg-primary);
   color: var(--text-primary);
@@ -50,9 +47,9 @@ body {
   overflow: hidden;
   width: 100%;
   box-sizing: border-box;
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .citas-admin-header::before {
@@ -67,17 +64,17 @@ body {
 }
 
 .header-icon-container {
-  width: 72px !important;
-  height: 72px !important;
+  width: 72px;
+  height: 72px;
   background: rgba(255, 255, 255, 0.15);
   border-radius: 16px;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: white;
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  flex-shrink: 0 !important;
+  flex-shrink: 0;
 }
 
 .header-icon-container svg {
@@ -87,33 +84,33 @@ body {
 }
 
 .header-text-container {
-  text-align: left !important;
-  flex-shrink: 0 !important;
+  text-align: left;
+  flex-shrink: 0;
   margin-left: 20px;
 }
 
 .header-text-container h1 {
-  font-size: 38px !important;
-  font-weight: 700 !important;
-  margin: 0 0 8px 0 !important;
-  color: #ffffff !important;
-  letter-spacing: -0.5px !important;
-  white-space: nowrap !important;
-  line-height: 1.2 !important;
-  font-family: inherit !important;
-  text-transform: none !important;
-  font-style: normal !important;
+  font-size: 38px;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  color: #ffffff;
+  letter-spacing: -0.5px;
+  white-space: nowrap;
+  line-height: 1.2;
+  font-family: inherit;
+  text-transform: none;
+  font-style: normal;
 }
 
 .header-text-container p {
-  font-size: 18px !important;
-  margin: 0 !important;
-  color: rgba(255, 255, 255, 0.85) !important;
-  font-weight: 400 !important;
-  white-space: nowrap !important;
-  font-family: inherit !important;
-  text-transform: none !important;
-  font-style: normal !important;
+  font-size: 18px;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 400;
+  white-space: nowrap;
+  font-family: inherit;
+  text-transform: none;
+  font-style: normal;
 }
 
 /* --- NUEVO DISEÑO DE ESTADÍSTICAS --- */
@@ -171,12 +168,15 @@ body {
 .stat-today .stat-icon {
   color: var(--color-medium-blue);
 }
+
 .stat-pending .stat-icon {
   color: #f59e0b;
 }
+
 .stat-confirmed .stat-icon {
   color: var(--color-light-blue);
 }
+
 .stat-completed .stat-icon {
   color: #10b981;
 }
@@ -451,13 +451,13 @@ body {
 }
 
 .log-btn {
-  background: #e7e5e4 !important;
-  color: #78716c !important;
+  background: #e7e5e4;
+  color: #78716c;
 }
 
 .log-btn:hover {
-  background: #a8a29e !important;
-  color: white !important;
+  background: #a8a29e;
+  color: white;
 }
 
 .edit-btn {
@@ -668,83 +668,6 @@ body {
   color: white !important;
   border-radius: 8px !important;
   font-weight: 600 !important;
-}
-
-/* --- RESPONSIVE MEJORADO CON ESPECIFICIDAD - IGUAL QUE DASHBOARD --- */
-@media (max-width: 1024px) {
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 768px) {
-  .citas-admin-container {
-    padding: 0;
-  }
-
-  .citas-admin-header {
-    padding: 32px 20px;
-    flex-direction: column !important;
-    gap: 20px;
-    text-align: center;
-  }
-
-  .header-text-container {
-    text-align: center !important;
-    margin-left: 0;
-  }
-
-  .header-text-container h1 {
-    font-size: 32px !important;
-    white-space: normal !important;
-  }
-
-  .header-text-container p {
-    font-size: 16px !important;
-    white-space: normal !important;
-  }
-
-  .stats-section {
-    padding: 0 20px;
-  }
-
-  .table-section {
-    margin: 0 20px;
-  }
-
-  .stats-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .table-header {
-    flex-direction: column;
-    gap: 1rem;
-    align-items: stretch;
-  }
-
-  .filters-bar {
-    flex-direction: column;
-  }
-
-  .form-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .modal-container {
-    width: 95%;
-    margin: 1rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .header-icon-container {
-    width: 64px !important;
-    height: 64px !important;
-  }
-
-  .header-text-container h1 {
-    font-size: 28px !important;
-  }
 }
 
 /* --- MODAL MEJORADO --- */
@@ -979,241 +902,300 @@ body {
 
 /* Backdrop del modal de auditoría - Máxima especificidad */
 .citas-admin-container .modal-backdrop {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  width: 100vw !important;
-  height: 100vh !important;
-  background-color: rgba(26, 37, 64, 0.7) !important;
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
-  z-index: 999999 !important;
-  padding: 20px !important;
-  box-sizing: border-box !important;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(26, 37, 64, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999999;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 /* Container del modal de auditoría - Estabilidad total */
 .citas-admin-container .modal-container.audit-modal {
-  background: white !important;
-  border-radius: 12px !important;
-  width: 90% !important;
-  max-width: 800px !important;
-  max-height: 90vh !important;
-  overflow: hidden !important;
-  border: 2px solid var(--border-color) !important;
-  box-shadow: 0 25px 50px -12px rgba(26, 37, 64, 0.25) !important;
-  position: relative !important;
-  margin: auto !important;
+  background: white;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow: hidden;
+  border: 2px solid var(--border-color);
+  box-shadow: 0 25px 50px -12px rgba(26, 37, 64, 0.25);
+  position: relative;
+  margin: auto;
 }
 
 /* Header del modal de auditoría - Estilo específico */
 .citas-admin-container .audit-modal .modal-header.enhanced-header {
-  background: linear-gradient(135deg, var(--color-light-blue) 0%, var(--color-medium-blue) 100%) !important;
-  padding: 2rem 2.5rem !important;
-  position: relative !important;
-  overflow: hidden !important;
-  border-bottom: 2px solid var(--border-color) !important;
+  background: linear-gradient(135deg, var(--color-light-blue) 0%, var(--color-medium-blue) 100%);
+  padding: 2rem 2.5rem;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 2px solid var(--border-color);
 }
 
 .citas-admin-container .audit-modal .modal-header-content {
-  display: flex !important;
-  align-items: center !important;
-  gap: 1.5rem !important;
-  position: relative !important;
-  z-index: 2 !important;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  position: relative;
+  z-index: 2;
 }
 
 .citas-admin-container .audit-modal .modal-icon-wrapper {
-  width: 60px !important;
-  height: 60px !important;
-  background: var(--color-dark-blue) !important;
-  border-radius: 16px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  border: 2px solid var(--color-medium-blue) !important;
-  color: white !important;
+  width: 60px;
+  height: 60px;
+  background: var(--color-dark-blue);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--color-medium-blue);
+  color: white;
 }
 
 .citas-admin-container .audit-modal .modal-title-section {
-  flex: 1 !important;
+  flex: 1;
 }
 
 .citas-admin-container .audit-modal .modal-main-title {
-  font-size: 1.75rem !important;
-  font-weight: 800 !important;
-  color: var(--color-dark-blue) !important;
-  margin: 0 0 0.5rem 0 !important;
-  letter-spacing: -0.025em !important;
-  text-shadow: none !important;
-  opacity: 1 !important;
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--color-dark-blue);
+  margin: 0 0 0.5rem 0;
+  letter-spacing: -0.025em;
+  text-shadow: none;
+  opacity: 1;
 }
 
 .citas-admin-container .audit-modal .modal-subtitle {
-  font-size: 1rem !important;
-  color: var(--color-dark-blue) !important;
-  margin: 0 !important;
-  opacity: 0.8 !important;
-  font-weight: 600 !important;
-  text-shadow: none !important;
+  font-size: 1rem;
+  color: var(--color-dark-blue);
+  margin: 0;
+  opacity: 0.8;
+  font-weight: 600;
+  text-shadow: none;
 }
 
 .citas-admin-container .audit-modal .modal-close-btn.enhanced-close {
-  background: var(--color-dark-blue) !important;
-  border: 2px solid var(--color-medium-blue) !important;
-  color: white !important;
-  width: 48px !important;
-  height: 48px !important;
-  border-radius: 12px !important;
-  cursor: pointer !important;
-  transition: all 0.3s ease !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
+  background: var(--color-dark-blue);
+  border: 2px solid var(--color-medium-blue);
+  color: white;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .citas-admin-container .audit-modal .modal-close-btn.enhanced-close:hover {
-  background: var(--color-medium-blue) !important;
-  transform: scale(1.05) !important;
+  background: var(--color-medium-blue);
+  transform: scale(1.05);
 }
 
 /* Cuerpo del modal de auditoría - Estilo específico y estable */
 .citas-admin-container .audit-modal .modal-body {
-  padding: 1rem 0 1rem 2.5rem !important;
-  background-color: #f8fafc !important;
-  overflow-y: auto !important;
-  max-height: 60vh !important;
+  padding: 1rem 0 1rem 2.5rem;
+  background-color: #f8fafc;
+  overflow-y: auto;
+  max-height: 60vh;
 }
 
 /* Timeline de auditoría - Diseño específico */
 .citas-admin-container .audit-timeline {
-  position: relative !important;
+  position: relative;
 }
 
 .citas-admin-container .audit-timeline-item {
-  position: relative !important;
-  padding: 1rem 1rem 1.5rem 3rem !important;
-  border-left: 2px solid #e2e8f0 !important;
-  margin-left: 1rem !important;
+  position: relative;
+  padding: 1rem 1rem 1.5rem 3rem;
+  border-left: 2px solid #e2e8f0;
+  margin-left: 1rem;
 }
 
 .citas-admin-container .audit-timeline-item:last-child {
-  border-left: 2px solid transparent !important;
+  border-left: 2px solid transparent;
 }
 
 .citas-admin-container .audit-timeline-item::before {
-  content: "" !important;
-  position: absolute !important;
-  left: -9px !important;
-  top: 1.25rem !important;
-  width: 16px !important;
-  height: 16px !important;
-  border-radius: 50% !important;
-  background-color: var(--color-light-blue) !important;
-  border: 3px solid white !important;
-  box-shadow: 0 0 0 2px var(--color-light-blue) !important;
+  content: "";
+  position: absolute;
+  left: -9px;
+  top: 1.25rem;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: var(--color-light-blue);
+  border: 3px solid white;
+  box-shadow: 0 0 0 2px var(--color-light-blue);
 }
 
 /* Acción de auditoría - Estilo específico */
 .citas-admin-container .audit-action {
-  position: absolute !important;
-  left: 2.5rem !important;
-  top: 1rem !important;
-  padding: 0.25rem 0.75rem !important;
-  border-radius: 20px !important;
-  font-size: 0.8rem !important;
-  font-weight: 600 !important;
-  color: white !important;
-  text-transform: capitalize !important;
+  position: absolute;
+  left: 2.5rem;
+  top: 1rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: white;
+  text-transform: capitalize;
 }
 
 /* Detalles de auditoría - Estilo específico */
 .citas-admin-container .audit-details {
-  padding-top: 2.25rem !important;
-  font-size: 0.95rem !important;
+  padding-top: 2.25rem;
+  font-size: 0.95rem;
 }
 
 .citas-admin-container .audit-field {
-  font-weight: 600 !important;
-  color: var(--text-primary) !important;
-  margin-bottom: 0.5rem !important;
-  margin-top: 10px !important;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+  margin-top: 10px;
 }
 
 .citas-admin-container .audit-values {
-  background-color: #f1f5f9 !important;
-  border-radius: 6px !important;
-  padding: 0.5rem 0.75rem !important;
-  margin-bottom: 0.5rem !important;
-  font-family: "Courier New", Courier, monospace !important;
-  font-size: 0.9rem !important;
+  background-color: #f1f5f9;
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 0.5rem;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 0.9rem;
 }
 
 .citas-admin-container .audit-values strong {
-  font-weight: 600 !important;
-  color: var(--text-secondary) !important;
+  font-weight: 600;
+  color: var(--text-secondary);
 }
 
 .citas-admin-container .audit-meta {
-  font-size: 0.8rem !important;
-  color: var(--text-muted) !important;
-  display: flex !important;
-  justify-content: space-between !important;
-  padding-top: 0.5rem !important;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  display: flex;
+  justify-content: space-between;
+  padding-top: 0.5rem;
 }
 
 /* Estado sin datos de auditoría */
 .citas-admin-container .no-audit-data {
-  padding: 3rem !important;
-  text-align: center !important;
-  color: var(--text-secondary) !important;
-  font-size: 1.1rem !important;
-  background: #f8fafc !important;
+  padding: 3rem;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  background: #f8fafc;
 }
 
-/* Responsive para modal de auditoría */
+.error-message {
+  color: #ef4444;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Estilos para las validaciones */
+.input-error {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+}
+
+.error-message {
+  color: #ef4444;
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+  font-weight: 500;
+}
+
+.solapamiento-error {
+  background: #fef2f2;
+  padding: 0.75rem;
+  border-radius: 8px;
+  border-left: 4px solid #ef4444;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  grid-column: 1 / -1;
+}
+
+input[type="time"] {
+  padding: 0.75rem 1.25rem;
+}
+
+/* ===================================================================
+   RESPONSIVE DESIGN - SIN CONFLICTOS
+   ================================================================== */
+
+/* Tablets grandes y laptops pequeñas */
+@media (max-width: 1024px) {
+  .citas-admin-container .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Tablets */
 @media (max-width: 768px) {
-  .citas-admin-container .modal-container.audit-modal {
-    width: 95% !important;
-    max-width: none !important;
-    margin: 1rem !important;
+  .citas-admin-header {
+    padding: 32px 20px;
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
   }
 
-  .citas-admin-container .audit-modal .modal-header.enhanced-header {
-    padding: 1.5rem !important;
+  .header-text-container {
+    text-align: center;
+    margin-left: 0;
   }
 
-  .citas-admin-container .audit-modal .modal-main-title {
-    font-size: 1.5rem !important;
+  .header-text-container h1 {
+    font-size: 32px;
+    white-space: normal;
   }
 
-  .citas-admin-container .audit-modal .modal-body {
-    padding: 1.5rem !important;
+  .header-text-container p {
+    font-size: 16px;
+    white-space: normal;
   }
 
-  .citas-admin-container .audit-timeline-item {
-    padding-left: 2rem !important;
-    margin-left: 0.5rem !important;
+  .citas-admin-container .stats-section {
+    padding: 0 20px;
   }
 
-  .citas-admin-container .audit-action {
-    left: 1.5rem !important;
+  .table-section {
+    margin: 0 20px;
   }
-}
 
-/* Forzar estabilidad de estilos para auditoría */
-.citas-admin-container .modal-backdrop * {
-  box-sizing: border-box !important;
-}
+  .citas-admin-container .stats-grid {
+    grid-template-columns: 1fr;
+  }
 
-.citas-admin-container .modal-container.audit-modal * {
-  box-sizing: border-box !important;
-  font-family: inherit !important;
-}
+  .table-header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
 
-/* Responsive para el modal mejorado */
-@media (max-width: 768px) {
+  .filters-bar {
+    flex-direction: column;
+  }
+
+  .form-grid,
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-container {
+    width: 95%;
+    margin: 1rem;
+  }
+
   .enhanced-modal {
     width: 95%;
     max-width: none;
@@ -1232,11 +1214,6 @@ body {
     padding: 1.5rem;
   }
 
-  .form-row {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-
   .enhanced-footer {
     padding: 1.5rem;
     flex-direction: column;
@@ -1245,4 +1222,64 @@ body {
   .enhanced-btn {
     width: 100%;
   }
+
+  /* Modal de auditoría responsive */
+  .citas-admin-container .modal-container.audit-modal {
+    width: 95%;
+    max-width: none;
+    margin: 1rem;
+  }
+
+  .citas-admin-container .audit-modal .modal-header.enhanced-header {
+    padding: 1.5rem;
+  }
+
+  .citas-admin-container .audit-modal .modal-main-title {
+    font-size: 1.5rem;
+  }
+
+  .citas-admin-container .audit-modal .modal-body {
+    padding: 1.5rem;
+  }
+
+  .citas-admin-container .audit-timeline-item {
+    padding-left: 2rem;
+    margin-left: 0.5rem;
+  }
+
+  .citas-admin-container .audit-action {
+    left: 1.5rem;
+  }
+}
+
+/* Móviles */
+@media (max-width: 480px) {
+  .header-icon-container {
+    width: 64px;
+    height: 64px;
+  }
+
+  .header-text-container h1 {
+    font-size: 28px;
+  }
+
+  .modal-header-content {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+
+  .modal-title-section {
+    min-width: auto;
+  }
+}
+
+/* Forzar estabilidad de estilos para auditoría */
+.citas-admin-container .modal-backdrop * {
+  box-sizing: border-box;
+}
+
+.citas-admin-container .modal-container.audit-modal * {
+  box-sizing: border-box;
+  font-family: inherit;
 }

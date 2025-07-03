@@ -19,9 +19,14 @@ const PawPrintIcon = ({ size = 20, color = "currentColor" }) => (
 )
 
 // --- Componente Modal Mejorado ---
-const CitaModal = ({ isOpen, onClose, onSave, cita, listas }) => {
+const CitaModal = ({ isOpen, onClose, onSave, cita, listas, citas }) => {
   const [formData, setFormData] = useState({})
   const [mascotasDelPropietario, setMascotasDelPropietario] = useState([])
+  const [errors, setErrors] = useState({
+    fech_cit: '',
+    hora: '',
+    solapamiento: ''
+  })
 
   useEffect(() => {
     const initialState = cita
@@ -45,11 +50,49 @@ const CitaModal = ({ isOpen, onClose, onSave, cita, listas }) => {
     }
   }, [cita, isOpen, listas.mascotas])
 
+  const validateFecha = (fecha) => {
+    const hoy = new Date()
+    hoy.setHours(0, 0, 0, 0)
+    const fechaCita = new Date(fecha)
+    
+    if (fechaCita < hoy) {
+      return 'No se permiten fechas pasadas'
+    }
+    
+    const unMesDespues = new Date()
+    unMesDespues.setMonth(unMesDespues.getMonth() + 1)
+    
+    if (fechaCita > unMesDespues) {
+      return 'Solo se permiten citas hasta con 1 mes de anticipación'
+    }
+    
+    return ''
+  }
+
+  const validateHora = (hora) => {
+    const [horas, minutos] = hora.split(':').map(Number)
+    
+    if (horas < 8 || (horas === 18 && minutos > 0) || horas >= 19) {
+      return 'El horario de atención es de 8:00 am a 6:00 pm'
+    }
+    
+    return ''
+  }
+
   const handleChange = (e) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
-
-    if (name === "id_pro") {
+    
+    // Validaciones en tiempo real
+    if (name === 'fech_cit') {
+      setErrors(prev => ({...prev, fech_cit: validateFecha(value)}))
+    }
+    
+    if (name === 'hora') {
+      setErrors(prev => ({...prev, hora: validateHora(value)}))
+    }
+    
+    if (name === 'id_pro') {
       const propietarioId = Number.parseInt(value, 10)
       setMascotasDelPropietario(listas.mascotas.filter((m) => m.id_pro === propietarioId))
       setFormData((prev) => ({ ...prev, cod_mas: "" }))
@@ -58,6 +101,53 @@ const CitaModal = ({ isOpen, onClose, onSave, cita, listas }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
+    
+    // Validar todo antes de enviar
+    const fechaError = validateFecha(formData.fech_cit)
+    const horaError = validateHora(formData.hora)
+    
+    setErrors({
+      fech_cit: fechaError,
+      hora: horaError,
+      solapamiento: ''
+    })
+    
+    if (fechaError || horaError) {
+      return
+    }
+    
+    // Validación de solapamiento
+    const fechaHoraCita = new Date(`${formData.fech_cit}T${formData.hora}:00`)
+    const fechaHoraFinCita = new Date(fechaHoraCita)
+    fechaHoraFinCita.setMinutes(fechaHoraFinCita.getMinutes() + 90)
+    
+    const citaExistente = citas.find(c => {
+      if (c.cod_cit === formData.cod_cit) return false
+      
+      const fechaExistente = new Date(c.fech_cit)
+      const horaExistente = c.hora.split(':')
+      const fechaHoraExistente = new Date(fechaExistente)
+      fechaHoraExistente.setHours(parseInt(horaExistente[0], 10), parseInt(horaExistente[1], 10))
+      
+      const fechaHoraFinExistente = new Date(fechaHoraExistente)
+      fechaHoraFinExistente.setMinutes(fechaHoraFinExistente.getMinutes() + 90)
+      
+      return (
+        (fechaHoraCita >= fechaHoraExistente && fechaHoraCita < fechaHoraFinExistente) ||
+        (fechaHoraFinCita > fechaHoraExistente && fechaHoraFinCita <= fechaHoraFinExistente) ||
+        (fechaHoraCita <= fechaHoraExistente && fechaHoraFinCita >= fechaHoraFinExistente)
+      )
+    })
+    
+    if (citaExistente) {
+      setErrors(prev => ({
+        ...prev,
+        solapamiento: `Ya existe una cita programada para ${citaExistente.nom_mas} a esa hora`
+      }))
+      return
+    }
+    
+    // Si pasa todas las validaciones, guardar la cita
     onSave(formData)
   }
 
@@ -148,14 +238,42 @@ const CitaModal = ({ isOpen, onClose, onSave, cita, listas }) => {
                 <label htmlFor="fech_cit" className="enhanced-label">
                   <Calendar size={16} /> Fecha de la Cita
                 </label>
-                <input type="date" name="fech_cit" value={formData.fech_cit || ""} onChange={handleChange} required className="enhanced-input" />
+                <input 
+                  type="date" 
+                  name="fech_cit" 
+                  value={formData.fech_cit || ""} 
+                  onChange={handleChange} 
+                  required 
+                  className={`enhanced-input ${errors.fech_cit ? 'input-error' : ''}`}
+                  min={new Date().toISOString().split('T')[0]}
+                  max={new Date(new Date().setMonth(new Date().getMonth() + 1)).toISOString().split('T')[0]}
+                />
+                {errors.fech_cit && <div className="error-message">{errors.fech_cit}</div>}
               </div>
               <div className="form-group enhanced-group">
                 <label htmlFor="hora" className="enhanced-label">
                   <Clock size={16} /> Hora de la Cita
                 </label>
-                <input type="time" name="hora" value={formData.hora || ""} onChange={handleChange} required className="enhanced-input" />
+                <input 
+                  type="time" 
+                  name="hora" 
+                  value={formData.hora || ""} 
+                  onChange={handleChange} 
+                  required 
+                  className={`enhanced-input ${errors.hora ? 'input-error' : ''}`}
+                  min="08:00"
+                  max="18:00"
+                  step="1800"
+                />
+                {errors.hora && <div className="error-message">{errors.hora}</div>}
               </div>
+              {errors.solapamiento && (
+                <div className="form-group full-width">
+                  <div className="error-message solapamiento-error">
+                    <AlertTriangle size={14} /> {errors.solapamiento}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
           <div className="form-section">
@@ -202,10 +320,10 @@ const AuditLogModal = ({ isOpen, onClose, logData, citaId }) => {
 
   const getActionInfo = (action) => {
     switch (action) {
-      case 'INSERT': return { text: 'Creada', color: '#22c55e' }; // green-500
-      case 'UPDATE': return { text: 'Actualizada', color: '#f97316' }; // orange-500
-      case 'DELETE': return { text: 'Eliminada', color: '#ef4444' }; // red-500
-      default: return { text: action, color: '#64748b' }; // slate-500
+      case 'INSERT': return { text: 'Creada', color: '#22c55e' };
+      case 'UPDATE': return { text: 'Actualizada', color: '#f97316' };
+      case 'DELETE': return { text: 'Eliminada', color: '#ef4444' };
+      default: return { text: action, color: '#64748b' };
     }
   }
 
@@ -272,7 +390,6 @@ const AuditLogModal = ({ isOpen, onClose, logData, citaId }) => {
     </div>
   );
 };
-
 
 // --- Componente Principal ---
 const GestionCitas = () => {
@@ -439,6 +556,7 @@ const GestionCitas = () => {
         cita={selectedCita}
         listas={listas}
         onSave={handleSave}
+        citas={citas}
       />
       <AuditLogModal
         isOpen={isAuditModalOpen}
@@ -548,7 +666,7 @@ const GestionCitas = () => {
                           </div>
                           <div className="time-row">
                             <Clock size={14} />
-                            {new Date(`1970-01-01T${cita.hora}Z`).toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit", hour12: true })}
+                            {new Date(`1970-01-01T${cita.hora}`).toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit", hour12: true })}
                           </div>
                         </div>
                       </td>
