@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { CheckCircle } from "lucide-react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { PawPrint, Upload, User, Heart, Calendar, Weight, Palette, FileText, ArrowLeft, ArrowRight, Check, X, UserCheck } from "lucide-react";
@@ -9,6 +10,7 @@ function MascotaForm() {
   const totalSteps = 3;
   const [imagePreview, setImagePreview] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const {
     register,
@@ -44,7 +46,7 @@ function MascotaForm() {
       formData.append("notas", data.caracteristicas || data.observaciones || "");
       formData.append("vacunado", data.vacunado || false);
       formData.append("esterilizado", data.esterilizado || false);
-      formData.append("id_pro", data.id_pro || usuarioActual.id_usuario);
+      formData.append("id_pro", usuarioActual.id_usuario);
 
       if (data.imagen) {
         formData.append("foto", data.imagen);
@@ -58,7 +60,7 @@ function MascotaForm() {
       });
 
       if (response.data.success) {
-        alert("¡Mascota registrada exitosamente!");
+        setShowSuccessModal(true);
         reset();
         setImagePreview(null);
         setCurrentStep(1);
@@ -79,6 +81,7 @@ function MascotaForm() {
         console.error("Error en la configuración de la petición:", error.message);
       }
 
+      // Aquí podrías mostrar un modal de error si lo deseas
       alert(`Error: ${errorMessage}`);
     } finally {
       setIsSubmitting(false);
@@ -145,9 +148,14 @@ function MascotaForm() {
     }
   };
 
-  function getImageUrl(foto) {
-    return foto ? `http://localhost:3000/uploads/mascotas/${foto}` : "/placeholder.svg";
-  }
+// Devuelve la URL correcta para la foto de la mascota
+function getImageUrl(mascotaId) {
+  return mascotaId
+    ? `http://localhost:3001/api/mascotas/${mascotaId}/foto`
+    : "/placeholder.svg";
+}
+
+  const closeSuccessModal = () => setShowSuccessModal(false);
 
   return (
     <div className="container">
@@ -319,37 +327,6 @@ function MascotaForm() {
                         </span>
                       </div>
                       {errors.fechaNacimiento && <p className="error-message">{errors.fechaNacimiento.message}</p>}
-                    </div>
-                  </div>
-
-                  {/* Tercera fila - ID Propietario */}
-                  <div className="form-row">
-                    <div className="form-group full-width">
-                      <label htmlFor="idpropietario">
-                        <UserCheck size={16} />
-                        ID del Propietario *
-                      </label>
-                      <div className={`input-container ${getFieldClass("id_pro")}`}>
-                        <input
-                          type="text"
-                          id="id_pro"
-                          placeholder="Ingrese el ID del propietario"
-                          {...register("id_pro", {
-                            required: "El ID del propietario es obligatorio",
-                            pattern: {
-                              value: /^[a-zA-Z0-9]+$/,
-                              message: "Solo letras y números permitidos",
-                            },
-                            minLength: { value: 1, message: "Mínimo 1 caracteres" },
-                            maxLength: { value: 10, message: "Máximo 10 caracteres" },
-                          })}
-                        />
-                        <span className="input-icon">
-                          {dirtyFields.id_pro && !errors.id_pro && "✓"}
-                          {errors.id_pro && "!"}
-                        </span>
-                      </div>
-                      {errors.id_pro && <p className="error-message">{errors.id_pro.message}</p>}
                     </div>
                   </div>
                 </div>
@@ -591,6 +568,23 @@ function MascotaForm() {
             )}
           </div>
         </form>
+        {/* Modal de éxito al registrar mascota */}
+        {showSuccessModal && (
+          <div className="modal-overlay" onClick={closeSuccessModal}>
+            <div className="modal-success" onClick={e => e.stopPropagation()}>
+              <div className="modal-success-content">
+                <div className="success-icon">
+                  <CheckCircle size={48} />
+                </div>
+                <h3>¡Mascota registrada correctamente!</h3>
+                <p>La información de la mascota ha sido guardada exitosamente.</p>
+                <button className="btn-modal-close" onClick={closeSuccessModal}>
+                  Entendido
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

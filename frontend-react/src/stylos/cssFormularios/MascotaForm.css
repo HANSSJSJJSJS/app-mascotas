@@ -772,6 +772,78 @@ body {
 }
 
 
+/* Modales de éxito y error */
+.modal-overlay,
+.modal-overlay-main {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-success,
+.modal-success-main,
+.modal-error,
+.modal-error-main {
+  background: #fff;
+  border-radius: 16px;
+  padding: 2.5rem 2.5rem 2rem 2.5rem;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.18);
+  min-width: 320px;
+  max-width: 90vw;
+  text-align: center;
+  position: relative;
+  animation: modalIn 0.25s cubic-bezier(.4,1.6,.6,1) both;
+}
+
+.modal-success-content,
+.modal-success-content-main,
+.modal-error-content,
+.modal-error-content-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.success-icon,
+.success-icon-main {
+  color: #4caf50;
+  margin-bottom: 1rem;
+}
+.error-icon-modal,
+.error-icon-main {
+  color: #e53935;
+  margin-bottom: 1rem;
+}
+
+.btn-modal-close,
+.btn-modal-close-main {
+  margin-top: 1.5rem;
+  background: linear-gradient(135deg, var(--color4), var(--color3));
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 2.2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(129, 150, 235, 0.18);
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.btn-modal-close:hover,
+.btn-modal-close-main:hover {
+  background: linear-gradient(135deg, var(--color3), var(--color4));
+  box-shadow: 0 4px 16px rgba(129, 150, 235, 0.25);
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: translateY(40px) scale(0.98); }
+  to   { opacity: 1; transform: none; }
+}
+
 .modal-content{
   background: var(--color-light-card);
   border-radius: 24px;

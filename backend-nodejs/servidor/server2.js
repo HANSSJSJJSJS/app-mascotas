@@ -22,7 +22,9 @@ app.use("/api/citas", citasRoutes)
 app.use("/api/veterinarios", VeterinarioRoutes)
 app.use('/api', historialRoutes)
 app.use("/api/propietario", propietarioRoutes);
-const uploadsPath = path.resolve(__dirname, "../uploads");
+// Sirve archivos estáticos desde backend-nodejs/uploads (no desde servidor/uploads)
+// CORRECCIÓN: Usar path.join para mayor robustez y log explícito
+const uploadsPath = path.join(__dirname, "..", "uploads");
 console.log("Sirviendo archivos estáticos desde:", uploadsPath);
 app.use("/uploads", express.static(uploadsPath));
 
@@ -1368,21 +1370,24 @@ app.get('/api/historiales', async (req, res) => {
 });
 
 // Endpoint para obtener la foto de una mascota
+// Endpoint para obtener la foto de una mascota por su ID
 app.get("/api/mascotas/:id/foto", async (req, res) => {
   try {
     const { id } = req.params;
-
     // Obtener la mascota por su ID
     const [mascota] = await pool.query("SELECT * FROM mascotas WHERE cod_mas = ?", [id]);
-
     if (mascota.length === 0) {
       return res.status(404).json({ success: false, message: "Mascota no encontrada" });
     }
-
-    // Obtener el path completo de la foto
-    const filePath = path.resolve(__dirname, "../../uploads/mascotas", req.file.filename);
-
-    // Devolver la foto como un archivo
+    const foto = mascota[0].foto || "default.jpg";
+    // Construir la ruta absoluta al archivo de la foto
+    const filePath = path.join(__dirname, "../../uploads/mascotas", foto);
+    // Verificar si el archivo existe
+    if (!fs.existsSync(filePath)) {
+      // Si no existe, devolver una imagen por defecto
+      const defaultPath = path.join(__dirname, "../../uploads/mascotas", "default.jpg");
+      return res.sendFile(defaultPath);
+    }
     res.sendFile(filePath);
   } catch (error) {
     console.error("Error al obtener la foto de la mascota:", error);

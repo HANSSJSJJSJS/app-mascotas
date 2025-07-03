@@ -48,6 +48,68 @@ export default function InicioPropietario() {
   const [mostrarMenuCita, setMostrarMenuCita] = useState(null)
   const navigate = useNavigate()
 
+  // --- Refactor: función para cargar todos los datos del usuario y mascotas ---
+  const fetchUserData = async () => {
+    try {
+      const usuarioActual = JSON.parse(localStorage.getItem("pet-app-user"))
+      if (!usuarioActual?.id_usuario) {
+        console.error("ID de usuario no disponible")
+        return
+      }
+
+      setUsuario(usuarioActual)
+
+      // Obtener mascotas del usuario
+      const mascotasResponse = await axios.get(`http://localhost:3001/api/mascotas/${usuarioActual.id_usuario}`)
+      setMascotas(mascotasResponse.data)
+
+      // Calcular estadísticas de mascotas
+      const vacunadas = mascotasResponse.data.filter((mascota) => mascota.vacunado).length
+      const esterilizadas = mascotasResponse.data.filter((mascota) => mascota.esterilizado).length
+
+      // Obtener citas usando la nueva API
+      const citasResponse = await axios.get(
+        `http://localhost:3001/api/citas?propietarioId=${usuarioActual.id_usuario}`,
+      )
+      const citasObtenidas = citasResponse.data
+      setCitas(citasObtenidas)
+
+      // Contar citas por estado
+      const pendientes = citasObtenidas.filter((cita) => cita.estado === "PENDIENTE").length
+      const realizadas = citasObtenidas.filter((cita) => cita.estado === "REALIZADA").length
+      setRecordatoriosPendientes(pendientes)
+
+      // Actualizar estadísticas
+      setEstadisticas({
+        mascotasVacunadas: vacunadas,
+        mascotasEsterilizadas: esterilizadas,
+        citasRealizadas: realizadas,
+        citasPendientes: pendientes,
+      })
+
+      // Obtener servicios disponibles
+      try {
+        const serviciosResponse = await axios.get(`http://localhost:3001/api/admin/servicios`)
+        setServicios(serviciosResponse.data)
+      } catch (error) {
+        console.error("Error al obtener servicios:", error)
+        setServicios([])
+      }
+
+      // Obtener historiales médicos
+      const historialesResponse = await axios.get(
+        `http://localhost:3001/api/propietario/${usuarioActual.id_usuario}/historiales`,
+      )
+      setHistoriales(historialesResponse.data)
+
+      // Obtener veterinarios
+      const veterinariosResponse = await axios.get(`http://localhost:3001/api/veterinarios`)
+      setVeterinarios(veterinariosResponse.data)
+    } catch (error) {
+      console.error("Error al obtener datos:", error)
+    }
+  }
+
   useEffect(() => {
     // Formatear fecha y hora
     const today = new Date()
@@ -65,70 +127,18 @@ export default function InicioPropietario() {
     updateTime()
     const timeInterval = setInterval(updateTime, 60000)
 
-    // Obtener datos del usuario
-    const fetchUserData = async () => {
-      try {
-        const usuarioActual = JSON.parse(localStorage.getItem("pet-app-user"))
-        if (!usuarioActual?.id_usuario) {
-          console.error("ID de usuario no disponible")
-          return
-        }
-
-        setUsuario(usuarioActual)
-
-        // Obtener mascotas del usuario
-        const mascotasResponse = await axios.get(`http://localhost:3001/api/mascotas/${usuarioActual.id_usuario}`)
-        setMascotas(mascotasResponse.data)
-
-        // Calcular estadísticas de mascotas
-        const vacunadas = mascotasResponse.data.filter((mascota) => mascota.vacunado).length
-        const esterilizadas = mascotasResponse.data.filter((mascota) => mascota.esterilizado).length
-
-        // Obtener citas usando la nueva API
-        const citasResponse = await axios.get(
-          `http://localhost:3001/api/citas?propietarioId=${usuarioActual.id_usuario}`,
-        )
-        const citasObtenidas = citasResponse.data
-        setCitas(citasObtenidas)
-
-        // Contar citas por estado
-        const pendientes = citasObtenidas.filter((cita) => cita.estado === "PENDIENTE").length
-        const realizadas = citasObtenidas.filter((cita) => cita.estado === "REALIZADA").length
-        setRecordatoriosPendientes(pendientes)
-
-        // Actualizar estadísticas
-        setEstadisticas({
-          mascotasVacunadas: vacunadas,
-          mascotasEsterilizadas: esterilizadas,
-          citasRealizadas: realizadas,
-          citasPendientes: pendientes,
-        })
-
-        // Obtener servicios disponibles
-        try {
-          const serviciosResponse = await axios.get(`http://localhost:3001/api/admin/servicios`)
-          setServicios(serviciosResponse.data)
-        } catch (error) {
-          console.error("Error al obtener servicios:", error)
-          setServicios([])
-        }
-
-        // Obtener historiales médicos
-        const historialesResponse = await axios.get(
-          `http://localhost:3001/api/propietario/${usuarioActual.id_usuario}/historiales`,
-        )
-        setHistoriales(historialesResponse.data)
-
-        // Obtener veterinarios
-        const veterinariosResponse = await axios.get(`http://localhost:3001/api/veterinarios`)
-        setVeterinarios(veterinariosResponse.data)
-      } catch (error) {
-        console.error("Error al obtener datos:", error)
-      }
-    }
-
     fetchUserData()
-    return () => clearInterval(timeInterval)
+
+    // Escuchar evento de nueva mascota registrada
+    const handleNuevaMascota = () => {
+      fetchUserData()
+    }
+    window.addEventListener("mascota-registrada", handleNuevaMascota)
+
+    return () => {
+      clearInterval(timeInterval)
+      window.removeEventListener("mascota-registrada", handleNuevaMascota)
+    }
   }, [])
 
   // Filtrar mascotas según el término de búsqueda
@@ -165,6 +175,9 @@ export default function InicioPropietario() {
   // Utilidad para obtener la URL de la imagen de la mascota
   function getImageUrl(foto) {
     if (!foto || foto === "default.jpg") return "/placeholder.svg"
+    if (foto.startsWith("/uploads/")) {
+      return `http://localhost:3001${foto}`
+    }
     return `http://localhost:3001/uploads/mascotas/${foto}`
   }
 

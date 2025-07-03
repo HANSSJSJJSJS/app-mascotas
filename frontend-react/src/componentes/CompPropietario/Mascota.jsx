@@ -16,19 +16,30 @@ export default function Mascota() {
   const fileInputRef = useRef(null)
 
   // Cargar mascotas reales del backend
-  useEffect(() => {
-    const fetchMascotas = async () => {
-      try {
-        const usuarioActual = JSON.parse(localStorage.getItem("pet-app-user"))
-        if (!usuarioActual?.id_usuario) return
-        const res = await axios.get(`http://localhost:3001/api/mascotas/${usuarioActual.id_usuario}`)
-        setMascotas(res.data)
-        if (res.data.length > 0) setMascotaSeleccionada(res.data[0].id)
-      } catch (error) {
-        setMascotas([])
+  const fetchMascotas = async (selectLast = false) => {
+    try {
+      const usuarioActual = JSON.parse(localStorage.getItem("pet-app-user"))
+      if (!usuarioActual?.id_usuario) return
+      const res = await axios.get(`http://localhost:3001/api/mascotas/${usuarioActual.id_usuario}`)
+      setMascotas(res.data)
+      if (res.data.length > 0) {
+        setMascotaSeleccionada(selectLast ? res.data[res.data.length - 1].id : res.data[0].id)
       }
+    } catch (error) {
+      setMascotas([])
     }
+  }
+  useEffect(() => {
     fetchMascotas()
+  }, [])
+
+  // Escuchar evento de registro de nueva mascota (custom event)
+  useEffect(() => {
+    const handleNuevaMascota = () => {
+      fetchMascotas(true) // Selecciona la última mascota (la recién creada)
+    }
+    window.addEventListener("mascota-registrada", handleNuevaMascota)
+    return () => window.removeEventListener("mascota-registrada", handleNuevaMascota)
   }, [])
 
   const mascotaActual = mascotas.find((m) => m.id === mascotaSeleccionada) || {};
@@ -308,7 +319,19 @@ export default function Mascota() {
 
               <div className="foto-modal-body-main">
                 <div className="foto-preview-container">
-                  <img src={fotoPreview || mascotaActual.foto} alt="Preview" className="preview-image-main" />
+                  <img
+                    src={
+                      fotoPreview
+                        ? fotoPreview
+                        : mascotaActual.foto
+                          ? (mascotaActual.foto.startsWith("/uploads/")
+                              ? `http://localhost:3001${mascotaActual.foto}`
+                              : `http://localhost:3001/uploads/mascotas/${mascotaActual.foto}`)
+                          : "/placeholder.svg"
+                    }
+                    alt="Preview"
+                    className="preview-image-main"
+                  />
                 </div>
 
                 <div className="foto-upload-container">

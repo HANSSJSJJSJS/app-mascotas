@@ -24,6 +24,15 @@ export default function ActualizarPropietario() {
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [errorModalMessage, setErrorModalMessage] = useState("");
 
+  // Utilidad para obtener la URL de la foto de perfil
+  function getFotoPerfilUrl(foto_perfil) {
+    if (!foto_perfil) return "/placeholder.svg";
+    if (foto_perfil.startsWith("/uploads/")) {
+      return `http://localhost:3001${foto_perfil}`;
+    }
+    return `http://localhost:3001/uploads/propietarios/${foto_perfil}`;
+  }
+
   // Cargar datos del usuario al montar el componente
   useEffect(() => {
     const loadUserData = () => {
@@ -221,7 +230,7 @@ export default function ActualizarPropietario() {
                     />
                   ) : propietario.foto_perfil ? (
                     <img
-                      src={`http://localhost:3001/uploads/propietarios/${propietario.foto_perfil}`}
+                      src={getFotoPerfilUrl(propietario.foto_perfil)}
                       alt="Foto del propietario"
                       className="profile-avatar"
                     />

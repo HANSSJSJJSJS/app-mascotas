@@ -20,7 +20,12 @@ const BarraPropietario = ({ onAlternarMenu, estaMenuAbierto, onCerrarSesion }) =
     const userData = localStorage.getItem("pet-app-user");
     if (userData) {
       const parsed = JSON.parse(userData);
-      setPropietario(parsed);
+      // Normaliza foto_perfil: si viene con ruta, deja solo el nombre
+      let foto_perfil = parsed.foto_perfil;
+      if (foto_perfil && foto_perfil.startsWith("/uploads/propietarios/")) {
+        foto_perfil = foto_perfil.replace("/uploads/propietarios/", "");
+      }
+      setPropietario({ ...parsed, foto_perfil });
     }
   }, []);
 
@@ -79,7 +84,11 @@ const BarraPropietario = ({ onAlternarMenu, estaMenuAbierto, onCerrarSesion }) =
         <div className="contenedor-avatar-grande">
           {propietario.foto_perfil ? (
             <img
-              src={`http://localhost:3001/uploads/propietarios/${propietario.foto_perfil}`}
+              src={
+                propietario.foto_perfil.startsWith("/uploads/")
+                  ? `http://localhost:3001${propietario.foto_perfil}`
+                  : `http://localhost:3001/uploads/propietarios/${propietario.foto_perfil}`
+              }
               alt={`Avatar de ${propietario.nombre}`}
               className="avatar-grande"
             />
