@@ -1,4 +1,4 @@
-USE moybe_db;
+USE mascotas_db;
 DELIMITER $$
 
 CREATE PROCEDURE LoginUsuario(IN p_email VARCHAR(100))

@@ -1,4 +1,3 @@
-// src/components/CompVet/FormularioCita.jsx
 import { useState, useEffect } from "react";
 
 const FormularioCita = ({ onSubmit, onCancel }) => {
@@ -51,11 +50,11 @@ const FormularioCita = ({ onSubmit, onCancel }) => {
         <label>Mascota</label>
         <select name="cod_mas" value={formData.cod_mas} onChange={handleChange} required>
           <option value="">Seleccione una mascota</option>
-          {mascotas.map((mascota) => (
-            <option key={mascota.cod_mas} value={mascota.cod_mas}>
-              {mascota.nom_mas} - {mascota.raza}
-            </option>
-          ))}
+          {Array.isArray(mascotas) && mascotas.map((mascota) => (
+          <option key={mascota.cod_mas} value={mascota.cod_mas}>
+            {mascota.nom_mas} - {mascota.raza}
+          </option>
+        ))}
         </select>
       </div>
 

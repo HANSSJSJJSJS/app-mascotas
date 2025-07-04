@@ -1,155 +1,174 @@
 ALTER TABLE usuarios ADD COLUMN foto_perfil VARCHAR(255) NULL;
 
-DROP DATABASE mascotas_db;
+-- Eliminar la base de datos si existe
+DROP DATABASE IF EXISTS mascotas_db;
 
-CREATE DATABASE IF NOT EXISTS mascotas_db;
+-- Crear la base de datos
+CREATE DATABASE  mascotas_db;
+
+-- Usar la base de datos
 USE mascotas_db;
 
+-- Tabla de roles de usuarios
 CREATE TABLE rol (
-id_rol INT PRIMARY KEY NOT NULL ,
-rol VARCHAR (50) NOT NULL
-);
+    id_rol INT PRIMARY KEY NOT NULL COMMENT 'Identificador único del rol',
+    rol VARCHAR(50) NOT NULL COMMENT 'Nombre del rol (Administrador, Veterinario, Propietario)'
+) COMMENT 'Tabla de roles de usuarios en el sistema';
 
+-- Tabla de tipos de persona
 CREATE TABLE tipo_persona (
-id_tipo INT PRIMARY KEY NOT NULL ,
-tipo VARCHAR (50) NOT NULL
-);
+    id_tipo INT PRIMARY KEY NOT NULL COMMENT 'Identificador único del tipo de persona',
+    tipo VARCHAR(50) NOT NULL COMMENT 'Tipo de persona (Natural, Jurídica)'
+) COMMENT 'Tabla de tipos de persona (natural o jurídica)';
 
+-- Tabla principal de usuarios
 CREATE TABLE usuarios (
-id_usuario INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-tipo_documento ENUM('CC','CE', 'PP'),
-numeroid VARCHAR(50) NOT NULL,
-genero ENUM('Mujer','Hombre','No identificado'),
-fecha_nacimiento DATE NOT NULL,
-nombre VARCHAR(50) NOT NULL,
-apellido VARCHAR(30) NOT NULL,
-telefono VARCHAR(20) NOT NULL,
-ciudad VARCHAR(50) NOT NULL,
-barrio VARCHAR(50) NOT NULL,
-direccion VARCHAR(100) NOT NULL,
-email VARCHAR(100) NOT NULL UNIQUE,
-password_hash VARCHAR(255) NOT NULL,
-id_tipo INT NOT NULL,
-id_rol INT NOT NULL,
-estado TINYINT(1) NOT NULL DEFAULT 1,
-FOREIGN KEY (id_rol) REFERENCES rol(id_rol),
-FOREIGN KEY (id_tipo) REFERENCES tipo_persona(id_tipo)
-);
+    id_usuario INT PRIMARY KEY NOT NULL AUTO_INCREMENT COMMENT 'Identificador único del usuario',
+    tipo_documento ENUM('CC','CE','PP') COMMENT 'Tipo de documento (Cédula, Cédula extranjería, Pasaporte)',
+    numeroid VARCHAR(50) NOT NULL COMMENT 'Número de identificación del usuario',
+    genero ENUM('Mujer','Hombre','No identificado') COMMENT 'Género del usuario',
+    fecha_nacimiento DATE NOT NULL COMMENT 'Fecha de nacimiento del usuario',
+    nombre VARCHAR(50) NOT NULL COMMENT 'Primer nombre del usuario',
+    apellido VARCHAR(30) NOT NULL COMMENT 'Apellido(s) del usuario',
+    telefono VARCHAR(20) NOT NULL COMMENT 'Número de teléfono del usuario',
+    ciudad VARCHAR(50) NOT NULL COMMENT 'Ciudad de residencia del usuario',
+    barrio VARCHAR(50) NOT NULL COMMENT 'Barrio de residencia del usuario',
+    direccion VARCHAR(100) NOT NULL COMMENT 'Dirección completa del usuario',
+    email VARCHAR(100) NOT NULL UNIQUE COMMENT 'Correo electrónico del usuario (único)',
+    password_hash VARCHAR(255) NOT NULL COMMENT 'Contraseña encriptada del usuario',
+    id_tipo INT NOT NULL COMMENT 'Referencia al tipo de persona',
+    id_rol INT NOT NULL COMMENT 'Referencia al rol del usuario',
+    estado TINYINT(1) NOT NULL DEFAULT 1 COMMENT 'Estado del usuario (1=activo, 0=inactivo)',
+    foto_perfil VARCHAR(255) NULL COMMENT 'URL o ruta de la foto de perfil del usuario',
+    FOREIGN KEY (id_rol) REFERENCES rol(id_rol),
+    FOREIGN KEY (id_tipo) REFERENCES tipo_persona(id_tipo)
+) COMMENT 'Tabla maestra de usuarios del sistema';
 
+-- Tabla de administradores
 CREATE TABLE administradores (
-id_admin INT PRIMARY KEY NOT NULL,
-cargo VARCHAR(100) NOT NULL,
-fecha_ingreso DATE NOT NULL,
-FOREIGN KEY (id_admin) REFERENCES usuarios(id_usuario)
-ON DELETE NO ACTION
-ON UPDATE NO ACTION
-);
+    id_admin INT PRIMARY KEY NOT NULL COMMENT 'Identificador del administrador (FK a usuarios)',
+    cargo VARCHAR(100) NOT NULL COMMENT 'Cargo o posición del administrador',
+    fecha_ingreso DATE NOT NULL COMMENT 'Fecha de ingreso del administrador',
+    FOREIGN KEY (id_admin) REFERENCES usuarios(id_usuario)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+) COMMENT 'Tabla de información específica de administradores';
 
+-- Tabla de propietarios
 CREATE TABLE propietarios (
-id_pro INT PRIMARY KEY NOT NULL,
-FOREIGN KEY (id_pro) REFERENCES usuarios(id_usuario)
-ON DELETE NO ACTION
-ON UPDATE NO ACTION
-);
+    id_pro INT PRIMARY KEY NOT NULL COMMENT 'Identificador del propietario (FK a usuarios)',
+    FOREIGN KEY (id_pro) REFERENCES usuarios(id_usuario)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+) COMMENT 'Tabla de propietarios de mascotas';
 
+-- Tabla de veterinarios
 CREATE TABLE veterinarios (
-id_vet INT PRIMARY KEY NOT NULL,
-especialidad VARCHAR(100)NOT NULL,
-horario VARCHAR(255)NOT NULL,
-FOREIGN KEY (id_vet) REFERENCES usuarios(id_usuario)
-ON DELETE NO ACTION
-ON UPDATE NO ACTION
-);
+    id_vet INT PRIMARY KEY NOT NULL COMMENT 'Identificador del veterinario (FK a usuarios)',
+    especialidad VARCHAR(100) NOT NULL COMMENT 'Especialidad del veterinario',
+    horario VARCHAR(255) NOT NULL COMMENT 'Horario de trabajo del veterinario',
+    FOREIGN KEY (id_vet) REFERENCES usuarios(id_usuario)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+) COMMENT 'Tabla de información específica de veterinarios';
 
+-- Tabla de mascotas
 CREATE TABLE mascotas (
-cod_mas INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-nom_mas VARCHAR (100) NOT NULL,
-especie VARCHAR (100) NOT NULL,
-raza VARCHAR (100) NOT NULL,
-edad DECIMAL (10,2) NOT NULL,
-genero VARCHAR(25)NOT NULL,
-peso DECIMAL (10,2) NOT NULL,
-color VARCHAR(50),
-notas TEXT,
-ultima_visita DATE,
-proxima_cita DATE,
-vacunado BOOLEAN DEFAULT false,
-esterilizado BOOLEAN DEFAULT false,
-activo BOOLEAN DEFAULT true,
-fecha DATE,
-hora TIME,
-id_pro INT NOT NULL,
-FOREIGN KEY (id_pro) references propietarios(id_pro)
-ON DELETE NO ACTION
-ON UPDATE NO ACTION,
-foto VARCHAR(255) NOT NULL
-);
+    cod_mas INT PRIMARY KEY NOT NULL AUTO_INCREMENT COMMENT 'Identificador único de la mascota',
+    nom_mas VARCHAR(100) NOT NULL COMMENT 'Nombre de la mascota',
+    especie VARCHAR(100) NOT NULL COMMENT 'Especie (perro, gato, etc.)',
+    raza VARCHAR(100) NOT NULL COMMENT 'Raza de la mascota',
+    edad DECIMAL(10,2) NOT NULL COMMENT 'Edad en años',
+    genero VARCHAR(25) NOT NULL COMMENT 'Género de la mascota',
+    peso DECIMAL(10,2) NOT NULL COMMENT 'Peso en kilogramos',
+    color VARCHAR(50) COMMENT 'Color principal',
+    notas TEXT COMMENT 'Notas adicionales',
+    ultima_visita DATE COMMENT 'Fecha última visita',
+    proxima_cita DATE COMMENT 'Fecha próxima cita',
+    vacunado BOOLEAN DEFAULT false COMMENT '¿Está vacunada?',
+    esterilizado BOOLEAN DEFAULT false COMMENT '¿Está esterilizada?',
+    activo BOOLEAN DEFAULT true COMMENT '¿Registro activo?',
+    fecha DATE COMMENT 'Fecha de registro',
+    hora TIME COMMENT 'Hora de registro',
+    id_pro INT NOT NULL COMMENT 'Referencia al propietario',
+    foto VARCHAR(255) NOT NULL COMMENT 'URL/ruta de la foto',
+    FOREIGN KEY (id_pro) REFERENCES propietarios(id_pro)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+) COMMENT 'Tabla de registro de mascotas';
 
-CREATE TABLE historiales_medicos(
-cod_his INT NOT NULL AUTO_INCREMENT,
-fech_his DATE NOT NULL,
-descrip_his TEXT,
-tratamiento TEXT,
-cod_mas INT NOT NULL,
-PRIMARY KEY(cod_his,cod_mas),
-FOREIGN KEY (cod_mas) REFERENCES mascotas(cod_mas)
-);
+-- Tabla de historiales médicos
+CREATE TABLE historiales_medicos (
+    cod_his INT NOT NULL AUTO_INCREMENT COMMENT 'ID único del registro médico',
+    fech_his DATE NOT NULL COMMENT 'Fecha del registro',
+    descrip_his TEXT COMMENT 'Descripción del problema/diagnóstico',
+    tratamiento TEXT COMMENT 'Tratamiento aplicado/recomendado',
+    cod_mas INT NOT NULL COMMENT 'Referencia a la mascota',
+    PRIMARY KEY(cod_his, cod_mas),
+    FOREIGN KEY (cod_mas) REFERENCES mascotas(cod_mas)
+) COMMENT 'Tabla de historiales médicos de mascotas';
 
-CREATE TABLE servicios(
-cod_ser INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-nom_ser VARCHAR(100)NOT NULL,
-descrip_ser TEXT,
-precio DECIMAL (20,2)NOT NULL
-);
+-- Tabla de servicios
+CREATE TABLE servicios (
+    cod_ser INT NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT 'ID único del servicio',
+    nom_ser VARCHAR(100) NOT NULL COMMENT 'Nombre del servicio',
+    descrip_ser TEXT COMMENT 'Descripción detallada',
+    precio DECIMAL(20,2) NOT NULL COMMENT 'Precio del servicio'
+) COMMENT 'Tabla de servicios ofrecidos';
 
+-- Tabla de citas
 CREATE TABLE citas (
-  cod_cit INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
-  fech_cit DATE NOT NULL,
-  hora TIME,
-  cod_ser INT,
-  id_vet INT,
-  cod_mas INT,
-  id_pro INT NOT NULL,
-  estado ENUM('PENDIENTE', 'CONFIRMADA', 'CANCELADA', 'REALIZADA', 'NO_ASISTIDA') NOT NULL DEFAULT 'PENDIENTE',
-  notas TEXT,
-  FOREIGN KEY (cod_ser) REFERENCES servicios(cod_ser),
-  FOREIGN KEY (id_pro) REFERENCES propietarios(id_pro),
-  FOREIGN KEY (id_vet) REFERENCES veterinarios(id_vet),
-  FOREIGN KEY (cod_mas) REFERENCES mascotas(cod_mas)
-);
+    cod_cit INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT 'ID único de la cita',
+    fech_cit DATE NOT NULL COMMENT 'Fecha programada',
+    hora TIME COMMENT 'Hora programada',
+    cod_ser INT COMMENT 'Servicio solicitado',
+    id_vet INT COMMENT 'Veterinario asignado',
+    cod_mas INT COMMENT 'Mascota asociada',
+    id_pro INT NOT NULL COMMENT 'Propietario que solicita',
+    estado ENUM('PENDIENTE','CONFIRMADA','CANCELADA','REALIZADA','NO_ASISTIDA') 
+        NOT NULL DEFAULT 'PENDIENTE' COMMENT 'Estado de la cita',
+    notas TEXT COMMENT 'Notas adicionales',
+    FOREIGN KEY (cod_ser) REFERENCES servicios(cod_ser),
+    FOREIGN KEY (id_pro) REFERENCES propietarios(id_pro),
+    FOREIGN KEY (id_vet) REFERENCES veterinarios(id_vet),
+    FOREIGN KEY (cod_mas) REFERENCES mascotas(cod_mas)
+) COMMENT 'Tabla de programación de citas';
 
-CREATE TABLE IF NOT EXISTS citas_audit (
-    audit_id INT AUTO_INCREMENT PRIMARY KEY,
-    cod_cit INT,
-    accion VARCHAR(10) NOT NULL,
-    campo_modificado VARCHAR(100),
-    valor_anterior TEXT,
-    valor_nuevo TEXT,
-    usuario_db VARCHAR(100), 
-    fecha_modificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+-- Tabla de auditoría para citas
+CREATE TABLE citas_audit (
+    audit_id INT AUTO_INCREMENT PRIMARY KEY COMMENT 'ID único de auditoría',
+    cod_cit INT COMMENT 'Cita auditada',
+    accion VARCHAR(10) NOT NULL COMMENT 'Acción (INSERT, UPDATE, DELETE)',
+    campo_modificado VARCHAR(100) COMMENT 'Campo modificado',
+    valor_anterior TEXT COMMENT 'Valor anterior',
+    valor_nuevo TEXT COMMENT 'Valor nuevo',
+    usuario_db VARCHAR(100) COMMENT 'Usuario que realizó el cambio',
+    fecha_modificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT 'Fecha/hora del cambio'
+) COMMENT 'Auditoría para cambios en citas';
 
-CREATE TABLE IF NOT EXISTS servicios_audit (
-    audit_id INT AUTO_INCREMENT PRIMARY KEY,
-    cod_ser INT,
-    accion VARCHAR(10) NOT NULL, 
-    campo_modificado VARCHAR(100),
-    valor_anterior TEXT,
-    valor_nuevo TEXT,
-    usuario_db VARCHAR(100), 
-    fecha_modificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+-- Tabla de auditoría para servicios
+CREATE TABLE servicios_audit (
+    audit_id INT AUTO_INCREMENT PRIMARY KEY COMMENT 'ID único de auditoría',
+    cod_ser INT COMMENT 'Servicio auditado',
+    accion VARCHAR(10) NOT NULL COMMENT 'Acción realizada',
+    campo_modificado VARCHAR(100) COMMENT 'Campo modificado',
+    valor_anterior TEXT COMMENT 'Valor anterior',
+    valor_nuevo TEXT COMMENT 'Valor nuevo',
+    usuario_db VARCHAR(100) COMMENT 'Usuario del cambio',
+    fecha_modificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT 'Fecha/hora'
+) COMMENT 'Auditoría para cambios en servicios';
 
-CREATE TABLE IF NOT EXISTS audit_usuarios (
-    audit_id INT AUTO_INCREMENT PRIMARY KEY,
-    id_usuario INT NOT NULL,
-    campo_modificado VARCHAR(255) NOT NULL,
-    valor_anterior TEXT,
-    valor_nuevo TEXT,
-    accion ENUM('INSERT', 'UPDATE', 'DELETE') NOT NULL, 
-    usuario_db VARCHAR(255) NOT NULL,
-    fecha_modificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+-- Tabla de auditoría para usuarios
+CREATE TABLE audit_usuarios (
+    audit_id INT AUTO_INCREMENT PRIMARY KEY COMMENT 'ID único de auditoría',
+    id_usuario INT NOT NULL COMMENT 'Usuario auditado',
+    campo_modificado VARCHAR(255) NOT NULL COMMENT 'Campo modificado',
+    valor_anterior TEXT COMMENT 'Valor anterior',
+    valor_nuevo TEXT COMMENT 'Valor nuevo',
+    accion ENUM('INSERT','UPDATE','DELETE') NOT NULL COMMENT 'Tipo de acción',
+    usuario_db VARCHAR(255) NOT NULL COMMENT 'Usuario que realizó el cambio',
+    fecha_modificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT 'Fecha/hora'
+) COMMENT 'Auditoría para cambios en usuarios';
 
 
 INSERT INTO tipo_persona (id_tipo, tipo) VALUES

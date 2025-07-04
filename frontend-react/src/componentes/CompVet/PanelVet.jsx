@@ -1,33 +1,69 @@
-// PanelVeterinario.jsx
-import { Outlet } from "react-router-dom"
-import { useState, useEffect } from "react"
-import "../../stylos/cssVet/PanelVet.css"
-import BarraVet from "../CompVet/BarraVet"
-import EncabezadoVet from "../CompVet/EncabezadoVet"
+// src/componentes/CompVet/PanelVet.jsx (VERSIÓN CORREGIDA)
+
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import "../../stylos/cssVet/PanelVet.css";
+
+// --- 1. IMPORTACIONES NECESARIAS ---
+// Importa los componentes de la estructura del panel
+import BarraVet from "./BarraVet";
+import EncabezadoVet from "./EncabezadoVet";
+// Importa la utilidad para decodificar
+import { decodePath } from "../../funcionalidades/routeUtils";
+
+// Importa TODOS los componentes que se pueden mostrar en el panel
+import InicioVet from "./InicioVet";
+import MascotasVet from "./Mascotas";
+import GestionCitasVet from "./GestionCitas";
+import HistorialClinico from "./HistorialClinico";
+import NotFound from "../CompHome/NotFound"; // Para rutas inválidas
+
+// --- 2. MAPA DE RUTAS ---
+// Asocia la clave decodificada con el componente a renderizar
+const routeComponentMap = {
+  "inicio": InicioVet,
+  "mascotas": MascotasVet,
+  "gestion-citas": GestionCitasVet,
+  "historial-clinico": HistorialClinico,
+};
+
 
 const PanelVet = () => {
-  const [menuAbierto, setMenuAbierto] = useState(true)
-  const [isMobile, setIsMobile] = useState(false)
+  // Lógica para manejar el menú lateral (la mantuve de tu archivo original)
+  const [menuAbierto, setMenuAbierto] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const checkIfMobile = () => {
-      const mobile = window.innerWidth < 1024
-      setIsMobile(mobile)
-      if (mobile) {
-        setMenuAbierto(false)
-      } else {
-        setMenuAbierto(true)
-      }
-    }
+      const mobile = window.innerWidth < 1024;
+      setIsMobile(mobile);
+      setMenuAbierto(!mobile);
+    };
 
-    checkIfMobile()
-    window.addEventListener("resize", checkIfMobile)
-    return () => window.removeEventListener("resize", checkIfMobile)
-  }, [])
+    checkIfMobile();
+    window.addEventListener("resize", checkIfMobile);
+    return () => window.removeEventListener("resize", checkIfMobile);
+  }, []);
 
   const toggleMenu = () => {
-    setMenuAbierto(!menuAbierto)
-  }
+    setMenuAbierto(!menuAbierto);
+  };
+
+  // --- 3. LÓGICA DE SUB-ENRUTAMIENTO ---
+  const { encodedPath } = useParams(); // Obtiene el parámetro de la URL (ej: "aW5pY2lv")
+
+  const renderContent = () => {
+    // Si no hay parámetro, estamos en "/PanelVet", mostramos el inicio
+    if (!encodedPath) {
+      return <InicioVet />;
+    }
+
+    const decodedKey = decodePath(encodedPath); // Decodifica el parámetro
+    const ComponentToRender = routeComponentMap[decodedKey]; // Busca el componente en el mapa
+
+    // Si se encuentra un componente, lo renderiza. Si no, muestra la página de NotFound.
+    return ComponentToRender ? <ComponentToRender /> : <NotFound />;
+  };
 
   return (
     <div className="app-container">
@@ -49,11 +85,12 @@ const PanelVet = () => {
             width: "100%",
           }}
         >
-          <Outlet />
+          {/* --- 4. SE REEMPLAZA <Outlet /> POR LA FUNCIÓN DE RENDERIZADO --- */}
+          {renderContent()}
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default PanelVet;

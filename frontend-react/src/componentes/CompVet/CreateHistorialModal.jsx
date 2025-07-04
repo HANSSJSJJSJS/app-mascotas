@@ -41,10 +41,11 @@ const CreateHistorialModal = ({ onClose, onCreate }) => {
           <label>Mascota:</label>
           <select value={cod_mas} onChange={(e) => setCodMas(e.target.value)} required>
             <option value="">Seleccione una mascota</option>
-            {mascotas.map((mascota) => (
-              <option key={mascota.cod_mas} value={mascota.cod_mas}>
-                {mascota.nom_mas} - {mascota.propietario}
-              </option>
+              {Array.isArray(mascotas) &&
+                mascotas.map((mascota) => (
+                  <option key={mascota.cod_mas} value={mascota.cod_mas}>
+                    {mascota.nom_mas} - {mascota.propietario}
+            </option>
             ))}
           </select>
 

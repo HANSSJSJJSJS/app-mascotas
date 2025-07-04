@@ -1,37 +1,43 @@
-import { useState, useEffect, useMemo } from "react"
-import { Calendar, FileText, PawPrint, Pill, Stethoscope, User, X } from 'lucide-react'
-import { Link, useLocation } from "react-router-dom"
+// src/componentes/CompVet/BarraVet.jsx
+
+import { useState, useEffect, useMemo } from "react";
+import { Calendar, FileText, PawPrint, Stethoscope, X } from 'lucide-react';
+import { Link, useLocation } from "react-router-dom";
 import "../../stylos/cssVet/BarraVet.css";
-import { useAuth } from '../../context/AuthContext'; // ¡Asegúrate de que esta línea esté presente!
+import { useAuth } from '../../context/AuthContext';
+// 1. IMPORTA LA FUNCIÓN DE CODIFICACIÓN
+import { encodePath } from "../../funcionalidades/routeUtils";
 
 const BarraVet = ({ onToggleMenu, menuAbierto }) => {
-  const [isMobile, setIsMobile] = useState(false)
-  const location = useLocation()
-  const { usuario, loading } = useAuth(); // ¡Asegúrate de que esta línea esté presente!
+  const [isMobile, setIsMobile] = useState(false);
+  const location = useLocation();
+  const { usuario, loading } = useAuth();
 
+  // 2. DEFINE LAS RUTAS SIN CODIFICAR
+  //    'path' es la clave que se codificará.
   const menuItems = [
-    { icon: Stethoscope, text: "Inicio", path: "/PanelVet" },
-    { icon: PawPrint, text: "Mascotas", path: "/PanelVet/mascotas" },
-    {icon: Calendar, text: "Citas", path: "/PanelVet/gestion-citas" },
-    { icon: FileText, text: "Historial Clínico", path: "/PanelVet/historial-clinico" }
-  ]
+    { icon: Stethoscope, text: "Inicio", path: "inicio" },
+    { icon: PawPrint, text: "Mascotas", path: "mascotas" },
+    { icon: Calendar, text: "Citas", path: "gestion-citas" },
+    { icon: FileText, text: "Historial Clínico", path: "historial-clinico" }
+  ];
 
   useEffect(() => {
     const checkIfMobile = () => {
-      setIsMobile(window.innerWidth < 1024)
-    }
-    checkIfMobile()
-    window.addEventListener("resize", checkIfMobile)
-    return () => window.removeEventListener("resize", checkIfMobile)
-  }, [])
+      setIsMobile(window.innerWidth < 1024);
+    };
+    checkIfMobile();
+    window.addEventListener("resize", checkIfMobile);
+    return () => window.removeEventListener("resize", checkIfMobile);
+  }, []);
 
   const displayName = useMemo(() => {
-    if (loading || !usuario) return "Dr. Veterinario"; // Fallback mientras carga o si no hay usuario
+    if (loading || !usuario) return "Dr. Veterinario";
     return usuario.nombre ? `Dr. ${usuario.nombre}` : "Dr. Veterinario";
   }, [usuario, loading]);
 
   const displayRole = useMemo(() => {
-    if (loading || !usuario) return "Veterinario"; // Fallback
+    if (loading || !usuario) return "Veterinario";
     switch (usuario.id_rol) {
       case 1: return "Administrador";
       case 2: return "Veterinario";
@@ -39,7 +45,6 @@ const BarraVet = ({ onToggleMenu, menuAbierto }) => {
       default: return "Usuario";
     }
   }, [usuario, loading]);
-
 
   return (
     <aside className={`barra-lateral-vet ${isMobile ? "mobile" : ""} ${menuAbierto ? "open" : "closed"}`}>
@@ -54,7 +59,6 @@ const BarraVet = ({ onToggleMenu, menuAbierto }) => {
         <h2 className={menuAbierto ? "" : "hidden"}>PET MOYBE</h2>
       </div>
       
-      {/* ****** CAMBIO: Solo muestra la información si el usuario y el rol no están cargando ****** */}
       {!loading && usuario && (
         <div className="vet-info">
           <div className={`vet-role ${!menuAbierto ? "hidden" : ""}`}>{displayRole}</div>
@@ -65,8 +69,13 @@ const BarraVet = ({ onToggleMenu, menuAbierto }) => {
       <nav>
         <ul className="menu-lateral-vet">
           {menuItems.map(({ icon: Icon, text, path }) => (
-            <li key={text} className={location.pathname === path ? "active" : ""}>
-              <Link to={path} className="link" onClick={() => isMobile && onToggleMenu()}>
+            <li key={text} className={location.pathname.includes(encodePath(path)) ? "active" : ""}>
+              {/* 3. CONSTRUYE LA URL CODIFICADA EN EL COMPONENTE LINK */}
+              <Link 
+                to={`/PanelVet/${encodePath(path)}`} 
+                className="link" 
+                onClick={() => isMobile && onToggleMenu()}
+              >
                 <Icon />
                 {menuAbierto && <span>{text}</span>}
               </Link>
@@ -74,10 +83,8 @@ const BarraVet = ({ onToggleMenu, menuAbierto }) => {
           ))}
         </ul>
       </nav>
-
-
     </aside>
-  )
-}
+  );
+};
 
 export default BarraVet;

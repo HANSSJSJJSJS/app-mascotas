@@ -1,5 +1,19 @@
 DELIMITER $$
 
+--  Procedimiento para OBTENER todos los usuarios
+
+CREATE PROCEDURE sp_get_all_users()
+BEGIN
+    SELECT 
+        u.*,
+        r.rol AS nombre_rol, 
+        tp.tipo AS tipo_persona
+    FROM usuarios u
+    LEFT JOIN rol r ON u.id_rol = r.id_rol
+    LEFT JOIN tipo_persona tp ON u.id_tipo = tp.id_tipo
+    ORDER BY u.id_usuario DESC;
+END$$
+
 -- 1. Procedimiento para CREAR un nuevo usuario (Modificado)
 CREATE PROCEDURE sp_create_user(
     IN p_nombre VARCHAR(255),
