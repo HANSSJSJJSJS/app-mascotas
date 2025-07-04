@@ -9,12 +9,6 @@ const PanelVet = () => {
   const [menuAbierto, setMenuAbierto] = useState(true)
   const [isMobile, setIsMobile] = useState(false)
 
-  const [userData] = useState({
-    username: "Dr. Carlos Rodríguez",
-    role: "Veterinario",
-    email: "carlos.rodriguez@vetclinic.com",
-  })
-
   useEffect(() => {
     const checkIfMobile = () => {
       const mobile = window.innerWidth < 1024
@@ -38,7 +32,7 @@ const PanelVet = () => {
   return (
     <div className="app-container">
       <BarraVet onToggleMenu={toggleMenu} menuAbierto={menuAbierto} />
-      <EncabezadoVet onToggleMenu={toggleMenu} userData={userData} isSidebarOpen={menuAbierto} />
+      <EncabezadoVet onToggleMenu={toggleMenu} isSidebarOpen={menuAbierto} />
       <div
         className="content-wrapper"
         style={{

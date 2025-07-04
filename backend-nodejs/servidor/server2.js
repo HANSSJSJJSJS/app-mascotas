@@ -1243,7 +1243,6 @@ app.delete("/api/mascotas/:id", async (req, res) => {
 })
 
 // PATCH /api/mascotas/:id/estado - Cambiar estado de mascota
-// PATCH /api/mascotas/:id/estado
 app.patch("/api/mascotas/:id/estado", async (req, res) => {
   try {
     const { id } = req.params;

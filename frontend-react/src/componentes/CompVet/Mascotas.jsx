@@ -194,7 +194,7 @@ const GestorMascotas = () => {
   try {
     // Actualización optimista (cambia el estado antes de la respuesta del servidor)
     setMascotas(prev => prev.map(m => 
-      m.id === id ? { ...m, activo: nuevoEstado } : m
+      m.cod_mas === id ? { ...m, activo: nuevoEstado } : m
     ));
 
     const response = await axios.patch(
@@ -219,7 +219,7 @@ const GestorMascotas = () => {
     
     // Revertir el cambio si falla
     setMascotas(prev => prev.map(m => 
-      m.id === id ? { ...m, activo: !nuevoEstado } : m
+      m.cod_mas === id ? { ...m, activo: !nuevoEstado } : m
     ));
 
     // Mostrar error al usuario

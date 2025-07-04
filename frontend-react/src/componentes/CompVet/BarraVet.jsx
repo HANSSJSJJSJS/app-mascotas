@@ -1,11 +1,13 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { Calendar, FileText, PawPrint, Pill, Stethoscope, User, X } from 'lucide-react'
 import { Link, useLocation } from "react-router-dom"
 import "../../stylos/cssVet/BarraVet.css";
+import { useAuth } from '../../context/AuthContext'; // ¡Asegúrate de que esta línea esté presente!
 
 const BarraVet = ({ onToggleMenu, menuAbierto }) => {
   const [isMobile, setIsMobile] = useState(false)
   const location = useLocation()
+  const { usuario, loading } = useAuth(); // ¡Asegúrate de que esta línea esté presente!
 
   const menuItems = [
     { icon: Stethoscope, text: "Inicio", path: "/PanelVet" },
@@ -23,6 +25,22 @@ const BarraVet = ({ onToggleMenu, menuAbierto }) => {
     return () => window.removeEventListener("resize", checkIfMobile)
   }, [])
 
+  const displayName = useMemo(() => {
+    if (loading || !usuario) return "Dr. Veterinario"; // Fallback mientras carga o si no hay usuario
+    return usuario.nombre ? `Dr. ${usuario.nombre}` : "Dr. Veterinario";
+  }, [usuario, loading]);
+
+  const displayRole = useMemo(() => {
+    if (loading || !usuario) return "Veterinario"; // Fallback
+    switch (usuario.id_rol) {
+      case 1: return "Administrador";
+      case 2: return "Veterinario";
+      case 3: return "Propietario";
+      default: return "Usuario";
+    }
+  }, [usuario, loading]);
+
+
   return (
     <aside className={`barra-lateral-vet ${isMobile ? "mobile" : ""} ${menuAbierto ? "open" : "closed"}`}>
       {isMobile && (
@@ -36,10 +54,13 @@ const BarraVet = ({ onToggleMenu, menuAbierto }) => {
         <h2 className={menuAbierto ? "" : "hidden"}>PET MOYBE</h2>
       </div>
       
-      <div className="vet-info">
-        <div className={`vet-role ${!menuAbierto ? "hidden" : ""}`}>Veterinario</div>
-        <div className={`vet-name ${!menuAbierto ? "hidden" : ""}`}>Dr. Carlos Rodríguez</div>
-      </div>
+      {/* ****** CAMBIO: Solo muestra la información si el usuario y el rol no están cargando ****** */}
+      {!loading && usuario && (
+        <div className="vet-info">
+          <div className={`vet-role ${!menuAbierto ? "hidden" : ""}`}>{displayRole}</div>
+          <div className={`vet-name ${!menuAbierto ? "hidden" : ""}`}>{displayName}</div>
+        </div>
+      )}
 
       <nav>
         <ul className="menu-lateral-vet">
