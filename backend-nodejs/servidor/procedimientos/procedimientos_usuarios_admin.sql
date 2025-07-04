@@ -1,21 +1,6 @@
-
-
 DELIMITER $$
 
--- 1. Procedimiento para OBTENER todos los usuarios
-CREATE PROCEDURE sp_get_all_users()
-BEGIN
-    SELECT 
-        u.*,
-        r.rol AS nombre_rol, 
-        tp.tipo AS tipo_persona
-    FROM usuarios u
-    LEFT JOIN rol r ON u.id_rol = r.id_rol
-    LEFT JOIN tipo_persona tp ON u.id_tipo = tp.id_tipo
-    ORDER BY u.id_usuario DESC;
-END$$
-
--- 2. Procedimiento para CREAR un nuevo usuario
+-- 1. Procedimiento para CREAR un nuevo usuario (Modificado)
 CREATE PROCEDURE sp_create_user(
     IN p_nombre VARCHAR(255),
     IN p_apellido VARCHAR(255),
@@ -30,11 +15,15 @@ CREATE PROCEDURE sp_create_user(
     IN p_direccion VARCHAR(255),
     IN p_id_rol INT,
     IN p_id_tipo INT,
-    IN p_password VARCHAR(255)
+    IN p_password VARCHAR(255),
+    IN p_modifying_user_id INT 
 )
 BEGIN
     DECLARE existing_email INT DEFAULT 0;
     DECLARE new_user_id INT;
+
+    -- Establece el ID del usuario que realiza la acción para el trigger
+    SET @app_user_id = p_modifying_user_id; -- <-- LÍNEA NUEVA
 
     -- Verificar si el email ya existe
     SELECT COUNT(*) INTO existing_email FROM usuarios WHERE email = p_email;
@@ -67,7 +56,7 @@ BEGIN
     END IF;
 END$$
 
--- 3. Procedimiento para ACTUALIZAR un usuario
+-- 2. Procedimiento para ACTUALIZAR un usuario (Modificado)
 CREATE PROCEDURE sp_update_user(
     IN p_id_usuario INT,
     IN p_nombre VARCHAR(255),
@@ -84,9 +73,13 @@ CREATE PROCEDURE sp_update_user(
     IN p_id_rol INT,
     IN p_id_tipo INT,
     IN p_estado TINYINT,
-    IN p_password VARCHAR(255)
+    IN p_password VARCHAR(255),
+    IN p_modifying_user_id INT -- <-- PARÁMETRO NUEVO
 )
 BEGIN
+    -- Establece el ID del usuario que realiza la acción para el trigger
+    SET @app_user_id = p_modifying_user_id; -- <-- LÍNEA NUEVA
+
     UPDATE usuarios SET
         nombre = p_nombre,
         apellido = p_apellido,
@@ -106,12 +99,16 @@ BEGIN
     WHERE id_usuario = p_id_usuario;
 END$$
 
--- 4. Procedimiento para ELIMINAR un usuario
+-- 3. Procedimiento para ELIMINAR un usuario (Modificado)
 CREATE PROCEDURE sp_delete_user(
-    IN p_id_usuario INT
+    IN p_id_usuario INT,
+    IN p_modifying_user_id INT -- <-- PARÁMETRO NUEVO
 )
 BEGIN
     DECLARE v_id_tipo INT;
+
+    -- Establece el ID del usuario que realiza la acción para el trigger
+    SET @app_user_id = p_modifying_user_id; -- <-- LÍNEA NUEVA
 
     -- Iniciar transacción
     START TRANSACTION;
@@ -135,6 +132,26 @@ BEGIN
     
     -- Confirmar transacción
     COMMIT;
+END$$
+
+-- 4. Procedimiento para OBTENER el historial de auditoría
+CREATE PROCEDURE sp_get_user_audit_log(IN p_id_usuario INT)
+BEGIN
+    SELECT 
+        audit_id,
+        id_usuario,
+        campo_modificado,
+        valor_anterior,
+        valor_nuevo,
+        accion,
+        fecha_modificacion,
+        usuario_db
+    FROM 
+        audit_usuarios 
+    WHERE 
+        id_usuario = p_id_usuario 
+    ORDER BY 
+        fecha_modificacion DESC;
 END$$
 
 DELIMITER ;

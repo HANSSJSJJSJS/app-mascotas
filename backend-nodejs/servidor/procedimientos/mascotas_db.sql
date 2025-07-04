@@ -121,11 +121,11 @@ CREATE TABLE citas (
 CREATE TABLE IF NOT EXISTS citas_audit (
     audit_id INT AUTO_INCREMENT PRIMARY KEY,
     cod_cit INT,
-    accion VARCHAR(10) NOT NULL, -- 'INSERT', 'UPDATE', 'DELETE'
+    accion VARCHAR(10) NOT NULL,
     campo_modificado VARCHAR(100),
     valor_anterior TEXT,
     valor_nuevo TEXT,
-    usuario_db VARCHAR(100), -- El usuario de la base de datos que realizó la acción
+    usuario_db VARCHAR(100), 
     fecha_modificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -146,10 +146,11 @@ CREATE TABLE IF NOT EXISTS audit_usuarios (
     campo_modificado VARCHAR(255) NOT NULL,
     valor_anterior TEXT,
     valor_nuevo TEXT,
-    accion VARCHAR(10) NOT NULL, 
-    usuario_db VARCHAR(255),
+    accion ENUM('INSERT', 'UPDATE', 'DELETE') NOT NULL, 
+    usuario_db VARCHAR(255) NOT NULL,
     fecha_modificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
 
 INSERT INTO tipo_persona (id_tipo, tipo) VALUES
 (1, 'Invitado/Tutor'),
