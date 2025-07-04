@@ -8,6 +8,7 @@ import {
   AlertTriangle, XCircle, PlayCircle, SkipForward, FileText
 } from "react-feather"
 import Swal from "sweetalert2"
+import { useAuth } from "../../context/AuthContext"; // <-- IMPORTANTE: Importa el hook
 
 const API_URL = "http://localhost:3001/api/admin"
 
@@ -83,7 +84,6 @@ const CitaModal = ({ isOpen, onClose, onSave, cita, listas, citas }) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
     
-    // Validaciones en tiempo real
     if (name === 'fech_cit') {
       setErrors(prev => ({...prev, fech_cit: validateFecha(value)}))
     }
@@ -102,7 +102,6 @@ const CitaModal = ({ isOpen, onClose, onSave, cita, listas, citas }) => {
   const handleSubmit = (e) => {
     e.preventDefault()
     
-    // Validar todo antes de enviar
     const fechaError = validateFecha(formData.fech_cit)
     const horaError = validateHora(formData.hora)
     
@@ -116,7 +115,6 @@ const CitaModal = ({ isOpen, onClose, onSave, cita, listas, citas }) => {
       return
     }
     
-    // Validación de solapamiento
     const fechaHoraCita = new Date(`${formData.fech_cit}T${formData.hora}:00`)
     const fechaHoraFinCita = new Date(fechaHoraCita)
     fechaHoraFinCita.setMinutes(fechaHoraFinCita.getMinutes() + 90)
@@ -147,7 +145,6 @@ const CitaModal = ({ isOpen, onClose, onSave, cita, listas, citas }) => {
       return
     }
     
-    // Si pasa todas las validaciones, guardar la cita
     onSave(formData)
   }
 
@@ -223,7 +220,7 @@ const CitaModal = ({ isOpen, onClose, onSave, cita, listas, citas }) => {
                 </label>
                 <select name="id_vet" value={formData.id_vet || ""} onChange={handleChange} required className="enhanced-select" >
                   <option value="" disabled>Seleccionar veterinario...</option>
-                  {listas.veterinarios.map((v) => ( <option key={v.id_usuario} value={v.id_usuario}>Dr. {v.nombre} {v.apellido}</option> ))}
+                  {listas.veterinarios.map((v) => ( <option key={v.id_usuario} value={v.id_usuario}>Dr. {v.nombre} {v.apellido}</option>))}
                 </select>
               </div>
             </div>
@@ -376,7 +373,7 @@ const AuditLogModal = ({ isOpen, onClose, logData, citaId }) => {
                     </div>
                     <div className="audit-meta">
                       <span>{new Date(log.fecha_modificacion).toLocaleString('es-CO')}</span>
-                      <span>Por: {log.usuario_db}</span>
+                      <span>Modificado por: {log.usuario_db}</span>
                     </div>
                   </div>
                 );
@@ -393,6 +390,9 @@ const AuditLogModal = ({ isOpen, onClose, logData, citaId }) => {
 
 // --- Componente Principal ---
 const GestionCitas = () => {
+  const { usuario } = useAuth(); // <-- Se obtiene el usuario del contexto
+  const loggedInUserId = usuario?.id_usuario; // <-- Se obtiene el ID de forma segura
+
   const [citas, setCitas] = useState([])
   const [kpiData, setKpiData] = useState({})
   const [listas, setListas] = useState({ mascotas: [], propietarios: [], veterinarios: [], servicios: [] })
@@ -402,8 +402,6 @@ const GestionCitas = () => {
   const [error, setError] = useState(null)
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState("TODOS")
-
-  // Estados para el modal de auditoría
   const [isAuditModalOpen, setIsAuditModalOpen] = useState(false);
   const [auditLog, setAuditLog] = useState([]);
   const [citaIdForAudit, setCitaIdForAudit] = useState(null);
@@ -513,7 +511,9 @@ const GestionCitas = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await axios.delete(`${API_URL}/citas/${id}`)
+          await axios.delete(`${API_URL}/citas/${id}`, {
+            data: { modifying_user_id: loggedInUserId }
+          })
           fetchData()
           Swal.fire({
             title: "¡Eliminada!", text: "La cita ha sido eliminada.", icon: "success",
@@ -532,8 +532,10 @@ const GestionCitas = () => {
   const handleSave = async (citaData) => {
     const url = citaData.cod_cit ? `${API_URL}/citas/${citaData.cod_cit}` : `${API_URL}/citas`
     const method = citaData.cod_cit ? "put" : "post"
+    const payload = { ...citaData, modifying_user_id: loggedInUserId };
+
     try {
-      await axios[method](url, citaData)
+      await axios[method](url, payload)
       setIsCitaModalOpen(false)
       fetchData()
       Swal.fire({

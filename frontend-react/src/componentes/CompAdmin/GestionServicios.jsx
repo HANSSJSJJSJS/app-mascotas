@@ -8,6 +8,7 @@ import "sweetalert2/dist/sweetalert2.min.css"
 import { Briefcase, Plus, Edit, Trash2, Eye, DollarSign, FileText, CheckCircle, Search, XCircle } from "lucide-react"
 import "../../stylos/cssAdmin/GestionServicios.css"
 import Loading from "../index/Loading"
+import { useAuth } from "../../context/AuthContext" // <-- IMPORTANTE: Importa el hook
 
 // --- MODAL DE AUDITORÍA ---
 const AuditLogModal = ({ isOpen, onClose, logData, serviceName, serviceCode }) => {
@@ -31,6 +32,7 @@ const AuditLogModal = ({ isOpen, onClose, logData, serviceName, serviceCode }) =
       nom_ser: "Nombre del Servicio",
       descrip_ser: "Descripción",
       precio: "Precio",
+      'Nombre Servicio': 'Nombre Servicio' // Añadido para que coincida con el trigger
     }
     return names[field] || field
   }
@@ -66,7 +68,7 @@ const AuditLogModal = ({ isOpen, onClose, logData, serviceName, serviceCode }) =
                       style={{ backgroundColor: actionInfo.color }}
                       data-action={actionInfo.dataAction}
                     >
-                      <span style={{ fontSize: "18px", fontWeight: "bold", color: "white" }}>{actionInfo.icon}</span>
+                      {/* El icono puede ser dinámico si lo deseas, ej: actionInfo.icon */}
                     </div>
                     <div className="audit-content">
                       <div className="audit-header">
@@ -93,7 +95,7 @@ const AuditLogModal = ({ isOpen, onClose, logData, serviceName, serviceCode }) =
                         )}
                         {(log.accion === "INSERT" || log.accion === "DELETE") && (
                           <div className="audit-change-row">
-                            <span className="audit-label">{log.accion === "INSERT" ? "Valor:" : "Eliminado:"}</span>
+                            <span className="audit-label">{log.accion === "INSERT" ? "Detalle:" : "Info:"}</span>
                             <span className="audit-full-value">{log.valor_nuevo || log.valor_anterior}</span>
                           </div>
                         )}
@@ -119,27 +121,21 @@ const AuditLogModal = ({ isOpen, onClose, logData, serviceName, serviceCode }) =
 }
 
 const GestionServicios = () => {
-  const [searchParams] = useSearchParams()
+  const { usuario } = useAuth(); // Se obtiene el usuario del contexto
+  const loggedInUserId = usuario?.id_usuario; // Se obtiene el ID de forma segura
 
+  const [searchParams] = useSearchParams()
   const [activeTab, setActiveTab] = useState("lista")
   const [servicios, setServicios] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-
   const [searchTerm, setSearchTerm] = useState("")
   const [estadoFilter, setEstadoFilter] = useState("")
   const [precioFilter, setPrecioFilter] = useState("")
-
-  const initialFormData = {
-    nom_ser: "",
-    descrip_ser: "",
-    precio: "",
-  }
+  const initialFormData = { nom_ser: "", descrip_ser: "", precio: "" }
   const [formData, setFormData] = useState(initialFormData)
   const [isEditing, setIsEditing] = useState(false)
   const [editingId, setEditingId] = useState(null)
-
-  // Estados para el modal de auditoría
   const [isAuditModalOpen, setIsAuditModalOpen] = useState(false)
   const [auditLog, setAuditLog] = useState([])
   const [currentServiceForAudit, setCurrentServiceForAudit] = useState(null)
@@ -206,13 +202,6 @@ const GestionServicios = () => {
         html: "Por favor, asegúrate de que el <strong>nombre</strong> y el <strong>precio</strong> del servicio no estén vacíos.",
         confirmButtonText: "Aceptar",
         buttonsStyling: false,
-        didRender: () => {
-          const icon = document.querySelector(".swal2-icon.swal2-warning")
-          if (icon) {
-            icon.style.color = "#495a90"
-            icon.style.borderColor = "#495a90"
-          }
-        },
       })
       return
     }
@@ -221,6 +210,7 @@ const GestionServicios = () => {
       nom_ser: formData.nom_ser,
       descrip_ser: formData.descrip_ser,
       precio: Number.parseFloat(formData.precio),
+      modifying_user_id: loggedInUserId // Se añade el ID del modificador
     }
 
     const url = isEditing
@@ -281,17 +271,12 @@ const GestionServicios = () => {
       confirmButtonText: "Sí, eliminar",
       cancelButtonText: "No, cancelar",
       buttonsStyling: false,
-      didRender: () => {
-        const icon = document.querySelector(".swal2-icon.swal2-warning")
-        if (icon) {
-          icon.style.color = "#495a90"
-          icon.style.borderColor = "#495a90"
-        }
-      },
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await axios.delete(`http://localhost:3001/api/admin/servicios/${servicio.codigo}`)
+          await axios.delete(`http://localhost:3001/api/admin/servicios/${servicio.codigo}`, {
+            data: { modifying_user_id: loggedInUserId } // Se añade el ID en el cuerpo
+          })
           Swal.fire({
             customClass: {
               popup: "swal-custom-success",
@@ -386,7 +371,7 @@ const GestionServicios = () => {
       </div>
 
       <div className="tabs-container">
-        <div className="tabs">
+        <div className={`tabs ${activeTab === 'registrar' ? 'active-registrar' : 'active-lista'}`}>
           <button className={`tab ${activeTab === "lista" ? "active" : ""}`} onClick={() => setActiveTab("lista")}>
             <Eye size={18} /> Lista de Servicios
           </button>
