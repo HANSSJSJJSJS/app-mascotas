@@ -1,5 +1,3 @@
-"use client"
-
 import { useEffect, useState } from "react"
 import {
   Calendar,
@@ -59,8 +57,11 @@ export default function InicioPropietario() {
 
       setUsuario(usuarioActual)
 
-      // Obtener mascotas del usuario
-      const mascotasResponse = await axios.get(`http://localhost:3001/api/mascotas/${usuarioActual.id_usuario}`)
+      // Obtener mascotas del usuario (forzar recarga sin cache)
+      const mascotasResponse = await axios.get(
+        `http://localhost:3001/api/mascotas/${usuarioActual.id_usuario}`,
+        { headers: { 'Cache-Control': 'no-cache' } }
+      );
       setMascotas(mascotasResponse.data)
 
       // Calcular estadísticas de mascotas
@@ -172,14 +173,40 @@ export default function InicioPropietario() {
     return diffDays >= 0 && diffDays <= 7
   })
 
-  // Utilidad para obtener la URL de la imagen de la mascota
+
+  // Función mejorada para obtener URLs de imagen
   function getImageUrl(foto) {
-    if (!foto || foto === "default.jpg") return "/placeholder.svg"
-    if (foto.startsWith("/uploads/")) {
-      return `http://localhost:3001${foto}`
+    if (!foto || foto === "default.jpg") {
+      return `/placeholder.svg?t=${Date.now()}`;
     }
-    return `http://localhost:3001/uploads/mascotas/${foto}`
+    let baseUrl = 'http://localhost:3001';
+    if (foto.startsWith('http')) {
+      return `${foto}?t=${Date.now()}`;
+    }
+    if (foto.startsWith('/uploads/')) {
+      return `${baseUrl}${foto}?t=${Date.now()}`;
+    }
+    return `${baseUrl}/uploads/mascotas/${foto}?t=${Date.now()}`;
   }
+
+  // Componente de imagen mejorado
+  const PetImage = ({ mascota }) => {
+    const [imgSrc, setImgSrc] = useState(getImageUrl(mascota.foto));
+    const handleError = () => {
+      setImgSrc(`/placeholder.svg?t=${Date.now()}`);
+    };
+    useEffect(() => {
+      setImgSrc(getImageUrl(mascota.foto));
+    }, [mascota.foto]);
+    return (
+      <img
+        src={imgSrc}
+        alt={mascota.nom_mas}
+        className="pet-image"
+        onError={handleError}
+      />
+    );
+  };
 
   // Funciones para manejar las citas
   const handleConfirmarCita = async (cita) => {
@@ -371,14 +398,7 @@ export default function InicioPropietario() {
                   <div key={index} className="pet-card">
                     <div className="pet-header">
                       <div className="pet-image-container">
-                        <img
-                          src={getImageUrl(mascota.foto) || "/placeholder.svg"}
-                          alt={mascota.nom_mas}
-                          className="pet-image"
-                          onError={(e) => {
-                            e.target.src = "/placeholder.svg?height=200&width=200"
-                          }}
-                        />
+                        <PetImage mascota={mascota} />
                       </div>
                       <div className="pet-badges">
                         {mascota.vacunado && (

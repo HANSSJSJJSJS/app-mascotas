@@ -18,10 +18,11 @@ const GestorMascotas = () => {
         if (!response.ok) throw new Error('Error al cargar mascotas');
         
         const data = await response.json();
+        // Normaliza el id para cualquier respuesta (id o cod_mas)
         const mascotasTransformadas = data.map(mascota => ({
-          id: mascota.cod_mas,
-          nombre: mascota.nom_mas,
-          tipo: mascota.especie,
+          id: mascota.id || mascota.cod_mas,
+          nombre: mascota.nombre || mascota.nom_mas,
+          tipo: mascota.tipo || mascota.especie,
           raza: mascota.raza,
           edad: mascota.edad,
           genero: mascota.genero,
@@ -34,8 +35,8 @@ const GestorMascotas = () => {
           vacunado: mascota.vacunado,
           esterilizado: mascota.esterilizado,
           activo: mascota.activo,
-          dueño: mascota.nombre_propietario ? 
-          `${mascota.nombre_propietario} ${mascota.apellido_propietario}` : 'Sin dueño',
+          dueño: (mascota.nombre_propietario || mascota.nombrePropietario) ? 
+            `${mascota.nombre_propietario || mascota.nombrePropietario} ${mascota.apellido_propietario || mascota.apellidoPropietario}` : 'Sin dueño',
           telefono: mascota.telefono,
           email: mascota.email,
           direccion: mascota.direccion

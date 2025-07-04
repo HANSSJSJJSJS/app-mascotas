@@ -1,7 +1,56 @@
-import { useState, useRef, useEffect } from "react"
-import axios from "axios"
-import { FileText, Calendar, Weight, Camera, Upload, X, Heart, Shield, PawPrint } from "lucide-react"
-import "../../stylos/cssPropietario/Mascota.css"
+import { useState, useRef, useEffect } from "react";
+import axios from "axios";
+import { FileText, Calendar, Weight, Camera, Upload, X, Heart, Shield, PawPrint } from "lucide-react";
+import "../../stylos/cssPropietario/Mascota.css";
+
+// Componente de imagen optimizado
+const PetImage = ({ foto, alt, className }) => {
+  const [imgSrc, setImgSrc] = useState(getImageUrl(foto));
+  const [retryCount, setRetryCount] = useState(0);
+
+  useEffect(() => {
+    setImgSrc(getImageUrl(foto));
+    setRetryCount(0);
+  }, [foto]);
+
+  const handleError = () => {
+    if (retryCount < 2) {
+      setImgSrc(`${getImageUrl(foto)}?t=${Date.now()}`);
+      setRetryCount(retryCount + 1);
+    } else {
+      setImgSrc("/placeholder.svg");
+    }
+  };
+
+  return (
+    <img
+      src={imgSrc}
+      alt={alt}
+      className={className}
+      onError={handleError}
+    />
+  );
+};
+
+// Función para obtener URLs de imágenes con cache busting
+const getImageUrl = (foto) => {
+  if (!foto || foto === "default.jpg") {
+    return "/placeholder.svg";
+  }
+  
+  const baseUrl = "http://localhost:3001";
+  const timestamp = Date.now();
+  
+  if (foto.startsWith('http')) {
+    return `${foto}?t=${timestamp}`;
+  }
+  
+  if (foto.startsWith('/uploads/')) {
+    return `${baseUrl}${foto}?t=${timestamp}`;
+  }
+  
+  return `${baseUrl}/uploads/mascotas/${foto}?t=${timestamp}`;
+};
 
 export default function Mascota() {
   const [mascotas, setMascotas] = useState([])
@@ -73,6 +122,8 @@ export default function Mascota() {
     return `${edad || "-"} años`
   }
 
+  // (Eliminada la definición duplicada de getImageUrl, solo queda la versión superior junto a PetImage)
+
   const handleFotoChange = (e) => {
     const file = e.target.files[0]
     if (file) {
@@ -93,28 +144,33 @@ export default function Mascota() {
       formData.append("foto", fileInputRef.current.files[0]);
 
       // Sube la foto al backend
-      await axios.put(
+      const response = await axios.put(
         `http://localhost:3001/api/mascotas/${mascotaSeleccionada}/foto`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
 
-      // Vuelve a pedir la lista de mascotas para refrescar el estado y la imagen
-      const usuarioActual = JSON.parse(localStorage.getItem("pet-app-user"));
-      if (usuarioActual?.id_usuario) {
-        const res = await axios.get(`http://localhost:3001/api/mascotas/${usuarioActual.id_usuario}`);
-        setMascotas(res.data);
-        // Log para depuración: muestra el campo foto de la mascota seleccionada
-        const mascotaActualizada = res.data.find(m => m.id === mascotaSeleccionada);
-        console.log('Mascota actualizada tras subir foto:', mascotaActualizada);
-      }
+      // Actualiza el estado local con la nueva foto
+      setMascotas(prevMascotas => {
+        const updated = prevMascotas.map(mascota =>
+          mascota.id === mascotaSeleccionada
+            ? { ...mascota, foto: response.data.foto }
+            : mascota
+        );
+        // Debug: mostrar el estado actualizado
+        console.log("Mascotas tras la subida de foto:", updated);
+        console.log("Foto antes:", prevMascotas.find(m => m.id === mascotaSeleccionada)?.foto);
+        console.log("Foto después:", response.data.foto);
+        return updated;
+      });
 
       setShowFotoModal(false);
       setFotoPreview(null);
       if (fileInputRef.current) fileInputRef.current.value = "";
       setShowSuccessModal(true);
     } catch (error) {
-      setErrorModalMessage("Error al actualizar la foto");
+      console.error("Error al subir foto:", error);
+      setErrorModalMessage(error.response?.data?.message || "Error al actualizar la foto");
       setShowErrorModal(true);
     } finally {
       setIsUploadingFoto(false);
@@ -174,12 +230,8 @@ export default function Mascota() {
             <div className="profile-header-section">
               <div className="pet-photo-info">
                 <div className="pet-photo-container">
-                  <img
-                    src={
-                      mascotaActual.foto
-                        ? `http://localhost:3001/uploads/mascotas/${mascotaActual.foto}?v=${mascotaActual.foto}`
-                        : "/placeholder.svg"
-                    }
+                  <PetImage
+                    foto={mascotaActual.foto}
                     alt={mascotaActual.nombre}
                     className="pet-photo-main"
                   />
@@ -320,17 +372,13 @@ export default function Mascota() {
               <div className="foto-modal-body-main">
                 <div className="foto-preview-container">
                   <img
-                    src={
-                      fotoPreview
-                        ? fotoPreview
-                        : mascotaActual.foto
-                          ? (mascotaActual.foto.startsWith("/uploads/")
-                              ? `http://localhost:3001${mascotaActual.foto}`
-                              : `http://localhost:3001/uploads/mascotas/${mascotaActual.foto}`)
-                          : "/placeholder.svg"
-                    }
+                    src={fotoPreview || getImageUrl(mascotaActual.foto)}
                     alt="Preview"
                     className="preview-image-main"
+                    onError={e => {
+                      e.target.src = "/placeholder.svg";
+                      e.target.onerror = null;
+                    }}
                   />
                 </div>
 
