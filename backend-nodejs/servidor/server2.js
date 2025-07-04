@@ -25,8 +25,8 @@ app.use("/api/propietario", propietarioRoutes);
 // Sirve archivos estáticos desde backend-nodejs/uploads (no desde servidor/uploads)
 // CORRECCIÓN: Usar path.join para mayor robustez y log explícito
 const uploadsPath = path.join(__dirname, "..", "uploads");
-console.log("Sirviendo archivos estáticos desde:", uploadsPath);
 app.use("/uploads", express.static(uploadsPath));
+
 
 // Configuración de la conexión a MySQL
 const dbConfig = {
@@ -46,11 +46,11 @@ const pool = mysql.createPool(dbConfig)
 // Configuración de Multer para la carga de imágenes en carpeta /uploads/mascotas
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const uploadPath = path.join(__dirname, "../../uploads/mascotas")
+    const uploadPath = path.join(__dirname, "..", "uploads", "mascotas");
     if (!fs.existsSync(uploadPath)) {
-      fs.mkdirSync(uploadPath, { recursive: true })
+      fs.mkdirSync(uploadPath, { recursive: true });
     }
-    cb(null, uploadPath)
+    cb(null, uploadPath);
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9)
@@ -112,37 +112,7 @@ app.get("/api/usuario/:id", async (req, res) => {
   }
 })
 
-// Endpoint para obtener mascotas del propietario
-app.get("/api/propietario/:id/mascotas", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const [mascotas] = await pool.query(
-      `
-      SELECT 
-        m.cod_mas,
-        m.nom_mas,
-        m.especie,
-        m.raza,
-        m.edad,
-        m.genero,
-        m.peso,
-        m.color,
-        m.notas,
-        m.vacunado,
-        m.esterilizado,
-        m.foto,
-        m.id_pro
-      FROM mascotas m
-      WHERE m.id_pro = ? AND m.activo = true
-      `,
-      [id]
-    );
-    res.json(mascotas);
-  } catch (error) {
-    console.error("Error al obtener mascotas:", error);
-    res.status(500).json({ success: false, message: "Error en el servidor al obtener mascotas" });
-  }
-})
+
 
 // Endpoint para obtener citas del propietario
 app.get("/api/propietario/:id/citas", async (req, res) => {
@@ -1148,99 +1118,7 @@ app.post("/api/mascotas", upload.single("foto"), async (req, res) => {
   }
 });
 
-// Endpoint para obtener una mascota específica
-app.get("/api/mascotas/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const [mascota] = await pool.query(
-      `
-      SELECT 
-        m.*,
-        CONCAT(u.nombre, ' ', u.apellido) as nombre_propietario,
-        u.telefono as telefono_propietario,
-        u.email as email_propietario
-      FROM mascotas m
-      LEFT JOIN propietarios p ON m.id_pro = p.id_pro
-      LEFT JOIN usuarios u ON p.id_pro = u.id_usuario
-      WHERE m.cod_mas = ? AND m.activo = true
-    `,
-      [id],
-    );
 
-    if (mascota.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: "Mascota no encontrada",
-      });
-    }
-
-    res.json(mascota[0]);
-  } catch (error) {
-    console.error("Error al obtener mascota:", error);
-    res.status(500).json({
-      success: false,
-      message: "Error en el servidor al obtener la mascota",
-    });
-  }
-});
-
-// PUT /api/mascotas/:id - Actualizar mascota
-app.put("/api/mascotas/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { nom_mas, especie, raza, edad, genero, peso, color, notas, vacunado, esterilizado } = req.body;
-
-    const query = `
-      UPDATE mascotas SET 
-        nom_mas = ?, especie = ?, raza = ?, edad = ?, genero = ?,
-        peso = ?, color = ?, notas = ?, vacunado = ?, esterilizado = ?
-      WHERE cod_mas = ?
-    `;
-
-    const [result] = await pool.query(query, [
-      nom_mas,
-      especie,
-      raza,
-      edad,
-      genero,
-      peso,
-      color,
-      notas,
-      vacunado,
-      esterilizado,
-      id,
-    ]);
-
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ error: "Mascota no encontrada" });
-    }
-
-    res.json({ message: "Mascota actualizada exitosamente" });
-  } catch (error) {
-    console.error("Error al actualizar mascota:", error);
-    res.status(500).json({ error: "Error interno del servidor" });
-  }
-});
-
-// DELETE /api/mascotas/:id - Eliminar mascota
-app.delete("/api/mascotas/:id", async (req, res) => {
-  try {
-    const { id } = req.params
-
-    // Soft delete - cambiar activo a false
-    const query = "UPDATE mascotas SET activo = 0 WHERE cod_mas = ?"
-    const [result] = await db.execute(query, [id])
-
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ error: "Mascota no encontrada" })
-    }
-
-    res.json({ message: "Mascota eliminada exitosamente" })
-  } catch (error) {
-    console.error("Error al eliminar mascota:", error)
-    res.status(500).json({ error: "Error interno del servidor" })
-  }
-})
 
 // PATCH /api/mascotas/:id/estado - Cambiar estado de mascota
 // PATCH /api/mascotas/:id/estado
@@ -1380,15 +1258,20 @@ app.get("/api/mascotas/:id/foto", async (req, res) => {
       return res.status(404).json({ success: false, message: "Mascota no encontrada" });
     }
     const foto = mascota[0].foto || "default.jpg";
-    // Construir la ruta absoluta al archivo de la foto
-    const filePath = path.join(__dirname, "../../uploads/mascotas", foto);
-    // Verificar si el archivo existe
-    if (!fs.existsSync(filePath)) {
-      // Si no existe, devolver una imagen por defecto
-      const defaultPath = path.join(__dirname, "../../uploads/mascotas", "default.jpg");
-      return res.sendFile(defaultPath);
+    const filePath = path.join(__dirname, "..", "uploads", "mascotas", foto); // CORREGIDO
+    console.log("[FOTO] Mascota id:", id, "| Nombre archivo:", foto, "| Ruta esperada:", filePath);
+    if (fs.existsSync(filePath)) {
+      return res.sendFile(filePath);
     }
-    res.sendFile(filePath);
+    // Si no existe la foto, intentar servir el default
+    const defaultPath = path.join(__dirname, "..", "uploads", "mascotas", "default.jpg"); // CORREGIDO
+    if (fs.existsSync(defaultPath)) {
+      console.warn(`[FOTO] Archivo no encontrado (${filePath}), devolviendo default.jpg (${defaultPath})`);
+      return res.sendFile(defaultPath);
+    } else {
+      console.error(`[FOTO] Ni la foto ni default.jpg existen. Ruta buscada: ${filePath} | Default: ${defaultPath}`);
+      return res.status(404).json({ success: false, message: `Foto no encontrada (${filePath}) y tampoco default.jpg` });
+    }
   } catch (error) {
     console.error("Error al obtener la foto de la mascota:", error);
     res.status(500).json({ success: false, message: "Error en el servidor" });
