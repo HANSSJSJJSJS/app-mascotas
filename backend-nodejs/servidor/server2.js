@@ -454,91 +454,112 @@ app.get("/api/admin/stats", async (req, res) => {
 // --- Endpoint para obtener todos los usuarios (gestión de usuarios) ---
 app.get("/api/admin/users", async (req, res) => {
   try {
-      const [users] = await pool.query("CALL sp_get_all_users()");
-      res.json(users[0]);
+    const [users] = await pool.query("CALL sp_get_all_users()");
+    res.json(users[0]);
   } catch (error) {
-      console.error("Error en GET /api/admin/users:", error);
-      res.status(500).json({ message: "Error al obtener usuarios." });
+    console.error("Error en GET /api/admin/users:", error);
+    res.status(500).json({ message: "Error al obtener usuarios." });
   }
 });
 
 // --- Endpoint para crear un nuevo usuario (gestión de usuarios) ---
 app.post("/api/admin/users", async (req, res) => {
   try {
-      const {
-          nombre, apellido, email, tipo_documento, numeroid, genero, 
-          fecha_nacimiento, telefono, ciudad, barrio, direccion, 
-          id_rol, id_tipo, contrasena 
-      } = req.body;
+    const {
+      nombre, apellido, email, tipo_documento, numeroid, genero,
+      fecha_nacimiento, telefono, ciudad, barrio, direccion,
+      id_rol, id_tipo, contrasena,
+      modifying_user_id // <-- DATO NUEVO DEL FRONTEND
+    } = req.body;
 
-      if (!nombre || !apellido || !email || !contrasena || !id_rol || !id_tipo) {
-          return res.status(400).json({ message: "Faltan campos obligatorios." });
-      }
-      
-      const hashedPassword = await bcrypt.hash(contrasena, 10);
-      
-      const [result] = await pool.query("CALL sp_create_user(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [
-          nombre, apellido, email, tipo_documento, numeroid, genero, 
-          fecha_nacimiento, telefono, ciudad, barrio, direccion, 
-          id_rol, id_tipo, hashedPassword
-      ]);
-      
-      const newUserId = result[0][0].id_usuario;
-      res.status(201).json({ message: 'Usuario creado exitosamente', id: newUserId });
+    if (!nombre || !apellido || !email || !contrasena || !id_rol || !id_tipo) {
+      return res.status(400).json({ message: "Faltan campos obligatorios." });
+    }
+
+    if (!modifying_user_id) {
+        return res.status(400).json({ message: "No se ha identificado al usuario que realiza la operación." });
+    }
+
+    const hashedPassword = await bcrypt.hash(contrasena, 10);
+
+    const [result] = await pool.query("CALL sp_create_user(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [
+      nombre, apellido, email, tipo_documento, numeroid, genero,
+      fecha_nacimiento, telefono, ciudad, barrio, direccion,
+      id_rol, id_tipo, hashedPassword,
+      modifying_user_id // <-- Se pasa el nuevo parámetro
+    ]);
+
+    const newUserId = result[0][0].id_usuario;
+    res.status(201).json({ message: 'Usuario creado exitosamente', id: newUserId });
 
   } catch (error) {
-      console.error("Error al crear usuario:", error);
-      const errorMessage = error.sqlState === '45000' ? error.sqlMessage : "Error en el servidor al crear el usuario.";
-      const statusCode = error.sqlState === '45000' ? 409 : 500;
-      res.status(statusCode).json({ message: errorMessage });
+    console.error("Error al crear usuario:", error);
+    const errorMessage = error.sqlState === '45000' ? error.sqlMessage : "Error en el servidor al crear el usuario.";
+    const statusCode = error.sqlState === '45000' ? 409 : 500;
+    res.status(statusCode).json({ message: errorMessage });
   }
 });
 
 // --- Endpoint para actualizar un usuario existente (gestión de usuarios) ---
 app.put("/api/admin/users/:id", async (req, res) => {
   try {
-      const { id } = req.params;
-      const {
-          nombre, apellido, email, tipo_documento, numeroid, genero, 
-          fecha_nacimiento, telefono, ciudad, direccion, barrio,
-          id_rol, id_tipo, contrasena, estado 
-      } = req.body;
+    const { id } = req.params;
+    const {
+      nombre, apellido, email, tipo_documento, numeroid, genero,
+      fecha_nacimiento, telefono, ciudad, direccion, barrio,
+      id_rol, id_tipo, contrasena, estado,
+      modifying_user_id // <-- DATO NUEVO DEL FRONTEND
+    } = req.body;
 
-      if (!nombre || !apellido || !email || !id_rol || !id_tipo) {
-          return res.status(400).json({ message: "Faltan campos obligatorios." });
-      }
+    if (!nombre || !apellido || !email || !id_rol || !id_tipo) {
+      return res.status(400).json({ message: "Faltan campos obligatorios." });
+    }
 
-      let hashedPassword = null;
-      if (contrasena) {
-          hashedPassword = await bcrypt.hash(contrasena, 10);
-      }
-      
-      await pool.query("CALL sp_update_user(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [
-          id, nombre, apellido, email, tipo_documento, numeroid, genero, 
-          fecha_nacimiento, telefono, ciudad, barrio, direccion, 
-          id_rol, id_tipo, estado, hashedPassword
-      ]);
-      
-      res.json({ success: true, message: 'Usuario actualizado exitosamente' });
+    if (!modifying_user_id) {
+        return res.status(400).json({ message: "No se ha identificado al usuario que realiza la operación." });
+    }
+
+    let hashedPassword = null;
+    if (contrasena) {
+      hashedPassword = await bcrypt.hash(contrasena, 10);
+    }
+
+    await pool.query("CALL sp_update_user(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [
+      id, nombre, apellido, email, tipo_documento, numeroid, genero,
+      fecha_nacimiento, telefono, ciudad, barrio, direccion,
+      id_rol, id_tipo, estado, hashedPassword,
+      modifying_user_id // <-- Se pasa el nuevo parámetro
+    ]);
+
+    res.json({ success: true, message: 'Usuario actualizado exitosamente' });
 
   } catch (error) {
-      console.error("Error al actualizar usuario:", error);
-      if (error.code === 'ER_DUP_ENTRY') {
-          return res.status(400).json({ message: 'El correo electrónico o el documento ya pertenecen a otro usuario.' });
-      }
-      res.status(500).json({ message: "Error en el servidor al actualizar el usuario." });
+    console.error("Error al actualizar usuario:", error);
+    if (error.code === 'ER_DUP_ENTRY') {
+      return res.status(400).json({ message: 'El correo electrónico o el documento ya pertenecen a otro usuario.' });
+    }
+    res.status(500).json({ message: "Error en el servidor al actualizar el usuario." });
   }
 });
 
 // --- Endpoint para eliminar un usuario (gestión de usuarios) ---
 app.delete("/api/admin/users/:id", async (req, res) => {
   try {
-      const { id } = req.params;
-      await pool.query("CALL sp_delete_user(?)", [id]);
-      res.json({ success: true, message: "Usuario eliminado exitosamente" });
+    const { id } = req.params;
+    const { modifying_user_id } = req.body; // <-- DATO NUEVO DEL FRONTEND
+
+    if (!modifying_user_id) {
+        return res.status(400).json({ message: "No se ha identificado al usuario que realiza la operación." });
+    }
+
+    await pool.query("CALL sp_delete_user(?, ?)", [
+        id, 
+        modifying_user_id // <-- Se pasa el nuevo parámetro
+    ]);
+    res.json({ success: true, message: "Usuario eliminado exitosamente" });
   } catch (error) {
-      console.error("Error al eliminar usuario:", error);
-      res.status(500).json({ success: false, message: "Error al eliminar el usuario." });
+    console.error("Error al eliminar usuario:", error);
+    res.status(500).json({ success: false, message: "Error al eliminar el usuario." });
   }
 });
 
@@ -546,14 +567,11 @@ app.delete("/api/admin/users/:id", async (req, res) => {
 app.get("/api/admin/users/audit/:id", async (req, res) => {
   const { id } = req.params;
   try {
-      const [logs] = await pool.query(
-          "SELECT * FROM audit_usuarios WHERE id_usuario = ? ORDER BY fecha_modificacion DESC",
-          [id]
-      );
-      res.json(logs);
+    const [logs] = await pool.query("CALL sp_get_user_audit_log(?)", [id]);
+    res.json(logs[0]);
   } catch (error) {
-      console.error(`Error en GET /api/admin/users/audit/${id}:`, error);
-      res.status(500).json({ message: "Error al obtener el historial del usuario." });
+    console.error(`Error en GET /api/admin/users/audit/${id}:`, error);
+    res.status(500).json({ message: "Error al obtener el historial del usuario." });
   }
 });
 
@@ -686,16 +704,8 @@ app.delete("/api/admin/gestion-roles/:id", async (req, res) => {
 // --- Endpoint para obtener todos los servicios ---
 app.get("/api/admin/servicios", async (req, res) => {
   try {
-    // Consulta directa a la tabla servicios
-    const [servicios] = await pool.query("SELECT cod_ser, nom_ser, descrip_ser, precio FROM servicios");
-
-    // Verifica que se obtuvieron resultados
-    if (!servicios || servicios.length === 0) {
-      return res.status(404).json({ success: false, message: "No hay servicios disponibles." });
-    }
-
-    // Devuelve los servicios obtenidos
-    res.json(servicios);
+    const [servicios] = await pool.query("CALL Admin_MostrarServicios()");
+    res.json(servicios[0]);
   } catch (error) {
     console.error("Error al obtener servicios:", error);
     res.status(500).json({ 
@@ -709,12 +719,15 @@ app.get("/api/admin/servicios", async (req, res) => {
 // --- Endpoint para crear un nuevo servicio ---
 app.post("/api/admin/servicios", async (req, res) => {
     try {
-        const { nom_ser, descrip_ser, precio } = req.body;
+        const { nom_ser, descrip_ser, precio, modifying_user_id } = req.body;
         if (!nom_ser || !precio) {
             return res.status(400).json({ message: "El nombre y el precio del servicio son obligatorios." });
         }
+        if (!modifying_user_id) {
+            return res.status(400).json({ message: "No se pudo identificar al usuario modificador." });
+        }
 
-        const [result] = await pool.query("CALL Admin_CrearServicio(?, ?, ?)", [nom_ser, descrip_ser || null, precio]);
+        const [result] = await pool.query("CALL Admin_CrearServicio(?, ?, ?, ?)", [nom_ser, descrip_ser || null, precio, modifying_user_id]);
 
         res.status(201).json({ success: true, message: 'Servicio creado exitosamente', insertedId: result[0][0].cod_ser });
     } catch (error) {
@@ -727,17 +740,17 @@ app.post("/api/admin/servicios", async (req, res) => {
 app.put("/api/admin/servicios/:id", async (req, res) => {
     try {
         const { id } = req.params;
-        const { nom_ser, descrip_ser, precio } = req.body;
+        const { nom_ser, descrip_ser, precio, modifying_user_id } = req.body;
 
         if (!nom_ser || !precio) {
             return res.status(400).json({ message: "El nombre y el precio del servicio son obligatorios." });
         }
-
-        const [result] = await pool.query("CALL Admin_ActualizarServicio(?, ?, ?, ?)", [id, nom_ser, descrip_ser || null, precio]);
-
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ message: "Servicio no encontrado." });
+        if (!modifying_user_id) {
+            return res.status(400).json({ message: "No se pudo identificar al usuario modificador." });
         }
+
+        await pool.query("CALL Admin_ActualizarServicio(?, ?, ?, ?, ?)", [id, nom_ser, descrip_ser || null, precio, modifying_user_id]);
+
         res.json({ success: true, message: 'Servicio actualizado exitosamente' });
     } catch (error) {
         console.error(`Error en PUT /api/admin/servicios/${req.params.id}:`, error);
@@ -748,23 +761,21 @@ app.put("/api/admin/servicios/:id", async (req, res) => {
 // --- Endpoint para eliminar un servicio ---
 app.delete("/api/admin/servicios/:id", async (req, res) => {
     const { id } = req.params;
-    try {
-        // La lógica de validación ahora vive en el procedimiento almacenado
-        const [result] = await pool.query("CALL Admin_EliminarServicio(?)", [id]);
-        
-        // El procedimiento devuelve las filas afectadas solo si la eliminación fue exitosa
-        if (result[0][0].affectedRows === 0) {
-            return res.status(404).json({ message: "Servicio no encontrado." });
-        }
+    const { modifying_user_id } = req.body; // Se recibe el ID del usuario que elimina
 
+    if (!modifying_user_id) {
+        return res.status(400).json({ message: "No se pudo identificar al usuario modificador." });
+    }
+
+    try {
+        await pool.query("CALL Admin_EliminarServicio(?, ?)", [id, modifying_user_id]);
         res.json({ success: true, message: "Servicio eliminado exitosamente" });
     } catch (error) {
-        // Capturamos el error personalizado de la base de datos
         const isForeignKeyError = error.sqlState === '45000';
         const message = isForeignKeyError
-            ? error.sqlMessage // Usamos el mensaje que definimos en el trigger
+            ? error.sqlMessage
             : "Error al eliminar el servicio.";
-        const statusCode = isForeignKeyError ? 409 : 500; // 409 Conflict si está en uso
+        const statusCode = isForeignKeyError ? 409 : 500;
 
         console.error(`Error en DELETE /api/admin/servicios/${id}:`, error);
         res.status(statusCode).json({ success: false, message });
@@ -782,6 +793,7 @@ app.get("/api/admin/servicios/audit/:id", async (req, res) => {
     res.status(500).json({ message: "Error al obtener el historial de auditoría del servicio." });
   }
 });
+
 // =================================================================
 // ==           FIN DE RUTAS DE GESTION DE SERVICIOS         ==
 // =================================================================
@@ -799,7 +811,6 @@ app.get("/api/admin/servicios/audit/:id", async (req, res) => {
 app.get("/api/admin/citas", async (req, res) => {
   try {
     const [citas] = await pool.query("CALL Admin_MostrarTodasCitas()");
-    // Los resultados de un CALL a un procedimiento que hace SELECT vienen en un array anidado.
     res.json(citas[0]); 
   } catch (error) {
     console.error("Error en GET /api/admin/citas:", error);
@@ -810,12 +821,8 @@ app.get("/api/admin/citas", async (req, res) => {
 // --- Endpoint para OBTENER DATOS para los formularios (selects) ---
 app.get("/api/admin/citas-data", async (req, res) => {
   try {
-    // Este procedimiento devuelve 4 resultados (uno por cada SELECT)
     const [results] = await pool.query("CALL Admin_ObtenerDatosFormularioCitas()");
-    
-    // Asignamos cada resultado a su respectiva variable
     const [propietarios, mascotas, veterinarios, servicios] = results;
-    
     res.json({ propietarios, mascotas, veterinarios, servicios });
   } catch (error) {
     console.error("Error en GET /api/admin/citas-data:", error);
@@ -826,18 +833,20 @@ app.get("/api/admin/citas-data", async (req, res) => {
 // --- Endpoint para CREAR una nueva cita ---
 app.post("/api/admin/citas", async (req, res) => {
   try {
-    const { fech_cit, hora, cod_ser, id_vet, cod_mas, id_pro, estado, notas } = req.body;
+    const { fech_cit, hora, cod_ser, id_vet, cod_mas, id_pro, estado, notas, modifying_user_id } = req.body;
     
     if (!fech_cit || !hora || !cod_ser || !id_vet || !cod_mas || !id_pro || !estado) {
       return res.status(400).json({ message: "Todos los campos son obligatorios, excepto las notas." });
     }
+    if (!modifying_user_id) {
+        return res.status(400).json({ message: "No se pudo identificar al usuario modificador." });
+    }
     
     const [result] = await pool.query(
-      "CALL Admin_InsertarCita(?, ?, ?, ?, ?, ?, ?, ?)", 
-      [fech_cit, hora, cod_ser, id_vet, cod_mas, id_pro, estado, notas || null]
+      "CALL Admin_InsertarCita(?, ?, ?, ?, ?, ?, ?, ?, ?)", 
+      [fech_cit, hora, cod_ser, id_vet, cod_mas, id_pro, estado, notas || null, modifying_user_id]
     );
     
-    // El ID del nuevo registro también viene en el resultado del CALL
     const insertedId = result[0][0].cod_cit;
     res.status(201).json({ success: true, message: 'Cita creada exitosamente', insertedId });
 
@@ -851,20 +860,20 @@ app.post("/api/admin/citas", async (req, res) => {
 app.put("/api/admin/citas/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const { fech_cit, hora, cod_ser, id_vet, cod_mas, id_pro, estado, notas } = req.body;
+    const { fech_cit, hora, cod_ser, id_vet, cod_mas, id_pro, estado, notas, modifying_user_id } = req.body;
 
     if (!fech_cit || !hora || !cod_ser || !id_vet || !cod_mas || !id_pro || !estado) {
       return res.status(400).json({ message: "Todos los campos son obligatorios, excepto las notas." });
     }
+    if (!modifying_user_id) {
+        return res.status(400).json({ message: "No se pudo identificar al usuario modificador." });
+    }
 
-    const [result] = await pool.query(
-      "CALL Admin_ActualizarCita(?, ?, ?, ?, ?, ?, ?, ?, ?)", 
-      [id, fech_cit, hora, cod_ser, id_vet, cod_mas, id_pro, estado, notas || null]
+    await pool.query(
+      "CALL Admin_ActualizarCita(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 
+      [id, fech_cit, hora, cod_ser, id_vet, cod_mas, id_pro, estado, notas || null, modifying_user_id]
     );
 
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ message: "Cita no encontrada." });
-    }
     res.json({ success: true, message: 'Cita actualizada exitosamente' });
 
   } catch (error) {
@@ -877,11 +886,14 @@ app.put("/api/admin/citas/:id", async (req, res) => {
 app.delete("/api/admin/citas/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const [result] = await pool.query("CALL Admin_EliminarCita(?)", [id]);
-    
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ message: "Cita no encontrada." });
+    const { modifying_user_id } = req.body; 
+
+    if (!modifying_user_id) {
+        return res.status(400).json({ message: "No se pudo identificar al usuario modificador." });
     }
+
+    await pool.query("CALL Admin_EliminarCita(?, ?)", [id, modifying_user_id]);
+    
     res.json({ success: true, message: "Cita eliminada exitosamente" });
 
   } catch (error) {
@@ -890,16 +902,16 @@ app.delete("/api/admin/citas/:id", async (req, res) => {
   }
 });
 
-// --- Endpoint para OBTENER las estadísticas de citas (KPIs) --- 
+// --- Endpoint para OBTENER las estadísticas de citas --- 
 app.get("/api/admin/citas/stats", async (req, res) => {
   try {
     const [stats] = await pool.query("CALL Admin_ObtenerEstadisticasCitas()");
-    // El resultado es una sola fila con todas las estadísticas
     res.json(stats[0][0]);
   } catch (error) {
     console.error("Error en GET /api/admin/citas/stats:", error);
     res.status(500).json({ message: "Error al obtener estadísticas de citas." });
   }
+});
 
 // --- Endpoint para OBTENER la auditoría de una cita específica ---
 app.get("/api/admin/citas/audit/:id", async (req, res) => {
@@ -911,7 +923,6 @@ app.get("/api/admin/citas/audit/:id", async (req, res) => {
     console.error(`Error en GET /api/admin/citas/audit/${req.params.id}:`, error);
     res.status(500).json({ message: "Error al obtener el historial de auditoría." });
   }
-});
 });
 
 // =================================================================
