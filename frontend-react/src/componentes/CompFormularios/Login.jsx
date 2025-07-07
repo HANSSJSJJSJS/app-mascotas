@@ -110,7 +110,7 @@ const Login = () => {
       }
 
       if (user && user.id_rol === 1) {
-        navigate("/admin")
+        navigate(`/admin/dashboard?id=${user.id_usuario}`);
       } else if (user && user.id_rol === 2) {
         navigate("/PanelVet")
       } else if (user && user.id_rol === 3) {
