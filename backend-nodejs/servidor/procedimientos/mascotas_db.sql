@@ -72,6 +72,8 @@ CREATE TABLE veterinarios (
     ON UPDATE NO ACTION
 ) COMMENT 'Tabla de información específica de veterinarios';
 
+
+
 -- Tabla de mascotas
 CREATE TABLE mascotas (
     cod_mas INT PRIMARY KEY NOT NULL AUTO_INCREMENT COMMENT 'Identificador único de la mascota',
@@ -79,6 +81,7 @@ CREATE TABLE mascotas (
     especie VARCHAR(100) NOT NULL COMMENT 'Especie (perro, gato, etc.)',
     raza VARCHAR(100) NOT NULL COMMENT 'Raza de la mascota',
     edad DECIMAL(10,2) NOT NULL COMMENT 'Edad en años',
+    fecha_nacimiento DATE NOT NULL COMMENT 'Fecha de nacimiento de la mascota',
     genero VARCHAR(25) NOT NULL COMMENT 'Género de la mascota',
     peso DECIMAL(10,2) NOT NULL COMMENT 'Peso en kilogramos',
     color VARCHAR(50) COMMENT 'Color principal',

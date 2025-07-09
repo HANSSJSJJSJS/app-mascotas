@@ -90,7 +90,7 @@ export default function InicioPropietario() {
 
       // Obtener servicios disponibles
       try {
-        const serviciosResponse = await axios.get(`http://localhost:3001/api/admin/servicios`)
+        const serviciosResponse = await axios.get(`http://localhost:3001/api/servicios`)
         setServicios(serviciosResponse.data)
       } catch (error) {
         console.error("Error al obtener servicios:", error)
@@ -470,9 +470,6 @@ export default function InicioPropietario() {
                     <option value="cancelada">Canceladas</option>
                   </select>
                 </div>
-                <button className="view-all-button" onClick={() => navigate("/PanelPropietario/citas")}>
-                  Ver todas <ChevronRight size={16} />
-                </button>
               </div>
             </div>
 
@@ -605,9 +602,7 @@ export default function InicioPropietario() {
                   >
                     Agendar nueva cita
                   </button>
-                  <button className="action-button-improved secondary" onClick={() => setFiltroCitas("todas")}>
-                    Ver todas las citas
-                  </button>
+
                 </div>
               </div>
             )}
@@ -622,8 +617,8 @@ export default function InicioPropietario() {
               {servicios.length > 0 ? (
                 servicios.map((servicio, index) => (
                   <div className="service-card" key={index}>
-                    <h4 className="service-name">{servicio.nom_ser}</h4>
-                    <p className="service-description">{servicio.descrip_ser || "Sin descripción"}</p>
+                    <h4 className="service-name">{servicio.nombre}</h4>
+                    <p className="service-description">{servicio.descripcion || "Sin descripción"}</p>
                     <div className="service-price">
                       ${new Intl.NumberFormat("es-CO", { style: "decimal" }).format(servicio.precio)}
                     </div>
