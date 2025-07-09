@@ -1,92 +1,58 @@
-import React, { useState, useEffect, useCallback, Suspense } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import "../../stylos/cssPropietario/PanelPropietario.css";
-import BarraPropietario from "./BarraPropietario";
-import EncabezadoPropietario from "./EncabezadoPropietario";
-import Loading from "../index/Loading"; // Componente de carga para Suspense
-import { encodePath, decodePath } from "../../funcionalidades/routeUtils"; // Asegúrate de importar ambas
-
-// --- Componentes de las sub-secciones (cargados de forma perezosa) ---
-const InicioPropietario = React.lazy(() => import("./InicioPropietario"));
-const FormularioCita = React.lazy(() => import("../CompFormularios/FormularioCita"));
-const HisCli = React.lazy(() => import("../CompAdmin/HisCli"));
-const ActualizarPropietario = React.lazy(() => import("./ActualizarPropietario"));
-const Mascota = React.lazy(() => import("./Mascota"));
-const FormularioMascota = React.lazy(() => import("../CompFormularios/MascotaForm"));
-const Ia = React.lazy(() => import("./ia_pro"));
-
+import { Outlet, useNavigate } from "react-router-dom"
+import { useState, useEffect, useCallback } from "react"
+import "../../stylos/cssPropietario/PanelPropietario.css"
+import BarraPropietario from "./BarraPropietario"
+import EncabezadoPropietario from "./EncabezadoPropietario"
 
 const PanelPropietario = () => {
-  const [estaMenuAbierto, setEstaMenuAbierto] = useState(true);
-  const [esMobile, setEsMobile] = useState(false);
-  const navigate = useNavigate();
-  const userData = JSON.parse(localStorage.getItem("pet-app-user")) || {};
+  const [estaMenuAbierto, setEstaMenuAbierto] = useState(true)
+  const [esMobile, setEsMobile] = useState(false) 
+  const navigate = useNavigate()
 
-  // --- Lógica nueva para enrutamiento interno ---
-  const { encodedPath } = useParams();
+  const userData = JSON.parse(localStorage.getItem("pet-app-user")) || {}
 
-  const renderContent = () => {
-    const path = encodedPath ? decodePath(encodedPath) : "inicio";
-
-    switch (path) {
-      case "inicio":
-        return <InicioPropietario />;
-      case "agendar-cita":
-        return <FormularioCita />;
-      case "historia-clinica":
-        return <HisCli />;
-      case "ActualizarPropietario":
-        return <ActualizarPropietario />;
-      case "mascota":
-        return <Mascota />;
-      case "mascota-form":
-        return <FormularioMascota />;
-      case "ia":
-        return <Ia />;
-      default:
-        return <InicioPropietario />;
-    }
-  };
-
-  // --- Tus hooks y funciones existentes (sin cambios) ---
   useEffect(() => {
     const verificarSiEsMobile = () => {
-      const mobile = window.innerWidth < 1024;
-      setEsMobile(mobile);
-      setEstaMenuAbierto(!mobile);
-    };
+      const mobile = window.innerWidth < 1024
+      setEsMobile(mobile)
+      if (mobile) {
+        setEstaMenuAbierto(false)
+      } else {
+        setEstaMenuAbierto(true)
+      }
+    }
 
-    verificarSiEsMobile();
-    window.addEventListener("resize", verificarSiEsMobile);
-    return () => window.removeEventListener("resize", verificarSiEsMobile);
-  }, []);
+    verificarSiEsMobile()
+    window.addEventListener("resize", verificarSiEsMobile)
+    return () => window.removeEventListener("resize", verificarSiEsMobile)
+  }, [])
 
   const onAlternarMenu = useCallback(() => {
-    setEstaMenuAbierto(prev => !prev);
-  }, []);
+    console.log('Alternando menú:', !estaMenuAbierto) // Para debug
+    setEstaMenuAbierto(prev => !prev)
+  }, [estaMenuAbierto])
 
   const onCerrarSesion = useCallback(() => {
-    localStorage.removeItem("userData");
-    localStorage.removeItem("token");
-    navigate("/login");
-  }, [navigate]);
-
+    // Cerrar sesión directamente, sin confirmación
+    localStorage.removeItem("userData")
+    localStorage.removeItem("token")
+    navigate("/login")
+  }, [navigate])
   return (
     <div className="app-container">
-      <BarraPropietario
-        onAlternarMenu={onAlternarMenu}
+      <BarraPropietario 
+        onAlternarMenu={onAlternarMenu} 
         estaMenuAbierto={estaMenuAbierto}
         onCerrarSesion={onCerrarSesion}
       />
       
-      <EncabezadoPropietario
-        onToggleMenu={onAlternarMenu}
-        userData={userData}
+      <EncabezadoPropietario 
+        onToggleMenu={onAlternarMenu} 
+        userData={userData} 
         estaMenuAbierto={estaMenuAbierto}
         onCerrarSesion={onCerrarSesion}
       />
-      
-      {/* El botón flotante ya usa encodePath, por lo que funcionará perfecto */}
+      {/* Botón flotante para ir al chat de IA */}
       <button
         style={{
           position: "fixed",
@@ -108,11 +74,10 @@ const PanelPropietario = () => {
           transition: "background 0.2s, box-shadow 0.2s"
         }}
         title="Ir al chat IA"
-        onClick={() => navigate(`/PanelPropietario/${encodePath("ia")}`)}
+        onClick={() => navigate("/PanelPropietario/ia")}
       >
         🤖
       </button>
-
       <div
         className="content-wrapper"
         style={{
@@ -129,14 +94,11 @@ const PanelPropietario = () => {
             width: "100%",
           }}
         >
-          {/* --- Se reemplaza Outlet por Suspense y la función de renderizado --- */}
-          <Suspense fallback={<Loading />}>
-            {renderContent()}
-          </Suspense>
+          <Outlet />
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default PanelPropietario;
+export default PanelPropietario

@@ -12,46 +12,22 @@ const GestorMascotas = () => {
 
   // Cargar mascotas al montar el componente
   useEffect(() => {
-    const cargarMascotas = async () => {
-      try {
-        const response = await fetch('http://localhost:3001/api/mascotas');
-        if (!response.ok) throw new Error('Error al cargar mascotas');
-        
-        const data = await response.json();
-        // Normaliza el id para cualquier respuesta (id o cod_mas)
-        const mascotasTransformadas = data.map(mascota => ({
-          id: mascota.id || mascota.cod_mas,
-          nombre: mascota.nombre || mascota.nom_mas,
-          tipo: mascota.tipo || mascota.especie,
-          raza: mascota.raza,
-          edad: mascota.edad,
-          genero: mascota.genero,
-          peso: mascota.peso,
-          idPropietario: mascota.id_pro,
-          color: mascota.color,
-          notas: mascota.notas,
-          ultimaVisita: mascota.ultima_visita,
-          proximaCita: mascota.proxima_cita,
-          vacunado: mascota.vacunado,
-          esterilizado: mascota.esterilizado,
-          activo: mascota.activo,
-          dueño: (mascota.nombre_propietario || mascota.nombrePropietario) ? 
-            `${mascota.nombre_propietario || mascota.nombrePropietario} ${mascota.apellido_propietario || mascota.apellidoPropietario}` : 'Sin dueño',
-          telefono: mascota.telefono,
-          email: mascota.email,
-          direccion: mascota.direccion
-        }));
-        
-        setMascotas(mascotasTransformadas);
-      } catch (error) {
-        console.error("Error al cargar mascotas:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  const cargarMascotas = async () => {
+    try {
+      const response = await fetch('http://localhost:3001/api/mascotas?activo=true');
+      if (!response.ok) throw new Error('Error al cargar mascotas');
+      
+      const data = await response.json();
+      setMascotas(data);
+    } catch (error) {
+      console.error("Error al cargar mascotas:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    cargarMascotas();
-  }, []);
+  cargarMascotas();
+}, []);
 
   // Filtrar mascotas
   const mascotasFiltradas = mascotas.filter(mascota => {

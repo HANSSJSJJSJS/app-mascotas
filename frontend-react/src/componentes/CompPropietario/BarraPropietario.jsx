@@ -1,26 +1,24 @@
-import { useState, useEffect } from "react";
-import { Home, Calendar, User, Bone, X, PawPrint } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
-import "../../stylos/cssPropietario/BarraPropietario.css";
-import { encodePath } from "../../funcionalidades/routeUtils";
-// 1. IMPORTA Swal PARA LAS ALERTAS
-import Swal from "sweetalert2";
+import { useState, useEffect } from "react"
+import { Home, Calendar, User, Bone, X, PawPrint } from "lucide-react"
+import { Link, useLocation } from "react-router-dom"
+import "../../stylos/cssPropietario/BarraPropietario.css"
 
 const BarraPropietario = ({ onAlternarMenu, estaMenuAbierto, onCerrarSesion }) => {
-  const [esMobile, setEsMobile] = useState(false);
-  const ubicacionActual = useLocation();
+  const [esMobile, setEsMobile] = useState(false)
+  const ubicacionActual = useLocation()
 
-  // Datos del propietario (sin cambios)
+  // Datos del propietario reales desde localStorage
   const [propietario, setPropietario] = useState({
     nombre: "",
     email: "",
-    foto_perfil: "",
+    foto_perfil: ""
   });
 
   useEffect(() => {
     const userData = localStorage.getItem("pet-app-user");
     if (userData) {
       const parsed = JSON.parse(userData);
+      // Normaliza foto_perfil: si viene con ruta, deja solo el nombre
       let foto_perfil = parsed.foto_perfil;
       if (foto_perfil && foto_perfil.startsWith("/uploads/propietarios/")) {
         foto_perfil = foto_perfil.replace("/uploads/propietarios/", "");
@@ -29,83 +27,45 @@ const BarraPropietario = ({ onAlternarMenu, estaMenuAbierto, onCerrarSesion }) =
     }
   }, []);
 
-  // Función para obtener iniciales (sin cambios)
+  // Función para obtener las iniciales del nombre
   const obtenerIniciales = (nombre) => {
     return nombre
       .split(" ")
       .map((palabra) => palabra.charAt(0))
       .join("")
       .toUpperCase()
-      .slice(0, 2);
-  };
+      .slice(0, 2)
+  }
 
+  // Definir los elementos del menú
   const elementosMenu = [
-    { icono: <Home size={20} />, texto: "Inicio", path: "inicio" },
-    { icono: <Calendar size={20} />, texto: "Agendar Cita", path: "agendar-cita" },
-    { icono: <User size={20} />, texto: "Actualizar Datos", path: "ActualizarPropietario" },
-    { icono: <Bone size={20} />, texto: "Mascota", path: "mascota" },
-  ];
+    { icono: <Home size={20} />, texto: "Inicio", ruta: "/PanelPropietario" },
+    { icono: <Calendar size={20} />, texto: "Agendar Cita", ruta: "/PanelPropietario/agendar-cita" },
+    { icono: <User size={20} />, texto: "Actualizar Datos", ruta: "/PanelPropietario/ActualizarPropietario" },
+    { icono: <Bone size={20} />, texto: "Mascota", ruta: "/PanelPropietario/Mascota" },
+  ]
 
-  const estaActivo = (path) => {
-    if (path === 'inicio') {
-      return ubicacionActual.pathname === '/PanelPropietario' || ubicacionActual.pathname === `/PanelPropietario/${encodePath('inicio')}`;
-    }
-    return ubicacionActual.pathname.includes(encodePath(path));
-  };
-  
-  // useEffect para el tamaño de pantalla (sin cambios)
   useEffect(() => {
     const verificarSiEsMobile = () => {
-      setEsMobile(window.innerWidth < 1024);
-    };
-    verificarSiEsMobile();
-    window.addEventListener("resize", verificarSiEsMobile);
-    return () => window.removeEventListener("resize", verificarSiEsMobile);
-  }, []);
+      setEsMobile(window.innerWidth < 1024)
+    }
 
-  // 2. AÑADE EL useEffect PARA MANEJAR EL BOTÓN DE RETROCESO
-  useEffect(() => {
-    const handlePopState = (event) => {
-      event.preventDefault(); // Previene la navegación
-      Swal.fire({
-        title: "¿Estás seguro?",
-        text: "¿Deseas cerrar la sesión?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#8196eb",
-        cancelButtonColor: "#1a2540",
-        confirmButtonText: "Sí, cerrar sesión",
-        cancelButtonText: "No, quedarme",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          // Usa la función que viene por props para cerrar sesión
-          onCerrarSesion();
-        } else {
-          // Vuelve a añadir el estado al historial para que el usuario no quede "atrapado"
-          window.history.pushState(null, "", window.location.href);
-        }
-      });
-    };
+    verificarSiEsMobile()
+    window.addEventListener("resize", verificarSiEsMobile)
 
-    // Añade el estado inicial al historial y el listener
-    window.history.pushState(null, "", window.location.href);
-    window.addEventListener("popstate", handlePopState);
-
-    // Limpia el listener cuando el componente se desmonte
-    return () => {
-      window.removeEventListener("popstate", handlePopState);
-    };
-  }, [onCerrarSesion]); // La dependencia es la función de cerrar sesión
+    return () => window.removeEventListener("resize", verificarSiEsMobile)
+  }, [])
 
   return (
     <aside className={`barra-navegacion-moderna ${esMobile ? "mobile" : ""} ${!estaMenuAbierto ? "colapsada" : ""}`}>
-      {/* El resto del código JSX no necesita cambios */}
+      {/* Botón de cerrar para móvil */}
       {esMobile && (
         <button onClick={onAlternarMenu} className="boton-cerrar-moderno">
           <X size={20} />
         </button>
       )}
 
+      {/* Encabezado con logo */}
       <div className="encabezado-moderno">
         <div
           className="contenedor-logo-moderno"
@@ -117,6 +77,7 @@ const BarraPropietario = ({ onAlternarMenu, estaMenuAbierto, onCerrarSesion }) =
         </div>
       </div>
 
+      {/* Tarjeta de perfil moderna y prominente */}
       <div className="tarjeta-perfil-moderna">
         <div className="contenedor-avatar-grande">
           {propietario.foto_perfil ? (
@@ -141,13 +102,14 @@ const BarraPropietario = ({ onAlternarMenu, estaMenuAbierto, onCerrarSesion }) =
         )}
       </div>
 
+      {/* Menú de navegación moderno */}
       <nav className="nav-moderno">
         <ul className="menu-moderno">
           {elementosMenu.map((elemento, indice) => (
             <li key={indice}>
               <Link
-                to={elemento.path === 'inicio' ? '/PanelPropietario' : `/PanelPropietario/${encodePath(elemento.path)}`}
-                className={`enlace-moderno ${estaActivo(elemento.path) ? "activo" : ""}`}
+                to={elemento.ruta}
+                className={`enlace-moderno ${ubicacionActual.pathname === elemento.ruta ? "activo" : ""}`}
                 onClick={() => esMobile && onAlternarMenu()}
               >
                 <div className="contenedor-icono-moderno">{elemento.icono}</div>
@@ -158,7 +120,7 @@ const BarraPropietario = ({ onAlternarMenu, estaMenuAbierto, onCerrarSesion }) =
         </ul>
       </nav>
     </aside>
-  );
-};
+  )
+}
 
-export default BarraPropietario;
+export default BarraPropietario

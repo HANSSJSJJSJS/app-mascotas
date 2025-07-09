@@ -983,7 +983,7 @@ app.get("/api/veterinarios", async (req, res) => {
 
 
 // =================================================================
-// ==           FIN DE RUTAS DE GESTION DE MASCOTAS               ==
+// ==             RUTAS DE GESTION DE MASCOTAS                    ==
 // =================================================================
 
 // GET /api/mascotas - Obtener todas las mascotas con información del propietario

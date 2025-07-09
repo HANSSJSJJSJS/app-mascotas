@@ -18,9 +18,21 @@ const NotFound = React.lazy(() => import("../componentes/CompHome/NotFound"));
 
 // NUEVO DASHBOARD DE ADMINISTRADOR
 const AdminDashboard = React.lazy(() => import("../componentes/CompAdmin/AdminDashboard"));
+const DashboardHome = React.lazy(() => import("../componentes/CompAdmin/DashboardHome"));
+const GestionUsuarios = React.lazy(() => import("../componentes/CompAdmin/GestionUsuarios"));
+const GestionRoles = React.lazy(() => import("../componentes/CompAdmin/GestionRoles"));
+const GestionServicios = React.lazy(() => import("../componentes/CompAdmin/GestionServicios"));
+const GestionCitas = React.lazy(() => import("../componentes/CompAdmin/GestionCitas"));
+const HisCli = React.lazy(() => import("../componentes/CompAdmin/HisCli"));
 
 // Componentes propietario
 const PanelPropietario = React.lazy(() => import("../componentes/CompPropietario/PanelPropietario"));
+const InicioPropietario = React.lazy(() => import("../componentes/CompPropietario/InicioPropietario"));
+const FormularioCita = React.lazy(() => import("../componentes/CompFormularios/FormularioCita"));
+const ActualizarPropietario = React.lazy(() => import("../componentes/CompPropietario/ActualizarPropietario"));
+const Mascota = React.lazy(() => import("../componentes/CompPropietario/Mascota"));
+const FormularioMascota = React.lazy(() => import("../componentes/CompFormularios/MascotaForm"));
+const Ia = React.lazy(() => import("../componentes/CompPropietario/ia_pro"));
 
 // Componentes veterinario
 // El panel es el único componente que necesitamos importar directamente aquí ahora.
@@ -60,23 +72,37 @@ const MainRoutes = () => {
         <Route path="/Servicios" element={<Servicios />} />
         <Route path="/Adopcion" element={<Adopcion />} />
         <Route path="/SobreNosotros" element={<SobreNosotros />} />
-        <Route path="/Propietario" element={<Propietario />} />A
+        <Route path="/Propietario" element={<Propietario />} />
         <Route path="/OlvideContrasena" element={<OlvideContrasena />} />
         <Route path="/CambioContraseña" element={<CambioContraseña />} />
       </Route>
       
-      {/* RUTAS ADMINISTRADOR*/}
-       <Route element={<RutaProtegida roles={[1]} />}> {/* Rol 1 para Admin */}
-        <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/admin/:encodedPath" element={<AdminDashboard />} />
+      {/* RUTAS ADMINISTRADOR (Sin cambios, asumiendo que usan un panel diferente) */}
+      <Route path="/admin" element={<AdminDashboard />}>
+        <Route index element={<DashboardHome />} />
+        <Route path="dashboard" element={<DashboardHome />} />
+        <Route path="usuarios" element={<GestionUsuarios />} />
+        <Route path="roles" element={<GestionRoles />} />
+        <Route path="servicios" element={<GestionServicios />} />
+        <Route path="gestion-citas" element={<GestionCitas />} />
+        <Route path="gestion-usuarios" element={<GestionUsuarios />} />
+        <Route path="gestion-roles" element={<GestionRoles />} />
+        <Route path="gestion-servicios" element={<GestionServicios />} />
       </Route>
 
-      {/* RUTAS Propietario*/}
       <Route element={isDevelopment ? <RutasPropietario /> : <RutaProtegida rolPermitido="propietario"><RutasPropietario /></RutaProtegida>}>
-          <Route path="/PanelPropietario" element={<PanelPropietario />} />
-          <Route path="/PanelPropietario/:encodedPath" element={<PanelPropietario />} />
+        <Route path="/PanelPropietario" element={<PanelPropietario />}>
+          <Route index element={<InicioPropietario />} />
+          <Route path="agendar-cita" element={<FormularioCita />} />
+          <Route path="historia-clinica" element={<HisCli />} />
+          <Route path="ActualizarPropietario" element={<ActualizarPropietario />} />
+          <Route path="mascota" element={<Mascota />} />
+          <Route path="mascota-form" element={<FormularioMascota />} />
+          <Route path="ia" element={<Ia />} />
+        </Route>
       </Route>
 
+      {/* --- RUTAS VETERINARIO MODIFICADAS --- */}
       {/* La protección de ruta se puede aplicar directamente aquí.
         Envolverá al componente PanelVet, que a su vez contiene la lógica de sub-rutas.
         Esto asegura que nadie pueda acceder a /PanelVet/* sin el rol correcto.
