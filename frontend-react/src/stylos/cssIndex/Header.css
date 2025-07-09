@@ -34,6 +34,15 @@
   padding-right: 20px;
 }
 
+.help-icon-btn{
+  color:#8196eb;
+  font-size: 1em;
+  margin-right: 35vh;
+  cursor: pointer;
+  transition: color 0.3s ease-in-out;
+  margin-top: -20px;
+}
+
 .links a:hover {
   color: var(--color4);
   transform: scale(1.1);

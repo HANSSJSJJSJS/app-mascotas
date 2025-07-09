@@ -259,53 +259,6 @@ const downloadUserManual = () => {
                   Regístrate aquí
                 </a>
               </p>
-
-              {/* Botones de descarga de manuales */}
-              <div style={{ marginTop: "20px", display: "flex", gap: "10px", flexWrap: "wrap" }}>
-                <button
-                  type="button"
-                  onClick={downloadTechnicalManual}
-                  style={{
-                    padding: "8px 16px",
-                    backgroundColor: "#f8f9fa",
-                    border: "1px solid #dee2e6",
-                    borderRadius: "4px",
-                    cursor: "pointer",
-                    fontSize: "14px",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "6px",
-                    transition: "background-color 0.2s",
-                  }}
-                  onMouseOver={(e) => (e.target.style.backgroundColor = "#e9ecef")}
-                  onMouseOut={(e) => (e.target.style.backgroundColor = "#f8f9fa")}
-                >
-                  <i className="bi bi-file-earmark-code"></i>
-                  Manual Técnico
-                </button>
-
-                <button
-                  type="button"
-                  onClick={downloadUserManual}
-                  style={{
-                    padding: "8px 16px",
-                    backgroundColor: "#f8f9fa",
-                    border: "1px solid #dee2e6",
-                    borderRadius: "4px",
-                    cursor: "pointer",
-                    fontSize: "14px",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "6px",
-                    transition: "background-color 0.2s",
-                  }}
-                  onMouseOver={(e) => (e.target.style.backgroundColor = "#e9ecef")}
-                  onMouseOut={(e) => (e.target.style.backgroundColor = "#f8f9fa")}
-                >
-                  <i className="bi bi-file-earmark-person"></i>
-                  Manual de Usuario
-                </button>
-              </div>
             </div>
           </form>
         </div>
