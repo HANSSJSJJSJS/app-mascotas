@@ -14,7 +14,7 @@ const GestorMascotas = () => {
   useEffect(() => {
   const cargarMascotas = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/mascotas?activo=true');
+      const response = await fetch('http://localhost:3001/api/mascotas');
       if (!response.ok) throw new Error('Error al cargar mascotas');
       
       const data = await response.json();

@@ -1153,14 +1153,14 @@ app.patch("/api/mascotas/:id/estado", async (req, res) => {
 
     // Ejecutar la actualización
     const query = "UPDATE mascotas SET activo = ? WHERE cod_mas = ?";
-    const [result] = await db.execute(query, [activo, id]);
+    const [result] = await pool.execute(query, [activo, id]);
 
     if (result.affectedRows === 0) {
       return res.status(404).json({ error: "Mascota no encontrada" });
     }
 
     // Obtener el estado actualizado para confirmación
-    const [updated] = await db.execute("SELECT activo FROM mascotas WHERE cod_mas = ?", [id]);
+    const [updated] = await pool.execute("SELECT activo FROM mascotas WHERE cod_mas = ?", [id]);
     
     res.status(200).json({
       success: true,
@@ -1200,7 +1200,7 @@ app.get("/api/citas-hoy", async (req, res) => {
     const [result] = await pool.query(`
       SELECT COUNT(*) as total 
       FROM citas 
-      WHERE DATE(fecha) = ?
+      WHERE fech_cit = ?
     `, [hoy]);
     
     res.json({ total: result[0].total });

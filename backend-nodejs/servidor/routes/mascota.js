@@ -34,30 +34,31 @@ router.get("/", async (req, res) => {
     const mascotas = await executeQuery(
       `
       SELECT 
-        cod_mas as id,
-        nom_mas as nombre,
-        especie as tipo,
-        raza,
-        edad,
-        genero,
-        peso,
-        color,
-        vacunado,
-        esterilizado,
-        foto,
-        id_pro,
-        notas,
-        ultima_visita,
-        proxima_cita,
-        activo,
-        p.nombre as nombre_propietario,
-        p.apellido as apellido_propietario,
-        p.telefono,
-        p.email,
-        p.direccion
+        m.cod_mas as id,
+        m.nom_mas as nombre,
+        m.especie as tipo,
+        m.raza,
+        m.edad,
+        m.genero,
+        m.peso,
+        m.color,
+        m.vacunado,
+        m.esterilizado,
+        m.foto,
+        m.id_pro,
+        m.notas,
+        m.ultima_visita,
+        m.proxima_cita,
+        m.activo,
+        u.nombre as nombre_propietario,
+        u.apellido as apellido_propietario,
+        u.telefono,
+        u.email,
+        u.direccion
       FROM mascotas m
-      LEFT JOIN propietarios p ON m.id_pro = p.id_pro
-      ORDER BY nom_mas
+      JOIN propietarios p ON m.id_pro = p.id_pro
+      JOIN usuarios u ON p.id_pro = u.id_usuario
+      ORDER BY m.nom_mas
     `
     );
     res.json(mascotas);
@@ -84,10 +85,9 @@ router.get("/:propietarioId", async (req, res) => {
         color,
         vacunado,
         esterilizado,
-        foto,
-        fecha_nacimiento
+        foto
       FROM mascotas
-      WHERE id_pro = ? AND activo = true
+      WHERE id_pro = ? AND activo = 1
       ORDER BY nom_mas
     `,
       [propietarioId],
