@@ -1,11 +1,13 @@
-import { useState, useEffect } from "react"
-import { Home, Calendar, User, Bone, X, PawPrint } from "lucide-react"
-import { Link, useLocation } from "react-router-dom"
-import "../../stylos/cssPropietario/BarraPropietario.css"
+import { useState, useEffect } from "react";
+import { Home, Calendar, User, Bone, X, PawPrint } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+import "../../stylos/cssPropietario/BarraPropietario.css";
 
 const BarraPropietario = ({ onAlternarMenu, estaMenuAbierto, onCerrarSesion }) => {
-  const [esMobile, setEsMobile] = useState(false)
-  const ubicacionActual = useLocation()
+  const [esMobile, setEsMobile] = useState(false);
+  const ubicacionActual = useLocation();
+  const navigate = useNavigate();
 
   // Datos del propietario reales desde localStorage
   const [propietario, setPropietario] = useState({
@@ -13,6 +15,46 @@ const BarraPropietario = ({ onAlternarMenu, estaMenuAbierto, onCerrarSesion }) =
     email: "",
     foto_perfil: ""
   });
+
+  // Función para cerrar sesión
+  const logout = () => {
+    localStorage.removeItem("pet-app-user");
+    if (onCerrarSesion) {
+      onCerrarSesion();
+    }
+  };
+
+  // --- useEffect para el manejo del botón de retroceso 
+  useEffect(() => {
+    const handlePopState = (event) => {
+      event.preventDefault();
+
+      Swal.fire({
+        title: '¿Estás seguro?',
+        text: '¿Deseas cerrar la sesión?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#8196eb',
+        cancelButtonColor: '#1a2540',
+        confirmButtonText: 'Sí, cerrar sesión',
+        cancelButtonText: 'No, quedarme',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          logout();
+          navigate('/login');
+        } else {
+          window.history.pushState(null, '', window.location.href);
+        }
+      });
+    };
+
+    window.history.pushState(null, '', window.location.href);
+    window.addEventListener('popstate', handlePopState);
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [navigate]);
 
   useEffect(() => {
     const userData = localStorage.getItem("pet-app-user");
@@ -34,8 +76,8 @@ const BarraPropietario = ({ onAlternarMenu, estaMenuAbierto, onCerrarSesion }) =
       .map((palabra) => palabra.charAt(0))
       .join("")
       .toUpperCase()
-      .slice(0, 2)
-  }
+      .slice(0, 2);
+  };
 
   // Definir los elementos del menú
   const elementosMenu = [
@@ -43,18 +85,18 @@ const BarraPropietario = ({ onAlternarMenu, estaMenuAbierto, onCerrarSesion }) =
     { icono: <Calendar size={20} />, texto: "Agendar Cita", ruta: "/PanelPropietario/agendar-cita" },
     { icono: <User size={20} />, texto: "Actualizar Datos", ruta: "/PanelPropietario/ActualizarPropietario" },
     { icono: <Bone size={20} />, texto: "Mascota", ruta: "/PanelPropietario/Mascota" },
-  ]
+  ];
 
   useEffect(() => {
     const verificarSiEsMobile = () => {
-      setEsMobile(window.innerWidth < 1024)
-    }
+      setEsMobile(window.innerWidth < 1024);
+    };
 
-    verificarSiEsMobile()
-    window.addEventListener("resize", verificarSiEsMobile)
+    verificarSiEsMobile();
+    window.addEventListener("resize", verificarSiEsMobile);
 
-    return () => window.removeEventListener("resize", verificarSiEsMobile)
-  }, [])
+    return () => window.removeEventListener("resize", verificarSiEsMobile);
+  }, []);
 
   return (
     <aside className={`barra-navegacion-moderna ${esMobile ? "mobile" : ""} ${!estaMenuAbierto ? "colapsada" : ""}`}>
@@ -120,7 +162,7 @@ const BarraPropietario = ({ onAlternarMenu, estaMenuAbierto, onCerrarSesion }) =
         </ul>
       </nav>
     </aside>
-  )
-}
+  );
+};
 
-export default BarraPropietario
+export default BarraPropietario;

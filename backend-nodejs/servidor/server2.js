@@ -1210,13 +1210,15 @@ app.get("/api/citas-hoy", async (req, res) => {
   }
 });
 
-app.get("/api/consultas-pendientes", async (req, res) => {
+app.get("/api/citas-pendientes/:state", async (req, res) => {
   try {
-    const [result] = await pool.query(`
+    const params = req.params.state
+
+    const [result] = await pool.execute(`
       SELECT COUNT(*) as total 
-      FROM consultas
-      WHERE estado = 'pendiente'
-    `);
+      FROM citas
+      WHERE estado = ?
+    `,[params]);
     
     res.json({ total: result[0].total });
   } catch (error) {
@@ -1224,6 +1226,23 @@ app.get("/api/consultas-pendientes", async (req, res) => {
     res.status(500).json({ error: "Error interno del servidor" });
   }
 });
+
+// app.put("/api/citas/change-state", async (req, res) => {
+//   try {
+//     const data = req.body
+
+//     const [result] = await pool.execute(`
+//       UPDATE citas
+//       SET estado = 'REALIZADA'
+//       WHERE cod_cit = ?
+//     `,[data.code]);
+    
+//     res.json({ total: result[0].total });
+//   } catch (error) {
+//     console.error("Error al contar consultas pendientes:", error);
+//     res.status(500).json({ error: "Error interno del servidor" });
+//   }
+// });
 
 // Middleware de manejo de errores para multer
 app.use((error, req, res, next) => {

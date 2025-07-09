@@ -1,26 +1,21 @@
 import { useState, useEffect, useMemo } from "react";
 import { Calendar, FileText, PawPrint, Stethoscope, X } from 'lucide-react';
-// 1. IMPORTA useNavigate DE react-router-dom
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import "../../stylos/cssVet/BarraVet.css";
 import { useAuth } from '../../context/AuthContext';
-import { encodePath } from "../../funcionalidades/routeUtils";
-// 2. IMPORTA Swal
 import Swal from "sweetalert2";
+import "../../stylos/cssVet/BarraVet.css";
 
 const BarraVet = ({ onToggleMenu, menuAbierto }) => {
   const [isMobile, setIsMobile] = useState(false);
   const location = useLocation();
-  // 3. EXTRAE 'logout' DEL HOOK useAuth
   const { usuario, loading, logout } = useAuth();
-  // 4. INICIALIZA 'navigate'
   const navigate = useNavigate();
 
   const menuItems = [
-    { icon: Stethoscope, text: "Inicio", path: "inicio" },
-    { icon: PawPrint, text: "Mascotas", path: "mascotas" },
-    { icon: Calendar, text: "Citas", path: "gestion-citas" },
-    { icon: FileText, text: "Historial Clínico", path: "historial-clinico" }
+    { icon: Stethoscope, text: "Inicio", path: "/PanelVet" },
+    { icon: PawPrint, text: "Mascotas", path: "/PanelVet/mascotas" },
+    { icon: Calendar, text: "Citas", path: "/PanelVet/gestion-citas" },
+    { icon: FileText, text: "Historial Clínico", path: "/PanelVet/historial-clinico" }
   ];
 
   useEffect(() => {
@@ -32,7 +27,6 @@ const BarraVet = ({ onToggleMenu, menuAbierto }) => {
     return () => window.removeEventListener("resize", checkIfMobile);
   }, []);
 
-  // Este useEffect ahora funcionará correctamente
   useEffect(() => {
     const handlePopState = (event) => {
       event.preventDefault();
@@ -76,6 +70,12 @@ const BarraVet = ({ onToggleMenu, menuAbierto }) => {
     }
   }, [usuario, loading]);
 
+  // Función para verificar si la ruta está activa
+  const isActive = (path) => {
+    return location.pathname === path || 
+           (path !== "/PanelVet" && location.pathname.startsWith(path));
+  };
+
   return (
     <aside className={`barra-lateral-vet ${isMobile ? "mobile" : ""} ${menuAbierto ? "open" : "closed"}`}>
       {isMobile && (
@@ -86,26 +86,30 @@ const BarraVet = ({ onToggleMenu, menuAbierto }) => {
 
       <div className="barra-header">
         <PawPrint className="logo-icon" />
-        <h2 className={menuAbierto ? "" : "hidden"}>PET MOYBE</h2>
+        {menuAbierto && <h2>PET MOYBE</h2>}
       </div>
       
       {!loading && usuario && (
         <div className="vet-info">
-          <div className={`vet-role ${!menuAbierto ? "hidden" : ""}`}>{displayRole}</div>
-          <div className={`vet-name ${!menuAbierto ? "hidden" : ""}`}>{displayName}</div>
+          {menuAbierto && (
+            <>
+              <div className="vet-role">{displayRole}</div>
+              <div className="vet-name">{displayName}</div>
+            </>
+          )}
         </div>
       )}
 
       <nav>
         <ul className="menu-lateral-vet">
           {menuItems.map(({ icon: Icon, text, path }) => (
-            <li key={text} className={location.pathname.includes(encodePath(path)) ? "active" : ""}>
+            <li key={path} className={isActive(path) ? "active" : ""}>
               <Link 
-                to={`/PanelVet/${encodePath(path)}`} 
+                to={path} 
                 className="link" 
                 onClick={() => isMobile && onToggleMenu()}
               >
-                <Icon />
+                <Icon size={20} />
                 {menuAbierto && <span>{text}</span>}
               </Link>
             </li>

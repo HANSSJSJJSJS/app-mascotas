@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Outlet } from "react-router-dom";
 import "../../stylos/cssVet/PanelVet.css";
 
 // --- 1. IMPORTACIONES NECESARIAS ---
@@ -84,7 +84,7 @@ const PanelVet = () => {
           }}
         >
           {/* --- 4. SE REEMPLAZA <Outlet /> POR LA FUNCIÓN DE RENDERIZADO --- */}
-          {renderContent()}
+          <Outlet />
         </div>
       </div>
     </div>

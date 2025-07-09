@@ -12,28 +12,8 @@ export default function InicioVet() {
     mascotasTotales: 0
   });
 
-  const [citas, setCitas] = useState([
-    {
-      id: 1,
-      hora: '09:00',
-      mascota: 'Max',
-      raza: 'Labrador',
-      tipo: 'Vacunación anual',
-      propietario: 'Juan Pérez',
-      estado: 'pendiente',
-      tipoMascota: 'Perro'
-    },
-    {
-      id: 2,
-      hora: '11:00',
-      mascota: 'Luna',
-      raza: 'Siamés',
-      tipo: 'Control rutinario',
-      propietario: 'María González',
-      estado: 'pendiente',
-      tipoMascota: 'Gato'
-    },
-  ]);
+  const [citas, setCitas] = useState();
+  const [citasCompletadas, setCitasCompletadas] = useState();
 
   const [mascotas, setMascotas] = useState([
     {
@@ -79,18 +59,16 @@ export default function InicioVet() {
   );
 
   // Función para atender citas
-  const atenderCita = (id) => {
+  const atenderCita = async (id) => {
     try {
-      const citaAtendida = citas.find(cita => cita.id === id);
+      const citaAtendida = citas?.find(cita => cita.id === id);
       
       if (!citaAtendida) {
         mostrarNotificacion('No se encontró la cita', 'error');
         return;
       }
 
-      setCitas(prevCitas => prevCitas.map(cita => 
-        cita.id === id ? {...cita, estado: 'atendido'} : cita
-      ));
+      await ChangeStateAppointment(id)
       
       setModalAbierto(false);
       setModalAtencionAbierto(true);
@@ -106,6 +84,7 @@ export default function InicioVet() {
 
   // Función para confirmar atención
   const confirmarAtencion = (cita) => {
+    console.log('atender')
     setCitaSeleccionada(cita);
     setModalAbierto(true);
   };
@@ -185,10 +164,66 @@ export default function InicioVet() {
     }
   };
 
+  const getCitasCompPen = () => {
+    fetch("http://localhost:3001/api/citas-pendientes/REALIZADA")
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data)
+        setCitasCompletadas(data);
+      })
+      .catch((error) => {
+        console.error("Error al obtener citas:", error);
+      });
+    cargarEstadisticas()
+  }
+
+  const GetAppointment = async () => {
+    fetch("http://localhost:3001/api/citas")
+      .then((res) => res.json())
+      .then((data) => {
+        setCitas(data);
+      })
+      .catch((error) => {
+        console.error("Error al obtener citas:", error);
+      });
+    
+
+  }
+
+  const ChangeStateAppointment = async (cod) => {
+    try {
+      const mod = await fetch(`http://localhost:3001/api/citas/${cod}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          estado: 'REALIZADA',
+        }),
+      });
+  
+      if (!mod.ok) {
+        throw new Error(`Error en la respuesta: ${mod.status}`);
+      }
+  
+      const data = await mod.json();
+      console.log("Respuesta del servidor:", data);
+      cargarEstadisticas();
+      GetAppointment()
+    } catch (error) {
+      console.error("Error al cambiar el estado de la cita:", error);
+    }
+  };
+  
+
   // Cargar estadísticas al montar el componente
   useEffect(() => {
     cargarEstadisticas();
+    getCitasCompPen()
+    GetAppointment()
   }, []);
+
+
 
   // Función para recargar estadísticas manualmente
   const recargarEstadisticas = () => {
@@ -234,7 +269,7 @@ export default function InicioVet() {
                 <div>
                   <div className="inicioVet-summaryLabel">Citas hoy</div>
                   <div className="inicioVet-summaryValue">
-                    {cargando ? '...' : datos.citasHoy}
+                    {citas?.length || 0}
                   </div>
                 </div>
               </div>
@@ -264,9 +299,9 @@ export default function InicioVet() {
                   <FileText className="inicioVet-icon" />
                 </div>
                 <div>
-                  <div className="inicioVet-summaryLabel">Consultas pendientes</div>
+                  <div className="inicioVet-summaryLabel">Consultas Completas</div>
                   <div className="inicioVet-summaryValue">
-                    {cargando ? '...' : datos.consultasPendientes}
+                    {citasCompletadas?.total || 0}
                   </div>
                 </div>
               </div>
@@ -280,13 +315,13 @@ export default function InicioVet() {
             <div className="inicioVet-card">
               <div className="inicioVet-cardHeader">
                 <h3 className="inicioVet-cardTitle">Citas de hoy</h3>
-                <Link to="/agenda" className="inicioVet-link">
+                <Link to="/PanelVet/gestion-citas" className="inicioVet-link">
                   Ver todas <ChevronRight className="inicioVet-linkIcon" />
                 </Link>
               </div>
               <div className="inicioVet-cardContent">
                 <div className="inicioVet-appointmentsList">
-                  {citas.map((cita) => (
+                  {citas?.map((cita) => (
                     <div 
                       key={cita.id} 
                       className={`inicioVet-appointmentCard ${cita.estado === 'atendido' ? 'inicioVet-cardGray' : cita.tipoMascota === 'Perro' ? 'inicioVet-cardBlue' : 'inicioVet-cardGreen'}`}
@@ -297,18 +332,18 @@ export default function InicioVet() {
                             <Clock className="inicioVet-iconSmall" />
                           </div>
                           <div>
-                            <div className="inicioVet-appointmentTitle">{`${cita.hora} - ${cita.mascota} (${cita.raza})`}</div>
+                            <div className="inicioVet-appointmentTitle">{`${cita.hora} - ${cita.mascota} (${cita.servicio})`}</div>
                             <div className="inicioVet-appointmentText">{cita.tipo}</div>
                             <div className="inicioVet-appointmentText">Propietario: {cita.propietario}</div>
                           </div>
                         </div>
                         <div className="inicioVet-appointmentActions">
                           <button 
-                            className={`inicioVet-button inicioVet-buttonSmall ${cita.estado === 'atendido' ? 'inicioVet-buttonDisabled' : 'inicioVet-buttonSuccess'}`}
+                            className={`inicioVet-button inicioVet-buttonSmall ${cita.estado?.toLowerCase() === 'realizada' ? 'inicioVet-buttonDisabled' : 'inicioVet-buttonSuccess'}`}
                             onClick={() => confirmarAtencion(cita)}
-                            disabled={cita.estado === 'atendido'}
+                            disabled={cita.estado?.toLowerCase() === 'realizada'}
                           >
-                            {cita.estado === 'pendiente' ? 'Atender' : 'Atendido'}
+                            {cita.estado?.toLowerCase() === 'pendiente' ? 'Atender' : 'Atendido'}
                           </button>
                         </div>
                       </div>

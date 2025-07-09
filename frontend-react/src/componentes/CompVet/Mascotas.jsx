@@ -11,7 +11,6 @@ const GestorMascotas = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   // Cargar mascotas al montar el componente
-  useEffect(() => {
   const cargarMascotas = async () => {
     try {
       const response = await fetch('http://localhost:3001/api/mascotas');
@@ -26,8 +25,9 @@ const GestorMascotas = () => {
     }
   };
 
-  cargarMascotas();
-}, []);
+  useEffect(() => {
+    cargarMascotas();
+  }, []);
 
   // Filtrar mascotas
   const mascotasFiltradas = mascotas.filter(mascota => {
@@ -147,24 +147,6 @@ const GestorMascotas = () => {
     }
   };
 
-  // Eliminar mascota
-  const eliminarMascota = async (idMascota) => {
-    if (window.confirm('¿Estás seguro de que deseas eliminar esta mascota?')) {
-      try {
-        const response = await fetch(`http://localhost:3001/api/mascotas/${idMascota}`, {
-          method: 'DELETE'
-        });
-
-        if (!response.ok) throw new Error('Error al eliminar mascota');
-
-        setMascotas(mascotas.filter(m => m.id !== idMascota));
-        alert('Mascota eliminada exitosamente');
-      } catch (error) {
-        console.error("Error:", error);
-        alert('Error al eliminar la mascota: ' + error.message);
-      }
-    }
-  };
 
   // Cambiar estado de mascota
   const cambiarEstadoMascota = async (id, nuevoEstado) => {
@@ -190,6 +172,7 @@ const GestorMascotas = () => {
     }
 
     console.log("Estado actualizado:", response.data);
+    cargarMascotas()
 
   } catch (error) {
     console.error("Error al cambiar estado:", error);
@@ -384,12 +367,6 @@ const GestorMascotas = () => {
                       onClick={() => setMascotaEditando(mascota)}
                     >
                       ✏️ Editar
-                    </button>
-                    <button 
-                      className="mascota-boton mascota-boton-eliminar" 
-                      onClick={() => eliminarMascota(mascota.id)}
-                    >
-                      🗑️ Eliminar
                     </button>
                     {mascota.activo ? (
                       <button 

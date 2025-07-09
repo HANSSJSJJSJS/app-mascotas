@@ -1,19 +1,19 @@
 // src/index.js
-import React from 'react'; // Añade esta línea
-import { createRoot } from 'react-dom/client';
-import { BrowserRouter as Router } from "react-router-dom";
-import App from './App';
-import { AuthProvider } from './context/AuthContext';
+import React from "react";
+import ReactDOM from "react-dom/client"; // Importa desde 'react-dom/client'
+import { BrowserRouter } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
+import App from "./App";
 
-const container = document.getElementById('root');
-const root = createRoot(container);
+// Crea el root para renderizar la aplicación
+const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
   <React.StrictMode>
-    <AuthProvider>
-      <Router>
+    <BrowserRouter>
+      <AuthProvider>
         <App />
-      </Router>
-    </AuthProvider>
+      </AuthProvider>
+    </BrowserRouter>
   </React.StrictMode>
 );

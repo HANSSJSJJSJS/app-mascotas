@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
+import { useLocation } from "react-router-dom"; // Importa el hook useLocation
 
 // 1. Creación del contexto
 const AuthContext = createContext(null);
@@ -112,6 +113,8 @@ export const AuthProvider = ({ children }) => {
   };
   
   // Valores derivados para fácil acceso en la app
+  const location = useLocation(); // Usa el hook para obtener la ubicación actual
+
   const isAuthenticated = !!usuario;
   const isAdmin = usuario?.id_rol === 1;
 
@@ -124,8 +127,11 @@ export const AuthProvider = ({ children }) => {
     loading,
     showInactivityWarning,
     setShowInactivityWarning,
-    resetTimers // Se exporta para que el modal de inactividad pueda reiniciar el timer
+    resetTimers, // Se exporta para que el modal de inactividad pueda reiniciar el timer
   };
+
+  console.log("Usuario:", usuario);
+  console.log("Ruta actual:", location.pathname); // Ahora usa location del hook
 
   return (
     <AuthContext.Provider value={value}>

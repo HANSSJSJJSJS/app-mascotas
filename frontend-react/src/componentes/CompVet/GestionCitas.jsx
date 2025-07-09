@@ -112,14 +112,6 @@ const GestionCitas = () => {
         <div className="stat-card stat-urgent"><div className="stat-icon">🚨</div><div className="stat-content"><h3>{stats.urgentes}</h3><p>Urgentes</p></div></div>
       </section>
 
-      <section className="consultation-types">
-        <h2>📊 Distribución por Tipo de Consulta</h2>
-        <div className="types-grid">
-          <div className="type-card"><div className="type-number">{tiposConsulta["Consulta General"]}</div><div className="type-label">Consulta General</div></div>
-          <div className="type-card"><div className="type-number">{tiposConsulta["Emergencia"]}</div><div className="type-label">Emergencia</div></div>
-          <div className="type-card"><div className="type-number">{tiposConsulta["Control"]}</div><div className="type-label">Control</div></div>
-        </div>
-      </section>
 
       <section className="filters-section">
         <div className="filters-container">

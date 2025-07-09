@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route, Navigate, Outlet } from "react-router-dom";
+import { Routes, Route, Navigate, Outlet, useNavigate } from "react-router-dom";
 import RutaProtegida from "./RutaProtegida";
 import LayoutPublico from "../componentes/layouts/LayoutPublico";
 import LayoutPropietario from "../componentes/layouts/LayoutPropietario";
@@ -36,7 +36,11 @@ const Ia = React.lazy(() => import("../componentes/CompPropietario/ia_pro"));
 
 // Componentes veterinario
 // El panel es el único componente que necesitamos importar directamente aquí ahora.
-const PanelVet = React.lazy(() => import("../componentes/CompVet/PanelVet"));
+const PanelVet = React.lazy(() => import("../componentes/CompVet/PanelVet"))
+const InicioVet = React.lazy(() => import("../componentes/CompVet/InicioVet"));
+const HistorialClinico = React.lazy(() => import("../componentes/CompVet/HistorialClinico"));
+const MascotasVet = React.lazy(() => import("../componentes/CompVet/Mascotas"));
+const GestionCitasVet = React.lazy(() => import("../componentes/CompVet/GestionCitas"));
 
 const MainRoutes = () => {
   
@@ -65,7 +69,7 @@ const MainRoutes = () => {
     <Routes>
       <Route path="/" element={<Navigate to="/Home" replace />} />
 
-      {/* Rutas públicas (Sin cambios) */}
+      {/* Rutas públicas */}
       <Route element={<RutasPublicas />}>
         <Route path="/Home" element={<Home />} />
         <Route path="/Login" element={<Login />} />
@@ -76,8 +80,8 @@ const MainRoutes = () => {
         <Route path="/OlvideContrasena" element={<OlvideContrasena />} />
         <Route path="/CambioContraseña" element={<CambioContraseña />} />
       </Route>
-      
-      {/* RUTAS ADMINISTRADOR (Sin cambios, asumiendo que usan un panel diferente) */}
+
+      {/* Rutas administrador */}
       <Route path="/admin" element={<AdminDashboard />}>
         <Route index element={<DashboardHome />} />
         <Route path="dashboard" element={<DashboardHome />} />
@@ -85,12 +89,20 @@ const MainRoutes = () => {
         <Route path="roles" element={<GestionRoles />} />
         <Route path="servicios" element={<GestionServicios />} />
         <Route path="gestion-citas" element={<GestionCitas />} />
-        <Route path="gestion-usuarios" element={<GestionUsuarios />} />
-        <Route path="gestion-roles" element={<GestionRoles />} />
-        <Route path="gestion-servicios" element={<GestionServicios />} />
       </Route>
 
-      <Route element={isDevelopment ? <RutasPropietario /> : <RutaProtegida rolPermitido="propietario"><RutasPropietario /></RutaProtegida>}>
+      {/* Rutas propietario */}
+      <Route
+        element={
+          isDevelopment ? (
+            <RutasPropietario />
+          ) : (
+            <RutaProtegida rolPermitido="propietario">
+              <RutasPropietario />
+            </RutaProtegida>
+          )
+        }
+      >
         <Route path="/PanelPropietario" element={<PanelPropietario />}>
           <Route index element={<InicioPropietario />} />
           <Route path="agendar-cita" element={<FormularioCita />} />
@@ -102,16 +114,23 @@ const MainRoutes = () => {
         </Route>
       </Route>
 
-      {/* --- RUTAS VETERINARIO MODIFICADAS --- */}
-      {/* La protección de ruta se puede aplicar directamente aquí.
-        Envolverá al componente PanelVet, que a su vez contiene la lógica de sub-rutas.
-        Esto asegura que nadie pueda acceder a /PanelVet/* sin el rol correcto.
-      */}
-      <Route element={<RutaProtegida roles={[1, 2]} />}> {/* Ejemplo: Rol 1 (Admin) y 2 (Vet) pueden acceder */}
-        <Route path="/PanelVet" element={<PanelVet />} />
-        <Route path="/PanelVet/:encodedPath" element={<PanelVet />} />
+      {/* Rutas veterinario */}
+      <Route
+        element={
+          isDevelopment ? (
+            <PanelVet />
+          ) : (
+            <RutaProtegida rolPermitido="veterinario">
+              <PanelVet />
+            </RutaProtegida>
+          )
+        }
+      >
+        <Route path="/PanelVet" element={<InicioVet />} />
+        <Route path="/PanelVet/mascotas" element={<MascotasVet />} />
+        <Route path="/PanelVet/gestion-citas" element={<GestionCitas />} /> {/* Ruta correcta */}
+        <Route path="/PanelVet/historial-clinico" element={<HistorialClinico />} />
       </Route>
-      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 };
