@@ -35,12 +35,12 @@
 }
 
 .help-icon-btn{
-  color:#8196eb;
+  color:var(--color3);
   font-size: 1em;
-  margin-right: 35vh;
+  margin-right: -8vh;
   cursor: pointer;
   transition: color 0.3s ease-in-out;
-  margin-top: -20px;
+  margin-top: 6px;
 }
 
 .links a:hover {

@@ -38,55 +38,6 @@ const Header = () => {
   return (
     <header className="header-wrapper">
       <div className="top-container">
-        {/* Icono de ayuda desplegable */}
-        <div style={{ position: "relative", marginRight: "1rem" }}>
-          <button
-            className="help-icon-btn"
-            onClick={() => setHelpOpen((prev) => !prev)}
-            style={{
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-              padding: 0
-            }}
-            aria-label="Ayuda"
-          >
-            {/* Icono de ayuda */}
-            <svg width="50" height="50" fill="currentColor" viewBox="0 0 16 16">
-              <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zm0 13A6 6 0 1 1 8 2a6 6 0 0 1 0 12zm-.25-3.75a.75.75 0 1 1 1.5 0 .75.75 0 0 1-1.5 0zm1.07-2.1c-.2.2-.32.37-.32.6v.25a.75.75 0 0 1-1.5 0v-.25c0-.7.37-1.2.77-1.6.37-.37.73-.73.73-1.15 0-.5-.4-.85-.97-.85-.5 0-.83.23-.97.7a.75.75 0 1 1-1.45-.5C5.5 4.23 6.4 3.5 8 3.5c1.47 0 2.47.97 2.47 2.15 0 .9-.57 1.5-1.15 2.1z"/>
-            </svg>
-          </button>
-          {helpOpen && (
-            <div
-              style={{
-                position: "absolute",
-                top: "2.5rem",
-                right: 0,
-                background: "#fff",
-                border: "1px solid #ccc",
-                borderRadius: "8px",
-                boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                zIndex: 1000,
-                minWidth: "220px"
-              }}
-              onMouseLeave={() => setHelpOpen(false)}
-            >
-              <button
-                style={{ width: "100%", padding: "20px", border: "none", background: "none", textAlign: "center", cursor: "pointer" }}
-                onClick={downloadUserManual}
-              >
-                📄 Descargar Manual de Usuario
-              </button>
-              <button
-                style={{ width: "100%", padding: "10px", border: "none", background: "none", textAlign: "center", cursor: "pointer" }}
-                onClick={downloadTechnicalManual}
-              >
-                🛠️ Descargar Manual Técnico
-              </button>
-            </div>
-          )}
-        </div>
-
         <div className="top-content">{/* Puedes agregar contenido adicional aquí (ej: banner promocional) */}</div>
       </div>
 
@@ -130,6 +81,54 @@ const Header = () => {
               </svg>
               <span className="login-text">Iniciar sesión</span>
             </NavLink>
+                                {/* Icono de ayuda desplegable */}
+        <div style={{ position: "relative", marginRight: "1rem" }}>
+          <button
+            className="help-icon-btn"
+            onClick={() => setHelpOpen((prev) => !prev)}
+            style={{
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              padding: 0
+            }}
+            aria-label="Ayuda"
+          >
+            {/* Icono de ayuda */}
+            <svg width="40" height="40" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zm0 13A6 6 0 1 1 8 2a6 6 0 0 1 0 12zm-.25-3.75a.75.75 0 1 1 1.5 0 .75.75 0 0 1-1.5 0zm1.07-2.1c-.2.2-.32.37-.32.6v.25a.75.75 0 0 1-1.5 0v-.25c0-.7.37-1.2.77-1.6.37-.37.73-.73.73-1.15 0-.5-.4-.85-.97-.85-.5 0-.83.23-.97.7a.75.75 0 1 1-1.45-.5C5.5 4.23 6.4 3.5 8 3.5c1.47 0 2.47.97 2.47 2.15 0 .9-.57 1.5-1.15 2.1z"/>
+            </svg>
+          </button>
+          {helpOpen && (
+            <div
+              style={{
+                position: "absolute",
+                top: "2.5rem",
+                right: 20,
+                background: "#fff",
+                border: "1px solid #ccc",
+                borderRadius: "8px",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                zIndex: 1000,
+                minWidth: "220px"
+              }}
+              onMouseLeave={() => setHelpOpen(false)}
+            >
+              <button
+                style={{ width: "100%", padding: "10px", border: "none", background: "none", textAlign: "center", cursor: "pointer" }}
+                onClick={downloadUserManual}
+              >
+                📄 Descargar Manual de Usuario
+              </button>
+              <button
+                style={{ width: "100%", padding: "10px", border: "none", background: "none", textAlign: "center", cursor: "pointer" }}
+                onClick={downloadTechnicalManual}
+              >
+                🛠️ Descargar Manual Técnico
+              </button>
+            </div>
+          )}
+        </div>
           </div>
 
           <div className="mobile-menu-toggle" onClick={toggleMenu}>
