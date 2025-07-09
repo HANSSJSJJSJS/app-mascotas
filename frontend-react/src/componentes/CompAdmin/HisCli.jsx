@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useRef } from "react"
 import "../../stylos/cssAdmin/HisCli.css"
 import { obtenerFechaHoraActual, guardarDatos, validarCamposObligatorios } from "../../funcionalidades/FHisCli"

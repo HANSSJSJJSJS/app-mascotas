@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import "../../stylos/cssVet/Mascotas.css";
 import axios from "axios";
-import MascotaForm from '../CompFormularios/MascotaForm';
+import FormMascota from '../CompVet/FormMascota';
 
 const GestorMascotas = () => {
   const [mascotas, setMascotas] = useState([]);
@@ -442,7 +442,7 @@ const GestorMascotas = () => {
       {mostrarModalAgregar && (
         <div className="modal-overlay">
           <div className="modal-content">
-            <MascotaForm 
+            <FormMascota
               onClose={() => setMostrarModalAgregar(false)}
               onSubmit={handleAgregarMascota}
               isEditing={false}
@@ -455,7 +455,7 @@ const GestorMascotas = () => {
       {mascotaEditando && (
         <div className="modal-overlay">
           <div className="modal-content">
-            <MascotaForm 
+            <FormMascota 
               onClose={() => setMascotaEditando(null)}
               onSubmit={handleEditarMascota}
               isEditing={true}

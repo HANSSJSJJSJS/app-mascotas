@@ -1,5 +1,3 @@
-// src/componentes/CompVet/PanelVet.jsx (VERSIÓN CORREGIDA)
-
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import "../../stylos/cssVet/PanelVet.css";

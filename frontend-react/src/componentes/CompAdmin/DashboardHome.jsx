@@ -1,11 +1,8 @@
-"use client"
-
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext'; // Asegúrate que la ruta sea correcta
 import Loading from '../index/Loading';
 import { Link } from 'react-router-dom'; 
-
 import { Users, Briefcase, Shield, Plus, Eye, TrendingUp, PawPrint, ChevronRight } from "lucide-react"
 import "../../stylos/cssAdmin/Dashboard.css" // Asegúrate que la ruta sea correcta
 

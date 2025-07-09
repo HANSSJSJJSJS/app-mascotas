@@ -1,4 +1,3 @@
-"use client"
 import React, { useState } from "react";
 import { Menu, X, User, LogOut, ChevronDown, ChevronUp, Mail } from "lucide-react";
 import "../../stylos/cssAdmin/Topbar.css"; // Se mantiene tu archivo de estilos

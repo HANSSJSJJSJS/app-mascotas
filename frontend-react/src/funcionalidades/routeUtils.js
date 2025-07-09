@@ -1,5 +1,3 @@
-// src/funcionalidades/routeUtils.js
-
 /**
  * Codifica una cadena de texto a Base64 URL-safe.
  * @param {string} str La cadena a codificar (ej. "mascotas").

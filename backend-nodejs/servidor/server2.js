@@ -981,6 +981,11 @@ app.get("/api/veterinarios", async (req, res) => {
   }
 });
 
+
+// =================================================================
+// ==           FIN DE RUTAS DE GESTION DE MASCOTAS               ==
+// =================================================================
+
 // GET /api/mascotas - Obtener todas las mascotas con información del propietario
 app.get("/api/mascotas", async (req, res) => {
   try {
@@ -1257,7 +1262,6 @@ app.get('/api/historiales', async (req, res) => {
   }
 });
 
-// Endpoint para obtener la foto de una mascota
 // Endpoint para obtener la foto de una mascota por su ID
 app.get("/api/mascotas/:id/foto", async (req, res) => {
   try {
