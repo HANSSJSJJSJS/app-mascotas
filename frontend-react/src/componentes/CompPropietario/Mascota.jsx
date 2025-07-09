@@ -261,7 +261,7 @@ export default function Mascota() {
                     )}
                   </div>
                   <p className="pet-description-main">
-                    {mascotaActual.genero} • {calcularEdadDetallada(mascotaActual.edad, mascotaActual.fecha_nacimiento)} • {mascotaActual.peso} kg
+                    {mascotaActual.genero} • {Math.floor(mascotaActual.edad)} • {mascotaActual.peso} kg
                   </p>
                 </div>
               </div>
@@ -280,12 +280,8 @@ export default function Mascota() {
                   <Calendar className="stat-icon-main" />
                 </div>
                 <div className="stat-content-main">
-                  <span className="stat-number-main">{mascotaActual.edad}</span>
+                  <span className="stat-number-main">{mascotaActual.edad ? Math.floor(mascotaActual.edad) : "-"}</span>
                   <span className="stat-label-main">Años de edad</span>
-                  <span className="stat-detail-main">
-                    Nacido el {formatearFecha(mascotaActual.fecha_nacimiento).split(" de ")[0]} de{" "}
-                    {formatearFecha(mascotaActual.fecha_nacimiento).split(" de ")[1]}
-                  </span>
                 </div>
               </div>
 
@@ -325,10 +321,6 @@ export default function Mascota() {
                     <span className="detail-key-main">Género:</span>
                     <span className="detail-value-main">{mascotaActual.genero}</span>
                   </div>
-                  <div className="detail-item-main">
-                    <span className="detail-key-main">Microchip:</span>
-                    <span className="detail-value-main microchip-main">{mascotaActual.microchip}</span>
-                  </div>
                 </div>
               </div>
 
@@ -337,15 +329,15 @@ export default function Mascota() {
                 <div className="detail-content-main">
                   <div className="detail-item-main">
                     <span className="detail-key-main">Alergias:</span>
-                    <span className="detail-value-main">{mascotaActual.alergias}</span>
+                    <span className="detail-value-main">{mascotaActual.alergias ? mascotaActual.alergias : "Ninguna"}</span>
                   </div>
                   <div className="detail-item-main">
                     <span className="detail-key-main">Condiciones:</span>
-                    <span className="detail-value-main">{mascotaActual.condiciones_especiales}</span>
+                    <span className="detail-value-main">{mascotaActual.condiciones_especiales ? mascotaActual.condiciones_especiales : "Ninguna"}</span>
                   </div>
                   <div className="detail-item-main full-width-item">
                     <span className="detail-key-main">Notas:</span>
-                    <span className="detail-value-main">{mascotaActual.notas}</span>
+                    <span className="detail-value-main">{mascotaActual.notas ? mascotaActual.notas : "Ninguna"}</span>
                   </div>
                 </div>
               </div>

@@ -84,7 +84,8 @@ router.get("/:propietarioId", async (req, res) => {
         color,
         vacunado,
         esterilizado,
-        foto
+        foto,
+        fecha_nacimiento
       FROM mascotas
       WHERE id_pro = ? AND activo = true
       ORDER BY nom_mas
