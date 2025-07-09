@@ -30,6 +30,8 @@ body {
   margin: 0 20px 20px 20px;
   box-shadow: 0 6px 24px rgba(129, 150, 235, 0.25);
   border: 1px solid rgba(255, 255, 255, 0.2);
+  margin-left: 40px;
+  margin-right: -35px;
 }
 
 .header-logo {
@@ -97,7 +99,7 @@ body {
 
 /* Layout principal */
 .content-layout {
-  margin-left: 100px;
+  margin-left: 60px;
   display: grid;
   grid-template-columns: 320px 1fr;
   gap: 32px;
