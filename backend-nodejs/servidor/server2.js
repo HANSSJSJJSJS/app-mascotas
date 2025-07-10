@@ -36,7 +36,7 @@ const dbConfig = {
   host: "localhost",
   user: "root",
   password: "",
-  database: "moybe_db",
+  database: "mascotas_db",
   port: 3306,
   waitForConnections: true,
   connectionLimit: 10,
