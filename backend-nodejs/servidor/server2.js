@@ -9,7 +9,8 @@ const serviciosRoutes = require("./routes/servicios")
 const mascotaRoutes = require("./routes/mascota")
 const citasRoutes = require("./routes/citas")
 const VeterinarioRoutes = require("./routes/veterinarios")
-const historialRoutes = require('./routes/historiales');
+const historialRoutes = require('./routes/historial');
+const historialesRoutes = require('./routes/historiales');
 const consultasRoutes = require('./routes/consultas');
 const propietarioRoutes = require("./routes/propietario");
 
@@ -20,7 +21,8 @@ app.use("/api/servicios", serviciosRoutes)
 app.use("/api/mascotas", mascotaRoutes)
 app.use("/api/citas", citasRoutes)
 app.use("/api/veterinarios", VeterinarioRoutes)
-app.use('/api', historialRoutes)
+app.use('/api/historiales', historialRoutes)
+app.use('/api/historial', historialesRoutes);
 app.use("/api/propietario", propietarioRoutes);
 app.use('/api', consultasRoutes);
 // Sirve archivos estáticos desde backend-nodejs/uploads (no desde servidor/uploads)

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Calendar, Clock, FileText, PawPrint, ChevronRight, Search } from 'lucide-react';
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import "../../stylos/cssVet/InicioVet.css";
 import "../../stylos/cssVet/Card.css";
 
@@ -28,6 +28,7 @@ export default function InicioVet() {
   const [nombreVet, setNombreVet] = useState("");
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   // Funciones auxiliares
   const mostrarNotificacion = (mensaje, tipo) => {
@@ -91,7 +92,7 @@ export default function InicioVet() {
       : cita.propietario || "";
     navigate(
       `/PanelVet/historial-clinico/nuevo/${mascota?.id || cita.cod_mas}`,
-      { state: { mascota: { ...mascota, propietario }, fechaCita: cita.fecha } }
+      { state: { mascota: { ...mascota, propietario }, fechaCita: cita.fecha, id_cita: cita.id } }
     );
   };
 
@@ -174,19 +175,19 @@ export default function InicioVet() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          estado: 'REALIZADA',
+          estado: 'REALIZADA'
         }),
       });
-  
+
       if (!mod.ok) {
         throw new Error(`Error en la respuesta: ${mod.status}`);
       }
-  
+
       const data = await mod.json();
       cargarEstadisticas();
-      GetAppointment()
+      GetAppointment();
     } catch (error) {
-      // Puedes agregar manejo de error aquí si lo deseas
+      // Manejo de error opcional
     }
   };
   
@@ -209,6 +210,14 @@ export default function InicioVet() {
   const recargarEstadisticas = () => {
     cargarEstadisticas();
   };
+
+  useEffect(() => {
+    if (location.state?.recargarCitas) {
+      GetAppointment();
+      // Limpia el flag para evitar recargas infinitas
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
 
   return (
     <>

@@ -37,13 +37,36 @@ const CreateHistorialModal = ({ onClose, onCreate }) => {
     if (fechaCita) setFecha(formatFecha(fechaCita));
   }, [mascotaSeleccionada, fechaCita]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!fecha || !motivo || !tratamiento || !cod_mas) {
       alert("Por favor completa todos los campos.");
       return;
     }
-    onCreate({ fecha, motivo, tratamiento, cod_mas });
+    try {
+      const response = await fetch("http://localhost:3001/api/historiales", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fecha,
+          motivo,
+          tratamiento,
+          cod_mas,
+          id_cita: location.state?.id_cita // <-- agrega esto
+        })
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        alert("Error al guardar el historial: " + errorText);
+        return;
+      }
+
+      alert("✅ Historial registrado exitosamente");
+      navigate("/PanelVet/historial-clinico");
+    } catch (err) {
+      alert("Error al guardar el historial: " + err.message);
+    }
   };
 
   // Nueva función para cerrar y volver atrás
@@ -53,9 +76,11 @@ const CreateHistorialModal = ({ onClose, onCreate }) => {
     if (location.state?.fromHistorialClinico) {
       navigate("/PanelVet/historial-clinico");
     } else {
-      navigate("/PanelVet");
+      navigate("/PanelVet", { state: { recargarCitas: true } });
     }
   };
+
+  console.log({ fecha, motivo, tratamiento, cod_mas });
 
   return (
     <div className="modal-overlay">

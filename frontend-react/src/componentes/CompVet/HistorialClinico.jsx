@@ -58,9 +58,9 @@ const HistorialClinico = () => {
   useEffect(() => {
     const filtered = historiales.filter(
       (historial) =>
-        historial.mascota.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        historial.mascota.propietario.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        historial.mascota.especie.toLowerCase().includes(searchTerm.toLowerCase())
+        (historial.mascota.nombre && historial.mascota.nombre.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (historial.mascota.propietario && historial.mascota.propietario.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (historial.mascota.especie && historial.mascota.especie.toLowerCase().includes(searchTerm.toLowerCase()))
     );
     setFilteredHistoriales(filtered);
   }, [searchTerm, historiales]);
@@ -70,8 +70,8 @@ const HistorialClinico = () => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        fech_his: newHistorial.fecha,
-        descrip_his: newHistorial.motivo,
+        fecha: newHistorial.fecha,
+        motivo: newHistorial.motivo,
         tratamiento: newHistorial.tratamiento,
         cod_mas: newHistorial.cod_mas
       })
@@ -103,13 +103,20 @@ const HistorialClinico = () => {
   };
 
   const getAnimalIcon = (especie) => {
+    if (!especie) return "❓"; // Icono por defecto si no hay especie
     switch (especie.toLowerCase()) {
-      case "perro": return "🐕";
-      case "gato": return "🐱";
-      case "ave": return "🐦";
-      case "conejo": return "🐰";
-      case "hamster": return "🐹";
-      default: return "🐾";
+      case "perro":
+        return "🐶";
+      case "gato":
+        return "🐱";
+      case "ave":
+        return "🐦";
+      case "conejo":
+        return "🐰";
+      case "hamster":
+        return "🐹";
+      default:
+        return "🐾";
     }
   };
 
