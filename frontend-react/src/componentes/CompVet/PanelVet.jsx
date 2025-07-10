@@ -12,7 +12,7 @@ import { decodePath } from "../../funcionalidades/routeUtils";
 // Importa TODOS los componentes que se pueden mostrar en el panel
 import InicioVet from "./InicioVet";
 import MascotasVet from "./Mascotas";
-import GestionCitasVet from "./GestionCitas";
+import GestionCitasVet from "./GestionCitasVet";
 import HistorialClinico from "./HistorialClinico";
 import NotFound from "../CompHome/NotFound"; // Para rutas inválidas
 

@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import '../../stylos/cssVet/GestionCitas.css';
-import FormularioCita from "../CompVet/FormularioCita";
+import FormularioCita from "./FormularioCita";
 
 const HORARIOS_DISPONIBLES = ["09:00", "11:00", "13:00", "15:00", "17:00"];
 
-const GestionCitas = () => {
+const GestionCitasVet = () => {
   const [citas, setCitas] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterEstado, setFilterEstado] = useState("todos");
@@ -210,4 +210,4 @@ const GestionCitas = () => {
   );
 };
 
-export default GestionCitas;
+export default GestionCitasVet;
