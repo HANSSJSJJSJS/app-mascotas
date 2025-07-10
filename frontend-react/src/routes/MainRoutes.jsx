@@ -5,6 +5,7 @@ import LayoutPublico from "../componentes/layouts/LayoutPublico";
 import LayoutPropietario from "../componentes/layouts/LayoutPropietario";
 import Loading from "../componentes/index/Loading";
 
+import CreateHistorialModal from '../componentes/CompVet/CreateHistorialModal';
 // Componentes públicos
 const Home = React.lazy(() => import("../componentes/index/Home"));
 const Servicios = React.lazy(() => import("../componentes/CompHome/Servicios"));
@@ -41,6 +42,7 @@ const InicioVet = React.lazy(() => import("../componentes/CompVet/InicioVet"));
 const HistorialClinico = React.lazy(() => import("../componentes/CompVet/HistorialClinico"));
 const MascotasVet = React.lazy(() => import("../componentes/CompVet/Mascotas"));
 const GestionCitasVet = React.lazy(() => import("../componentes/CompVet/GestionCitasVet"));
+
 
 const MainRoutes = () => {
   
@@ -130,6 +132,7 @@ const MainRoutes = () => {
         <Route path="/PanelVet/mascotas" element={<MascotasVet />} />
         <Route path="/PanelVet/gestion-citas" element={<GestionCitasVet />} /> {/* Ruta correcta */}
         <Route path="/PanelVet/historial-clinico" element={<HistorialClinico />} />
+        <Route path="/PanelVet/historial-clinico/nuevo/:id" element={<CreateHistorialModal />} />
       </Route>
     </Routes>
   );

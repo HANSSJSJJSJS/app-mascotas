@@ -130,8 +130,6 @@ export const AuthProvider = ({ children }) => {
     resetTimers, // Se exporta para que el modal de inactividad pueda reiniciar el timer
   };
 
-  console.log("Usuario:", usuario);
-  console.log("Ruta actual:", location.pathname); // Ahora usa location del hook
 
   return (
     <AuthContext.Provider value={value}>

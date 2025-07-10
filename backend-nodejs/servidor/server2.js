@@ -10,7 +10,7 @@ const mascotaRoutes = require("./routes/mascota")
 const citasRoutes = require("./routes/citas")
 const VeterinarioRoutes = require("./routes/veterinarios")
 const historialRoutes = require('./routes/historiales');
-
+const consultasRoutes = require('./routes/consultas');
 const propietarioRoutes = require("./routes/propietario");
 
 const app = express()
@@ -22,6 +22,7 @@ app.use("/api/citas", citasRoutes)
 app.use("/api/veterinarios", VeterinarioRoutes)
 app.use('/api', historialRoutes)
 app.use("/api/propietario", propietarioRoutes);
+app.use('/api', consultasRoutes);
 // Sirve archivos estáticos desde backend-nodejs/uploads (no desde servidor/uploads)
 // CORRECCIÓN: Usar path.join para mayor robustez y log explícito
 const uploadsPath = path.join(__dirname, "..", "uploads");

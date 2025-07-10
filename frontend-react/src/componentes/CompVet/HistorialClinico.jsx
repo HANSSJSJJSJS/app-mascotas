@@ -4,6 +4,7 @@ import CreateHistorialModal from '../CompVet/CreateHistorialModal';
 import { PlusCircle, Search, Eye } from 'react-bootstrap-icons';
 import Ban from 'react-bootstrap-icons/dist/icons/ban';
 import CheckCircle from 'react-bootstrap-icons/dist/icons/check-circle';
+import { useNavigate } from "react-router-dom";
 import '../../stylos/cssVet/ModalHistorial.css';
 import '../../stylos/cssVet/HistorialClinico.css';
 
@@ -16,6 +17,7 @@ const HistorialClinico = () => {
   const [selectedHistorial, setSelectedHistorial] = useState(null);
   const [showViewModal, setShowViewModal] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
+  const navigate = useNavigate();
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 60000);
@@ -127,7 +129,10 @@ const HistorialClinico = () => {
               })}
             </p>
           </div>
-          <button className="btn-new-appointment" onClick={() => setShowCreateForm(true)}>
+          <button
+            className="btn-new-appointment"
+            onClick={() => navigate("/PanelVet/historial-clinico/nuevo/nuevo", { state: { fromHistorialClinico: true } })}
+          >
             <PlusCircle /> Nuevo Historial
           </button>
         </div>

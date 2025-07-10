@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Calendar, Clock, FileText, PawPrint, ChevronRight, Search } from 'lucide-react';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../../stylos/cssVet/InicioVet.css";
 import "../../stylos/cssVet/Card.css";
 
@@ -15,22 +15,7 @@ export default function InicioVet() {
   const [citas, setCitas] = useState();
   const [citasCompletadas, setCitasCompletadas] = useState();
 
-  const [mascotas, setMascotas] = useState([
-    {
-      id: 1,
-      nombre: 'Max',
-      raza: 'Labrador',
-      edad: 3,
-      tipo: 'Perro'
-    },
-    {
-      id: 2,
-      nombre: 'Luna',
-      raza: 'Siamés',
-      edad: 2,
-      tipo: 'Gato'
-    },
-  ]);
+  const [mascotas, setMascotas] = useState([]);
 
   // Estados para UI
   const [busqueda, setBusqueda] = useState('');
@@ -40,6 +25,9 @@ export default function InicioVet() {
   const [citaActual, setCitaActual] = useState(null);
   const [cargando, setCargando] = useState(false);
   const [error, setError] = useState(null);
+  const [nombreVet, setNombreVet] = useState("");
+
+  const navigate = useNavigate();
 
   // Funciones auxiliares
   const mostrarNotificacion = (mensaje, tipo) => {
@@ -52,10 +40,18 @@ export default function InicioVet() {
     // Implementación real conectaría con backend
   };
 
+  // Cargar mascotas desde el backend al montar el componente
+  useEffect(() => {
+    fetch("http://localhost:3001/api/mascotas")
+      .then(res => res.json())
+      .then(data => setMascotas(data))
+      .catch(err => console.error("Error al cargar mascotas:", err));
+  }, []);
+
   // Filtrar mascotas según búsqueda
   const mascotasFiltrados = mascotas.filter(mascota =>
-    mascota.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
-    mascota.raza.toLowerCase().includes(busqueda.toLowerCase())
+    mascota.nombre?.toLowerCase().includes(busqueda.toLowerCase()) ||
+    mascota.raza?.toLowerCase().includes(busqueda.toLowerCase())
   );
 
   // Función para atender citas
@@ -77,37 +73,38 @@ export default function InicioVet() {
       mostrarNotificacion('Cita atendida con éxito', 'success');
 
     } catch (error) {
-      console.error('Error al atender cita:', error);
       mostrarNotificacion('Error al atender la cita', 'error');
     }
   };
 
-  // Función para confirmar atención
+  // Modifica la función para redirigir a nuevo historial con la mascota asignada
   const confirmarAtencion = (cita) => {
-    console.log('atender')
-    setCitaSeleccionada(cita);
-    setModalAbierto(true);
+    console.log("Cita recibida:", cita);
+    console.log("Mascotas disponibles:", mascotas);
+
+    // Ajusta aquí según el campo correcto
+    const mascota = mascotas.find(m => m.nombre === cita.mascota);
+    console.log("Mascota encontrada:", mascota);
+
+    const propietario = mascota
+      ? `${mascota.nombre_propietario || ""} ${mascota.apellido_propietario || ""}`.trim()
+      : cita.propietario || "";
+    navigate(
+      `/PanelVet/historial-clinico/nuevo/${mascota?.id || cita.cod_mas}`,
+      { state: { mascota: { ...mascota, propietario }, fechaCita: cita.fecha } }
+    );
   };
 
   // Función para cargar estadísticas desde el backend
   const cargarEstadisticas = async () => {
     try {
-      console.log('🔄 Iniciando carga de estadísticas...');
       setCargando(true);
       setError(null);
       
       // Llamadas individuales para mejor debugging
-      console.log('📡 Cargando mascotas totales...');
       const resMascotasTotales = await fetch('http://localhost:3001/api/mascotas-totales');
-      console.log('Respuesta mascotas:', resMascotasTotales.status, resMascotasTotales.ok);
-      
-      console.log('📡 Cargando citas de hoy...');
       const resCitasHoy = await fetch('http://localhost:3001/api/citas-hoy');
-      console.log('Respuesta citas:', resCitasHoy.status, resCitasHoy.ok);
-      
-      console.log('📡 Cargando consultas pendientes...');
       const resConsultasPendientes = await fetch('http://localhost:3001/api/consultas-pendientes');
-      console.log('Respuesta consultas:', resConsultasPendientes.status, resConsultasPendientes.ok);
 
       // Verificar respuestas y parsear datos
       let mascotasTotales = 0;
@@ -116,26 +113,17 @@ export default function InicioVet() {
 
       if (resMascotasTotales.ok) {
         const dataMascotasTotales = await resMascotasTotales.json();
-        console.log('Datos mascotas:', dataMascotasTotales);
         mascotasTotales = dataMascotasTotales.total || 0;
-      } else {
-        console.error('Error en endpoint mascotas:', resMascotasTotales.status);
       }
 
       if (resCitasHoy.ok) {
         const dataCitasHoy = await resCitasHoy.json();
-        console.log('Datos citas:', dataCitasHoy);
         citasHoy = dataCitasHoy.total || 0;
-      } else {
-        console.error('Error en endpoint citas:', resCitasHoy.status);
       }
 
       if (resConsultasPendientes.ok) {
         const dataConsultasPendientes = await resConsultasPendientes.json();
-        console.log('Datos consultas:', dataConsultasPendientes);
         consultasPendientes = dataConsultasPendientes.total || 0;
-      } else {
-        console.error('Error en endpoint consultas:', resConsultasPendientes.status);
       }
 
       // Actualizar el estado con los datos del backend
@@ -144,14 +132,10 @@ export default function InicioVet() {
         citasHoy,
         consultasPendientes
       };
-      
-      console.log('✅ Datos finales:', nuevosdatos);
       setDatos(nuevosdatos);
 
     } catch (error) {
-      console.error("❌ Error cargando estadísticas:", error);
       setError(`Error al cargar las estadísticas: ${error.message}`);
-      
       // Valores por defecto en caso de error
       setDatos({
         mascotasTotales: 0,
@@ -160,7 +144,6 @@ export default function InicioVet() {
       });
     } finally {
       setCargando(false);
-      console.log('🏁 Carga completada');
     }
   };
 
@@ -168,12 +151,9 @@ export default function InicioVet() {
     fetch("http://localhost:3001/api/citas-pendientes/REALIZADA")
       .then((res) => res.json())
       .then((data) => {
-        console.log(data)
         setCitasCompletadas(data);
       })
-      .catch((error) => {
-        console.error("Error al obtener citas:", error);
-      });
+      .catch(() => {});
     cargarEstadisticas()
   }
 
@@ -183,11 +163,7 @@ export default function InicioVet() {
       .then((data) => {
         setCitas(data);
       })
-      .catch((error) => {
-        console.error("Error al obtener citas:", error);
-      });
-    
-
+      .catch(() => {});
   }
 
   const ChangeStateAppointment = async (cod) => {
@@ -207,11 +183,10 @@ export default function InicioVet() {
       }
   
       const data = await mod.json();
-      console.log("Respuesta del servidor:", data);
       cargarEstadisticas();
       GetAppointment()
     } catch (error) {
-      console.error("Error al cambiar el estado de la cita:", error);
+      // Puedes agregar manejo de error aquí si lo deseas
     }
   };
   
@@ -223,7 +198,12 @@ export default function InicioVet() {
     GetAppointment()
   }, []);
 
-
+  // Cargar nombre del veterinario
+  useEffect(() => {
+    fetch("http://localhost:3001/api/veterinarios/2") // Cambia el 2 por el ID real del veterinario
+      .then(res => res.json())
+      .then(data => setNombreVet(data.nombre + " " + data.apellido));
+  }, []);
 
   // Función para recargar estadísticas manualmente
   const recargarEstadisticas = () => {
@@ -254,7 +234,9 @@ export default function InicioVet() {
       {/* Contenido principal */}
       <div className="inicioVet-container">
         <div className="inicioVet-header">
-          <h1 className="inicioVet-title">Bienvenido, Dr. Carlos</h1>
+          <h1 className="inicioVet-title">
+            Bienvenido, Dr. {nombreVet || "Veterinario"}
+          </h1>
           <p className="inicioVet-subtitle">Aquí tienes un resumen de tu día</p>
         </div>
 
