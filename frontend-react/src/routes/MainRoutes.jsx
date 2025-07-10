@@ -17,6 +17,7 @@ const OlvideContrasena = React.lazy(() => import("../componentes/CompFormularios
 const CambioContraseña = React.lazy(() => import("../componentes/CompFormularios/CambioContraseña"));
 const NotFound = React.lazy(() => import("../componentes/CompHome/NotFound"));
 
+
 // NUEVO DASHBOARD DE ADMINISTRADOR
 const AdminDashboard = React.lazy(() => import("../componentes/CompAdmin/AdminDashboard"));
 const DashboardHome = React.lazy(() => import("../componentes/CompAdmin/DashboardHome"));
@@ -83,7 +84,7 @@ const MainRoutes = () => {
         <Route path="/CambioContraseña" element={<CambioContraseña />} />
       </Route>
 
-      {/* Rutas administrador */}
+      {/* RUTAS ADMINISTRADOR (Sin cambios, asumiendo que usan un panel diferente) */}
       <Route path="/admin" element={<AdminDashboard />}>
         <Route index element={<DashboardHome />} />
         <Route path="dashboard" element={<DashboardHome />} />
@@ -91,8 +92,10 @@ const MainRoutes = () => {
         <Route path="roles" element={<GestionRoles />} />
         <Route path="servicios" element={<GestionServicios />} />
         <Route path="gestion-citas" element={<GestionCitas />} />
+        <Route path="gestion-usuarios" element={<GestionUsuarios />} />
+        <Route path="gestion-roles" element={<GestionRoles />} />
+        <Route path="gestion-servicios" element={<GestionServicios />} />
       </Route>
-
       {/* Rutas propietario */}
       <Route
         element={
